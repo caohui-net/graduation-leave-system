@@ -1,0 +1,35 @@
+# Django Core
+Django==4.2.13
+djangorestframework==3.14.0
+djangorestframework-simplejwt==5.3.1
+django-cors-headers==4.3.1
+django-filter==23.5
+
+# Database
+psycopg2-binary==2.9.9
+mysqlclient==2.2.4
+cx-Oracle==8.3.0
+pyodbc==5.1.0
+
+# State Machine
+django-fsm==2.8.1
+
+# Celery
+celery==5.3.6
+redis==5.0.3
+
+# WeChat
+wechatpy==1.8.18
+
+# Retry
+tenacity==8.2.3
+
+# Password
+bcrypt==4.1.2
+
+# Environment
+python-decouple==3.8
+
+# Utils
+python-dateutil==2.9.0
+pytz==2024.1

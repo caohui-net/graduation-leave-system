@@ -2363,16 +2363,63 @@ python -c "from cryptography.fernet import Fernet; print(Fernet.generate_key().d
 
 **索引策略：**
 ```sql
--- 高频查询字段索引
+-- users表索引
 CREATE INDEX idx_student_id ON users(student_id);
-CREATE INDEX idx_status ON applications(status);
-CREATE INDEX idx_planned_leave_date ON applications(planned_leave_date);
-CREATE INDEX idx_application_id ON approvals(application_id);
+CREATE INDEX idx_role ON users(role);
+CREATE INDEX idx_wechat_openid ON users(wechat_openid);
+CREATE INDEX idx_account_locked ON users(account_locked);
 
--- 复合索引
-CREATE INDEX idx_status_submit_time ON applications(status, submit_time);
-CREATE INDEX idx_user_read ON notifications(user_id, is_read);
+-- applications表索引
+CREATE INDEX idx_student_id ON applications(student_id);
+CREATE INDEX idx_counselor_id ON applications(counselor_id);
+CREATE INDEX idx_admin_id ON applications(admin_id);
+CREATE INDEX idx_status ON applications(status);
+CREATE INDEX idx_application_no ON applications(application_no);
+CREATE INDEX idx_planned_leave_date ON applications(planned_leave_date);
+
+-- applications表复合索引
+CREATE INDEX idx_approver_status ON applications(current_approver_id, status, submit_time);
+CREATE INDEX idx_student_status ON applications(student_id, status, created_at);
+CREATE INDEX idx_status_deleted ON applications(status, is_deleted, submit_time);
+
+-- approvals表索引
+CREATE INDEX idx_application_id ON approvals(application_id);
+CREATE INDEX idx_approver_id ON approvals(approver_id);
+CREATE INDEX idx_approval_time ON approvals(approval_time);
+CREATE INDEX idx_app_time ON approvals(application_id, approval_time DESC);
+
+-- attachments表索引
+CREATE INDEX idx_application_id ON attachments(application_id);
+CREATE INDEX idx_attachment_type ON attachments(attachment_type);
+CREATE INDEX idx_file_hash ON attachments(file_hash);
+CREATE INDEX idx_app_type ON attachments(application_id, attachment_type, is_deleted);
+
+-- notifications表索引
+CREATE INDEX idx_user_id ON notifications(user_id);
+CREATE INDEX idx_is_read ON notifications(is_read);
+CREATE INDEX idx_send_status ON notifications(send_status);
+CREATE INDEX idx_user_read_time ON notifications(user_id, is_read, created_at DESC);
+
+-- audit_logs表索引
+CREATE INDEX idx_user_id ON audit_logs(user_id);
+CREATE INDEX idx_session_id ON audit_logs(session_id);
+CREATE INDEX idx_correlation_id ON audit_logs(correlation_id);
+CREATE INDEX idx_action ON audit_logs(action);
+CREATE INDEX idx_resource_type ON audit_logs(resource_type);
+CREATE INDEX idx_created_at ON audit_logs(created_at);
+CREATE INDEX idx_user_action_time ON audit_logs(user_id, action, created_at DESC);
+CREATE INDEX idx_resource_time ON audit_logs(resource_type, resource_id, created_at DESC);
 ```
+
+**索引对应查询场景：**
+- `idx_approver_status`: 待审批列表查询（按审批人+状态+时间）
+- `idx_student_status`: 学生查看自己申请列表
+- `idx_status_deleted`: 按状态筛选未删除申请
+- `idx_app_time`: 申请的审批历史（按时间倒序）
+- `idx_app_type`: 申请的附件列表（按类型筛选）
+- `idx_user_read_time`: 用户未读通知列表
+- `idx_user_action_time`: 用户操作审计日志
+- `idx_resource_time`: 资源变更审计日志
 
 **查询优化：**
 - 使用select_related减少N+1查询
@@ -2384,13 +2431,30 @@ CREATE INDEX idx_user_read ON notifications(user_id, is_read);
 ```python
 DATABASES = {
     'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'graduation_leave',
+        'USER': 'postgres',
+        'PASSWORD': 'password',
+        'HOST': 'postgres',
+        'PORT': '5432',
         'CONN_MAX_AGE': 600,  # 连接复用10分钟
-        'OPTIONS': {
-            'MAX_CONNECTIONS': 100,
-            'MIN_CONNECTIONS': 10
-        }
     }
 }
+```
+
+**PgBouncer连接池（可选）：**
+```ini
+# pgbouncer.ini
+[databases]
+graduation_leave = host=postgres port=5432 dbname=graduation_leave
+
+[pgbouncer]
+listen_addr = 0.0.0.0
+listen_port = 6432
+auth_type = md5
+pool_mode = transaction
+max_client_conn = 100
+default_pool_size = 20
 ```
 
 ### 9.2 缓存策略
@@ -2412,6 +2476,39 @@ cache.set(f'pending:count:{user_id}', count, 60)
 - 定时刷新热点数据
 - 缓存穿透：空值缓存
 - 缓存雪崩：随机过期时间
+
+**缓存失效规则：**
+```python
+def invalidate_application_cache(application_id):
+    """申请状态变更时失效相关缓存"""
+    cache.delete(f'app:{application_id}:status')
+    cache.delete(f'app:{application_id}:detail')
+    
+    # 失效审批人的待审批数量缓存
+    app = Application.objects.get(id=application_id)
+    if app.current_approver_id:
+        cache.delete(f'pending:count:{app.current_approver_id}')
+    
+    # 失效学生的申请列表缓存
+    cache.delete(f'student:{app.student_id}:applications')
+
+def invalidate_user_cache(user_id):
+    """用户信息变更时失效缓存"""
+    cache.delete(f'user:{user_id}')
+    cache.delete(f'user:{user_id}:permissions')
+
+# 在模型保存时自动失效
+from django.db.models.signals import post_save
+
+@receiver(post_save, sender=Application)
+def application_saved(sender, instance, **kwargs):
+    invalidate_application_cache(instance.id)
+```
+
+**不缓存的内容：**
+- 权限决策（每次实时检查）
+- 审批操作（必须实时）
+- 敏感配置（加密配置）
 
 **Django缓存配置：**
 ```python
@@ -2483,6 +2580,34 @@ def generate_certificate(application_id):
 **测试框架：**
 - pytest + pytest-django
 - 覆盖率目标：80%+
+- 数据库：PostgreSQL（与生产环境一致，不使用SQLite）
+
+**TDD工作流（测试驱动开发）：**
+1. **Red（红灯）**：先写失败的测试
+2. **Green（绿灯）**：写最小代码使测试通过
+3. **Refactor（重构）**：优化代码，保持测试通过
+
+```python
+# 示例：TDD开发流程
+# Step 1: 写失败的测试
+def test_application_submit_generates_number():
+    app = Application.objects.create(status='draft')
+    app.submit()
+    assert app.application_no is not None
+    assert app.application_no.startswith('LX')
+
+# Step 2: 运行测试，确认失败
+# pytest tests/test_application.py::test_application_submit_generates_number
+
+# Step 3: 写最小实现
+def submit(self):
+    self.application_no = generate_application_number()
+    self.status = 'pending_counselor'
+    self.save()
+
+# Step 4: 运行测试，确认通过
+# Step 5: 重构（如需要）
+```
 
 **测试范围：**
 ```python
@@ -2500,7 +2625,97 @@ def test_approval_workflow():
 # API测试
 def test_create_application_api(client):
     response = client.post('/api/v1/applications', data)
-    assert response.status_code == 200
+    assert response.status_code == 201  # 创建资源返回201
+
+# 认证安全测试（5项加固措施）
+def test_wechat_bind_requires_password():
+    """测试微信绑定需要密码验证"""
+    response = bind_wechat(student_id='2020001', openid='oXXX', password='wrong')
+    assert response.status_code == 400
+    assert response.json()['message'] == '绑定失败，请联系管理员'
+
+def test_limited_token_scope():
+    """测试受限Token只能设置密码"""
+    token = create_limited_token(user)
+    response = client.get('/api/v1/applications', headers={'Authorization': f'Bearer {token}'})
+    assert response.status_code == 403
+
+def test_wechat_bind_transaction_lock():
+    """测试微信绑定事务锁（防止竞态）"""
+    # 并发绑定同一学号
+    with ThreadPoolExecutor(max_workers=2) as executor:
+        futures = [
+            executor.submit(bind_wechat, '2020001', 'oXXX1', 'pass'),
+            executor.submit(bind_wechat, '2020001', 'oXXX2', 'pass')
+        ]
+        results = [f.result() for f in futures]
+    
+    # 只有一个成功
+    success_count = sum(1 for r in results if r.status_code == 200)
+    assert success_count == 1
+
+def test_wechat_bind_audit_log():
+    """测试微信绑定记录审计日志"""
+    bind_wechat(student_id='2020001', openid='oXXX', password='pass')
+    log = AuditLog.objects.filter(action='wechat_bind').last()
+    assert log is not None
+    assert log.resource_type == 'user'
+
+def test_wechat_bind_generic_error():
+    """测试绑定失败返回通用错误（防止枚举）"""
+    # 学号不存在
+    r1 = bind_wechat(student_id='9999999', openid='oXXX', password='pass')
+    # 密码错误
+    r2 = bind_wechat(student_id='2020001', openid='oXXX', password='wrong')
+    # 已绑定其他微信
+    r3 = bind_wechat(student_id='2020002', openid='oXXX', password='pass')
+    
+    # 所有错误返回相同消息
+    assert r1.json()['message'] == r2.json()['message'] == r3.json()['message']
+
+# RBAC权限测试
+def test_student_cannot_approve():
+    """测试学生无法审批"""
+    client.force_authenticate(user=student_user)
+    response = client.post(f'/api/v1/approvals/{app_id}/approve')
+    assert response.status_code == 403
+
+# API限流测试
+def test_login_rate_limit():
+    """测试登录接口限流（5次/分钟）"""
+    for i in range(6):
+        response = client.post('/api/v1/auth/login', data)
+    assert response.status_code == 429  # Too Many Requests
+
+# 文件上传安全测试
+def test_file_mime_validation():
+    """测试MIME类型验证"""
+    fake_image = create_fake_image_with_exe_content()
+    response = client.post(f'/api/v1/applications/{app_id}/attachments', files={'file': fake_image})
+    assert response.status_code == 400
+    assert 'MIME' in response.json()['message']
+
+def test_file_hash_dedup():
+    """测试文件哈希去重"""
+    file1 = upload_file(app_id, 'test.jpg')
+    file2 = upload_file(app_id, 'test.jpg')  # 相同文件
+    assert file2.json()['data']['existing_id'] == file1.json()['data']['id']
+
+# 审计日志测试
+def test_approval_creates_audit_log():
+    """测试审批操作记录审计日志"""
+    approve_application(app_id, counselor_id, 'approve')
+    log = AuditLog.objects.filter(action='approve', resource_id=app_id).last()
+    assert log is not None
+
+# 历史快照测试
+def test_application_history_on_submit():
+    """测试提交申请创建历史快照"""
+    app = Application.objects.create(status='draft')
+    app.submit()
+    history = ApplicationHistory.objects.filter(application_id=app.id, version=0).first()
+    assert history is not None
+    assert history.change_reason == '提交申请'
 ```
 
 ### 10.2 集成测试
@@ -2533,11 +2748,35 @@ def test_create_application_api(client):
 - Locust（压力测试）
 - Apache JMeter
 
-**测试指标：**
-- 并发用户：1000+
+**测试指标（单实例部署）：**
+- 并发用户：500（峰值负载）
 - 响应时间：< 200ms（P95）
-- 吞吐量：> 2000 QPS
+- 吞吐量：> 500 QPS
 - 错误率：< 0.1%
+
+**测试场景：**
+```python
+from locust import HttpUser, task, between
+
+class GraduationLeaveUser(HttpUser):
+    wait_time = between(1, 3)
+    
+    @task(3)
+    def view_applications(self):
+        self.client.get("/api/v1/applications")
+    
+    @task(2)
+    def view_application_detail(self):
+        self.client.get("/api/v1/applications/1")
+    
+    @task(1)
+    def approve_application(self):
+        self.client.post("/api/v1/approvals/1/approve", json={"opinion": "同意", "version": 0})
+```
+
+**性能基准：**
+- 单实例（Gunicorn 4 workers）：500并发用户
+- 如需更高并发，考虑水平扩展或优化瓶颈
 
 ---
 

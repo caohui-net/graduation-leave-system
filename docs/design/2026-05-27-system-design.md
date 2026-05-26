@@ -1409,30 +1409,67 @@ STATE_TRANSITIONS = {
   - 必须上传财务结清截图
 - 执行动作：
   - 状态变更：draft → pending_counselor
-  - 生成申请编号
-  - 记录提交时间
+  - 生成申请编号（LX{YYYYMMDD}{6位序号}）
+  - 设置审批人：counselor_id（根据学生年级/班级分配）、admin_id（学工部负责人）
+  - 设置当前审批人：current_approver_id = counselor_id
+  - 初始化版本：version = 0
+  - 记录提交时间：submit_time
+  - 创建历史快照：applications_history（version=0, change_reason='提交申请'）
+  - 记录审计日志：audit_logs（action='create_application', resource_type='application'）
   - 发送通知给辅导员
 - 办理时限：无
 
 **节点2：辅导员审核**
 - 触发条件：申请状态为 pending_counselor
-- 权限要求：辅导员角色
+- 权限要求：辅导员角色 + current_approver_id匹配
 - 执行动作：
-  - 同意：状态变更 → pending_admin，通知学工部
-  - 驳回：状态变更 → rejected，通知学生并说明原因
+  - 验证版本号（乐观锁）
+  - 同意：
+    - 状态变更 → pending_admin
+    - 更新当前审批人：current_approver_id = admin_id
+    - 递增版本：version += 1
+    - 创建审批记录：approvals（approver_role='counselor', action='approve'）
+    - 创建历史快照：applications_history（version=N, change_reason='辅导员审批通过'）
+    - 记录审计日志：audit_logs（action='approve', resource_type='application'）
+    - 通知学工部
+  - 驳回：
+    - 状态变更 → rejected
+    - 清空当前审批人：current_approver_id = NULL
+    - 递增版本：version += 1
+    - 创建审批记录：approvals（approver_role='counselor', action='reject'）
+    - 创建历史快照：applications_history（version=N, change_reason='辅导员驳回'）
+    - 记录审计日志：audit_logs（action='reject', resource_type='application'）
+    - 通知学生并说明原因
   - 记录审批意见和时间
-- 办理时限：1个工作日（24小时）
+- 办理时限：1个工作日（按工作时间9:00-17:00计算，排除周末和节假日）
 - 超时处理：发送提醒通知
 
 **节点3：学工部备案**
 - 触发条件：申请状态为 pending_admin
-- 权限要求：学工部管理员角色
+- 权限要求：学工部管理员角色 + current_approver_id匹配
 - 执行动作：
-  - 同意：状态变更 → approved，生成电子离校凭证
-  - 驳回：状态变更 → rejected，通知学生
+  - 验证版本号（乐观锁）
+  - 同意：
+    - 状态变更 → approved
+    - 清空当前审批人：current_approver_id = NULL
+    - 递增版本：version += 1
+    - 生成电子离校凭证：certificate_url
+    - 记录凭证生成时间：certificate_generated_at
+    - 创建审批记录：approvals（approver_role='admin', action='approve'）
+    - 创建历史快照：applications_history（version=N, change_reason='学工部备案通过'）
+    - 记录审计日志：audit_logs（action='approve', resource_type='application'）
+    - 归档申请全记录
+    - 通知学生
+  - 驳回：
+    - 状态变更 → rejected
+    - 清空当前审批人：current_approver_id = NULL
+    - 递增版本：version += 1
+    - 创建审批记录：approvals（approver_role='admin', action='reject'）
+    - 创建历史快照：applications_history（version=N, change_reason='学工部驳回'）
+    - 记录审计日志：audit_logs（action='reject', resource_type='application'）
+    - 通知学生
   - 记录备案意见和时间
-  - 归档申请全记录
-- 办理时限：1个工作日（24小时）
+- 办理时限：1个工作日（按工作时间9:00-17:00计算，排除周末和节假日）
 - 超时处理：发送提醒通知
 
 **节点4：驳回后重新提交**
@@ -1448,26 +1485,95 @@ STATE_TRANSITIONS = {
 **超时监控：**
 ```python
 # Celery定时任务，每小时执行一次
+from chinese_calendar import is_workday, get_workdays
+from datetime import datetime, timedelta
+
 @celery.task
 def check_approval_timeout():
-    # 查询超时的审批
-    timeout_approvals = Application.objects.filter(
+    # 查询待审批的申请
+    pending_apps = Application.objects.filter(
         status__in=['pending_counselor', 'pending_admin'],
-        submit_time__lt=timezone.now() - timedelta(hours=24)
+        is_deleted=False
     )
     
-    for app in timeout_approvals:
-        # 发送提醒通知
-        send_timeout_notification(app)
-        # 标记超时
-        app.is_timeout = True
-        app.save()
+    for app in pending_apps:
+        # 获取最新审批记录（当前节点）
+        latest_approval = app.approvals.filter(
+            approver_id=app.current_approver_id
+        ).order_by('-created_at').first()
+        
+        if not latest_approval:
+            # 新提交的申请，从submit_time开始计算
+            start_time = app.submit_time
+        else:
+            # 已有审批记录，从上次审批时间开始计算
+            start_time = latest_approval.approval_time
+        
+        # 计算工作日到期时间（1个工作日 = 8小时工作时间）
+        due_time = calculate_due_time(start_time, work_hours=8)
+        
+        if datetime.now() > due_time:
+            # 创建超时审批记录
+            Approval.objects.create(
+                application_id=app.id,
+                approver_id=app.current_approver_id,
+                approver_role=app.status.replace('pending_', ''),
+                action='timeout',
+                is_timeout=True,
+                time_limit=8
+            )
+            # 发送提醒通知
+            send_timeout_notification(app)
+
+def calculate_due_time(start_time, work_hours=8):
+    """
+    计算工作日到期时间
+    工作时间：9:00-17:00（8小时）
+    排除周末和节假日
+    """
+    current = start_time
+    remaining_hours = work_hours
+    
+    while remaining_hours > 0:
+        # 跳过非工作日
+        while not is_workday(current.date()):
+            current += timedelta(days=1)
+            current = current.replace(hour=9, minute=0, second=0)
+        
+        # 调整到工作时间内
+        if current.hour < 9:
+            current = current.replace(hour=9, minute=0, second=0)
+        elif current.hour >= 17:
+            current += timedelta(days=1)
+            current = current.replace(hour=9, minute=0, second=0)
+            continue
+        
+        # 计算当天剩余工作时间
+        work_end = current.replace(hour=17, minute=0, second=0)
+        hours_today = (work_end - current).total_seconds() / 3600
+        
+        if hours_today >= remaining_hours:
+            # 当天可以完成
+            current += timedelta(hours=remaining_hours)
+            remaining_hours = 0
+        else:
+            # 需要跨天
+            remaining_hours -= hours_today
+            current += timedelta(days=1)
+            current = current.replace(hour=9, minute=0, second=0)
+    
+    return current
 ```
 
 **超时通知：**
 - 第1次：办理时限到期时通知审批人
 - 第2次：超时4小时后通知审批人上级
 - 第3次：超时8小时后通知系统管理员
+
+**降级策略：**
+- 外部系统（宿舍管理系统）不可用时，允许手动上传证明文件
+- 审批人可选择"跳过验证"并备注原因
+- 系统记录降级操作日志
 
 ---
 ## 6. 外部系统集成设计

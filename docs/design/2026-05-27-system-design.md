@@ -1523,13 +1523,12 @@ def verify_dorm_clearance(student_id):
 **服务清单：**
 ```yaml
 services:
-  nginx:          # 负载均衡
-  django-app:     # Django应用（3副本）
-  mysql:          # 数据库（可选PostgreSQL/SQL Server/Oracle）
+  nginx:          # 反向代理
+  django-app:     # Django应用（单实例，Gunicorn 4 workers）
+  postgres:       # PostgreSQL数据库
   redis:          # 缓存+消息队列
   celery-worker:  # 异步任务
   celery-beat:    # 定时任务
-  minio:          # 本地对象存储（可选）
 ```
 
 **网络架构：**
@@ -1539,14 +1538,16 @@ services:
 Nginx (80/443)
     ↓
 内部网络（bridge）
-    ├─ django-app-1:8000
-    ├─ django-app-2:8000
-    ├─ django-app-3:8000
-    ├─ mysql:3306
+    ├─ django-app:8000 (Gunicorn 4 workers)
+    ├─ postgres:5432
     ├─ redis:6379
     ├─ celery-worker
-    └─ minio:9000
+    └─ celery-beat
 ```
+
+**存储说明：**
+- 文件存储：本地文件系统 `/data/uploads`
+- MinIO：可选的未来扩展（不在基线部署中）
 
 ### 7.2 docker-compose.yml示例
 
@@ -1575,19 +1576,18 @@ services:
     env_file:
       - .env
     depends_on:
-      - mysql
+      - postgres
       - redis
-    deploy:
-      replicas: 3
     restart: always
 
-  mysql:
-    image: mysql:8.0
+  postgres:
+    image: postgres:16-alpine
     environment:
-      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
-      MYSQL_DATABASE: ${DB_NAME}
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
     volumes:
-      - mysql_data:/var/lib/mysql
+      - postgres_data:/var/lib/postgresql/data
     restart: always
 
   redis:
@@ -1606,7 +1606,7 @@ services:
       - .env
     depends_on:
       - redis
-      - mysql
+      - postgres
     restart: always
 
   celery-beat:
@@ -1618,6 +1618,14 @@ services:
       - redis
     restart: always
 
+volumes:
+  postgres_data:
+  redis_data:
+```
+
+**MinIO可选配置（未来扩展）：**
+```yaml
+# 如需MinIO对象存储，添加以下服务
   minio:
     image: minio/minio
     command: server /data --console-address ":9001"
@@ -1631,9 +1639,8 @@ services:
       - minio_data:/data
     restart: always
 
+# 并添加volume
 volumes:
-  mysql_data:
-  redis_data:
   minio_data:
 ```
 
@@ -1642,7 +1649,7 @@ volumes:
 **持久化目录：**
 ```
 /data/
-├── db/           # 数据库数据
+├── postgres/     # PostgreSQL数据
 ├── redis/        # Redis数据
 ├── uploads/      # 上传文件
 ├── logs/         # 日志文件
@@ -1657,10 +1664,25 @@ volumes:
 # backup.sh
 #!/bin/bash
 DATE=$(date +%Y%m%d)
-docker exec mysql mysqldump -u root -p${DB_PASSWORD} ${DB_NAME} > /data/backups/db_${DATE}.sql
+
+# PostgreSQL备份
+docker exec postgres pg_dump -U ${DB_USER} ${DB_NAME} > /data/backups/db_${DATE}.sql
+
+# 上传文件备份
 tar -czf /data/backups/uploads_${DATE}.tar.gz /data/uploads
+
 # 保留最近30天备份
-find /data/backups -mtime +30 -delete
+find /data/backups -name "db_*.sql" -mtime +30 -delete
+find /data/backups -name "uploads_*.tar.gz" -mtime +30 -delete
+```
+
+**恢复策略：**
+```bash
+# 恢复数据库
+docker exec -i postgres psql -U ${DB_USER} ${DB_NAME} < /data/backups/db_YYYYMMDD.sql
+
+# 恢复上传文件
+tar -xzf /data/backups/uploads_YYYYMMDD.tar.gz -C /
 ```
 
 ---

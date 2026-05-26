@@ -369,13 +369,14 @@ CREATE TABLE approvals (
     approval_time TIMESTAMP NOT NULL COMMENT '审批时间',
     time_limit INT COMMENT '办理时限(小时)',
     is_timeout BOOLEAN DEFAULT FALSE COMMENT '是否超时',
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    created_at TIMESTAMP,
     
-    FOREIGN KEY (application_id) REFERENCES applications(id),
-    FOREIGN KEY (approver_id) REFERENCES users(id),
+    FOREIGN KEY (application_id) REFERENCES applications(id) ON DELETE CASCADE,
+    FOREIGN KEY (approver_id) REFERENCES users(id) ON DELETE SET NULL,
     INDEX idx_application_id (application_id),
     INDEX idx_approver_id (approver_id),
-    INDEX idx_approval_time (approval_time)
+    INDEX idx_approval_time (approval_time),
+    INDEX idx_app_time (application_id, approval_time DESC)
 ) COMMENT='审批记录表';
 ```
 
@@ -395,13 +396,16 @@ CREATE TABLE attachments (
     file_path VARCHAR(500) NOT NULL COMMENT '文件路径',
     file_size BIGINT NOT NULL COMMENT '文件大小(字节)',
     file_type VARCHAR(50) NOT NULL COMMENT '文件类型',
+    file_hash VARCHAR(64) COMMENT 'SHA256文件哈希',
     attachment_type VARCHAR(50) NOT NULL COMMENT '附件类型',
-    upload_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    upload_time TIMESTAMP,
     is_deleted BOOLEAN DEFAULT FALSE,
     
-    FOREIGN KEY (application_id) REFERENCES applications(id),
+    FOREIGN KEY (application_id) REFERENCES applications(id) ON DELETE CASCADE,
     INDEX idx_application_id (application_id),
-    INDEX idx_attachment_type (attachment_type)
+    INDEX idx_attachment_type (attachment_type),
+    INDEX idx_file_hash (file_hash),
+    INDEX idx_app_type (application_id, attachment_type, is_deleted)
 ) COMMENT='附件表';
 ```
 
@@ -428,15 +432,18 @@ CREATE TABLE notifications (
     content TEXT NOT NULL COMMENT '通知内容',
     is_read BOOLEAN DEFAULT FALSE COMMENT '是否已读',
     send_status VARCHAR(20) DEFAULT 'pending' COMMENT '发送状态',
+    retry_count INT DEFAULT 0 COMMENT '重试次数',
+    last_retry_at TIMESTAMP COMMENT '最后重试时间',
     send_time TIMESTAMP COMMENT '发送时间',
     read_time TIMESTAMP COMMENT '阅读时间',
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    created_at TIMESTAMP,
     
-    FOREIGN KEY (user_id) REFERENCES users(id),
-    FOREIGN KEY (application_id) REFERENCES applications(id),
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    FOREIGN KEY (application_id) REFERENCES applications(id) ON DELETE SET NULL,
     INDEX idx_user_id (user_id),
     INDEX idx_is_read (is_read),
-    INDEX idx_send_status (send_status)
+    INDEX idx_send_status (send_status),
+    INDEX idx_user_read_time (user_id, is_read, created_at DESC)
 ) COMMENT='通知表';
 ```
 
@@ -493,22 +500,34 @@ CREATE TABLE system_configs (
 ```sql
 CREATE TABLE audit_logs (
     id BIGINT PRIMARY KEY AUTO_INCREMENT,
-    user_id BIGINT COMMENT '操作用户ID',
+    user_id BIGINT NOT NULL COMMENT '操作用户ID',
+    session_id VARCHAR(100) COMMENT '会话ID',
+    correlation_id VARCHAR(100) COMMENT '关联ID',
     action VARCHAR(50) NOT NULL COMMENT '操作类型',
     resource_type VARCHAR(50) NOT NULL COMMENT '资源类型',
     resource_id BIGINT COMMENT '资源ID',
+    
+    -- 变更追踪
+    field_name VARCHAR(100) COMMENT '修改字段',
+    old_value TEXT COMMENT '修改前值',
+    new_value TEXT COMMENT '修改后值',
+    
     ip_address VARCHAR(50) COMMENT 'IP地址',
     user_agent TEXT COMMENT '用户代理',
     request_data TEXT COMMENT '请求数据',
     response_status INT COMMENT '响应状态码',
     error_message TEXT COMMENT '错误信息',
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    created_at TIMESTAMP,
     
-    FOREIGN KEY (user_id) REFERENCES users(id),
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL,
     INDEX idx_user_id (user_id),
+    INDEX idx_session_id (session_id),
+    INDEX idx_correlation_id (correlation_id),
     INDEX idx_action (action),
     INDEX idx_resource_type (resource_type),
-    INDEX idx_created_at (created_at)
+    INDEX idx_created_at (created_at),
+    INDEX idx_user_action_time (user_id, action, created_at DESC),
+    INDEX idx_resource_time (resource_type, resource_id, created_at DESC)
 ) COMMENT='审计日志表';
 ```
 

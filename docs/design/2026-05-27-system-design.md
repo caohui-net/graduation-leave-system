@@ -250,6 +250,7 @@ graduation_leave/
 5. notifications - 通知表
 6. system_configs - 系统配置表
 7. audit_logs - 审计日志表
+8. applications_history - 申请历史表
 
 ### 2.2 用户表（users）
 
@@ -479,21 +480,23 @@ CREATE TABLE system_configs (
 ```
 
 **配置类型（config_type）：**
-- `database` - 数据库配置
 - `storage` - 文件存储配置
 - `wechat` - 微信配置
 - `notification` - 通知配置
 - `workflow` - 流程配置
 - `integration` - 外部系统集成配置
+- `security` - 安全配置
 
 **核心配置项：**
-- `db.type` - 数据库类型（mysql/postgresql/sqlserver/oracle）
-- `db.host` - 数据库主机
-- `db.port` - 数据库端口
-- `db.name` - 数据库名
 - `storage.type` - 存储类型（local/minio）
 - `wechat.appid` - 微信AppID
 - `wechat.secret` - 微信Secret（加密存储）
+- `dorm_integration_type` - 宿舍系统集成类型（api/database）
+- `dorm_api_url` - 宿舍系统API地址
+- `dorm_api_key` - 宿舍系统API密钥（加密存储）
+- `dorm_db_config` - 宿舍系统数据库配置（加密存储，JSON格式）
+- `audit_log_retention_days` - 审计日志保留天数（默认1095天/3年）
+- `encryption_key` - 配置加密密钥（存储在环境变量，不在数据库）
 
 ### 2.8 审计日志表（audit_logs）
 
@@ -549,7 +552,31 @@ CREATE TABLE audit_logs (
 - `attachment` - 附件
 - `config` - 配置
 
-### 2.9 数据库关系图
+### 2.9 申请历史表（applications_history）
+
+```sql
+CREATE TABLE applications_history (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    application_id BIGINT NOT NULL COMMENT '申请ID',
+    version INT NOT NULL COMMENT '版本号',
+    snapshot TEXT NOT NULL COMMENT '申请快照(JSON)',
+    changed_by BIGINT COMMENT '修改人ID',
+    change_reason VARCHAR(100) COMMENT '修改原因',
+    created_at TIMESTAMP,
+    
+    FOREIGN KEY (application_id) REFERENCES applications(id) ON DELETE CASCADE,
+    FOREIGN KEY (changed_by) REFERENCES users(id) ON DELETE SET NULL,
+    INDEX idx_application_id (application_id),
+    INDEX idx_version (application_id, version)
+) COMMENT='申请历史表';
+```
+
+**字段说明：**
+- `snapshot`: JSON格式存储申请完整数据
+- `change_reason`: 驳回重提、修改申请等
+- 每次申请状态变更或内容修改时创建历史记录
+
+### 2.10 数据库关系图
 
 **核心关系：**
 
@@ -561,9 +588,13 @@ users (用户表)
 
 applications (申请表)
   ├─N:1─→ users (申请人)
+  ├─N:1─→ users (辅导员)
+  ├─N:1─→ users (学工部管理员)
   ├─N:1─→ users (当前审批人)
   ├─1:N─→ approvals (一个申请多条审批记录)
   ├─1:N─→ attachments (一个申请多个附件)
+  ├─1:N─→ notifications (一个申请多条通知)
+  └─1:N─→ applications_history (一个申请多个历史版本)
   └─1:N─→ notifications (一个申请触发多个通知)
 
 approvals (审批记录表)

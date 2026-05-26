@@ -2014,6 +2014,347 @@ SECURE_CONTENT_TYPE_NOSNIFF = True
 - Token黑名单机制
 - 刷新Token单次使用
 
+**微信绑定安全（5项加固措施）：**
+
+1. **学生身份验证**
+```python
+def verify_student_identity(student_id, verification_method):
+    """新用户必须验证学生身份"""
+    if verification_method == 'sms':
+        # 短信验证到注册手机
+        send_sms_code(student_id)
+    elif verification_method == 'email':
+        # 邮件验证到学生邮箱
+        send_email_code(student_id)
+    elif verification_method == 'student_card':
+        # 上传学生证照片人工审核
+        require_manual_review(student_id)
+```
+
+2. **受限Token范围**
+```python
+def create_limited_token(user):
+    """不完整账户使用受限Token"""
+    return {
+        'user_id': user.id,
+        'scope': 'password_setup_only',
+        'exp': datetime.utcnow() + timedelta(hours=1)
+    }
+```
+
+3. **事务锁（防止竞态）**
+```python
+from django.db import transaction
+
+@transaction.atomic
+def bind_wechat_to_account(student_id, wechat_openid, password):
+    # 使用select_for_update锁定用户记录
+    user = User.objects.select_for_update().filter(
+        student_id=student_id
+    ).first()
+    
+    if not user:
+        raise ValidationError("学号不存在")
+    
+    if user.wechat_openid:
+        # 通用错误，防止学号枚举
+        raise ValidationError("绑定失败，请联系管理员")
+    
+    # 验证密码
+    if not user.check_password(password):
+        raise ValidationError("绑定失败，请联系管理员")
+    
+    # 绑定微信
+    user.wechat_openid = wechat_openid
+    user.wechat_bind_time = timezone.now()
+    user.save()
+```
+
+4. **审计日志**
+```python
+def log_wechat_bind(user_id, wechat_openid, ip_address, success):
+    """记录所有绑定操作"""
+    AuditLog.objects.create(
+        user_id=user_id,
+        action='wechat_bind',
+        resource_type='user',
+        ip_address=ip_address,
+        response_status=200 if success else 400,
+        error_message=None if success else "绑定失败"
+    )
+```
+
+5. **通用错误消息（防止学号枚举）**
+```python
+# 所有绑定失败统一返回
+raise ValidationError("绑定失败，请联系管理员")
+# 不暴露具体原因：学号不存在、已绑定其他微信、密码错误等
+```
+
+### 8.4 API限流
+
+**DRF Throttling配置：**
+```python
+REST_FRAMEWORK = {
+    'DEFAULT_THROTTLE_CLASSES': [
+        'rest_framework.throttling.AnonRateThrottle',
+        'rest_framework.throttling.UserRateThrottle',
+    ],
+    'DEFAULT_THROTTLE_RATES': {
+        'anon': '100/hour',
+        'user': '1000/hour',
+        'login': '5/minute',
+        'upload': '10/hour',
+    }
+}
+
+# 自定义限流类
+from rest_framework.throttling import UserRateThrottle
+
+class LoginRateThrottle(UserRateThrottle):
+    scope = 'login'
+
+class UploadRateThrottle(UserRateThrottle):
+    scope = 'upload'
+```
+
+**Nginx速率限制：**
+```nginx
+http {
+    # 定义限流区域
+    limit_req_zone $binary_remote_addr zone=login:10m rate=5r/m;
+    limit_req_zone $binary_remote_addr zone=upload:10m rate=10r/h;
+    limit_req_zone $binary_remote_addr zone=api:10m rate=1000r/h;
+    
+    server {
+        # 登录接口限流
+        location /api/v1/auth/login {
+            limit_req zone=login burst=2 nodelay;
+            proxy_pass http://django-app;
+        }
+        
+        # 上传接口限流
+        location /api/v1/applications/*/attachments {
+            limit_req zone=upload burst=3 nodelay;
+            proxy_pass http://django-app;
+        }
+        
+        # 普通API限流
+        location /api/ {
+            limit_req zone=api burst=50 nodelay;
+            proxy_pass http://django-app;
+        }
+    }
+}
+```
+
+**限流策略：**
+- 登录接口：5次/分钟
+- 上传接口：10次/小时
+- 普通API：1000次/小时
+- 匿名用户：100次/小时
+
+### 8.5 文件上传安全
+
+**MIME类型验证：**
+```python
+import magic
+
+def validate_file_type(file):
+    """使用python-magic验证真实MIME类型"""
+    mime = magic.from_buffer(file.read(1024), mime=True)
+    file.seek(0)
+    
+    allowed_types = [
+        'image/jpeg',
+        'image/png',
+        'application/pdf',
+        'application/msword',
+        'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+    ]
+    
+    if mime not in allowed_types:
+        raise ValidationError(f"不支持的文件类型：{mime}")
+```
+
+**文件名清理：**
+```python
+import os
+import re
+from django.utils.text import get_valid_filename
+
+def sanitize_filename(filename):
+    """清理文件名，防止路径遍历攻击"""
+    # 移除路径分隔符
+    filename = os.path.basename(filename)
+    # Django内置清理
+    filename = get_valid_filename(filename)
+    # 移除特殊字符
+    filename = re.sub(r'[^\w\s.-]', '', filename)
+    # 限制长度
+    name, ext = os.path.splitext(filename)
+    if len(name) > 100:
+        name = name[:100]
+    return f"{name}{ext}"
+```
+
+**文件哈希去重：**
+```python
+import hashlib
+
+def calculate_file_hash(file):
+    """计算SHA256哈希"""
+    sha256 = hashlib.sha256()
+    for chunk in file.chunks():
+        sha256.update(chunk)
+    return sha256.hexdigest()
+
+def check_duplicate(file_hash, application_id):
+    """检查文件是否已存在"""
+    existing = Attachment.objects.filter(
+        file_hash=file_hash,
+        application_id=application_id,
+        is_deleted=False
+    ).first()
+    return existing
+```
+
+**大小限制：**
+```python
+from django.core.exceptions import ValidationError
+
+def validate_file_size(file):
+    """限制文件大小为10MB"""
+    max_size = 10 * 1024 * 1024  # 10MB
+    if file.size > max_size:
+        raise ValidationError(f"文件大小超过{max_size / 1024 / 1024}MB限制")
+```
+
+**完整上传流程：**
+```python
+def handle_file_upload(file, application_id, attachment_type):
+    # 1. 验证大小
+    validate_file_size(file)
+    
+    # 2. 验证MIME类型
+    validate_file_type(file)
+    
+    # 3. 清理文件名
+    safe_filename = sanitize_filename(file.name)
+    
+    # 4. 计算哈希
+    file_hash = calculate_file_hash(file)
+    
+    # 5. 检查去重
+    existing = check_duplicate(file_hash, application_id)
+    if existing:
+        return {'existing_id': existing.id, 'file_hash': file_hash}
+    
+    # 6. 保存文件
+    # ...
+```
+
+### 8.6 审计日志
+
+**记录范围：**
+- 用户认证：登录、登出、密码修改、微信绑定
+- 申请操作：创建、修改、提交、删除
+- 审批操作：通过、驳回
+- 附件操作：上传、下载、删除
+- 配置操作：查看、修改系统配置
+- 权限操作：角色变更、权限授予
+
+**日志字段：**
+```python
+class AuditLog(models.Model):
+    user_id = models.BigIntegerField()
+    session_id = models.CharField(max_length=100)
+    correlation_id = models.CharField(max_length=100)
+    action = models.CharField(max_length=50)
+    resource_type = models.CharField(max_length=50)
+    resource_id = models.BigIntegerField(null=True)
+    
+    # 变更追踪
+    field_name = models.CharField(max_length=100, null=True)
+    old_value = models.TextField(null=True)
+    new_value = models.TextField(null=True)
+    
+    ip_address = models.CharField(max_length=50)
+    user_agent = models.TextField()
+    request_data = models.TextField(null=True)
+    response_status = models.IntegerField()
+    error_message = models.TextField(null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+```
+
+**保留策略：**
+- 默认保留3年（1095天）
+- 可通过system_configs配置：`audit_log_retention_days`
+- 定期清理任务：
+```python
+@celery.task
+def cleanup_old_audit_logs():
+    retention_days = SystemConfig.objects.get(
+        config_key='audit_log_retention_days'
+    ).config_value
+    
+    cutoff_date = timezone.now() - timedelta(days=int(retention_days))
+    AuditLog.objects.filter(created_at__lt=cutoff_date).delete()
+```
+
+**查询接口：**
+- 按用户查询：`/api/v1/audit-logs?user_id=1`
+- 按操作查询：`/api/v1/audit-logs?action=approve`
+- 按资源查询：`/api/v1/audit-logs?resource_type=application&resource_id=1`
+- 按时间范围：`/api/v1/audit-logs?start_date=2026-05-01&end_date=2026-05-31`
+
+### 8.7 加密配置
+
+**Fernet加密：**
+```python
+from cryptography.fernet import Fernet
+from django.conf import settings
+
+class SystemConfig(models.Model):
+    config_key = models.CharField(max_length=100, unique=True)
+    config_value = models.TextField()
+    is_encrypted = models.BooleanField(default=False)
+    
+    def get_decrypted_value(self):
+        """获取解密后的配置值"""
+        if not self.is_encrypted:
+            return self.config_value
+        
+        cipher = Fernet(settings.ENCRYPTION_KEY)
+        return cipher.decrypt(self.config_value.encode()).decode()
+    
+    def set_encrypted_value(self, value):
+        """设置加密配置值"""
+        cipher = Fernet(settings.ENCRYPTION_KEY)
+        self.config_value = cipher.encrypt(value.encode()).decode()
+        self.is_encrypted = True
+```
+
+**加密密钥管理：**
+```bash
+# 环境变量存储（不在数据库）
+export ENCRYPTION_KEY="your-fernet-key-here"
+
+# 生成新密钥
+python -c "from cryptography.fernet import Fernet; print(Fernet.generate_key().decode())"
+```
+
+**需要加密的配置：**
+- `wechat_secret` - 微信Secret
+- `dorm_api_key` - 宿舍系统API密钥
+- `dorm_db_config` - 宿舍系统数据库配置（JSON格式）
+- 其他第三方API密钥
+
+**访问控制：**
+- 只有admin角色可查看/编辑加密配置
+- 查看时显示`***encrypted***`，不显示明文
+- 所有访问记录到audit_logs
+
 ---
 
 ## 9. 性能优化设计

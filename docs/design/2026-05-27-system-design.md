@@ -1316,15 +1316,28 @@ def check_approval_timeout():
 ---
 ## 6. 外部系统集成设计
 
-### 6.1 宿舍管理系统对接
+### 6.1 集成策略（Round 6共识）
+
+**本项目数据库：** PostgreSQL（单一数据库）
+
+**外部系统对接：** 支持多种数据库（MySQL/SQL Server/Oracle）
+
+**集成方案优先级：**
+1. **API集成（推荐）**：REST API对接，松耦合
+2. **数据库直连（备选）**：SQLAlchemy只读访问，紧耦合
+3. **避免**：Django多数据库（不适合外部系统）
+
+### 6.2 宿舍管理系统对接
 
 **集成目的：**
 验证学生宿舍清退状态，确保离校手续真实完成。
 
+**方案1：API集成（推荐）**
+
 **接口协议：**
 ```
 HTTP REST API
-认证方式：API Key + Secret
+认证方式：API Key
 数据格式：JSON
 超时时间：5秒
 ```
@@ -1335,7 +1348,6 @@ HTTP REST API
 GET /api/dorm/clearance/status
 Headers:
   X-API-Key: {api_key}
-  X-API-Secret: {api_secret}
 Params:
   student_id: 2020001
 
@@ -1351,19 +1363,96 @@ Response:
 }
 ```
 
-### 6.2 接口实现
+**方案2：数据库直连（备选）**
 
-**插件化设计：**
+**使用场景：** 外部系统无API且允许数据库访问
+
+**安全要求：**
+- 只读数据库用户
+- 加密存储凭证（system_configs.is_encrypted=TRUE）
+- 查询超时5秒
+- 连接池最大5连接
+- 所有查询记录audit_logs
+
+### 6.3 接口实现
+
+**方案1：API客户端（推荐）**
 ```python
-# integration/base.py
-class ExternalSystemPlugin:
-    def verify_clearance(self, student_id):
-        raise NotImplementedError
-
-# integration/dorm_system.py
-class DormSystemPlugin(ExternalSystemPlugin):
+# apps/integrations/dorm_system.py
+class DormSystemClient:
     def __init__(self):
-        self.api_url = settings.DORM_SYSTEM_API_URL
+        config = SystemConfig.objects.get(config_key='dorm_api_url')
+        self.base_url = config.config_value
+        self.api_key = SystemConfig.objects.get(config_key='dorm_api_key').get_decrypted_value()
+    
+    def get_checkout_status(self, student_id):
+        response = requests.get(
+            f'{self.base_url}/api/students/{student_id}/checkout',
+            headers={'X-API-Key': self.api_key},
+            timeout=5
+        )
+        return response.json()
+```
+
+**方案2：SQLAlchemy数据库客户端（备选）**
+```python
+# apps/integrations/external_db.py
+from sqlalchemy import create_engine, text
+import json
+
+class ExternalDatabaseClient:
+    def __init__(self, system_name):
+        config = SystemConfig.objects.get(config_key=f'{system_name}_db_config')
+        db_config = json.loads(config.get_decrypted_value())
+        
+        # 构建连接字符串
+        if db_config['type'] == 'mysql':
+            conn_str = f"mysql+mysqldb://{db_config['user']}:{db_config['password']}@{db_config['host']}:{db_config['port']}/{db_config['database']}"
+        elif db_config['type'] == 'sqlserver':
+            conn_str = f"mssql+pyodbc://{db_config['user']}:{db_config['password']}@{db_config['host']}:{db_config['port']}/{db_config['database']}?driver=ODBC+Driver+17+for+SQL+Server"
+        elif db_config['type'] == 'oracle':
+            conn_str = f"oracle+cx_oracle://{db_config['user']}:{db_config['password']}@{db_config['host']}:{db_config['port']}/{db_config['service_name']}"
+        
+        self.engine = create_engine(conn_str, pool_pre_ping=True, pool_size=5, max_overflow=0)
+    
+    def query(self, sql, params=None):
+        with self.engine.connect() as conn:
+            result = conn.execute(text(sql), params or {})
+            return [dict(row) for row in result]
+
+# 使用示例
+class DormSystemClient:
+    def __init__(self):
+        integration_type = SystemConfig.objects.get(config_key='dorm_integration_type').config_value
+        if integration_type == 'api':
+            self.client = DormAPIClient()
+        else:
+            self.db = ExternalDatabaseClient('dorm_system')
+    
+    def get_checkout_status(self, student_id):
+        if hasattr(self, 'client'):
+            return self.client.get_checkout_status(student_id)
+        else:
+            sql = "SELECT is_checked_out, checkout_date FROM dorm_records WHERE student_id = :student_id"
+            result = self.db.query(sql, {'student_id': student_id})
+            return result[0] if result else None
+```
+
+### 6.4 配置存储
+
+**system_configs配置项：**
+```sql
+-- API集成配置
+INSERT INTO system_configs (config_key, config_value, config_type, is_encrypted) VALUES
+('dorm_integration_type', 'api', 'integration', FALSE),
+('dorm_api_url', 'https://dorm.university.edu/api', 'integration', FALSE),
+('dorm_api_key', 'encrypted_key_here', 'integration', TRUE);
+
+-- 数据库集成配置（备选）
+INSERT INTO system_configs (config_key, config_value, config_type, is_encrypted) VALUES
+('dorm_integration_type', 'database', 'integration', FALSE),
+('dorm_db_config', '{"type":"mysql","host":"10.0.1.50","port":3306,"database":"dorm","user":"readonly","password":"encrypted"}', 'integration', TRUE);
+```
         self.api_key = settings.DORM_SYSTEM_API_KEY
         self.api_secret = settings.DORM_SYSTEM_API_SECRET
     

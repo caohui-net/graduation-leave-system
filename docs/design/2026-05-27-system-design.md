@@ -705,14 +705,13 @@ Request:
   "code": "wx_auth_code"
 }
 
-Response:
+Response (已绑定账户):
 {
   "code": 200,
   "message": "登录成功",
   "data": {
     "access_token": "eyJhbGc...",
     "refresh_token": "eyJhbGc...",
-    "is_new_user": false,
     "user": {
       "id": 1,
       "student_id": "2020001",
@@ -721,9 +720,95 @@ Response:
     }
   }
 }
+
+Response (未绑定，需要绑定):
+{
+  "code": 200,
+  "message": "需要绑定学号",
+  "data": {
+    "requires_binding": true,
+    "wechat_openid": "oXXXX",
+    "temp_token": "eyJhbGc..."
+  }
+}
+
+Response (新用户，需要设置密码):
+{
+  "code": 200,
+  "message": "需要完成注册",
+  "data": {
+    "requires_setup": true,
+    "limited_token": "eyJhbGc...",
+    "scope": "password_setup_only"
+  }
+}
 ```
 
-**3. 刷新Token**
+**3. 微信绑定到已有账户**
+```
+POST /api/v1/auth/wechat/bind
+Content-Type: application/json
+Authorization: Bearer {temp_token}
+
+Request:
+{
+  "student_id": "2020001",
+  "password": "123456"
+}
+
+Response (成功):
+{
+  "code": 200,
+  "message": "绑定成功",
+  "data": {
+    "access_token": "eyJhbGc...",
+    "refresh_token": "eyJhbGc...",
+    "user": {
+      "id": 1,
+      "student_id": "2020001",
+      "name": "张三",
+      "wechat_openid": "oXXXX"
+    }
+  }
+}
+
+Response (失败):
+{
+  "code": 400,
+  "message": "绑定失败，请联系管理员"
+}
+```
+
+**4. 设置密码（新用户）**
+```
+POST /api/v1/auth/password/setup
+Content-Type: application/json
+Authorization: Bearer {limited_token}
+
+Request:
+{
+  "student_id": "2020001",
+  "password": "NewPass123",
+  "verification_code": "123456"
+}
+
+Response:
+{
+  "code": 200,
+  "message": "密码设置成功",
+  "data": {
+    "access_token": "eyJhbGc...",
+    "refresh_token": "eyJhbGc...",
+    "user": {
+      "id": 1,
+      "student_id": "2020001",
+      "name": "张三"
+    }
+  }
+}
+```
+
+**5. 刷新Token**
 ```
 POST /api/v1/auth/refresh
 Authorization: Bearer {refresh_token}
@@ -739,7 +824,7 @@ Response:
 }
 ```
 
-**4. 登出**
+**6. 登出**
 ```
 POST /api/v1/auth/logout
 Authorization: Bearer {access_token}
@@ -767,13 +852,13 @@ Request:
 
 Response:
 {
-  "code": 200,
+  "code": 201,
   "message": "创建成功",
   "data": {
     "id": 1,
-    "application_no": "LX202605270000001",
     "status": "draft",
-    "planned_leave_date": "2026-06-15"
+    "planned_leave_date": "2026-06-15",
+    "created_at": "2026-05-27T10:00:00Z"
   }
 }
 ```
@@ -911,16 +996,27 @@ Authorization: Bearer {access_token}
 
 Request:
 {
-  "opinion": "材料齐全，同意离校"
+  "opinion": "材料齐全，同意离校",
+  "version": 0
 }
 
-Response:
+Response (成功):
 {
   "code": 200,
   "message": "审批成功",
   "data": {
     "status": "pending_admin",
-    "next_approver": "学工部"
+    "next_approver": "学工部",
+    "version": 1
+  }
+}
+
+Response (版本冲突):
+{
+  "code": 409,
+  "message": "申请已被修改，请刷新后重试",
+  "data": {
+    "current_version": 2
   }
 }
 ```
@@ -932,15 +1028,26 @@ Authorization: Bearer {access_token}
 
 Request:
 {
-  "opinion": "宿舍清退证明不完整，请重新提交"
+  "opinion": "宿舍清退证明不完整，请重新提交",
+  "version": 0
 }
 
-Response:
+Response (成功):
 {
   "code": 200,
   "message": "已驳回",
   "data": {
-    "status": "rejected"
+    "status": "rejected",
+    "version": 1
+  }
+}
+
+Response (版本冲突):
+{
+  "code": 409,
+  "message": "申请已被修改，请刷新后重试",
+  "data": {
+    "current_version": 2
   }
 }
 ```
@@ -957,18 +1064,48 @@ Request:
 - file: (binary)
 - attachment_type: dorm_clearance
 
-Response:
+Response (成功):
 {
-  "code": 200,
+  "code": 201,
   "message": "上传成功",
   "data": {
     "id": 1,
     "file_name": "宿舍清退证明.jpg",
     "file_size": 1024000,
+    "file_hash": "a3b2c1d4e5f6...",
     "attachment_type": "dorm_clearance",
     "upload_time": "2026-05-27T10:00:00Z"
   }
 }
+
+Response (文件过大):
+{
+  "code": 400,
+  "message": "文件大小超过10MB限制"
+}
+
+Response (文件类型不支持):
+{
+  "code": 400,
+  "message": "不支持的文件类型，仅支持jpg、png、pdf、doc、docx"
+}
+
+Response (文件已存在):
+{
+  "code": 409,
+  "message": "文件已存在",
+  "data": {
+    "existing_id": 123,
+    "file_hash": "a3b2c1d4e5f6..."
+  }
+}
+
+安全措施：
+- MIME类型验证（python-magic）
+- 文件名清理（防止路径遍历）
+- SHA256哈希去重
+- 大小限制：10MB
+- 支持格式：jpg、png、pdf、doc、docx
 ```
 
 **2. 下载附件**
@@ -986,7 +1123,7 @@ Authorization: Bearer {access_token}
 
 Response:
 {
-  "code": 200,
+  "code": 204,
   "message": "删除成功"
 }
 ```
@@ -1032,7 +1169,7 @@ Response:
 
 **1. 获取配置**
 ```
-GET /api/v1/configs?config_type=database
+GET /api/v1/configs?config_type=integration
 Authorization: Bearer {admin_token}
 
 Response:
@@ -1040,9 +1177,20 @@ Response:
   "code": 200,
   "data": [
     {
-      "config_key": "db.type",
-      "config_value": "mysql",
-      "description": "数据库类型"
+      "config_key": "dorm_integration_type",
+      "config_value": "api",
+      "description": "宿舍系统集成类型（api/database）"
+    },
+    {
+      "config_key": "dorm_api_url",
+      "config_value": "https://dorm.university.edu/api",
+      "description": "宿舍系统API地址"
+    },
+    {
+      "config_key": "dorm_api_key",
+      "config_value": "***encrypted***",
+      "description": "宿舍系统API密钥（加密存储）",
+      "is_encrypted": true
     }
   ]
 }
@@ -1055,7 +1203,7 @@ Authorization: Bearer {admin_token}
 
 Request:
 {
-  "config_value": "postgresql"
+  "config_value": "https://dorm.new-university.edu/api"
 }
 
 Response:
@@ -1064,6 +1212,14 @@ Response:
   "message": "更新成功"
 }
 ```
+
+**配置类型说明：**
+- `storage` - 文件存储配置
+- `wechat` - 微信配置
+- `notification` - 通知配置
+- `workflow` - 流程配置
+- `integration` - 外部系统集成配置（宿舍系统等）
+- `security` - 安全配置
 
 ---
 ## 4. 认证授权设计

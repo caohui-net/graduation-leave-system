@@ -235,11 +235,12 @@ graduation_leave/
 ### 2.1 数据库概述
 
 **设计原则：**
-- 支持多数据库（MySQL/PostgreSQL/SQL Server/Oracle）
+- 本项目使用PostgreSQL数据库
 - 使用 Django ORM 抽象层
 - 遵循第三范式（3NF）
 - 预留扩展字段
-- 软删除设计（保留历史数据）
+- 软删除设计（Django应用层过滤 + PROTECT外键）
+- 外部系统对接支持多种数据库（API优先，SQLAlchemy备选）
 
 **核心表：**
 1. users - 用户表
@@ -259,6 +260,16 @@ CREATE TABLE users (
     name VARCHAR(50) NOT NULL COMMENT '姓名',
     password_hash VARCHAR(255) COMMENT '密码哈希',
     wechat_openid VARCHAR(100) UNIQUE COMMENT '微信OpenID',
+    
+    -- 认证安全字段
+    password_setup_required BOOLEAN DEFAULT FALSE COMMENT '需要设置密码',
+    account_locked BOOLEAN DEFAULT FALSE COMMENT '账户锁定',
+    failed_login_attempts INT DEFAULT 0 COMMENT '失败登录次数',
+    last_login_at TIMESTAMP COMMENT '最后登录时间',
+    last_login_ip VARCHAR(50) COMMENT '最后登录IP',
+    wechat_bind_time TIMESTAMP COMMENT '微信绑定时间',
+    password_changed_at TIMESTAMP COMMENT '密码修改时间',
+    
     phone VARCHAR(20) COMMENT '手机号',
     email VARCHAR(100) COMMENT '邮箱',
     role VARCHAR(20) NOT NULL COMMENT '角色: student/counselor/admin',
@@ -268,12 +279,17 @@ CREATE TABLE users (
     grade INT COMMENT '年级',
     is_active BOOLEAN DEFAULT TRUE COMMENT '是否激活',
     is_deleted BOOLEAN DEFAULT FALSE COMMENT '是否删除',
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    created_at TIMESTAMP,
+    updated_at TIMESTAMP,
     
     INDEX idx_student_id (student_id),
     INDEX idx_role (role),
-    INDEX idx_wechat_openid (wechat_openid)
+    INDEX idx_wechat_openid (wechat_openid),
+    INDEX idx_account_locked (account_locked),
+    
+    CONSTRAINT chk_auth_method CHECK (
+        (password_hash IS NOT NULL) OR (wechat_openid IS NOT NULL)
+    )
 ) COMMENT='用户表';
 ```
 
@@ -289,6 +305,11 @@ CREATE TABLE applications (
     id BIGINT PRIMARY KEY AUTO_INCREMENT,
     application_no VARCHAR(50) UNIQUE NOT NULL COMMENT '申请编号',
     student_id BIGINT NOT NULL COMMENT '学生ID',
+    
+    -- 固定审批人追踪
+    counselor_id BIGINT COMMENT '辅导员ID',
+    admin_id BIGINT COMMENT '学工部管理员ID',
+    
     planned_leave_date DATE NOT NULL COMMENT '计划离校日期',
     status VARCHAR(20) NOT NULL COMMENT '状态',
     current_approver_id BIGINT COMMENT '当前审批人ID',
@@ -296,16 +317,32 @@ CREATE TABLE applications (
     complete_time TIMESTAMP COMMENT '完成时间',
     reject_reason TEXT COMMENT '驳回原因',
     remarks TEXT COMMENT '备注',
-    is_deleted BOOLEAN DEFAULT FALSE,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     
-    FOREIGN KEY (student_id) REFERENCES users(id),
-    FOREIGN KEY (current_approver_id) REFERENCES users(id),
+    -- 凭证追踪
+    certificate_url VARCHAR(500) COMMENT '离校凭证URL',
+    certificate_generated_at TIMESTAMP COMMENT '凭证生成时间',
+    
+    -- 乐观锁
+    version INT DEFAULT 0 COMMENT '版本号',
+    
+    is_deleted BOOLEAN DEFAULT FALSE,
+    created_at TIMESTAMP,
+    updated_at TIMESTAMP,
+    
+    FOREIGN KEY (student_id) REFERENCES users(id) ON DELETE PROTECT,
+    FOREIGN KEY (counselor_id) REFERENCES users(id) ON DELETE SET NULL,
+    FOREIGN KEY (admin_id) REFERENCES users(id) ON DELETE SET NULL,
+    FOREIGN KEY (current_approver_id) REFERENCES users(id) ON DELETE SET NULL,
+    
     INDEX idx_student_id (student_id),
+    INDEX idx_counselor_id (counselor_id),
+    INDEX idx_admin_id (admin_id),
     INDEX idx_status (status),
     INDEX idx_application_no (application_no),
-    INDEX idx_planned_leave_date (planned_leave_date)
+    INDEX idx_planned_leave_date (planned_leave_date),
+    INDEX idx_approver_status (current_approver_id, status, submit_time),
+    INDEX idx_student_status (student_id, status, created_at),
+    INDEX idx_status_deleted (status, is_deleted, submit_time)
 ) COMMENT='离校申请表';
 ```
 

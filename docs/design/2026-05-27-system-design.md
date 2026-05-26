@@ -1087,11 +1087,23 @@ Response:
 学号密码登录：
 用户输入学号+密码 → 后端验证 → 生成JWT Token → 返回Token
 
-微信登录：
+微信登录（安全增强）：
 用户授权 → 获取code → 后端换取openid → 
 ├─ 已绑定：生成Token
-└─ 未绑定：要求输入学号绑定 → 生成Token
+└─ 未绑定：
+   ├─ 学号已存在：
+   │  ├─ 已绑定其他微信：返回通用错误（防止枚举）
+   │  └─ 未绑定微信：要求密码验证 → 事务锁绑定 → 审计日志 → 生成Token
+   └─ 学号不存在（新用户）：
+      └─ 创建账户 → 强制设置密码 → 学生身份验证 → 生成受限Token
 ```
+
+**安全增强（Round 1-3共识）：**
+1. **学生身份验证**：微信新用户必须验证学生身份（短信/邮件/学生证照片）
+2. **受限Token**：未完成密码设置的账户使用受限Token（scope: password_setup_only）
+3. **事务锁**：微信绑定操作使用数据库锁（select_for_update）防止竞态
+4. **审计日志**：所有绑定操作记录到audit_logs（action: wechat_bind）
+5. **通用错误**：绑定失败统一返回"绑定失败，请联系管理员"（防止学号枚举）
 
 ### 4.2 JWT Token设计
 
@@ -1116,6 +1128,7 @@ Response:
 **Token类型：**
 - **Access Token**：有效期7天，用于API访问
 - **Refresh Token**：有效期30天，用于刷新Access Token
+- **Limited Token**：有效期1小时，仅用于密码设置（scope: password_setup_only）
 
 **Token存储：**
 - 客户端：存储在本地安全存储（iOS Keychain/Android KeyStore）

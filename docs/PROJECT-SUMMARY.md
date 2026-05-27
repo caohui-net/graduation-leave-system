@@ -91,6 +91,14 @@
 - ✓ 达成最终共识（文档22-25）
 - ✓ 修正CSV模板文件扩展名（.xlsx → .csv）
 
+**Round 3 - 用户文档审查（2026-05-27完成）：**
+- ✓ Codex审查用户文档发现9个问题
+- ✓ P0修复：初始密码改为学号+强制修改（安全风险）
+- ✓ P1修复：HTTPS改为双模式（HTTP内网+HTTPS公网）、删除id_card参数
+- ✓ P2修复：删除Postman引用、明确认证方式、统一审批时限、修改辅导员权限范围、统一性能指标
+- ✓ 达成HTTPS/SSL证书问题共识（支持双模式）
+- ✓ 达成最终共识（文档26-28）
+
 **Phase 1 实施（进行中）：**
 - ✓ 创建项目目录结构（backend/、frontend/、docker/）
 - ✓ 配置.gitignore（Python、Django、Docker、Node、IDE）

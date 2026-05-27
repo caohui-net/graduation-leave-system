@@ -89,6 +89,7 @@
 - ✓ 修正Excel示例表格列错位
 - ✓ 统一系统设计文档字段命名（is_checked_out、checkout_date、dorm_building/dorm_room）
 - ✓ 达成最终共识（文档22-25）
+- ✓ 修正CSV模板文件扩展名（.xlsx → .csv）
 
 **Phase 1 实施（进行中）：**
 - ✓ 创建项目目录结构（backend/、frontend/、docker/）

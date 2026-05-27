@@ -72,6 +72,16 @@
 - ✓ 批次4：第8章安全设计（限流、上传安全、审计日志）
 - ✓ 批次5：第9-10章性能测试（索引、连接池、TDD、覆盖率）
 
+**Round 3 - P0修改（2026-05-27完成）：**
+- ✓ SQL语法标注（添加概念示例说明）
+- ✓ 删除多数据库残留引用（PROJECT-SUMMARY、实施计划）
+- ✓ 修正外键约束冲突（6处ON DELETE SET NULL改为PROTECT）
+- ✓ 清理第6章合并残留
+- ✓ 统一工作日时限口径
+- ✓ 简化微信绑定安全措施（5项→2项核心+3项可选）
+- ✓ 整理requirements依赖（删除多数据库驱动，添加缺失依赖）
+- ✓ 删除SQLAlchemy备选方案（第6章）
+
 **Phase 1 实施（进行中）：**
 - ✓ 创建项目目录结构（backend/、frontend/、docker/）
 - ✓ 配置.gitignore（Python、Django、Docker、Node、IDE）
@@ -150,7 +160,8 @@
 
 ### 关键特性
 
-- 支持多数据库（MySQL/PostgreSQL/SQL Server/Oracle）
+- 本项目使用PostgreSQL数据库
+- 外部系统通过API对接（支持MySQL/SQL Server/Oracle等异构系统）
 - 软删除设计
 - 完整的索引策略
 - 审计日志记录

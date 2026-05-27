@@ -240,7 +240,7 @@ graduation_leave/
 - 遵循第三范式（3NF）
 - 预留扩展字段
 - 软删除设计（Django应用层过滤 + PROTECT外键）
-- 外部系统对接支持多种数据库（API优先，SQLAlchemy备选）
+- 外部系统通过API对接（支持MySQL/SQL Server/Oracle等异构系统）
 
 **核心表：**
 1. users - 用户表
@@ -253,6 +253,8 @@ graduation_leave/
 8. applications_history - 申请历史表
 
 ### 2.2 用户表（users）
+
+**说明：** 以下SQL为概念示例，使用类MySQL语法便于阅读。实际实现以Django Model为准，Django ORM会自动生成符合PostgreSQL的DDL语句。
 
 ```sql
 CREATE TABLE users (
@@ -331,9 +333,9 @@ CREATE TABLE applications (
     updated_at TIMESTAMP,
     
     FOREIGN KEY (student_id) REFERENCES users(id) ON DELETE PROTECT,
-    FOREIGN KEY (counselor_id) REFERENCES users(id) ON DELETE SET NULL,
-    FOREIGN KEY (admin_id) REFERENCES users(id) ON DELETE SET NULL,
-    FOREIGN KEY (current_approver_id) REFERENCES users(id) ON DELETE SET NULL,
+    FOREIGN KEY (counselor_id) REFERENCES users(id) ON DELETE PROTECT,
+    FOREIGN KEY (admin_id) REFERENCES users(id) ON DELETE PROTECT,
+    FOREIGN KEY (current_approver_id) REFERENCES users(id) ON DELETE PROTECT,
     
     INDEX idx_student_id (student_id),
     INDEX idx_counselor_id (counselor_id),
@@ -373,7 +375,7 @@ CREATE TABLE approvals (
     created_at TIMESTAMP,
     
     FOREIGN KEY (application_id) REFERENCES applications(id) ON DELETE CASCADE,
-    FOREIGN KEY (approver_id) REFERENCES users(id) ON DELETE SET NULL,
+    FOREIGN KEY (approver_id) REFERENCES users(id) ON DELETE PROTECT,
     INDEX idx_application_id (application_id),
     INDEX idx_approver_id (approver_id),
     INDEX idx_approval_time (approval_time),
@@ -440,7 +442,7 @@ CREATE TABLE notifications (
     created_at TIMESTAMP,
     
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
-    FOREIGN KEY (application_id) REFERENCES applications(id) ON DELETE SET NULL,
+    FOREIGN KEY (application_id) REFERENCES applications(id) ON DELETE PROTECT,
     INDEX idx_user_id (user_id),
     INDEX idx_is_read (is_read),
     INDEX idx_send_status (send_status),
@@ -522,7 +524,7 @@ CREATE TABLE audit_logs (
     error_message TEXT COMMENT '错误信息',
     created_at TIMESTAMP,
     
-    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE PROTECT,
     INDEX idx_user_id (user_id),
     INDEX idx_session_id (session_id),
     INDEX idx_correlation_id (correlation_id),
@@ -554,27 +556,32 @@ CREATE TABLE audit_logs (
 
 ### 2.9 申请历史表（applications_history）
 
+**说明：** 只在关键节点创建快照，不记录每次变更。日常变更追踪使用audit_logs表。
+
 ```sql
 CREATE TABLE applications_history (
     id BIGINT PRIMARY KEY AUTO_INCREMENT,
     application_id BIGINT NOT NULL COMMENT '申请ID',
     version INT NOT NULL COMMENT '版本号',
-    snapshot TEXT NOT NULL COMMENT '申请快照(JSON)',
+    snapshot JSONB NOT NULL COMMENT '申请快照(JSONB格式)',
+    milestone VARCHAR(50) NOT NULL COMMENT '里程碑: submitted/approved/rejected',
     changed_by BIGINT COMMENT '修改人ID',
-    change_reason VARCHAR(100) COMMENT '修改原因',
     created_at TIMESTAMP,
     
     FOREIGN KEY (application_id) REFERENCES applications(id) ON DELETE CASCADE,
-    FOREIGN KEY (changed_by) REFERENCES users(id) ON DELETE SET NULL,
+    FOREIGN KEY (changed_by) REFERENCES users(id) ON DELETE PROTECT,
     INDEX idx_application_id (application_id),
-    INDEX idx_version (application_id, version)
+    INDEX idx_application_milestone (application_id, milestone)
 ) COMMENT='申请历史表';
 ```
 
 **字段说明：**
-- `snapshot`: JSON格式存储申请完整数据
-- `change_reason`: 驳回重提、修改申请等
-- 每次申请状态变更或内容修改时创建历史记录
+- `snapshot`: JSONB格式存储申请完整数据（便于查询）
+- `milestone`: 关键节点标记
+  - `submitted`: 提交申请时
+  - `approved`: 最终通过时
+  - `rejected`: 驳回时
+- 只在上述3个关键节点创建快照，减少存储冗余
 
 ### 2.10 数据库关系图
 
@@ -639,7 +646,7 @@ system_configs (系统配置表)
 
 **认证方式：**
 - JWT Token认证
-- Token有效期：7天
+- Access Token有效期：1小时，Refresh Token有效期：7天
 - Refresh Token机制
 
 **响应格式：**
@@ -1254,12 +1261,18 @@ Response:
       └─ 创建账户 → 强制设置密码 → 学生身份验证 → 生成受限Token
 ```
 
-**安全增强（Round 1-3共识）：**
-1. **学生身份验证**：微信新用户必须验证学生身份（短信/邮件/学生证照片）
-2. **受限Token**：未完成密码设置的账户使用受限Token（scope: password_setup_only）
-3. **事务锁**：微信绑定操作使用数据库锁（select_for_update）防止竞态
-4. **审计日志**：所有绑定操作记录到audit_logs（action: wechat_bind）
-5. **通用错误**：绑定失败统一返回"绑定失败，请联系管理员"（防止学号枚举）
+**安全措施（简化版）：**
+
+**Phase 1核心措施（2项）：**
+1. **密码验证**：微信绑定已有账户时需要密码验证
+2. **审计日志**：所有绑定操作记录到audit_logs（action: wechat_bind）
+
+**Phase 2可选措施（按需添加）：**
+3. ⏸ **学生身份验证**：如发现冒用问题，引入短信/邮件/学生证验证
+4. ⏸ **受限Token**：如需更细粒度权限控制，引入scope限制
+5. ⏸ **事务锁**：如监控到并发冲突，引入select_for_update
+
+**理由：** 本系统为内部系统，用户由管理员导入，学号枚举风险低。Phase 1采用核心措施，根据实际需求渐进式引入其他措施。
 
 ### 4.2 JWT Token设计
 
@@ -1282,8 +1295,9 @@ Response:
 ```
 
 **Token类型：**
-- **Access Token**：有效期7天，用于API访问
-- **Refresh Token**：有效期30天，用于刷新Access Token
+- **Access Token**：有效期1小时，用于API访问
+- **Refresh Token**：有效期7天，用于刷新Access Token
+- **客户端自动刷新**：Token过期前自动刷新
 - **Limited Token**：有效期1小时，仅用于密码设置（scope: password_setup_only）
 
 **Token存储：**
@@ -1584,10 +1598,9 @@ def calculate_due_time(start_time, work_hours=8):
 
 **外部系统对接：** 支持多种数据库（MySQL/SQL Server/Oracle）
 
-**集成方案优先级：**
-1. **API集成（推荐）**：REST API对接，松耦合
-2. **数据库直连（备选）**：SQLAlchemy只读访问，紧耦合
-3. **避免**：Django多数据库（不适合外部系统）
+**集成方案：**
+1. **API集成（唯一方案）**：REST API对接，松耦合
+2. **降级策略**：外部系统不可用时，允许手动上传证明文件
 
 ### 6.2 宿舍管理系统对接
 
@@ -1625,17 +1638,6 @@ Response:
 }
 ```
 
-**方案2：数据库直连（备选）**
-
-**使用场景：** 外部系统无API且允许数据库访问
-
-**安全要求：**
-- 只读数据库用户
-- 加密存储凭证（system_configs.is_encrypted=TRUE）
-- 查询超时5秒
-- 连接池最大5连接
-- 所有查询记录audit_logs
-
 ### 6.3 接口实现
 
 **方案1：API客户端（推荐）**
@@ -1656,50 +1658,6 @@ class DormSystemClient:
         return response.json()
 ```
 
-**方案2：SQLAlchemy数据库客户端（备选）**
-```python
-# apps/integrations/external_db.py
-from sqlalchemy import create_engine, text
-import json
-
-class ExternalDatabaseClient:
-    def __init__(self, system_name):
-        config = SystemConfig.objects.get(config_key=f'{system_name}_db_config')
-        db_config = json.loads(config.get_decrypted_value())
-        
-        # 构建连接字符串
-        if db_config['type'] == 'mysql':
-            conn_str = f"mysql+mysqldb://{db_config['user']}:{db_config['password']}@{db_config['host']}:{db_config['port']}/{db_config['database']}"
-        elif db_config['type'] == 'sqlserver':
-            conn_str = f"mssql+pyodbc://{db_config['user']}:{db_config['password']}@{db_config['host']}:{db_config['port']}/{db_config['database']}?driver=ODBC+Driver+17+for+SQL+Server"
-        elif db_config['type'] == 'oracle':
-            conn_str = f"oracle+cx_oracle://{db_config['user']}:{db_config['password']}@{db_config['host']}:{db_config['port']}/{db_config['service_name']}"
-        
-        self.engine = create_engine(conn_str, pool_pre_ping=True, pool_size=5, max_overflow=0)
-    
-    def query(self, sql, params=None):
-        with self.engine.connect() as conn:
-            result = conn.execute(text(sql), params or {})
-            return [dict(row) for row in result]
-
-# 使用示例
-class DormSystemClient:
-    def __init__(self):
-        integration_type = SystemConfig.objects.get(config_key='dorm_integration_type').config_value
-        if integration_type == 'api':
-            self.client = DormAPIClient()
-        else:
-            self.db = ExternalDatabaseClient('dorm_system')
-    
-    def get_checkout_status(self, student_id):
-        if hasattr(self, 'client'):
-            return self.client.get_checkout_status(student_id)
-        else:
-            sql = "SELECT is_checked_out, checkout_date FROM dorm_records WHERE student_id = :student_id"
-            result = self.db.query(sql, {'student_id': student_id})
-            return result[0] if result else None
-```
-
 ### 6.4 配置存储
 
 **system_configs配置项：**
@@ -1709,11 +1667,6 @@ INSERT INTO system_configs (config_key, config_value, config_type, is_encrypted)
 ('dorm_integration_type', 'api', 'integration', FALSE),
 ('dorm_api_url', 'https://dorm.university.edu/api', 'integration', FALSE),
 ('dorm_api_key', 'encrypted_key_here', 'integration', TRUE);
-
--- 数据库集成配置（备选）
-INSERT INTO system_configs (config_key, config_value, config_type, is_encrypted) VALUES
-('dorm_integration_type', 'database', 'integration', FALSE),
-('dorm_db_config', '{"type":"mysql","host":"10.0.1.50","port":3306,"database":"dorm","user":"readonly","password":"encrypted"}', 'integration', TRUE);
 ```
         self.api_key = settings.DORM_SYSTEM_API_KEY
         self.api_secret = settings.DORM_SYSTEM_API_SECRET
@@ -1831,7 +1784,7 @@ services:
 
   django-app:
     build: .
-    command: gunicorn config.wsgi:application --bind 0.0.0.0:8000 --workers 4
+    command: gunicorn config.wsgi:application --bind 0.0.0.0:8000 --workers 9 --max-requests 1000 --timeout 30
     volumes:
       - ./uploads:/app/uploads
       - ./logs:/app/logs
@@ -2014,46 +1967,59 @@ SECURE_CONTENT_TYPE_NOSNIFF = True
 - Token黑名单机制
 - 刷新Token单次使用
 
-**微信绑定安全（5项加固措施）：**
+**微信绑定安全措施：**
 
-1. **学生身份验证**
+**Phase 1实施（2项核心措施）：**
+
+1. **密码验证**
 ```python
-def verify_student_identity(student_id, verification_method):
-    """新用户必须验证学生身份"""
-    if verification_method == 'sms':
-        # 短信验证到注册手机
-        send_sms_code(student_id)
-    elif verification_method == 'email':
-        # 邮件验证到学生邮箱
-        send_email_code(student_id)
-    elif verification_method == 'student_card':
-        # 上传学生证照片人工审核
-        require_manual_review(student_id)
-```
-
-2. **受限Token范围**
-```python
-def create_limited_token(user):
-    """不完整账户使用受限Token"""
-    return {
-        'user_id': user.id,
-        'scope': 'password_setup_only',
-        'exp': datetime.utcnow() + timedelta(hours=1)
-    }
-```
-
-3. **事务锁（防止竞态）**
-```python
-from django.db import transaction
-
 @transaction.atomic
 def bind_wechat_to_account(student_id, wechat_openid, password):
-    # 使用select_for_update锁定用户记录
-    user = User.objects.select_for_update().filter(
-        student_id=student_id
-    ).first()
+    """微信绑定已有账户"""
+    user = User.objects.filter(student_id=student_id).first()
     
-    if not user:
+    if not user or not user.check_password(password):
+        # 记录失败审计日志
+        AuditLog.objects.create(
+            action='wechat_bind_failed',
+            request_data={'student_id': student_id}
+        )
+        raise ValidationError("绑定失败，请检查学号和密码")
+    
+    if user.wechat_openid:
+        raise ValidationError("该学号已绑定其他微信")
+    
+    # 绑定
+    user.wechat_openid = wechat_openid
+    user.wechat_bind_time = timezone.now()
+    user.save()
+    
+    # 记录成功审计日志
+    AuditLog.objects.create(
+        user_id=user.id,
+        action='wechat_bind_success',
+        resource_type='user'
+    )
+```
+
+2. **审计日志**
+```python
+def log_wechat_bind(user_id, wechat_openid, ip_address, success):
+    """记录所有绑定操作"""
+    AuditLog.objects.create(
+        user_id=user_id,
+        action='wechat_bind',
+        resource_type='user',
+        ip_address=ip_address,
+        response_status=200 if success else 400,
+        error_message=None if success else "绑定失败"
+    )
+```
+
+**Phase 2可选措施（按需添加）：**
+- ⏸ 学生身份验证（短信/邮件/学生证）
+- ⏸ 受限Token（scope: password_setup_only）
+- ⏸ 事务锁（select_for_update防止竞态）
         raise ValidationError("学号不存在")
     
     if user.wechat_openid:
@@ -2775,7 +2741,10 @@ class GraduationLeaveUser(HttpUser):
 ```
 
 **性能基准：**
-- 单实例（Gunicorn 4 workers）：500并发用户
+- 单实例（Gunicorn 9 workers）：
+  - 在线用户：500人
+  - 并发请求：50个（10%活跃）
+  - 峰值QPS：100 QPS
 - 如需更高并发，考虑水平扩展或优化瓶颈
 
 ---

@@ -14,8 +14,7 @@
 - 辅导员和学工部两级审批
 - 附件上传和管理
 - 微信通知推送
-- 宿舍管理系统对接
-- 多数据库支持
+- 宿舍管理系统对接（API集成）
 - Docker容器化部署
 
 ## 范围
@@ -186,7 +185,7 @@ graduation-leave-system/
    - 安装Django 4.2
    - 创建Django项目
    - 配置settings分层（base/dev/prod）
-   - 配置数据库连接（支持多数据库）
+   - 配置PostgreSQL数据库连接
 
 3. **配置Docker环境**
    - 编写Dockerfile（Django应用）

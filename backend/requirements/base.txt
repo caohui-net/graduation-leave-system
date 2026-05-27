@@ -7,9 +7,6 @@ django-filter==23.5
 
 # Database
 psycopg2-binary==2.9.9
-mysqlclient==2.2.4
-cx-Oracle==8.3.0
-pyodbc==5.1.0
 
 # State Machine
 django-fsm==2.8.1
@@ -33,3 +30,18 @@ python-decouple==3.8
 # Utils
 python-dateutil==2.9.0
 pytz==2024.1
+
+# File Processing
+python-magic==0.4.27
+
+# Work Day Calculation
+chinese-calendar==1.9.0
+
+# HTTP Client
+requests==2.31.0
+
+# Encryption
+cryptography==42.0.5
+
+# Cache
+django-redis==5.4.0

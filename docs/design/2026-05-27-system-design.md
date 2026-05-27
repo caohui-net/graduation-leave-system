@@ -1633,10 +1633,12 @@ Response:
     "student_id": "2020001",
     "name": "张三",
     "class_name": "计算机2020级1班",
-    "is_cleared": true,
-    "clearance_date": "2026-05-25",
-    "room_no": "A101",
-    "bed_number": "1"
+    "dorm_building": "1号楼",
+    "dorm_room": "101",
+    "bed_number": "1",
+    "is_checked_out": true,
+    "checkout_date": "2026-05-25",
+    "checkout_status": "completed"
   }
 }
 ```

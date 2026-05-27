@@ -82,6 +82,14 @@
 - ✓ 整理requirements依赖（删除多数据库驱动，添加缺失依赖）
 - ✓ 删除SQLAlchemy备选方案（第6章）
 
+**Round 3 - 字段补充审查（2026-05-27完成）：**
+- ✓ 宿舍对接添加class_name和bed_number字段
+- ✓ Codex审查发现3个P2问题并修复
+- ✓ 统一class_name标注为可选字段
+- ✓ 修正Excel示例表格列错位
+- ✓ 统一系统设计文档字段命名（is_checked_out、checkout_date、dorm_building/dorm_room）
+- ✓ 达成最终共识（文档22-25）
+
 **Phase 1 实施（进行中）：**
 - ✓ 创建项目目录结构（backend/、frontend/、docker/）
 - ✓ 配置.gitignore（Python、Django、Docker、Node、IDE）

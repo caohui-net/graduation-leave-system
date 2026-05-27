@@ -1,0 +1,3 @@
+employee_id,name,department,phone,email,is_active
+T2022001,王老师,计算机学院,13900139000,wanglaoshi@example.com,true
+T2022002,李老师,软件学院,13900139001,lililaoshi@example.com,true

@@ -1631,9 +1631,12 @@ Response:
   "code": 200,
   "data": {
     "student_id": "2020001",
+    "name": "张三",
+    "class_name": "计算机2020级1班",
     "is_cleared": true,
     "clearance_date": "2026-05-25",
-    "room_no": "A101"
+    "room_no": "A101",
+    "bed_number": "1"
   }
 }
 ```

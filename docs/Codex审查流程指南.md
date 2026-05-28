@@ -6,6 +6,18 @@
 
 ---
 
+## Load Trigger (懒加载条件)
+
+Read this file when ANY of these occur:
+- 技术文档审查（Technical design documents）
+- 数据库变更（Database schema changes）
+- API设计（API interface design）
+- 数据对接方案（Data integration plans）
+- 系统架构调整（System architecture updates）
+- 用户要求与Codex对话（User requests Codex review）
+
+---
+
 ## 一、流程概述
 
 本指南定义了与Codex进行对话式审查的标准流程，使用OMC内置的`/oh-my-claudecode:ask`技能。

@@ -1,16 +1,24 @@
+# Codex审查流程指南
+
+**版本：** v2.0  
+**更新日期：** 2026-05-28  
+**适用范围：** 使用 `/oh-my-claudecode:ask codex` 进行文档审查
+
 ---
-name: codex-review-dialogue
-description: 与Codex进行对话式审查的标准流程
-trigger: "codex审查"、"codex讨论"、"与codex对话"
+
+## 一、流程概述
+
+本指南定义了与Codex进行对话式审查的标准流程，使用OMC内置的`/oh-my-claudecode:ask`技能。
+
+**核心原则：**
+- 使用统一的`/oh-my-claudecode:ask codex`方式
+- 结构化的审查请求
+- 批判性分析Codex建议
+- 迭代式达成共识
+
 ---
 
-# Codex对话式审查技能
-
-## 适用场景
-
-当需要对文档、设计、代码进行深度审查时，使用此技能与Codex进行结构化对话。
-
-## 核心流程
+## 二、完整流程（7步）
 
 ### 第1步：创建审查请求文档
 
@@ -43,23 +51,32 @@ trigger: "codex审查"、"codex讨论"、"与codex对话"
 4. 最终方案
 ```
 
-### 第2步：调用Codex CLI审查
+---
 
-**命令格式：**
-```bash
-codex review "$(cat [审查请求文档路径])"
+### 第2步：调用Codex审查
+
+**使用OMC内置技能：**
+```
+/oh-my-claudecode:ask codex "审查 docs/discussions/[路径]/XX-[主题]-review-request.md - [具体审查要求]"
 ```
 
-**注意事项：**
-- 不使用`--output`参数（不支持）
-- Codex会返回详细审查结果
-- 输出可能很大，会保存到临时文件
+**示例：**
+```
+/oh-my-claudecode:ask codex "审查 docs/discussions/codex-review-2026-05-27/34-codex-second-review-response.md - 这是我们对你第二轮审查的回应。请确认：1) 3个关键修正方案是否可行 2) 5个补充细节是否完整 3) 数据库模型调整方案是否有遗漏 4) 是否可以基于此创建v2共识文档"
+```
+
+**优点：**
+- 自动保存结果为artifact：`.omc/artifacts/ask/codex-*.md`
+- 统一的调用接口
+- 更好的错误处理
+
+---
 
 ### 第3步：保存Codex审查结果
 
-**文件命名：** `XX-[主题]-codex-response.md`
+**文件命名：** `XX+1-[主题]-codex-response.md`
 
-**从Codex输出中提取：**
+**从artifact中提取关键内容：**
 - 审查结论
 - 发现的问题（按优先级分类）
 - 具体修复建议
@@ -70,7 +87,8 @@ codex review "$(cat [审查请求文档路径])"
 # [主题] - Codex审查响应
 
 **审查日期：** YYYY-MM-DD
-**审查人：** Codex (GPT-5.5)
+**审查人：** Codex
+**Artifact路径：** .omc/artifacts/ask/codex-[timestamp].md
 
 ## 审查结论
 [总体评价]
@@ -89,9 +107,11 @@ codex review "$(cat [审查请求文档路径])"
 [列出做得好的地方]
 ```
 
+---
+
 ### 第4步：Claude响应Codex审查
 
-**文件命名：** `XX-[主题]-claude-response.md`
+**文件命名：** `XX+2-[主题]-claude-response.md`
 
 **文档结构：**
 ```markdown
@@ -116,6 +136,8 @@ codex review "$(cat [审查请求文档路径])"
 [列出立即执行的修改]
 ```
 
+---
+
 ### 第5步：执行修复
 
 **按优先级修复：**
@@ -127,9 +149,11 @@ codex review "$(cat [审查请求文档路径])"
 - 使用Read工具验证修改正确
 - 检查所有相关文档一致性
 
+---
+
 ### 第6步：创建共识文档
 
-**文件命名：** `XX-[主题]-consensus.md`
+**文件命名：** `XX+3-[主题]-consensus.md`
 
 **文档结构：**
 ```markdown
@@ -151,6 +175,8 @@ codex review "$(cat [审查请求文档路径])"
 [确认所有相关文档已更新]
 ```
 
+---
+
 ### 第7步：归档到项目文档
 
 **更新以下文件：**
@@ -158,7 +184,9 @@ codex review "$(cat [审查请求文档路径])"
 2. `.omc/session-context.json` - 更新completed和artifacts
 3. Git commit + push
 
-## 讨论原则
+---
+
+## 三、讨论原则
 
 ### 1. 批判性思维
 - **不要急于认同：** 收到Codex审查后，仔细分析每个问题
@@ -175,24 +203,9 @@ codex review "$(cat [审查请求文档路径])"
 - **分批修复：** 问题多时，按优先级分批修复和验证
 - **渐进式共识：** 每个章节达成共识后再进入下一章节
 
-## 关键要点
+---
 
-### ✓ 成功要素
-- 审查请求文档要详细、结构化
-- 使用真实Codex CLI（不是模拟）
-- Claude响应要具体、可执行、有批判性分析
-- 修复后要验证一致性
-- 必要时进行多轮讨论
-
-### ✗ 常见错误
-- 不要使用`--output`参数
-- 不要跳过Claude响应步骤
-- 不要盲目接受所有Codex建议
-- 不要只修改部分文档
-- 不要忘记更新项目文档
-- 不要一次审查过大篇幅内容
-
-## 文件编号规则
+## 四、文件编号规则
 
 **连续编号：**
 - XX号：审查请求
@@ -201,12 +214,13 @@ codex review "$(cat [审查请求文档路径])"
 - XX+3号：最终共识
 
 **示例：**
-- 22-class-bed-field-review-request.md
-- 23-class-bed-field-codex-response.md
-- 24-class-bed-field-claude-response.md
-- 25-class-bed-field-consensus.md
+- 34-codex-second-review-response.md（审查请求）
+- 35-response-to-codex-critical-issues.md（Claude响应）
+- 36-data-confirmation-and-implementation.md（共识文档）
 
-## 验证清单
+---
+
+## 五、验证清单
 
 **审查前：**
 - [ ] 审查请求文档结构完整
@@ -214,8 +228,8 @@ codex review "$(cat [审查请求文档路径])"
 - [ ] 期望输出清晰
 
 **审查中：**
-- [ ] Codex CLI调用成功
-- [ ] 审查结果已保存
+- [ ] `/oh-my-claudecode:ask codex`调用成功
+- [ ] Artifact已生成
 - [ ] 问题优先级明确
 
 **审查后：**
@@ -224,68 +238,59 @@ codex review "$(cat [审查请求文档路径])"
 - [ ] 项目文档已更新
 - [ ] Git已提交推送
 
-## 示例命令
+---
 
-```bash
-# 1. 创建审查请求
-# （手动编写markdown文档）
+## 六、关键要点
 
-# 2. 调用Codex审查
-codex review "$(cat docs/discussions/codex-review-2026-05-27/22-class-bed-field-review-request.md)"
+### ✓ 成功要素
+- 审查请求文档要详细、结构化
+- 使用`/oh-my-claudecode:ask codex`（不是直接调用CLI）
+- Claude响应要具体、可执行、有批判性分析
+- 修复后要验证一致性
+- 必要时进行多轮讨论
 
-# 3. 如果输出太大，读取临时文件
-tail -200 /path/to/tool-results/xxx.txt
-
-# 4. 保存Codex响应
-# （手动创建23号文档）
-
-# 5. 创建Claude响应
-# （手动创建24号文档）
-
-# 6. 执行修复
-# （使用Edit工具修改文件）
-
-# 7. 创建共识文档
-# （手动创建25号文档）
-
-# 8. 提交修改
-git add [修改的文件]
-git commit -m "docs: [主题] - Codex审查完成"
-git push
-```
-
-## 成功案例
-
-**案例：宿舍对接字段补充审查**
-- 请求：22-class-bed-field-review-request.md
-- Codex：23-class-bed-field-codex-response.md（GPT-5.5真实审查）
-- Claude：24-class-bed-field-claude-response.md
-- 共识：25-class-bed-field-consensus.md
-- 结果：发现并修复3个P2问题，文档一致性提升
-
-## 注意事项
-
-1. **Codex CLI必须已安装并认证**
-   - 检查：`codex --version`
-   - 认证：`codex login`
-
-2. **审查请求要具体**
-   - 明确指出需要审查的文件和行号
-   - 列出具体的审查要点
-   - 提供足够的上下文
-
-3. **不要跳过步骤**
-   - 每个步骤都有其价值
-   - Claude响应是理解和确认的过程
-   - 共识文档是最终归档
-
-4. **保持文档一致性**
-   - 修复问题后检查所有相关文档
-   - 确保字段命名、类型、必填性统一
-   - 验证示例数据一致
+### ✗ 常见错误
+- 不要直接调用`codex`命令（使用`/ask`）
+- 不要跳过Claude响应步骤
+- 不要盲目接受所有Codex建议
+- 不要只修改部分文档
+- 不要忘记更新项目文档
+- 不要一次审查过大篇幅内容
 
 ---
 
-**技能版本：** v1.0  
+## 七、成功案例
+
+**案例1：数据源需求v2共识**
+- 请求：34-codex-second-review-response.md
+- Codex：通过`/ask codex`调用，artifact保存
+- Claude：35-response-to-codex-critical-issues.md（修正5个关键问题）
+- 共识：31-data-source-requirements-consensus-v2.md
+- 结果：修正staging表设计、认证约束、class_id约束等关键问题
+
+---
+
+## 八、与旧方式的区别
+
+**旧方式（已废弃）：**
+```bash
+codex review "$(cat [文档路径])"
+```
+
+**新方式（推荐）：**
+```
+/oh-my-claudecode:ask codex "审查 [文档路径] - [审查要求]"
+```
+
+**优势：**
+- 统一的调用接口
+- 自动artifact管理
+- 更好的错误处理
+- 与OMC生态集成
+
+---
+
+**流程版本：** v2.0  
 **创建日期：** 2026-05-27  
-**最后验证：** 2026-05-27（成功）
+**更新日期：** 2026-05-28  
+**变更说明：** 从自定义skill迁移到使用`/oh-my-claudecode:ask`

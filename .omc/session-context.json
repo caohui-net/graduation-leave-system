@@ -1,5 +1,5 @@
 {
-  "last_updated": "2026-05-28T09:24:00Z",
+  "last_updated": "2026-05-28T09:40:57Z",
   "completed": [
     "更新CSV模板（学生、辅导员、班级映射）- 英文字段名、布尔值格式",
     "创建数据确认清单（15个问题+5阶段实施计划）",
@@ -13,7 +13,8 @@
     "项目记忆固化配置文件规范要求",
     "更新PROJECT-SUMMARY.md记录2026-05-28工作",
     "整理微信小程序申请说明文档（从飞书wiki）",
-    "整理微信小程序备案说明文档（从飞书wiki）"
+    "整理微信小程序备案说明文档（从飞书wiki）",
+    "修复OMC HUD状态栏显示问题（~/.claude/hud/omc-hud.mjs调用main而非renderHud）"
   ],
   "pending": [],
   "evidence": [
@@ -22,7 +23,8 @@
     "~/.claude/CLAUDE.md - 包含Codex Review Protocol和Configuration File Standards",
     "~/.claude/templates/config-file-template.md - 配置文件标准模板",
     ".omc/project-memory.json - 包含高优先级配置文件规范指令",
-    "docs/PROJECT-SUMMARY.md - 更新至2026-05-28"
+    "docs/PROJECT-SUMMARY.md - 更新至2026-05-28",
+    "~/.claude/hud/omc-hud.mjs - HUD wrapper修复验证通过"
   ],
   "next_focus": "开始系统实施 - 准备开发环境、配置工具、开始编码",
   "artifacts": {

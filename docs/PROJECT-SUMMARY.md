@@ -150,6 +150,12 @@
   - 备案信息填写流程
   - 注意事项（手机号、邮箱、授权书要求）
 
+**开发环境修复：**
+- ✓ 修复OMC HUD状态栏显示问题
+  - 问题：HUD wrapper调用错误函数（renderHud不存在）
+  - 修复：更新~/.claude/hud/omc-hud.mjs调用main()而非renderHud()
+  - 验证：HUD v4.14.0正常显示
+
 **Phase 1 实施（进行中）：**
 - ✓ 创建项目目录结构（backend/、frontend/、docker/）
 - ✓ 配置.gitignore（Python、Django、Docker、Node、IDE）

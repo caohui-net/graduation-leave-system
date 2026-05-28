@@ -97,7 +97,58 @@
 - ✓ P1修复：HTTPS改为双模式（HTTP内网+HTTPS公网）、删除id_card参数
 - ✓ P2修复：删除Postman引用、明确认证方式、统一审批时限、修改辅导员权限范围、统一性能指标
 - ✓ 达成HTTPS/SSL证书问题共识（支持双模式）
+
+### 2026-05-28
+
+**数据对接文档完善：**
+- ✓ 更新CSV模板（学生、辅导员、班级映射）
+  - 统一使用英文字段名（student_id, employee_id, class_id等）
+  - 布尔值格式统一为true/false
+  - 匹配v2共识文档规范
+- ✓ 创建数据确认清单（docs/数据确认清单.md）
+  - 15个待确认问题（6个分类）
+  - 5阶段实施计划
+  - 风险和应对措施
+- ✓ 打包用户文档并提供下载
+  - 包含3个文档+4个CSV模板
+  - 使用dufs文件服务器共享
+
+**Codex审查流程固化：**
+- ✓ 删除重复的自定义skill（.claude/skills/codex-review-dialogue.md）
+- ✓ 创建Codex审查流程指南
+  - 项目级：docs/Codex审查流程指南.md
+  - 全局级：~/.claude/docs/Codex审查流程指南.md
+  - 包含完整7步审查流程
+  - 添加Load Trigger章节（遵循handoff.md规范）
+- ✓ 固化到CLAUDE.md配置
+  - 项目级：CLAUDE.md（新建）
+  - 全局级：~/.claude/CLAUDE.md（懒加载模式）
+  - 统一使用 /oh-my-claudecode:ask codex
+  - 明确6个触发条件
+
+**配置文件规范建立：**
+- ✓ 在全局CLAUDE.md添加Configuration File Standards章节
+  - 要求所有配置文件必须有Load Trigger章节
+  - 引用handoff.md作为标准格式
+  - 提供操作前检查清单
+- ✓ 创建配置文件模板（~/.claude/templates/config-file-template.md）
+  - 标准Load Trigger章节
+  - 使用说明和示例
+- ✓ 项目记忆固化规范要求
+  - 添加高优先级指令
+  - 修改配置文件前必须先读取handoff.md
 - ✓ 达成最终共识（文档26-28）
+
+**微信小程序文档整理：**
+- ✓ 整理微信小程序申请说明（docs/微信小程序申请说明.md）
+  - 主体选择建议（学校主体 vs 校友会主体）
+  - 注册流程（4个步骤）
+  - 注意事项和相关文档
+- ✓ 整理微信小程序备案说明（docs/微信小程序备案说明.md）
+  - 备案所需材料汇总（法人证书、主体负责人、小程序负责人）
+  - 备案整体流程
+  - 备案信息填写流程
+  - 注意事项（手机号、邮箱、授权书要求）
 
 **Phase 1 实施（进行中）：**
 - ✓ 创建项目目录结构（backend/、frontend/、docker/）
@@ -289,5 +340,5 @@
 
 ---
 
-**最后更新：** 2026-05-27  
+**最后更新：** 2026-05-28  
 **更新人：** Claude Opus 4.7

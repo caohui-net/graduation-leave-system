@@ -334,7 +334,17 @@
 - ✓ 最终方案：Plan D（2天硬timebox + 决策门 + 可选P0修复日）
 - ✓ 核心决策：快速暴露问题、建立可复现证据、做继续/降范围/重设计决策
 - ✓ 验收标准：8项必须证明（迁移成功、完整闭环、负向权限验证等）
-- ⏳ 待执行：Day 0准备（环境策略、seed数据、验收清单）
+
+**Week 3 Day 0准备（2026-05-30完成）：**
+- ✓ 环境检查：Python 3.14.4可用，Docker可用，无pip/PostgreSQL
+- ✓ 环境策略决策：完整Docker Compose（优先级3）
+- ✓ Seed数据需求：2学生+2辅导员+1学工部+2班级映射
+- ✓ 验收清单：8项验收标准+可复现验证脚本
+- ✓ 文档产出：
+  - docs/week3-day0-environment-strategy.md
+  - docs/week3-day0-seed-data-requirements.md
+  - docs/week3-day0-acceptance-checklist.md
+- ⏳ 待执行：Day 1启动Docker环境、执行迁移、跑通最小闭环
 
 ## 文档清单
 

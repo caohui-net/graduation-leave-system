@@ -1,12 +1,15 @@
 {
-  "last_updated": "2026-05-30T14:35:00Z",
+  "last_updated": "2026-05-30T14:43:00Z",
   "completed": [
     "TASK-20260530-06 全部完成（3.5小时）",
     "Phase 1: Readiness gate (4 P0修复)",
     "Phase 2: Minimal tests (4测试通过)",
     "Phase 3: Day 0 pilot (P0安全修复)",
     "Phase 4: Operator checklist (证据文档)",
-    "Codex阻塞项修复：可执行smoke_test.sh"
+    "Codex阻塞项修复：可执行smoke_test.sh",
+    "技能重命名：claude-codex-collab → claude-codex-gemini-collab",
+    "创建独立项目：/home/caohui/projects/claude-codex-gemini-collab",
+    "协议更新：v0.3支持三模型协作（Claude+Codex+Gemini）"
   ],
   "pending": [
     "Week 3 Day 1: 执行smoke test验证最小闭环",
@@ -18,7 +21,8 @@
     "Codex验证：代码修复正确",
     "smoke_test.sh：端口8001，access_token，动态ID",
     "协作验证：50事件，无重复，无锁",
-    "提交已推送：P0修复+smoke test"
+    "提交已推送：P0修复+smoke test",
+    "技能迁移：11文件，1094行，git初始化完成"
   ],
   "next_focus": "Week 3 Day 1: docker compose up → migrate → seed → 执行smoke_test.sh → 记录结果",
   "suggested_skills": [],
@@ -27,6 +31,7 @@
     "day0_completion": ".omc/collaboration/artifacts/20260530-1015-day0-completion.md",
     "operator_checklist": ".omc/collaboration/artifacts/20260530-1025-phase4-operator-checklist.md",
     "codex_verification": ".omc/collaboration/artifacts/20260530-2225-codex-day0-verification.md",
-    "smoke_test": "tests/smoke_test.sh"
+    "smoke_test": "tests/smoke_test.sh",
+    "skill_project": "/home/caohui/projects/claude-codex-gemini-collab"
   }
 }

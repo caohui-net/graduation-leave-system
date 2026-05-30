@@ -1,40 +1,27 @@
 {
-  "last_updated": "2026-05-30T14:21:00Z",
+  "last_updated": "2026-05-30T10:20:00Z",
   "completed": [
-    "Week 0契约冻结工作完成",
-    "Codex第四轮审查确认：达到可执行契约标准",
-    "冻结contract-v0.1.md为v0.1 Final",
-    "Week 1 Day 1实施完成：Django骨架、User模型、JWT认证、seed数据",
-    "Week 1 Day 3-4实施完成：Application模型、Approval模型、5个API端点、Mock宿舍清退服务",
-    "Week 1 Day 5实施完成：端到端测试、错误场景测试、驳回流程测试",
-    "Week 2实施完成：ClassMapping模型、CSV导入命令、动态辅导员分配",
-    "Claude-Codex协作机制MVP完成：protocol v0.2 + 技能固化",
-    "GitHub项目分析完成：4个项目独立分析 + 共识达成",
-    "Week 3工作方向讨论完成：Claude-Codex 4轮批判性讨论达成共识（Plan D）",
-    "Week 3 Day 0准备完成：环境策略决策（完整Docker Compose）、seed数据需求、验收清单",
-    "Week 3 Day 1完成：Docker环境启动、迁移执行、seed数据导入、最小闭环验证通过（8项标准全部达标）",
-    "Week 3 Day 1审查完成：Codex识别7个P1 + 5个P2问题",
-    "Week 3 Day 2计划讨论完成：Claude-Codex达成共识（4-6h timebox + Conditional Go）"
+    "TASK-20260530-06 Phase 1: Readiness gate (4 P0 fixes)",
+    "TASK-20260530-06 Phase 2: Minimal invariant tests (4 tests passed)",
+    "TASK-20260530-06 Phase 3: Day 0 preparation (P0 security fixes)"
   ],
   "pending": [
-    "Week 3 Day 2执行：4小时核心修复（seed/mock、审批权限、状态机、重复提交、smoke test、文档）",
-    "Week 3 Day 2可选：列表接口（1.5h）+ 负向验证（30min）",
-    "Week 3 Day 3（如需要）：收尾列表接口、负向验证、ClassMapping校验"
+    "Week 3 Day 1: Execute acceptance checklist",
+    "Week 3 Day 2: Fix P0 blockers, create smoke test"
   ],
   "evidence": [
-    "docs/discussions/week3-day1-review-2026-05-30/01-codex-review.md - Codex审查识别7个P1问题",
-    "docs/discussions/week3-day1-review-2026-05-30/07-consensus-day2-plan.md - Day 2计划最终共识",
-    "核心P1问题：跨辅导员审批漏洞、重复审批漏洞、重复提交竞态、seed数据错误、缺少smoke test、文档不一致、缺少列表接口",
-    "共识：Day 2维持4-6h timebox，输出Conditional Go；Day 3收尾剩余项",
-    "妥协：Codex接受4-6h（原建议8-12h），Claude接受列表接口是Go门槛一部分",
-    "API验证：登录→提交→辅导员审批→学工部审批→查询→403权限验证全部通过"
+    "Protocol version 0.3 validated",
+    "Atomic claim race condition fixed",
+    "Event status mappings complete",
+    "Gemini dry-run working",
+    "Dorm mock 2020006 = completed",
+    "Approval authorization fixed (approver_id check)",
+    "Collaboration validation: 45 events, no duplicates"
   ],
-  "next_focus": "Week 3 Day 2执行：按4-6小时计划修复P1问题，达到Conditional Go标准",
-  "suggested_skills": [],
+  "next_focus": "Week 3 Day 1: Execute minimum viable loop acceptance testing",
   "artifacts": {
-    "week3_consensus": "docs/discussions/week3-direction-2026-05-30/06-consensus.md",
-    "day1_review": "docs/discussions/week3-day1-review-2026-05-30/01-codex-review.md",
-    "day2_consensus": "docs/discussions/week3-day1-review-2026-05-30/07-consensus-day2-plan.md",
-    "collab_protocol": ".omc/collaboration/protocol.md"
+    "consensus": ".omc/collaboration/artifacts/20260530-1008-codex-phase3-consensus.md",
+    "day0_completion": ".omc/collaboration/artifacts/20260530-1015-day0-completion.md",
+    "checklist": "docs/week3-day0-acceptance-checklist.md"
   }
 }

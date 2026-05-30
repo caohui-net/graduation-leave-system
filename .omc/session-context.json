@@ -1,5 +1,5 @@
 {
-  "last_updated": "2026-05-31T03:34:00Z",
+  "last_updated": "2026-05-31T03:47:00Z",
   "completed": [
     "Week 3 Closure Gate完成",
     "Phase 1完成：验收清单、风险文档、项目结构",
@@ -7,10 +7,14 @@
     "Phase 2B完成：TypeScript types + API client",
     "B-small完成：P0单元测试（6/6通过）",
     "C-minimal完成：类型修正 + mock fixtures",
-    "Phase A完成：小程序skeleton（核心配置 + 3页面 + wx.request API client）"
+    "Phase A完成：小程序skeleton（核心配置 + 3页面 + wx.request API client）",
+    "Phase A验证完成：静态检查 + smoke测试通过 + 完成说明文档",
+    "Codex路径5共识：短收尾 + 回Week 3主线"
   ],
   "pending": [
-    "WeChat DevTools验证（导入 + Mock模式 + 真实API）"
+    "WeChat DevTools验证（外部阻塞）",
+    "Week 3核心流程补强（提交、审批、状态机、权限）",
+    "v0.2契约收敛（请求/响应样例、状态枚举、错误码）"
   ],
   "evidence": [
     "P0修复：tests/test_p0_fixes.sh + 6单元测试",
@@ -18,9 +22,11 @@
     "Mock数据：frontend/services/mock.ts",
     "小程序skeleton：miniprogram/目录完整结构",
     "验证指南：.omc/artifacts/wechat-devtools-verification-guide.md",
-    "文档更新：PROJECT-SUMMARY.md"
+    "Smoke测试通过：tests/smoke_test.sh全部通过",
+    "完成说明：.omc/artifacts/phase-a-completion-notes.md",
+    "Codex分析：.omc/collaboration/artifacts/20260530-1942-codex-completion-boundary-analysis.md"
   ],
-  "next_focus": "Phase 2 + Phase A完成。小程序skeleton已创建，等待WeChat DevTools验证",
+  "next_focus": "Phase A完成并验证。小程序scope已冻结，等待DevTools验证。按Codex路径5建议，回Week 3主线：核心流程补强 + v0.2契约收敛",
   "suggested_skills": [],
   "artifacts": {
     "p0_test": "tests/test_p0_fixes.sh",
@@ -31,7 +37,11 @@
     "miniprogram_config": "miniprogram/app.json",
     "miniprogram_api": "miniprogram/services/api.ts",
     "miniprogram_pages": "miniprogram/pages/{login,approvals,detail}/",
-    "verification_guide": ".omc/artifacts/wechat-devtools-verification-guide.md"
+    "verification_guide": ".omc/artifacts/wechat-devtools-verification-guide.md",
+    "completion_notes": ".omc/artifacts/phase-a-completion-notes.md",
+    "codex_analysis": ".omc/collaboration/artifacts/20260530-1942-codex-completion-boundary-analysis.md"
   },
-  "blocking_issues": []
+  "blocking_issues": [
+    "WeChat DevTools不可用（外部阻塞，不影响Week 3主线工作）"
+  ]
 }

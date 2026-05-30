@@ -734,7 +734,30 @@
 **验证指南：**
 - .omc/artifacts/wechat-devtools-verification-guide.md
 
-**下一步：**
-- 在WeChat DevTools中导入并验证
-- Mock模式测试（登录→列表→详情）
-- 真实API测试（连接localhost:8001）
+**Phase A验证完成（2026-05-31）：**
+- ✓ 静态结构检查通过
+  - app.json页面注册：3个页面，文件完整
+  - API client使用wx.request（非fetch）
+  - 类型定义与backend对齐
+- ✓ 后端smoke测试通过
+  - 完整审批流程验证（student→counselor→dean）
+  - 跨辅导员权限保护（403）
+  - 重复提交防护
+- ✓ 完成说明文档创建
+  - 已验证项清单
+  - 外部阻塞说明（WeChat DevTools）
+  - 验证步骤指南
+
+**Codex路径5共识（2026-05-31）：**
+- ✓ 短收尾完成：静态验证 + smoke测试 + 完成说明
+- ✓ 小程序scope冻结：不继续扩展功能，等待DevTools验证
+- ⏳ 回Week 3主线：核心流程补强 + v0.2契约收敛
+
+**产出物：**
+- .omc/artifacts/phase-a-completion-notes.md（完成说明）
+- .omc/collaboration/artifacts/20260530-1942-codex-completion-boundary-analysis.md（Codex分析）
+
+**下一步（按Codex P0-C建议）：**
+- Week 3核心流程补强（提交、审批列表/详情、审批/驳回、状态机、权限负向验证）
+- v0.2契约收敛（请求/响应样例、状态枚举、错误码、mock provider边界）
+- WeChat DevTools验证（外部阻塞，P2优先级）

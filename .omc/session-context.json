@@ -1,15 +1,17 @@
 {
-  "last_updated": "2026-05-30T08:43:00Z",
+  "last_updated": "2026-05-30T08:52:00Z",
   "completed": [
     "Week 0契约冻结工作完成",
     "Codex第四轮审查确认：达到可执行契约标准",
     "冻结contract-v0.1.md为v0.1 Final",
     "Week 1 Day 1实施完成：Django骨架、User模型、JWT认证、seed数据",
+    "Week 1 Day 3-4实施完成：Application模型、Approval模型、5个API端点、Mock宿舍清退服务",
     "Claude-Codex协作机制MVP完成：protocol v0.2 + 技能固化（.claude/skills/claude-codex-collab/）"
   ],
   "pending": [
     "Week 1 Day 1验证（需要环境准备：虚拟环境、依赖安装、PostgreSQL）",
-    "Week 1 Day 2-5工作（申请提交API、审批API、查询API、测试）"
+    "Week 1 Day 3-4验证（需要环境准备）",
+    "Week 1 Day 5工作（端到端测试、验证完整流程）"
   ],
   "evidence": [
     "docs/contracts/contract-v0.1.md - v0.1 Final已冻结",
@@ -31,6 +33,11 @@
     "project_summary": "docs/PROJECT-SUMMARY.md",
     "system_design": "docs/design/2026-05-27-system-design.md",
     "user_model": "backend/apps/users/models.py",
+    "application_model": "backend/apps/applications/models.py",
+    "approval_model": "backend/apps/approvals/models.py",
+    "application_views": "backend/apps/applications/views.py",
+    "approval_views": "backend/apps/approvals/views.py",
+    "dorm_provider": "backend/apps/applications/providers.py",
     "seed_command": "backend/apps/users/management/commands/seed_data.py",
     "collab_protocol": ".omc/collaboration/protocol.md",
     "collab_skill": ".claude/skills/claude-codex-collab/SKILL.md",

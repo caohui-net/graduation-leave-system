@@ -260,6 +260,41 @@
 - ✓ Django admin配置
 - ⏳ 验证步骤（需要环境准备：虚拟环境、依赖安装、PostgreSQL）
 
+**Week 1 Day 3-4实施（2026-05-30完成）：**
+- ✓ Application模型和API
+  - Application模型（application_id、student、reason、leave_date、status、dorm_checkout_status）
+  - ApplicationStatus枚举（draft、pending_counselor、pending_dean、approved、rejected）
+  - DormCheckoutStatus枚举（completed、pending、not_started、unknown）
+  - POST /api/applications（提交申请）
+  - GET /api/applications/{id}（查询申请）
+- ✓ Approval模型和API
+  - Approval模型（approval_id、application、step、approver、decision、comment、decided_at）
+  - ApprovalStep枚举（counselor、dean）
+  - ApprovalDecision枚举（pending、approved、rejected）
+  - POST /api/approvals/{id}/approve（通过审批）
+  - POST /api/approvals/{id}/reject（驳回审批）
+- ✓ MockDormCheckoutProvider
+  - 宿舍清退状态Mock服务
+  - 覆盖completed、pending、not_started、unknown四种状态
+- ✓ 状态机实现
+  - 提交申请→pending_counselor（创建辅导员审批记录）
+  - 辅导员通过→pending_dean（创建学工部审批记录）
+  - 辅导员驳回→rejected
+  - 学工部通过→approved
+  - 学工部驳回→rejected
+- ✓ 权限校验
+  - 学生只能提交和查看自己的申请
+  - 辅导员只能审批辅导员步骤
+  - 学工部只能审批学工部步骤
+- ✓ 错误处理
+  - DORM_BLOCKED（宿舍清退未完成）
+  - CONFLICT（重复提交申请）
+  - FORBIDDEN（无权限）
+  - NOT_FOUND（资源不存在）
+  - VALIDATION_ERROR（参数验证失败）
+- ✓ Django admin配置（Application、Approval）
+- ⏳ 验证步骤（需要环境准备：虚拟环境、依赖安装、PostgreSQL）
+
 ## 文档清单
 
 1. **系统设计文档**

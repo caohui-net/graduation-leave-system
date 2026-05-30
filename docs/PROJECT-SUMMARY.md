@@ -344,7 +344,27 @@
   - docs/week3-day0-environment-strategy.md
   - docs/week3-day0-seed-data-requirements.md
   - docs/week3-day0-acceptance-checklist.md
-- ⏳ 待执行：Day 1启动Docker环境、执行迁移、跑通最小闭环
+
+**Week 3 Day 1实施（2026-05-30完成）：**
+- ✓ Docker配置：Dockerfile（Python 3.11）+ docker-compose.yml（PostgreSQL + Django）
+- ✓ 环境启动：backend容器（端口8001）+ db容器（PostgreSQL 15）
+- ✓ 数据库迁移：创建migrations目录，生成迁移文件，执行migrate成功
+- ✓ Seed数据导入：10学生+2辅导员+1学工部+2班级映射
+- ✓ 最小闭环验证（8项标准全部通过）：
+  1. 迁移成功执行 - 所有表创建
+  2. Seed数据完整 - 支持两级审批
+  3. 学生登录并提交申请 - status=pending_counselor
+  4. 辅导员审批成功 - status→pending_dean
+  5. 学工部审批成功 - status→approved
+  6. 学生查询最终状态 - 完整审批链路
+  7. 负向权限验证 - HTTP 403 Forbidden
+  8. 宿舍清退Mock - dorm_checkout_status=completed
+- ✓ P0问题修复：
+  - 缺少migrations目录（已创建）
+  - dev.py包含未安装的django_extensions（已移除）
+  - 端口8000被占用（改用8001）
+  - Docker网络DNS解析失败（重启容器解决）
+- ⏳ 待执行：Day 2固化验证脚本、输出问题清单、决策后续方向
 
 ## 文档清单
 

@@ -1,27 +1,30 @@
 {
-  "last_updated": "2026-05-30T10:20:00Z",
+  "last_updated": "2026-05-30T10:30:00Z",
   "completed": [
-    "TASK-20260530-06 Phase 1: Readiness gate (4 P0 fixes)",
-    "TASK-20260530-06 Phase 2: Minimal invariant tests (4 tests passed)",
-    "TASK-20260530-06 Phase 3: Day 0 preparation (P0 security fixes)"
+    "TASK-20260530-06 Phase 1: Readiness gate (4 P0 fixes, 60min)",
+    "TASK-20260530-06 Phase 2: Minimal invariant tests (4 tests passed, 30min)",
+    "TASK-20260530-06 Phase 3: Day 0 preparation (P0 security fixes, 90min)",
+    "TASK-20260530-06 Phase 4: Operator checklist (evidence docs, 30min)"
   ],
   "pending": [
-    "Week 3 Day 1: Execute acceptance checklist",
-    "Week 3 Day 2: Fix P0 blockers, create smoke test"
+    "Week 3 Day 1: Execute acceptance checklist (validate P0 fixes)",
+    "Week 3 Day 2: Fix blockers, create smoke test"
   ],
   "evidence": [
-    "Protocol version 0.3 validated",
-    "Atomic claim race condition fixed",
+    "Protocol v0.3 validated",
+    "Atomic claim fixed",
     "Event status mappings complete",
     "Gemini dry-run working",
-    "Dorm mock 2020006 = completed",
-    "Approval authorization fixed (approver_id check)",
-    "Collaboration validation: 45 events, no duplicates"
+    "Dorm mock 2020006=completed",
+    "Approval authorization fixed",
+    "46 events logged, validated",
+    "Operator checklist documents Phases 1-4"
   ],
-  "next_focus": "Week 3 Day 1: Execute minimum viable loop acceptance testing",
+  "next_focus": "Week 3 Day 1: Execute minimum viable loop acceptance testing to validate P0 fixes",
   "artifacts": {
     "consensus": ".omc/collaboration/artifacts/20260530-1008-codex-phase3-consensus.md",
     "day0_completion": ".omc/collaboration/artifacts/20260530-1015-day0-completion.md",
+    "operator_checklist": ".omc/collaboration/artifacts/20260530-1025-phase4-operator-checklist.md",
     "checklist": "docs/week3-day0-acceptance-checklist.md"
   }
 }

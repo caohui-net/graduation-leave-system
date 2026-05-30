@@ -1,5 +1,5 @@
 {
-  "last_updated": "2026-05-30T09:06:00Z",
+  "last_updated": "2026-05-30T09:24:00Z",
   "completed": [
     "Week 0契约冻结工作完成",
     "Codex第四轮审查确认：达到可执行契约标准",
@@ -8,50 +8,27 @@
     "Week 1 Day 3-4实施完成：Application模型、Approval模型、5个API端点、Mock宿舍清退服务",
     "Week 1 Day 5实施完成：端到端测试、错误场景测试、驳回流程测试",
     "Week 2实施完成：ClassMapping模型、CSV导入命令、动态辅导员分配",
-    "Claude-Codex协作机制MVP完成：protocol v0.2 + 技能固化（.claude/skills/claude-codex-collab/）",
-    "GitHub项目分析完成：4个项目独立分析 + 共识达成（P0/P1/P2优先级、Gemini集成方案）"
+    "Claude-Codex协作机制MVP完成：protocol v0.2 + 技能固化",
+    "GitHub项目分析完成：4个项目独立分析 + 共识达成",
+    "Week 3工作方向讨论完成：Claude-Codex 4轮批判性讨论达成共识（Plan D）"
   ],
   "pending": [
-    "Week 1-2验证（需要环境准备：虚拟环境、依赖安装、PostgreSQL）",
-    "Week 3工作（核心流程补强、v0.2契约）"
+    "Week 3 Day 0准备：确认环境策略、明确seed数据需求、创建验收清单",
+    "Week 3 Day 1-2：跑通最小闭环（登录→提交→审批→查询）+ 修复P0问题",
+    "Week 1-2代码验证（依赖Day 0环境准备完成）"
   ],
   "evidence": [
-    "docs/contracts/contract-v0.1.md - v0.1 Final已冻结",
-    "docs/discussions/codex-review-2026-05-30/52-p1-fixes-codex-confirmation-response.md",
-    "docs/discussions/codex-review-2026-05-30/53-p1-fixes-final-consensus.md",
-    "backend/manage.py - Django项目入口",
-    "backend/config/settings/ - settings分层配置",
-    "backend/apps/users/models.py - User模型",
-    "backend/apps/users/serializers.py - 认证序列化器",
-    "backend/apps/users/views.py - 登录视图",
-    "backend/apps/users/management/commands/seed_data.py - seed数据命令"
+    "docs/discussions/week3-direction-2026-05-30/06-consensus.md - Week 3方向最终共识",
+    "docs/PROJECT-SUMMARY.md - 已更新Week 3讨论记录",
+    ".omc/collaboration/events.jsonl - 事件id=26记录共识达成"
   ],
-  "next_focus": "Week 1-2代码已完成，等待环境验证或继续Week 3工作（核心流程补强、v0.2契约）",
+  "next_focus": "执行Week 3 Day 0准备（<1小时）：检查本地环境、决定环境策略、列出seed数据需求、创建验收清单",
   "suggested_skills": [],
   "artifacts": {
-    "contract_v0_1_final": "docs/contracts/contract-v0.1.md",
-    "execution_plan": "docs/plans/week-0-1-execution-plan.md",
-    "p1_fixes_consensus": "docs/discussions/codex-review-2026-05-30/53-p1-fixes-final-consensus.md",
-    "project_summary": "docs/PROJECT-SUMMARY.md",
-    "system_design": "docs/design/2026-05-27-system-design.md",
-    "user_model": "backend/apps/users/models.py",
-    "class_mapping": "backend/apps/users/class_mapping.py",
-    "application_model": "backend/apps/applications/models.py",
-    "approval_model": "backend/apps/approvals/models.py",
-    "application_views": "backend/apps/applications/views.py",
-    "approval_views": "backend/apps/approvals/views.py",
-    "dorm_provider": "backend/apps/applications/providers.py",
-    "seed_command": "backend/apps/users/management/commands/seed_data.py",
-    "import_csv_command": "backend/apps/users/management/commands/import_csv.py",
-    "test_flow": "backend/apps/applications/tests/test_application_flow.py",
-    "test_errors": "backend/apps/applications/tests/test_error_cases.py",
-    "test_rejection": "backend/apps/approvals/tests/test_rejection_flow.py",
+    "week3_consensus": "docs/discussions/week3-direction-2026-05-30/06-consensus.md",
+    "week3_claude_proposal": "docs/discussions/week3-direction-2026-05-30/01-claude-proposal.md",
+    "week3_codex_review": "docs/discussions/week3-direction-2026-05-30/04-codex-review-of-claude-response.md",
     "collab_protocol": ".omc/collaboration/protocol.md",
-    "collab_skill": ".claude/skills/claude-codex-collab/SKILL.md",
-    "collab_state": ".omc/collaboration/state.json",
-    "github_analysis_claude": ".omc/collaboration/artifacts/20260530-0848-claude-github-projects-analysis.md",
-    "github_analysis_codex": ".omc/collaboration/artifacts/20260530-1654-codex-github-projects-analysis.md",
-    "github_consensus": ".omc/collaboration/artifacts/20260530-0902-claude-codex-consensus-discussion.md",
-    "github_confirmation": ".omc/collaboration/artifacts/20260530-1703-codex-consensus-confirmation.md"
+    "collab_state": ".omc/collaboration/state.json"
   }
 }

@@ -6,13 +6,28 @@ from apps.users.class_mapping import ClassMapping
 class Command(BaseCommand):
     help = 'Load seed data for users'
 
+    def add_arguments(self, parser):
+        parser.add_argument(
+            '--reset',
+            action='store_true',
+            help='Clear applications and approvals before loading seed data',
+        )
+
     def handle(self, *args, **options):
+        if options['reset']:
+            self.stdout.write('Resetting applications and approvals...')
+            from apps.applications.models import Application
+            from apps.approvals.models import Approval
+            Approval.objects.all().delete()
+            Application.objects.all().delete()
+            self.stdout.write(self.style.SUCCESS('Reset complete'))
+
         self.stdout.write('Loading seed data...')
 
         # Students (10)
         students = [
             {'user_id': '2020001', 'name': '张三', 'class_id': 'CS2020-01'},
-            {'user_id': '2020002', 'name': '李四', 'class_id': 'CS2020-01'},
+            {'user_id': '2020002', 'name': '李四', 'class_id': 'CS2020-02'},
             {'user_id': '2020003', 'name': '王五', 'class_id': 'CS2020-01'},
             {'user_id': '2020004', 'name': '赵六', 'class_id': 'CS2020-01'},
             {'user_id': '2020005', 'name': '孙七', 'class_id': 'CS2020-01'},
@@ -24,7 +39,7 @@ class Command(BaseCommand):
         ]
 
         for student_data in students:
-            user, created = User.objects.get_or_create(
+            user, created = User.objects.update_or_create(
                 user_id=student_data['user_id'],
                 defaults={
                     'name': student_data['name'],
@@ -38,7 +53,7 @@ class Command(BaseCommand):
             if created:
                 user.set_password(student_data['user_id'])
                 user.save()
-                self.stdout.write(f'Created student: {user.user_id}')
+            self.stdout.write(f'{"Created" if created else "Updated"} student: {user.user_id}')
 
         # Counselors (2)
         counselors = [

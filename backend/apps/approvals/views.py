@@ -3,6 +3,7 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from django.utils import timezone
+from django.db import transaction
 from .models import Approval, ApprovalDecision, ApprovalStep
 from .serializers import ApprovalSerializer, ApprovalActionSerializer
 from apps.applications.models import Application, ApplicationStatus
@@ -12,9 +13,10 @@ import uuid
 
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
+@transaction.atomic
 def approve_approval(request, approval_id):
     try:
-        approval = Approval.objects.get(approval_id=approval_id)
+        approval = Approval.objects.select_for_update().get(approval_id=approval_id)
     except Approval.DoesNotExist:
         return Response({'error': {'code': 'NOT_FOUND', 'message': '审批记录不存在'}},
                         status=status.HTTP_404_NOT_FOUND)
@@ -35,6 +37,15 @@ def approve_approval(request, approval_id):
         return Response({'error': {'code': 'CONFLICT', 'message': '审批已完成，不能重复操作'}},
                         status=status.HTTP_409_CONFLICT)
 
+    # Validate status/step matching
+    application = approval.application
+    if approval.step == ApprovalStep.COUNSELOR and application.status != ApplicationStatus.PENDING_COUNSELOR:
+        return Response({'error': {'code': 'CONFLICT', 'message': '申请状态与审批步骤不匹配'}},
+                        status=status.HTTP_409_CONFLICT)
+    if approval.step == ApprovalStep.DEAN and application.status != ApplicationStatus.PENDING_DEAN:
+        return Response({'error': {'code': 'CONFLICT', 'message': '申请状态与审批步骤不匹配'}},
+                        status=status.HTTP_409_CONFLICT)
+
     serializer = ApprovalActionSerializer(data=request.data)
     if not serializer.is_valid():
         return Response({'error': {'code': 'VALIDATION_ERROR', 'message': '请求参数验证失败'}},
@@ -47,6 +58,16 @@ def approve_approval(request, approval_id):
 
     application = approval.application
     if approval.step == ApprovalStep.COUNSELOR:
+        # Check for existing dean approval to prevent duplicates
+        existing_dean_approval = Approval.objects.filter(
+            application=application,
+            step=ApprovalStep.DEAN
+        ).exists()
+
+        if existing_dean_approval:
+            return Response({'error': {'code': 'CONFLICT', 'message': '学工部审批已存在，不能重复创建'}},
+                            status=status.HTTP_409_CONFLICT)
+
         application.status = ApplicationStatus.PENDING_DEAN
         application.save()
         Approval.objects.create(
@@ -66,9 +87,10 @@ def approve_approval(request, approval_id):
 
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
+@transaction.atomic
 def reject_approval(request, approval_id):
     try:
-        approval = Approval.objects.get(approval_id=approval_id)
+        approval = Approval.objects.select_for_update().get(approval_id=approval_id)
     except Approval.DoesNotExist:
         return Response({'error': {'code': 'NOT_FOUND', 'message': '审批记录不存在'}},
                         status=status.HTTP_404_NOT_FOUND)
@@ -87,6 +109,15 @@ def reject_approval(request, approval_id):
 
     if approval.decision != ApprovalDecision.PENDING:
         return Response({'error': {'code': 'CONFLICT', 'message': '审批已完成，不能重复操作'}},
+                        status=status.HTTP_409_CONFLICT)
+
+    # Validate status/step matching
+    application = approval.application
+    if approval.step == ApprovalStep.COUNSELOR and application.status != ApplicationStatus.PENDING_COUNSELOR:
+        return Response({'error': {'code': 'CONFLICT', 'message': '申请状态与审批步骤不匹配'}},
+                        status=status.HTTP_409_CONFLICT)
+    if approval.step == ApprovalStep.DEAN and application.status != ApplicationStatus.PENDING_DEAN:
+        return Response({'error': {'code': 'CONFLICT', 'message': '申请状态与审批步骤不匹配'}},
                         status=status.HTTP_409_CONFLICT)
 
     serializer = ApprovalActionSerializer(data=request.data)

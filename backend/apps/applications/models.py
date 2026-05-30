@@ -31,3 +31,6 @@ class Application(models.Model):
 
     class Meta:
         db_table = 'applications'
+        constraints = [
+            models.UniqueConstraint(fields=['student'], name='unique_student_application')
+        ]

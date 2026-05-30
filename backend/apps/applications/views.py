@@ -83,8 +83,18 @@ def get_application(request, application_id):
                         status=status.HTTP_404_NOT_FOUND)
 
     user = request.user
+
+    # Student: can only view own application
     if user.role == UserRole.STUDENT and application.student.user_id != user.user_id:
         return Response({'error': {'code': 'FORBIDDEN', 'message': '无权限访问此资源'}},
                         status=status.HTTP_403_FORBIDDEN)
+
+    # Counselor: can only view applications from assigned classes
+    if user.role == UserRole.COUNSELOR:
+        try:
+            class_mapping = ClassMapping.objects.get(counselor=user, class_id=application.class_id, active=True)
+        except ClassMapping.DoesNotExist:
+            return Response({'error': {'code': 'FORBIDDEN', 'message': '无权限访问此资源'}},
+                            status=status.HTTP_403_FORBIDDEN)
 
     return Response(ApplicationSerializer(application).data)

@@ -39,7 +39,7 @@ export interface ApplicationCreateRequest {
 
 export interface Application {
   application_id: string;
-  student: string;
+  student_id: string;
   reason: string;
   leave_date: string;
   status: ApplicationStatus;
@@ -51,14 +51,16 @@ export interface ApplicationDetail extends Application {
   student_name: string;
   class_id: string;
   dorm_checkout_status: string;
-  approvals: Approval[];
+  approvals: ApprovalDetail[];
 }
 
 // Approvals
-export interface Approval {
+export interface ApprovalDetail {
   approval_id: string;
-  approver: string;
-  role: ApprovalStep;
+  application_id: string;
+  step: ApprovalStep;
+  approver_id: string;
+  approver_name: string;
   decision: ApprovalDecision;
   comment: string | null;
   decided_at: string | null;
@@ -66,17 +68,12 @@ export interface Approval {
 
 export interface ApprovalListItem {
   approval_id: string;
-  application: {
-    application_id: string;
-    student: string;
-    reason: string;
-    leave_date: string;
-  };
-  approver: string;
-  role: ApprovalStep;
+  application_id: string;
+  step: ApprovalStep;
+  approver_id: string;
+  approver_name: string;
   decision: ApprovalDecision;
-  comment: string | null;
-  decided_at: string | null;
+  created_at: string;
 }
 
 export interface ApprovalActionRequest {

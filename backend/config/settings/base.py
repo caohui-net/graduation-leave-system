@@ -31,6 +31,8 @@ INSTALLED_APPS = [
 
     # Local apps
     'apps.users',
+    'apps.applications',
+    'apps.approvals',
 ]
 
 MIDDLEWARE = [

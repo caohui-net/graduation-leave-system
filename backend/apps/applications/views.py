@@ -53,6 +53,11 @@ def list_applications(request):
             status=status.HTTP_403_FORBIDDEN
         )
 
+    # Status filtering
+    status_param = request.query_params.get('status')
+    if status_param:
+        queryset = queryset.filter(status=status_param)
+
     # Sort by created_at DESC
     queryset = queryset.order_by('-created_at', '-application_id')
 
@@ -146,6 +151,18 @@ def get_application(request, application_id):
         try:
             class_mapping = ClassMapping.objects.get(counselor=user, class_id=application.class_id, active=True)
         except ClassMapping.DoesNotExist:
+            return Response({'error': {'code': 'FORBIDDEN', 'message': '无权限访问此资源'}},
+                            status=status.HTTP_403_FORBIDDEN)
+
+    # Dean: can only view applications with own pending dean approvals
+    if user.role == UserRole.DEAN:
+        has_pending_approval = Approval.objects.filter(
+            application=application,
+            approver=user,
+            step=ApprovalStep.DEAN,
+            decision=ApprovalDecision.PENDING
+        ).exists()
+        if not has_pending_approval:
             return Response({'error': {'code': 'FORBIDDEN', 'message': '无权限访问此资源'}},
                             status=status.HTTP_403_FORBIDDEN)
 

@@ -172,10 +172,23 @@ if [ -z "$T002_TOKEN" ] || [ "$T002_TOKEN" = "null" ]; then
 fi
 echo "✓ T002 login success"
 
-# Create new application to get fresh counselor approval
-echo "9. Create test application for N2..."
+# Login as student 2020002 (CS2020-02, counselor T002)
+echo "9. Student 2020002 login..."
+STUDENT2_TOKEN=$(curl -s -X POST "$BASE_URL/api/auth/login" \
+  -H "Content-Type: application/json" \
+  -d '{"user_id":"2020002","password":"2020002"}' \
+  | jq -r '.access_token')
+
+if [ -z "$STUDENT2_TOKEN" ] || [ "$STUDENT2_TOKEN" = "null" ]; then
+  echo "✗ Student 2020002 login failed"
+  exit 1
+fi
+echo "✓ Student 2020002 login success"
+
+# Create application for 2020002 (will be assigned to T002)
+echo "10. Create application for 2020002..."
 TEST_APP_RESPONSE=$(curl -s -X POST "$BASE_URL/api/applications/" \
-  -H "Authorization: Bearer $STUDENT_TOKEN" \
+  -H "Authorization: Bearer $STUDENT2_TOKEN" \
   -H "Content-Type: application/json" \
   -d '{"reason":"测试跨班级审批","leave_date":"2024-06-30"}')
 
@@ -183,11 +196,11 @@ TEST_APP_ID=$(echo "$TEST_APP_RESPONSE" | jq -r '.application_id')
 TEST_COUNSELOR_APPROVAL=$(echo "$TEST_APP_RESPONSE" | jq -r '.approvals[] | select(.step=="counselor") | .approval_id')
 
 echo "  Test application: $TEST_APP_ID"
-echo "  Test approval (T001): $TEST_COUNSELOR_APPROVAL"
+echo "  Test approval (T002): $TEST_COUNSELOR_APPROVAL"
 
 # T002 tries to approve T001's approval
 echo "10. T002 tries to approve T001's approval (should fail)..."
-CROSS_APPROVE_STATUS=$(curl -s -w "\n%{http_code}" -X POST "$BASE_URL/api/approvals/$TEST_COUNSELOR_APPROVAL/approve/" \
+CROSS_APPROVE_STATUS=$(curl -s -w "\n%{http_code}" -X POST "$BASE_URL/api/approvals/$COUNSELOR_APPROVAL_ID/approve/" \
   -H "Authorization: Bearer $T002_TOKEN" \
   -H "Content-Type: application/json" \
   -d '{"comment":"尝试跨班级审批"}' \

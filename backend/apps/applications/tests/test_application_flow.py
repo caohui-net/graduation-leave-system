@@ -2,6 +2,7 @@ from django.test import TestCase
 from rest_framework.test import APIClient
 from rest_framework import status
 from apps.users.models import User, UserRole
+from apps.users.class_mapping import ClassMapping
 from apps.applications.models import Application, ApplicationStatus
 from apps.approvals.models import Approval, ApprovalDecision
 
@@ -35,14 +36,22 @@ class ApplicationFlowTestCase(TestCase):
             role=UserRole.DEAN
         )
 
+        # Create class mapping
+        ClassMapping.objects.create(
+            class_id='CS2020-01',
+            counselor=self.counselor,
+            counselor_name='李老师',
+            active=True
+        )
+
     def test_complete_application_flow(self):
         """测试完整的申请流程：登录→提交→辅导员审批→学工部审批→查询"""
 
         # Step 1: 学生登录
-        response = self.client.post('/api/auth/login/', {
+        response = self.client.post('/api/auth/login', {
             'user_id': '2020001',
             'password': '2020001'
-        })
+        }, format='json')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         student_token = response.data['access_token']
 
@@ -51,16 +60,16 @@ class ApplicationFlowTestCase(TestCase):
         response = self.client.post('/api/applications/', {
             'reason': '毕业离校',
             'leave_date': '2024-06-30'
-        })
+        }, format='json')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(response.data['status'], ApplicationStatus.PENDING_COUNSELOR)
         application_id = response.data['application_id']
 
         # Step 3: 辅导员登录
-        response = self.client.post('/api/auth/login/', {
+        response = self.client.post('/api/auth/login', {
             'user_id': 'T001',
             'password': 'T001'
-        })
+        }, format='json')
         counselor_token = response.data['access_token']
 
         # Step 4: 辅导员审批通过
@@ -70,15 +79,15 @@ class ApplicationFlowTestCase(TestCase):
         self.client.credentials(HTTP_AUTHORIZATION=f'Bearer {counselor_token}')
         response = self.client.post(f'/api/approvals/{counselor_approval.approval_id}/approve/', {
             'comment': '同意离校'
-        })
+        }, format='json')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data['decision'], ApprovalDecision.APPROVED)
 
         # Step 5: 学工部登录
-        response = self.client.post('/api/auth/login/', {
+        response = self.client.post('/api/auth/login', {
             'user_id': 'D001',
             'password': 'D001'
-        })
+        }, format='json')
         dean_token = response.data['access_token']
 
         # Step 6: 学工部审批通过
@@ -89,7 +98,7 @@ class ApplicationFlowTestCase(TestCase):
         self.client.credentials(HTTP_AUTHORIZATION=f'Bearer {dean_token}')
         response = self.client.post(f'/api/approvals/{dean_approval.approval_id}/approve/', {
             'comment': '同意离校'
-        })
+        }, format='json')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
         # Step 7: 查询申请状态

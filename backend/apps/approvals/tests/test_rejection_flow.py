@@ -2,6 +2,7 @@ from django.test import TestCase
 from rest_framework.test import APIClient
 from rest_framework import status
 from apps.users.models import User, UserRole
+from apps.users.class_mapping import ClassMapping
 from apps.applications.models import Application, ApplicationStatus
 from apps.approvals.models import ApprovalDecision
 
@@ -34,10 +35,18 @@ class RejectionFlowTestCase(TestCase):
             role=UserRole.DEAN
         )
 
+        # Create class mapping
+        ClassMapping.objects.create(
+            class_id='CS2020-01',
+            counselor=self.counselor,
+            counselor_name='李老师',
+            active=True
+        )
+
     def test_counselor_rejection(self):
         """测试辅导员驳回申请"""
         # Student login and submit
-        response = self.client.post('/api/auth/login/', {
+        response = self.client.post('/api/auth/login', {
             'user_id': '2020001',
             'password': '2020001'
         })
@@ -51,7 +60,7 @@ class RejectionFlowTestCase(TestCase):
         application_id = response.data['application_id']
 
         # Counselor login and reject
-        response = self.client.post('/api/auth/login/', {
+        response = self.client.post('/api/auth/login', {
             'user_id': 'T001',
             'password': 'T001'
         })
@@ -74,7 +83,7 @@ class RejectionFlowTestCase(TestCase):
     def test_dean_rejection(self):
         """测试学工部驳回申请"""
         # Student login and submit
-        response = self.client.post('/api/auth/login/', {
+        response = self.client.post('/api/auth/login', {
             'user_id': '2020001',
             'password': '2020001'
         })
@@ -88,7 +97,7 @@ class RejectionFlowTestCase(TestCase):
         application_id = response.data['application_id']
 
         # Counselor approve
-        response = self.client.post('/api/auth/login/', {
+        response = self.client.post('/api/auth/login', {
             'user_id': 'T001',
             'password': 'T001'
         })
@@ -104,7 +113,7 @@ class RejectionFlowTestCase(TestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
         # Dean login and reject
-        response = self.client.post('/api/auth/login/', {
+        response = self.client.post('/api/auth/login', {
             'user_id': 'D001',
             'password': 'D001'
         })

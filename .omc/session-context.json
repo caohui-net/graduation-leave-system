@@ -1,30 +1,31 @@
 {
-  "last_updated": "2026-05-31T02:48:00Z",
+  "last_updated": "2026-05-31T03:03:00Z",
   "completed": [
-    "Codex识别Phase 1三个遗漏缺陷（Dean权限、status过滤、smoke test逻辑）",
-    "Claude完全同意Codex分析，达成共识",
-    "修复Dean detail endpoint权限检查（只能查看有pending dean approval的申请）",
-    "实现GET /api/applications/?status=过滤功能",
-    "修复smoke test负向测试逻辑（使用正确的approval ID）",
-    "Smoke test验证通过（happy path + negative test）",
-    "提交并推送Phase 1收口修复到远程仓库",
-    "更新PROJECT-SUMMARY.md记录Phase 1收口工作",
-    "Week 3 Closure Gate完成：API样例收集、风险文档、v0.2前端契约、CSV导入验证"
+    "Week 3 Closure Gate完成",
+    "Phase 1完成：前端验收清单、风险文档、项目结构设计",
+    "Codex咨询：建议Option D（P0修复→types/client→skeleton）",
+    "Phase 2A完成：P0后端语义修复（resubmission + approval filter）"
   ],
-  "pending": [],
+  "pending": [
+    "Phase 2B: TypeScript types + API client",
+    "Phase 2C: Mini-program skeleton",
+    "Phase 3: API client + Auth store",
+    "Phase 4: Login flow",
+    "Phase 5: Approvals flow"
+  ],
   "evidence": [
-    "API samples: 10个真实响应样例（.omc/artifacts/api-samples/*.json）",
-    "Known risks: P0/P1/P2风险清单（.omc/artifacts/week3-known-risks.md）",
-    "Frontend contract: v0.2契约快照（.omc/artifacts/frontend-contract-v0.2.md）",
-    "CSV verification: 基础导入功能验证通过（.omc/artifacts/csv-import-verification.md）"
+    "P0修复测试通过: tests/test_p0_fixes.sh",
+    "Resubmission验证: ✓ 驳回后可重新提交",
+    "Approval filter验证: ✓ pending/rejected/all过滤正常",
+    "Contract更新: frontend-contract-v0.2.md",
+    "Git commit: feat: P0后端语义修复"
   ],
-  "next_focus": "Week 3 closure gate完成。下一步：启动小程序窄切片（skeleton + API client + login + lists + detail只读）",
+  "next_focus": "Phase 2B: 创建TypeScript类型定义和API client（基于更新后的v0.2契约），可在Node.js环境独立测试",
   "suggested_skills": [],
   "artifacts": {
-    "api_samples": ".omc/artifacts/api-samples/",
-    "known_risks": ".omc/artifacts/week3-known-risks.md",
-    "frontend_contract": ".omc/artifacts/frontend-contract-v0.2.md",
-    "csv_verification": ".omc/artifacts/csv-import-verification.md"
+    "p0_test": "tests/test_p0_fixes.sh",
+    "contract_v0.2": ".omc/artifacts/frontend-contract-v0.2.md",
+    "phase2_approach": ".omc/artifacts/ask/claude-response-phase2-approach-2026-05-31.md"
   },
   "blocking_issues": []
 }

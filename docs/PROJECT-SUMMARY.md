@@ -295,6 +295,22 @@
 - ✓ Django admin配置（Application、Approval）
 - ⏳ 验证步骤（需要环境准备：虚拟环境、依赖安装、PostgreSQL）
 
+**Week 1 Day 5实施（2026-05-30完成）：**
+- ✓ 端到端测试（test_application_flow.py）
+  - 完整流程：登录→提交→辅导员审批→学工部审批→查询
+  - 验证状态流转：pending_counselor→pending_dean→approved
+  - 验证审批记录创建和更新
+- ✓ 错误场景测试（test_error_cases.py）
+  - DORM_BLOCKED：宿舍清退未完成阻断提交
+  - CONFLICT：重复提交申请
+  - FORBIDDEN：学生访问他人申请
+  - NOT_FOUND：申请不存在
+  - VALIDATION_ERROR：参数验证失败
+- ✓ 驳回流程测试（test_rejection_flow.py）
+  - 辅导员驳回：pending_counselor→rejected
+  - 学工部驳回：pending_dean→rejected
+- ⏳ 测试执行（需要环境准备：虚拟环境、依赖安装、PostgreSQL）
+
 ## 文档清单
 
 1. **系统设计文档**

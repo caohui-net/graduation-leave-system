@@ -446,6 +446,21 @@
   - 更新.omc/session-context.json（待完成）
 - ⏳ Phase 8: 6h决策门（待评估）
 
+**Week 3 Day 3 Phase 1收口（2026-05-30完成）：**
+- ✓ Codex识别3个Phase 1遗漏缺陷
+  - Gap 1: Dean detail endpoint无权限限制（安全漏洞）
+  - Gap 2: status过滤功能未实现（Phase 1共识要求）
+  - Gap 3: smoke test负向测试逻辑错误（测试T002审批自己的approval而非T001的）
+- ✓ Claude完全同意Codex分析，达成共识
+- ✓ 修复全部3个缺陷（45分钟）
+  - 添加Dean detail endpoint权限检查（只能查看有pending dean approval的申请）
+  - 实现GET /api/applications/?status=过滤功能
+  - 修复smoke test使用正确的approval ID（$COUNSELOR_APPROVAL_ID而非$TEST_COUNSELOR_APPROVAL）
+- ✓ Smoke test验证通过
+  - Happy path: 学生→辅导员→学工部审批流程 ✓
+  - Negative test: 跨辅导员审批阻断（403）✓
+- ✓ 提交并推送到远程仓库
+
 **Day 2核心成果：**
 - ✓ 数据库约束：Application.student唯一约束（防止重复提交）
 - ✓ 事务保护：transaction.atomic() + select_for_update()（防止竞态）

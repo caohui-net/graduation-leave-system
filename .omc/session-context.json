@@ -1,5 +1,5 @@
 {
-  "last_updated": "2026-05-30T17:50:00Z",
+  "last_updated": "2026-05-30T14:21:00Z",
   "completed": [
     "Week 0契约冻结工作完成",
     "Codex第四轮审查确认：达到可执行契约标准",
@@ -12,32 +12,29 @@
     "GitHub项目分析完成：4个项目独立分析 + 共识达成",
     "Week 3工作方向讨论完成：Claude-Codex 4轮批判性讨论达成共识（Plan D）",
     "Week 3 Day 0准备完成：环境策略决策（完整Docker Compose）、seed数据需求、验收清单",
-    "Week 3 Day 1完成：Docker环境启动、迁移执行、seed数据导入、最小闭环验证通过（8项标准全部达标）"
+    "Week 3 Day 1完成：Docker环境启动、迁移执行、seed数据导入、最小闭环验证通过（8项标准全部达标）",
+    "Week 3 Day 1审查完成：Codex识别7个P1 + 5个P2问题",
+    "Week 3 Day 2计划讨论完成：Claude-Codex达成共识（4-6h timebox + Conditional Go）"
   ],
   "pending": [
-    "Week 3 Day 2：固化可复现验证脚本、输出P1/P2问题清单、决策Week 3后续方向",
-    "Week 1-2代码验证（已通过最小闭环验证）"
+    "Week 3 Day 2执行：4小时核心修复（seed/mock、审批权限、状态机、重复提交、smoke test、文档）",
+    "Week 3 Day 2可选：列表接口（1.5h）+ 负向验证（30min）",
+    "Week 3 Day 3（如需要）：收尾列表接口、负向验证、ClassMapping校验"
   ],
   "evidence": [
-    "docs/discussions/week3-direction-2026-05-30/06-consensus.md - Week 3方向最终共识",
-    "docs/PROJECT-SUMMARY.md - 已更新Week 3讨论记录",
-    ".omc/collaboration/events.jsonl - 事件id=26记录共识达成",
-    "docs/week3-day0-environment-strategy.md - 环境策略决策（完整Docker Compose）",
-    "docs/week3-day0-seed-data-requirements.md - Seed数据需求（2学生+2辅导员+1学工部+2班级映射）",
-    "docs/week3-day0-acceptance-checklist.md - 最小闭环验收清单（8项验收标准）",
-    "backend/Dockerfile - Python 3.11镜像，安装依赖",
-    "docker-compose.yml - PostgreSQL + Django服务（端口8001）",
-    ".env.docker - Docker环境配置",
-    "backend/apps/*/migrations/ - 迁移文件已生成并执行",
+    "docs/discussions/week3-day1-review-2026-05-30/01-codex-review.md - Codex审查识别7个P1问题",
+    "docs/discussions/week3-day1-review-2026-05-30/07-consensus-day2-plan.md - Day 2计划最终共识",
+    "核心P1问题：跨辅导员审批漏洞、重复审批漏洞、重复提交竞态、seed数据错误、缺少smoke test、文档不一致、缺少列表接口",
+    "共识：Day 2维持4-6h timebox，输出Conditional Go；Day 3收尾剩余项",
+    "妥协：Codex接受4-6h（原建议8-12h），Claude接受列表接口是Go门槛一部分",
     "API验证：登录→提交→辅导员审批→学工部审批→查询→403权限验证全部通过"
   ],
-  "next_focus": "Week 3 Day 2：创建smoke test脚本固化验证、分析P1/P2问题、决策是否继续Week 3扩展开发或调整方向",
+  "next_focus": "Week 3 Day 2执行：按4-6小时计划修复P1问题，达到Conditional Go标准",
   "suggested_skills": [],
   "artifacts": {
     "week3_consensus": "docs/discussions/week3-direction-2026-05-30/06-consensus.md",
-    "week3_claude_proposal": "docs/discussions/week3-direction-2026-05-30/01-claude-proposal.md",
-    "week3_codex_review": "docs/discussions/week3-direction-2026-05-30/04-codex-review-of-claude-response.md",
-    "collab_protocol": ".omc/collaboration/protocol.md",
-    "collab_state": ".omc/collaboration/state.json"
+    "day1_review": "docs/discussions/week3-day1-review-2026-05-30/01-codex-review.md",
+    "day2_consensus": "docs/discussions/week3-day1-review-2026-05-30/07-consensus-day2-plan.md",
+    "collab_protocol": ".omc/collaboration/protocol.md"
   }
 }

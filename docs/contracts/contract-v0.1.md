@@ -220,6 +220,8 @@ class DormCheckoutStatus(str, Enum):
 }
 ```
 
+**说明：** 响应中的 `user` 对象为 AuthUserDTO（UserDTO的子集），仅包含认证后必需的字段（user_id、name、role、class_id），不包含 active、is_graduating、graduation_year 等完整字段。
+
 ### 4.2 申请
 
 #### POST /api/applications
@@ -322,30 +324,6 @@ class DormCheckoutStatus(str, Enum):
   "decision": "rejected",
   "comment": "材料不齐全",
   "decided_at": "2024-05-30T11:00:00Z"
-}
-```
-
-### 4.4 查询
-
-#### GET /api/applications
-
-**查询参数：**
-- `status`: ApplicationStatus（可选）
-- `student_id`: 学号（可选，辅导员/学工部可用）
-
-**响应：**
-```json
-{
-  "applications": [
-    {
-      "application_id": "app_001",
-      "student_id": "2020001",
-      "student_name": "张三",
-      "status": "pending_counselor",
-      "created_at": "2024-05-30T10:00:00Z"
-    }
-  ],
-  "total": 1
 }
 ```
 
@@ -503,6 +481,21 @@ class MockDormCheckoutProvider:
       "student_id": "2020002",
       "dorm_status": "pending",
       "blocking_reason": "宿舍物品未清理"
+    }
+  }
+}
+```
+
+**503 Provider Unavailable：**
+```json
+{
+  "error": {
+    "code": "PROVIDER_UNAVAILABLE",
+    "message": "宿舍清退服务暂时不可用，请稍后重试",
+    "details": {
+      "student_id": "2020503",
+      "provider": "dorm_checkout",
+      "error": "Connection timeout"
     }
   }
 }

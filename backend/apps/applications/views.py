@@ -8,6 +8,7 @@ from .serializers import ApplicationSerializer, ApplicationCreateSerializer
 from .providers import MockDormCheckoutProvider
 from apps.approvals.models import Approval, ApprovalStep, ApprovalDecision
 from apps.users.models import UserRole
+from apps.users.class_mapping import ClassMapping
 import uuid
 
 
@@ -41,6 +42,13 @@ def create_application(request):
                                                 'blocking_reason': dorm_status.blocking_reason}}},
                         status=status.HTTP_422_UNPROCESSABLE_ENTITY)
 
+    try:
+        class_mapping = ClassMapping.objects.get(class_id=user.class_id, active=True)
+    except ClassMapping.DoesNotExist:
+        return Response({'error': {'code': 'NOT_FOUND', 'message': '班级映射不存在',
+                                    'details': {'class_id': user.class_id}}},
+                        status=status.HTTP_404_NOT_FOUND)
+
     application = Application.objects.create(
         application_id=f'app_{uuid.uuid4().hex[:8]}',
         student=user,
@@ -56,8 +64,8 @@ def create_application(request):
         approval_id=f'apv_{uuid.uuid4().hex[:8]}',
         application=application,
         step=ApprovalStep.COUNSELOR,
-        approver_id='T001',
-        approver_name='李老师',
+        approver=class_mapping.counselor,
+        approver_name=class_mapping.counselor_name,
         decision=ApprovalDecision.PENDING
     )
 

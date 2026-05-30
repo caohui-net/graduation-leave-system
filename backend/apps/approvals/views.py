@@ -27,6 +27,10 @@ def approve_approval(request, approval_id):
         return Response({'error': {'code': 'FORBIDDEN', 'message': '无权限执行此操作'}},
                         status=status.HTTP_403_FORBIDDEN)
 
+    if approval.approver_id != user.user_id:
+        return Response({'error': {'code': 'FORBIDDEN', 'message': '无权限执行此操作'}},
+                        status=status.HTTP_403_FORBIDDEN)
+
     if approval.decision != ApprovalDecision.PENDING:
         return Response({'error': {'code': 'CONFLICT', 'message': '审批已完成，不能重复操作'}},
                         status=status.HTTP_409_CONFLICT)
@@ -74,6 +78,10 @@ def reject_approval(request, approval_id):
         return Response({'error': {'code': 'FORBIDDEN', 'message': '无权限执行此操作'}},
                         status=status.HTTP_403_FORBIDDEN)
     if approval.step == ApprovalStep.DEAN and user.role != UserRole.DEAN:
+        return Response({'error': {'code': 'FORBIDDEN', 'message': '无权限执行此操作'}},
+                        status=status.HTTP_403_FORBIDDEN)
+
+    if approval.approver_id != user.user_id:
         return Response({'error': {'code': 'FORBIDDEN', 'message': '无权限执行此操作'}},
                         status=status.HTTP_403_FORBIDDEN)
 

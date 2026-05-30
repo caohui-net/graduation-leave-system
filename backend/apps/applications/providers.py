@@ -36,6 +36,13 @@ class MockDormCheckoutProvider:
                 blocking_reason="未提交清退申请",
                 provider_error_code=None
             ),
+            "2020006": DormCheckoutStatusDTO(
+                student_id="2020006",
+                status=DormCheckoutStatus.COMPLETED,
+                checked_at="2024-05-15T10:30:00Z",
+                blocking_reason=None,
+                provider_error_code=None
+            ),
             "2020099": DormCheckoutStatusDTO(
                 student_id="2020099",
                 status=DormCheckoutStatus.UNKNOWN,

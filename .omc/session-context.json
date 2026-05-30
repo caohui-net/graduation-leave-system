@@ -1,5 +1,5 @@
 {
-  "last_updated": "2026-05-30T08:56:00Z",
+  "last_updated": "2026-05-30T09:00:00Z",
   "completed": [
     "Week 0契约冻结工作完成",
     "Codex第四轮审查确认：达到可执行契约标准",
@@ -7,11 +7,12 @@
     "Week 1 Day 1实施完成：Django骨架、User模型、JWT认证、seed数据",
     "Week 1 Day 3-4实施完成：Application模型、Approval模型、5个API端点、Mock宿舍清退服务",
     "Week 1 Day 5实施完成：端到端测试、错误场景测试、驳回流程测试",
+    "Week 2实施完成：ClassMapping模型、CSV导入命令、动态辅导员分配",
     "Claude-Codex协作机制MVP完成：protocol v0.2 + 技能固化（.claude/skills/claude-codex-collab/）"
   ],
   "pending": [
-    "Week 1验证（需要环境准备：虚拟环境、依赖安装、PostgreSQL）",
-    "Week 2工作（CSV导入v1、班级映射、辅导员分配）"
+    "Week 1-2验证（需要环境准备：虚拟环境、依赖安装、PostgreSQL）",
+    "Week 3工作（核心流程补强、v0.2契约）"
   ],
   "evidence": [
     "docs/contracts/contract-v0.1.md - v0.1 Final已冻结",
@@ -24,7 +25,7 @@
     "backend/apps/users/views.py - 登录视图",
     "backend/apps/users/management/commands/seed_data.py - seed数据命令"
   ],
-  "next_focus": "Week 1代码已完成，等待环境验证或继续Week 2工作（CSV导入、班级映射）",
+  "next_focus": "Week 1-2代码已完成，等待环境验证或继续Week 3工作（核心流程补强、v0.2契约）",
   "suggested_skills": [],
   "artifacts": {
     "contract_v0_1_final": "docs/contracts/contract-v0.1.md",
@@ -33,12 +34,14 @@
     "project_summary": "docs/PROJECT-SUMMARY.md",
     "system_design": "docs/design/2026-05-27-system-design.md",
     "user_model": "backend/apps/users/models.py",
+    "class_mapping": "backend/apps/users/class_mapping.py",
     "application_model": "backend/apps/applications/models.py",
     "approval_model": "backend/apps/approvals/models.py",
     "application_views": "backend/apps/applications/views.py",
     "approval_views": "backend/apps/approvals/views.py",
     "dorm_provider": "backend/apps/applications/providers.py",
     "seed_command": "backend/apps/users/management/commands/seed_data.py",
+    "import_csv_command": "backend/apps/users/management/commands/import_csv.py",
     "test_flow": "backend/apps/applications/tests/test_application_flow.py",
     "test_errors": "backend/apps/applications/tests/test_error_cases.py",
     "test_rejection": "backend/apps/approvals/tests/test_rejection_flow.py",

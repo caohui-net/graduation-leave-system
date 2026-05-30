@@ -311,6 +311,24 @@
   - 学工部驳回：pending_dean→rejected
 - ⏳ 测试执行（需要环境准备：虚拟环境、依赖安装、PostgreSQL）
 
+**Week 2实施（2026-05-30完成）：**
+- ✓ ClassMapping模型
+  - class_id、counselor、counselor_name、active
+  - 班级到辅导员的映射关系
+- ✓ CSV导入命令（import_csv）
+  - 支持导入students CSV（student_id、name、class_id等）
+  - 支持导入counselors CSV（employee_id、name等）
+  - 支持导入mappings CSV（class_id、counselor_id）
+- ✓ 动态辅导员分配
+  - 移除硬编码辅导员ID（T001）
+  - 根据学生class_id查找ClassMapping
+  - 自动分配对应辅导员到审批流程
+- ✓ seed_data更新
+  - 创建2个班级映射（CS2020-01→T001, CS2020-02→T002）
+- ✓ admin配置
+  - ClassMapping管理界面
+- ⏳ CSV模板文件（待创建）
+
 ## 文档清单
 
 1. **系统设计文档**

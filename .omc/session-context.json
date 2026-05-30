@@ -1,36 +1,30 @@
 {
-  "last_updated": "2026-05-28T09:40:57Z",
+  "last_updated": "2026-05-30T07:20:17Z",
   "completed": [
-    "更新CSV模板（学生、辅导员、班级映射）- 英文字段名、布尔值格式",
-    "创建数据确认清单（15个问题+5阶段实施计划）",
-    "打包用户文档并提供下载（dufs文件服务器）",
-    "删除重复的自定义skill（codex-review-dialogue.md）",
-    "创建Codex审查流程指南（项目级和全局级）",
-    "固化Codex审查协议到CLAUDE.md（项目级和全局级）",
-    "添加Load Trigger规范到审查流程指南",
-    "在全局CLAUDE.md添加配置文件规范章节",
-    "创建配置文件模板（~/.claude/templates/config-file-template.md）",
-    "项目记忆固化配置文件规范要求",
-    "更新PROJECT-SUMMARY.md记录2026-05-28工作",
-    "整理微信小程序申请说明文档（从飞书wiki）",
-    "整理微信小程序备案说明文档（从飞书wiki）",
-    "修复OMC HUD状态栏显示问题（~/.claude/hud/omc-hud.mjs调用main而非renderHud）"
+    "识别外部API信息缺失阻塞开发问题",
+    "创建API阻塞问题审查请求文档（37-api-blocking-solution-review-request.md）",
+    "调用Codex审查Mock + 接口抽象方案",
+    "保存Codex审查结果（38-codex-api-blocking-review.md，评分7/10）",
+    "创建Claude响应文档完全接受Codex建议（39-claude-response-to-codex.md）",
+    "创建最终共识文档（40-api-blocking-solution-consensus.md）",
+    "修正方案：用户主数据CSV导入，ImportSource用于数据导入非运行时查询",
+    "更新PROJECT-SUMMARY.md记录API阻塞解决方案共识"
   ],
-  "pending": [],
+  "pending": [
+    "更新实施计划文档（调整Week 1-10任务分配）",
+    "开始Week 1工作：数据契约和接口设计"
+  ],
   "evidence": [
-    "docs/Codex审查流程指南.md - 包含Load Trigger章节",
-    "~/.claude/docs/Codex审查流程指南.md - 全局版本",
-    "~/.claude/CLAUDE.md - 包含Codex Review Protocol和Configuration File Standards",
-    "~/.claude/templates/config-file-template.md - 配置文件标准模板",
-    ".omc/project-memory.json - 包含高优先级配置文件规范指令",
-    "docs/PROJECT-SUMMARY.md - 更新至2026-05-28",
-    "~/.claude/hud/omc-hud.mjs - HUD wrapper修复验证通过"
+    "docs/discussions/codex-review-2026-05-30/37-api-blocking-solution-review-request.md",
+    "docs/discussions/codex-review-2026-05-30/38-codex-api-blocking-review.md",
+    "docs/discussions/codex-review-2026-05-30/39-claude-response-to-codex.md",
+    "docs/discussions/codex-review-2026-05-30/40-api-blocking-solution-consensus.md",
+    "docs/PROJECT-SUMMARY.md - 更新至2026-05-30"
   ],
-  "next_focus": "开始系统实施 - 准备开发环境、配置工具、开始编码",
+  "next_focus": "更新实施计划，开始Week 1：数据契约、DTO、ImportSource接口设计",
   "artifacts": {
-    "review_guide": "docs/Codex审查流程指南.md",
-    "project_config": "CLAUDE.md",
-    "data_checklist": "docs/数据确认清单.md",
-    "project_summary": "docs/PROJECT-SUMMARY.md"
+    "consensus": "docs/discussions/codex-review-2026-05-30/40-api-blocking-solution-consensus.md",
+    "project_summary": "docs/PROJECT-SUMMARY.md",
+    "system_design": "docs/design/2026-05-27-system-design.md"
   }
 }

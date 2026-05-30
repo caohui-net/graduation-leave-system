@@ -15,13 +15,13 @@
 @dataclass
 class UserDTO:
     """用户数据传输对象"""
-    user_id: str              # 学号/工号
-    name: str                 # 姓名
-    role: UserRole            # 角色：student/counselor/dean
-    class_id: Optional[str]   # 班级ID（学生必填）
-    is_graduating: bool       # 是否毕业生（学生）
-    graduation_year: int      # 毕业年份（学生）
-    active: bool              # 账号是否激活
+    user_id: str                      # 学号/工号
+    name: str                         # 姓名
+    role: UserRole                    # 角色：student/counselor/dean
+    active: bool                      # 账号是否激活
+    class_id: Optional[str] = None    # 班级ID（学生必填，教师为None）
+    is_graduating: Optional[bool] = None  # 是否毕业生（仅学生）
+    graduation_year: Optional[int] = None # 毕业年份（仅学生）
 ```
 
 ### 1.2 ApplicationDTO
@@ -121,6 +121,37 @@ class DormCheckoutStatus(str, Enum):
     NOT_STARTED = "not_started"      # 未开始
     UNKNOWN = "unknown"              # 状态未知（API失败）
 ```
+
+### 2.6 状态机契约
+
+**申请状态流转规则：**
+
+| 当前状态 | 触发动作 | 角色 | 下一状态 | 副作用 |
+|---------|---------|------|---------|--------|
+| - | 学生提交申请 | student | pending_counselor | 创建辅导员审批记录 |
+| pending_counselor | 辅导员通过 | counselor | pending_dean | 创建学工部审批记录 |
+| pending_counselor | 辅导员驳回 | counselor | rejected | 无 |
+| pending_dean | 学工部通过 | dean | approved | 无 |
+| pending_dean | 学工部驳回 | dean | rejected | 无 |
+
+**宿舍清退状态处理规则：**
+
+| 宿舍状态 | 提交申请行为 | HTTP状态 | 错误码 |
+|---------|------------|---------|--------|
+| completed | 允许提交 | 201 | - |
+| pending | 阻断提交 | 422 | DORM_BLOCKED |
+| not_started | 阻断提交 | 422 | DORM_BLOCKED |
+| unknown | 阻断提交 | 422 | DORM_BLOCKED |
+| provider_unavailable | 阻断提交 | 503 | PROVIDER_UNAVAILABLE |
+
+**角色权限矩阵：**
+
+| 操作 | student | counselor | dean |
+|------|---------|-----------|------|
+| 提交申请 | ✓（仅自己） | ✗ | ✗ |
+| 查看申请 | ✓（仅自己） | ✓（本班级） | ✓（所有） |
+| 辅导员审批 | ✗ | ✓（本班级） | ✗ |
+| 学工部审批 | ✗ | ✗ | ✓（所有） |
 
 ---
 
@@ -324,27 +355,36 @@ class DormCheckoutStatus(str, Enum):
 
 ### 5.1 正常样本
 
-**学生：**
+**默认密码：** 所有账号默认密码为 `password123`
+
+**学生（10人）：**
 ```python
 students = [
     {"user_id": "2020001", "name": "张三", "role": "student", "class_id": "CS2020-01", "is_graduating": True, "graduation_year": 2024, "active": True},
     {"user_id": "2020002", "name": "李四", "role": "student", "class_id": "CS2020-01", "is_graduating": True, "graduation_year": 2024, "active": True},
     {"user_id": "2020003", "name": "王五", "role": "student", "class_id": "CS2020-02", "is_graduating": True, "graduation_year": 2024, "active": True},
+    {"user_id": "2020004", "name": "赵六", "role": "student", "class_id": "CS2020-02", "is_graduating": True, "graduation_year": 2024, "active": True},
+    {"user_id": "2020005", "name": "钱七", "role": "student", "class_id": "CS2020-01", "is_graduating": True, "graduation_year": 2024, "active": True},
+    {"user_id": "2020006", "name": "孙八", "role": "student", "class_id": "CS2020-02", "is_graduating": True, "graduation_year": 2024, "active": True},
+    {"user_id": "2020007", "name": "周九", "role": "student", "class_id": "CS2020-01", "is_graduating": True, "graduation_year": 2024, "active": True},
+    {"user_id": "2020008", "name": "吴十", "role": "student", "class_id": "CS2020-02", "is_graduating": True, "graduation_year": 2024, "active": True},
+    {"user_id": "2020009", "name": "郑十一", "role": "student", "class_id": "CS2020-01", "is_graduating": True, "graduation_year": 2024, "active": True},
+    {"user_id": "2020010", "name": "王十二", "role": "student", "class_id": "CS2020-02", "is_graduating": True, "graduation_year": 2024, "active": True},
 ]
 ```
 
-**辅导员：**
+**辅导员（2人）：**
 ```python
 counselors = [
-    {"user_id": "T001", "name": "李老师", "role": "counselor", "class_id": None, "active": True},
-    {"user_id": "T002", "name": "王老师", "role": "counselor", "class_id": None, "active": True},
+    {"user_id": "T001", "name": "李老师", "role": "counselor", "class_id": None, "is_graduating": None, "graduation_year": None, "active": True},
+    {"user_id": "T002", "name": "王老师", "role": "counselor", "class_id": None, "is_graduating": None, "graduation_year": None, "active": True},
 ]
 ```
 
-**学工部：**
+**学工部（1人）：**
 ```python
 deans = [
-    {"user_id": "D001", "name": "赵主任", "role": "dean", "class_id": None, "active": True},
+    {"user_id": "D001", "name": "赵主任", "role": "dean", "class_id": None, "is_graduating": None, "graduation_year": None, "active": True},
 ]
 ```
 
@@ -389,7 +429,7 @@ class_mappings = [
 ```python
 class MockDormCheckoutProvider:
     def check_status(self, student_id: str) -> DormCheckoutStatusDTO:
-        # 固定返回规则
+        # 固定返回规则（覆盖所有状态）
         mock_data = {
             "2020001": DormCheckoutStatusDTO(
                 student_id="2020001",
@@ -412,14 +452,21 @@ class MockDormCheckoutProvider:
                 blocking_reason="未提交清退申请",
                 provider_error_code=None
             ),
+            "2020099": DormCheckoutStatusDTO(
+                student_id="2020099",
+                status=DormCheckoutStatus.UNKNOWN,
+                checked_at=None,
+                blocking_reason="学生信息不存在",
+                provider_error_code="STUDENT_NOT_FOUND"
+            ),
         }
         
-        # 默认返回completed
+        # 默认返回NOT_STARTED（而非completed，避免掩盖失败路径）
         return mock_data.get(student_id, DormCheckoutStatusDTO(
             student_id=student_id,
-            status=DormCheckoutStatus.COMPLETED,
-            checked_at="2024-05-15T10:00:00Z",
-            blocking_reason=None,
+            status=DormCheckoutStatus.NOT_STARTED,
+            checked_at=None,
+            blocking_reason="未在宿舍系统中找到记录",
             provider_error_code=None
         ))
 ```

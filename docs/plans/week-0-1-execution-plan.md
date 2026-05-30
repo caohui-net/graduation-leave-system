@@ -26,9 +26,14 @@
 ### Day 1（0.5-1天）
 
 **任务：**
-- [ ] 创建样例请求/响应（5个API端点）
+- [ ] 创建样例请求/响应（5个核心API端点）
+  - POST /api/auth/login
+  - POST /api/applications
+  - GET /api/applications/{id}
+  - POST /api/approvals/{id}/approve
+  - POST /api/approvals/{id}/reject
 - [ ] 创建Mock响应（宿舍清退Mock + 错误Mock）
-- [ ] 生成seed数据（10学生 + 2辅导员 + 1学工部 + 边界样本）
+- [ ] 生成seed数据（10学生 + 2辅导员 + 1学工部 + 边界样本 + 默认密码）
 - [ ] 前端review可消费性
 - [ ] 业务方确认业务假设
 
@@ -105,8 +110,8 @@
 - [ ] 角色校验生效（学生不能审批，辅导员不能跨班级审批）
 
 **降级条件：**
-- 如Day 3结束申请提交API未完成 → 只做查询API，Day 4补申请提交
-- 如Day 4结束学工部审批未完成 → 推到Week 2 Day 1，Week 1只验证辅导员审批
+- 如Day 3结束申请提交API未完成 → 保留"提交→辅导员审批→查询"最短闭环，砍学工部审批、列表API
+- 如Day 4结束学工部审批未完成 → 推到Week 2 Day 1，Week 1只验证"提交→辅导员审批"闭环
 
 ### Day 5：验收硬化
 
@@ -132,7 +137,7 @@
 - [ ] Week 2任务清单明确
 
 **降级条件：**
-- 如Day 5结束仍有P0 bug → 周末加班修复，或Week 2 Day 1修复
+- 如Day 5结束仍有P0 bug → 推到Week 2 Day 1修复，或砍掉触发bug的边界场景
 
 ---
 

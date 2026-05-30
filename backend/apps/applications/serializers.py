@@ -2,6 +2,18 @@ from rest_framework import serializers
 from .models import Application
 
 
+class ApplicationListSerializer(serializers.ModelSerializer):
+    """Lean serializer for application lists - no nested approvals"""
+    student_id = serializers.CharField(source='student.user_id', read_only=True)
+
+    class Meta:
+        model = Application
+        fields = ['application_id', 'student_id', 'student_name', 'class_id',
+                  'reason', 'leave_date', 'status', 'created_at', 'updated_at']
+        read_only_fields = ['application_id', 'student_id', 'student_name',
+                            'class_id', 'status', 'created_at', 'updated_at']
+
+
 class ApplicationSerializer(serializers.ModelSerializer):
     student_id = serializers.CharField(source='student.user_id', read_only=True)
     approvals = serializers.SerializerMethodField()

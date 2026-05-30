@@ -4,7 +4,8 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from django.utils import timezone
 from .models import Application, ApplicationStatus, DormCheckoutStatus
-from .serializers import ApplicationSerializer, ApplicationCreateSerializer
+from .serializers import ApplicationSerializer, ApplicationCreateSerializer, ApplicationListSerializer
+from .pagination import ApplicationLimitOffsetPagination
 from .providers import MockDormCheckoutProvider
 from apps.approvals.models import Approval, ApprovalStep, ApprovalDecision
 from apps.users.models import UserRole
@@ -12,8 +13,59 @@ from apps.users.class_mapping import ClassMapping
 import uuid
 
 
-@api_view(['POST'])
+@api_view(['GET', 'POST'])
 @permission_classes([IsAuthenticated])
+def applications_view(request):
+    if request.method == 'GET':
+        return list_applications(request)
+    else:
+        return create_application(request)
+
+
+def list_applications(request):
+    user = request.user
+
+    # Student: own applications only
+    if user.role == UserRole.STUDENT:
+        queryset = Application.objects.filter(student=user)
+
+    # Counselor: applications with own pending counselor approvals
+    elif user.role == UserRole.COUNSELOR:
+        pending_approvals = Approval.objects.filter(
+            approver=user,
+            step=ApprovalStep.COUNSELOR,
+            decision=ApprovalDecision.PENDING
+        ).values_list('application', flat=True)
+        queryset = Application.objects.filter(pk__in=pending_approvals)
+
+    # Dean: applications with own pending dean approvals
+    elif user.role == UserRole.DEAN:
+        pending_approvals = Approval.objects.filter(
+            approver=user,
+            step=ApprovalStep.DEAN,
+            decision=ApprovalDecision.PENDING
+        ).values_list('application', flat=True)
+        queryset = Application.objects.filter(pk__in=pending_approvals)
+
+    else:
+        return Response(
+            {'error': {'code': 'FORBIDDEN', 'message': '无效的用户角色'}},
+            status=status.HTTP_403_FORBIDDEN
+        )
+
+    # Sort by created_at DESC
+    queryset = queryset.order_by('-created_at', '-application_id')
+
+    # Paginate
+    paginator = ApplicationLimitOffsetPagination()
+    page = paginator.paginate_queryset(queryset, request)
+
+    # Serialize
+    serializer = ApplicationListSerializer(page, many=True)
+
+    return paginator.get_paginated_response(serializer.data)
+
+
 def create_application(request):
     user = request.user
 

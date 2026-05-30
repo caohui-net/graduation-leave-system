@@ -5,10 +5,58 @@ from rest_framework.response import Response
 from django.utils import timezone
 from django.db import transaction
 from .models import Approval, ApprovalDecision, ApprovalStep
-from .serializers import ApprovalSerializer, ApprovalActionSerializer
+from .serializers import ApprovalSerializer, ApprovalActionSerializer, ApprovalListSerializer
+from .pagination import ApprovalLimitOffsetPagination
 from apps.applications.models import Application, ApplicationStatus
 from apps.users.models import UserRole
 import uuid
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def list_approvals(request):
+    user = request.user
+
+    # 学生禁止访问
+    if user.role == UserRole.STUDENT:
+        return Response(
+            {'error': {'code': 'FORBIDDEN', 'message': '学生不能访问审批列表'}},
+            status=status.HTTP_403_FORBIDDEN
+        )
+
+    # 辅导员: 只看自己的pending counselor审批
+    if user.role == UserRole.COUNSELOR:
+        queryset = Approval.objects.filter(
+            approver=user,
+            step=ApprovalStep.COUNSELOR,
+            decision=ApprovalDecision.PENDING
+        ).select_related('application', 'approver')
+
+    # 学工部: 只看自己的pending dean审批
+    elif user.role == UserRole.DEAN:
+        queryset = Approval.objects.filter(
+            approver=user,
+            step=ApprovalStep.DEAN,
+            decision=ApprovalDecision.PENDING
+        ).select_related('application', 'approver')
+
+    else:
+        return Response(
+            {'error': {'code': 'FORBIDDEN', 'message': '无效的用户角色'}},
+            status=status.HTTP_403_FORBIDDEN
+        )
+
+    # 排序
+    queryset = queryset.order_by('-created_at', '-approval_id')
+
+    # 分页
+    paginator = ApprovalLimitOffsetPagination()
+    page = paginator.paginate_queryset(queryset, request)
+
+    # 序列化
+    serializer = ApprovalListSerializer(page, many=True)
+
+    return paginator.get_paginated_response(serializer.data)
 
 
 @api_view(['POST'])

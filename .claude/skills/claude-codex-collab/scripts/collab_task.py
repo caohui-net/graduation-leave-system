@@ -65,20 +65,51 @@ def claim_task(base_dir, task_id, agent="claude"):
     try:
         # Check task not already claimed
         events_file = collab_dir / "events.jsonl"
-        if events_file.exists():
+        events = []
+        if events_file.exists() and events_file.stat().st_size > 0:
             for line in events_file.read_text().strip().split('\n'):
                 if line:
                     event = json.loads(line)
+                    events.append(event)
                     if (event.get('task_id') == task_id and
                         event.get('type') in ['task_claimed', 'in_progress'] and
                         event.get('status') not in ['completed', 'cancelled']):
+                        release_lock(collab_dir)
                         print(f"❌ Task {task_id} already claimed by {event.get('agent')}")
                         return 1
 
-        # Append claim event (releases lock internally)
+        # Append claim event atomically while holding lock
+        next_id = max((e.get('id', 0) for e in events), default=0) + 1
+        event = {
+            "id": next_id,
+            "type": "task_claimed",
+            "agent": agent,
+            "timestamp": datetime.now(timezone.utc).isoformat(),
+            "summary": f"{agent} claimed task {task_id}",
+            "task_id": task_id,
+            "status": "in_progress"
+        }
+
+        with events_file.open('a') as f:
+            f.write(json.dumps(event) + '\n')
+
+        # Update state
+        state_file = collab_dir / "state.json"
+        state = json.loads(state_file.read_text())
+        state["last_event_id"] = next_id
+        state["status"] = "in_progress"
+        state["current_task"] = task_id
+        state["active_agent"] = agent
+        state["updated_at"] = event["timestamp"]
+
+        temp_file = collab_dir / f"state.json.tmp.{agent}"
+        temp_file.write_text(json.dumps(state, indent=2) + '\n')
+        temp_file.replace(state_file)
+
         release_lock(collab_dir)
-        return append_event(base_dir, "task_claimed", agent, task_id,
-                           f"{agent} claimed task {task_id}")
+        print(f"✓ Task {task_id} claimed by {agent}")
+        print(f"✓ Event {next_id} appended: task_claimed")
+        return 0
 
     except Exception as e:
         release_lock(collab_dir)

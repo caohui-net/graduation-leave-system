@@ -1,6 +1,6 @@
 # Claude-Codex Collaboration Protocol
 
-Version: 0.2
+Version: 0.3
 Status: active
 Owner: Claude + Codex
 

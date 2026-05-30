@@ -79,12 +79,6 @@ if [[ -z "$PROMPT" ]]; then
     usage
 fi
 
-# Check Gemini CLI availability
-if ! command -v gemini &> /dev/null; then
-    echo "❌ Gemini CLI not found. Install: npm install -g @google/gemini-cli"
-    exit 1
-fi
-
 # Generate artifact filename
 TIMESTAMP=$(date +"%Y%m%d-%H%M")
 SLUG=$(echo "$PROMPT" | tr '[:upper:]' '[:lower:]' | tr -cs '[:alnum:]' '-' | cut -c1-30)
@@ -145,6 +139,12 @@ EOF
         "[\"$ARTIFACT_FILE\"]"
 
     exit 0
+fi
+
+# Check Gemini CLI availability (only for live execution)
+if ! command -v gemini &> /dev/null; then
+    echo "❌ Gemini CLI not found. Install: npm install -g @google/gemini-cli"
+    exit 1
 fi
 
 # Execute Gemini CLI

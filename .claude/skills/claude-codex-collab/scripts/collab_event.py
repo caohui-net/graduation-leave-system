@@ -95,7 +95,9 @@ def append_event(base_dir, event_type, agent, task_id, summary, artifacts=None, 
             "task_claimed": "in_progress",
             "handoff_requested": "waiting",
             "completed": "completed",
-            "blocked": "blocked"
+            "blocked": "blocked",
+            "independent_analysis_completed": "waiting_synthesis",
+            "synthesis_completed": "completed"
         }
         event["status"] = status_map.get(event_type, "in_progress")
 

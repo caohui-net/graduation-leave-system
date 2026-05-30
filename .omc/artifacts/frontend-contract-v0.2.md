@@ -76,7 +76,9 @@ Authorization: Bearer <access_token>
 
 **Errors:**
 - 400: Validation error
-- 409: Application already exists (unique constraint)
+- 409: Pending or approved application exists (cannot resubmit while pending/approved)
+
+**Note:** Students can resubmit after rejection.
 
 **Sample:** `api-samples/02-submit-application.json`
 
@@ -160,6 +162,11 @@ Authorization: Bearer <access_token>
 **Query Params:**
 - `limit` (optional, default 20)
 - `offset` (optional, default 0)
+- `decision` (optional, default "pending"): Filter by decision status
+  - `pending`: Only pending approvals
+  - `approved`: Only approved approvals
+  - `rejected`: Only rejected approvals
+  - `all`: All approvals
 
 **Response (200):**
 ```json
@@ -274,10 +281,8 @@ Authorization: Bearer <access_token>
 
 ## Known Limitations (v0.2)
 
-1. **No resubmission after rejection** - unique constraint on Application.student
-2. **No approved history viewing** - `/api/approvals/` only shows pending
-3. **No filtering/search** - list endpoints return all records (paginated)
-4. **No sorting** - results ordered by creation time (newest first)
+1. **No filtering/search** - list endpoints return all records (paginated)
+2. **No sorting** - results ordered by creation time (newest first)
 
 ---
 

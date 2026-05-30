@@ -78,10 +78,14 @@ def create_application(request):
         return Response({'error': {'code': 'FORBIDDEN', 'message': '只有学生可以提交申请'}},
                         status=status.HTTP_403_FORBIDDEN)
 
-    if Application.objects.filter(student=user).exists():
-        existing = Application.objects.filter(student=user).first()
-        return Response({'error': {'code': 'CONFLICT', 'message': '申请已存在，不能重复提交',
-                                    'details': {'student_id': user.user_id, 'existing_application_id': existing.application_id}}},
+    # Check for existing pending/approved applications
+    existing = Application.objects.filter(
+        student=user,
+        status__in=[ApplicationStatus.PENDING_COUNSELOR, ApplicationStatus.PENDING_DEAN, ApplicationStatus.APPROVED]
+    ).first()
+    if existing:
+        return Response({'error': {'code': 'CONFLICT', 'message': '已有待审批或已通过的申请，不能重复提交',
+                                    'details': {'student_id': user.user_id, 'existing_application_id': existing.application_id, 'status': existing.status}}},
                         status=status.HTTP_409_CONFLICT)
 
     serializer = ApplicationCreateSerializer(data=request.data)

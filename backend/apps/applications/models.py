@@ -1,4 +1,5 @@
 from django.db import models
+from django.core.exceptions import ValidationError
 from apps.users.models import User
 
 
@@ -31,6 +32,12 @@ class Application(models.Model):
 
     class Meta:
         db_table = 'applications'
-        constraints = [
-            models.UniqueConstraint(fields=['student'], name='unique_student_application')
-        ]
+
+    def clean(self):
+        if self.status in [ApplicationStatus.PENDING_COUNSELOR, ApplicationStatus.PENDING_DEAN, ApplicationStatus.APPROVED]:
+            existing = Application.objects.filter(
+                student=self.student,
+                status__in=[ApplicationStatus.PENDING_COUNSELOR, ApplicationStatus.PENDING_DEAN, ApplicationStatus.APPROVED]
+            ).exclude(application_id=self.application_id).exists()
+            if existing:
+                raise ValidationError('该学生已有待审批或已通过的申请，不能重复提交')

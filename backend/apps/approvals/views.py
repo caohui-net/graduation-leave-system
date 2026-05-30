@@ -24,20 +24,18 @@ def list_approvals(request):
             status=status.HTTP_403_FORBIDDEN
         )
 
-    # 辅导员: 只看自己的pending counselor审批
+    # 辅导员: 只看自己的counselor审批
     if user.role == UserRole.COUNSELOR:
         queryset = Approval.objects.filter(
             approver=user,
-            step=ApprovalStep.COUNSELOR,
-            decision=ApprovalDecision.PENDING
+            step=ApprovalStep.COUNSELOR
         ).select_related('application', 'approver')
 
-    # 学工部: 只看自己的pending dean审批
+    # 学工部: 只看自己的dean审批
     elif user.role == UserRole.DEAN:
         queryset = Approval.objects.filter(
             approver=user,
-            step=ApprovalStep.DEAN,
-            decision=ApprovalDecision.PENDING
+            step=ApprovalStep.DEAN
         ).select_related('application', 'approver')
 
     else:
@@ -45,6 +43,11 @@ def list_approvals(request):
             {'error': {'code': 'FORBIDDEN', 'message': '无效的用户角色'}},
             status=status.HTTP_403_FORBIDDEN
         )
+
+    # Decision filtering (default: pending)
+    decision_param = request.query_params.get('decision', 'pending')
+    if decision_param != 'all':
+        queryset = queryset.filter(decision=decision_param)
 
     # 排序
     queryset = queryset.order_by('-created_at', '-approval_id')

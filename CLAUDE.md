@@ -11,7 +11,9 @@
 
 ## Codex审查流程（强制要求）
 
-**流程文档：** `docs/Codex审查流程指南.md`
+**流程文档：** `docs/codex-review-protocol.md`
+
+**强制规则：** Before performing any Codex review, document review, architecture review, API review, database review, data integration review, or OMC `/ask codex` workflow, read and follow `docs/codex-review-protocol.md`.
 
 ### 核心要求
 
@@ -105,5 +107,5 @@ Co-Authored-By: Claude Opus 4.7 (1M context) <noreply@anthropic.com>
 - **系统设计：** `docs/design/2026-05-27-system-design.md`
 - **数据对接：** `docs/数据对接说明文档.md`
 - **用户文档：** `docs/用户设计说明书.md`
-- **审查流程：** `docs/Codex审查流程指南.md`
+- **审查流程：** `docs/codex-review-protocol.md`
 - **项目总结：** `docs/PROJECT-SUMMARY.md`

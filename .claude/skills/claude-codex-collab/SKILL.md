@@ -1,7 +1,7 @@
 ---
 name: claude-codex-collab
 description: Claude-Codex collaboration protocol operations - init, task management, state validation
-version: 0.1.0
+version: 0.1.1
 ---
 
 # Claude-Codex Collaboration Skill
@@ -64,17 +64,19 @@ Creates:
 
 ### validate
 
-Validates collaboration state consistency.
+Runs read-only collaboration journal/state validation.
 
 ```bash
-python3 .claude/skills/claude-codex-collab/scripts/collab_validate.py
+bash .omc/collaboration/scripts/validate-journal.sh
 ```
 
 Checks:
 - `events.jsonl` valid JSONL, no duplicate IDs
 - `state.json` valid JSON, last_event_id matches log
-- No stale locks
-- Task lifecycle consistency
+- No residual lock entries in `.omc/collaboration/locks/`
+- Non-zero exit code on validation failure
+
+This command does not repair or mutate collaboration files.
 
 ### status
 

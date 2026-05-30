@@ -278,3 +278,142 @@ After collaboration work:
 - Update `state.json`.
 - Verify changed files.
 - Report completed items and any remaining risk.
+
+## 14. Agent Roles
+
+This protocol supports three-agent collaboration: Claude, Codex, and Gemini. Each agent has distinct strengths and default responsibilities.
+
+### Claude
+
+**Primary role:** Orchestrator, synthesizer, user communication.
+
+**Strengths:**
+- Requirements clarification and user interaction
+- Cross-domain synthesis and decision-making
+- Documentation and narrative writing
+- Coordinating multi-agent workflows
+
+**Typical tasks:**
+- Creating task specifications
+- Synthesizing independent analyses from multiple agents
+- Writing user-facing documentation
+- Making final decisions when agents disagree
+- Protocol updates and governance
+
+### Codex
+
+**Primary role:** Implementer, reviewer, validator.
+
+**Strengths:**
+- Code implementation and debugging
+- Technical review and validation
+- Protocol compliance verification
+- Executable testing and mechanical validation
+
+**Typical tasks:**
+- Implementing features and fixes
+- Reviewing code for correctness and security
+- Validating protocol adherence
+- Writing and running tests
+- Mechanical backpressure (compile, lint, type-check)
+
+### Gemini
+
+**Primary role:** Analyst (read-only by default).
+
+**Strengths:**
+- Large-context analysis (long documents, logs, codebases)
+- Multi-file scanning and pattern detection
+- Third-party project analysis
+- Historical data review
+
+**Typical tasks:**
+- Analyzing large log files or traces
+- Scanning entire codebases for patterns
+- Reviewing long documents or specifications
+- Comparing multiple implementations
+- Extracting insights from large datasets
+
+**Default constraint:** Gemini operates in read-only mode unless the user explicitly authorizes write access. Gemini outputs artifacts to `.omc/collaboration/artifacts/` and does not directly modify repository files.
+
+**Write access exception:** If the user explicitly requests Gemini to modify code, use git worktree isolation or patch artifacts to avoid conflicts with Claude/Codex work.
+
+### Role Selection Guidelines
+
+When a task could be handled by multiple agents:
+
+1. **User communication or synthesis:** Claude
+2. **Code implementation or review:** Codex
+3. **Large-context analysis:** Gemini
+4. **Ambiguous or multi-faceted:** Assign to Claude for coordination, or request independent analyses from multiple agents
+
+Agents may delegate subtasks to other agents when appropriate. The delegating agent remains responsible for integrating the results.
+
+## 15. Independent Analysis Protocol
+
+When a task requires independent perspectives to avoid anchoring bias or groupthink, use this protocol.
+
+### Triggering Independent Analysis
+
+A task enters independent analysis mode when:
+
+1. The task document explicitly requests "independent analysis" or "separate analyses"
+2. The user requests multiple agents to analyze the same problem independently
+3. The task creator marks the task with `status: open_for_collaboration`
+
+### Independent Analysis Rules
+
+When performing independent analysis:
+
+1. **Do not read artifacts from other agents on the same topic.** Each agent must form their own conclusions based on source materials only.
+
+2. **Declare independence in your artifact.** Include a clear statement: "Independent analysis - did not read [other agent names] artifacts."
+
+3. **Create your own artifact.** Use the standard naming convention: `YYYYMMDD-HHMM-agent-topic.md`
+
+4. **Log your completion.** Append an event indicating independent analysis completion.
+
+### Status Extensions
+
+The following status values support independent analysis workflows:
+
+- `open_for_collaboration`: Task is open for multiple agents to work in parallel. No exclusive ownership.
+- `waiting_synthesis`: All independent analyses are complete. Waiting for designated agent to create synthesis.
+
+### Event Type Extensions
+
+The following event types support independent analysis workflows:
+
+- `collaboration_opened`: Task opened for multi-agent parallel work
+- `independent_analysis_completed`: Agent completed their independent analysis
+- `synthesis_requested`: Request for designated agent to synthesize multiple analyses
+- `synthesis_completed`: Synthesis artifact created
+
+### Synthesis Ownership
+
+After all independent analyses are complete, one agent must create a synthesis or comparison document. Ownership priority:
+
+1. **User-specified:** If the task document names a synthesis owner, that agent is responsible.
+2. **Task creator:** The agent who created the task synthesizes, as they understand the original intent.
+3. **Third-party agent:** If the task creator also performed independent analysis, a non-participating agent synthesizes to maintain objectivity.
+4. **Fallback:** If no clear owner exists, the last completing agent creates a comparison document listing agreements and disagreements, then requests user decision.
+
+### Synthesis Requirements
+
+A synthesis document must:
+
+- Reference all independent analysis artifacts
+- Identify areas of agreement and disagreement
+- Provide reasoning for recommended conclusions
+- Highlight unresolved questions requiring user input
+- Propose next steps or action items
+
+### Example Workflow
+
+1. Claude creates task: "Analyze approach X independently"
+2. Claude appends `collaboration_opened` event, sets `status: open_for_collaboration`
+3. Codex claims task, performs analysis, creates artifact, appends `independent_analysis_completed` event
+4. Gemini claims task, performs analysis, creates artifact, appends `independent_analysis_completed` event
+5. Claude (task creator) synthesizes both analyses, creates synthesis artifact
+6. Claude appends `synthesis_completed` event, sets `status: completed`
+

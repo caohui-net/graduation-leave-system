@@ -1,25 +1,27 @@
 {
   "project_name": "graduation-leave-system",
-  "last_updated": "2026-05-27T02:50:00.000Z",
+  "last_updated": "2026-05-30T03:40:00.000Z",
   "current_phase": "design_complete",
-  "current_component": "user_documentation",
+  "current_component": "documentation_and_setup",
   "status": "ready_for_implementation",
   "next_actions": [
-    "可选：执行P1修改（6项）",
     "开始Phase 1实施（项目初始化）",
-    "准备开发环境",
-    "申请微信公众平台账号"
+    "安装Django依赖",
+    "创建Django项目骨架",
+    "配置settings分层",
+    "准备开发环境"
   ],
   "blockers": [],
   "recent_work": {
     "completed": [
-      "用户文档Codex审查（9个问题修复）",
-      "CSV模板文件扩展名修正",
-      "字段补充审查（class_name、bed_number）",
-      "Round 3 P0修改（8项）"
+      "数据对接文档完善（CSV模板+数据确认清单）",
+      "Codex审查流程固化（项目级+全局级）",
+      "配置文件规范建立（Load Trigger规范）",
+      "微信小程序申请/备案说明整理",
+      "OMC HUD状态栏修复"
     ],
     "current_branch": "main",
-    "last_commit": "docs: 用户文档Codex审查完成 - 修复9个问题"
+    "last_commit": "docs: 记录OMC HUD状态栏修复"
   },
   "key_decisions": {
     "database": "PostgreSQL单数据库",

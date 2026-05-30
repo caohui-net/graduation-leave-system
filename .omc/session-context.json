@@ -1,5 +1,5 @@
 {
-  "last_updated": "2026-05-30T08:03:39Z",
+  "last_updated": "2026-05-30T08:14:30Z",
   "completed": [
     "识别外部API信息缺失阻塞开发问题",
     "创建API阻塞问题审查请求文档（37）",
@@ -14,13 +14,18 @@
     "创建下一步工作最终共识文档（46）",
     "创建contract-v0.1.md初稿",
     "创建week-0-1-execution-plan.md初稿",
-    "Codex审查发现6个问题（UserDTO、状态机、Dorm Mock、seed、端点数、降级）",
+    "Codex第一轮审查发现6个问题（UserDTO、状态机、Dorm Mock、seed、端点数、降级）",
     "修复6个问题（UserDTO可选字段、状态机表、Dorm Mock默认、seed扩展、端点统一、降级优化）",
     "Codex第二轮审查发现3-4个剩余问题（登录DTO、503样例、端点数不一致、降级矛盾）",
-    "修复4个剩余问题：移除列表端点（统一为5个HTTP路由）、添加503样例、澄清AuthUserDTO、修复降级条件"
+    "修复4个剩余问题：移除列表端点（统一为5个HTTP路由）、添加503样例、澄清AuthUserDTO、修复降级条件",
+    "Codex第三轮审查：尚未达标，2个P1阻塞（错误样例不完整、降级方案矛盾）+ 2个P2问题",
+    "修复P1-1：补齐4个缺失错误样例（400, 404, 409, 500）到contract Section 6.2",
+    "修复P1-2：修复execution plan风险2降级方案矛盾（明确学工部推Week 2 Day 1）",
+    "创建P1修复总结文档（50）",
+    "创建P1修复确认请求文档（51）"
   ],
   "pending": [
-    "Codex审查确认修复是否达到可执行契约标准",
+    "Codex审查确认P1修复是否达到可执行契约标准",
     "如果达标：冻结contract-v0.1.md",
     "开始Week 1 Day 1工作（Django骨架、模型、seed、认证）"
   ],
@@ -35,12 +40,15 @@
     "docs/discussions/codex-review-2026-05-30/44-next-steps-codex-response-round2.md",
     "docs/discussions/codex-review-2026-05-30/45-next-steps-claude-response-round2.md",
     "docs/discussions/codex-review-2026-05-30/46-next-steps-final-consensus.md",
-    "docs/contracts/contract-v0.1.md - 已修复4个问题",
-    "docs/plans/week-0-1-execution-plan.md - 已修复降级条件",
+    "docs/contracts/contract-v0.1.md - P1修复：补齐4个错误样例",
+    "docs/plans/week-0-1-execution-plan.md - P1修复：修复降级方案矛盾",
     "docs/discussions/codex-review-2026-05-30/47-contract-fixes-review-request.md",
-    "docs/discussions/codex-review-2026-05-30/48-contract-fixes-summary.md"
+    "docs/discussions/codex-review-2026-05-30/48-contract-fixes-summary.md",
+    "docs/discussions/codex-review-2026-05-30/49-contract-fixes-codex-response.md",
+    "docs/discussions/codex-review-2026-05-30/50-p1-fixes-summary.md",
+    "docs/discussions/codex-review-2026-05-30/51-p1-fixes-confirmation-request.md"
   ],
-  "next_focus": "等待Codex审查确认修复，如果达标则冻结契约并开始Week 1 Day 1",
+  "next_focus": "等待Codex审查确认P1修复，如果达标则冻结契约并开始Week 1 Day 1",
   "suggested_skills": [],
   "artifacts": {
     "api_blocking_consensus": "docs/discussions/codex-review-2026-05-30/40-api-blocking-solution-consensus.md",
@@ -49,6 +57,9 @@
     "execution_plan": "docs/plans/week-0-1-execution-plan.md",
     "contract_fixes_request": "docs/discussions/codex-review-2026-05-30/47-contract-fixes-review-request.md",
     "contract_fixes_summary": "docs/discussions/codex-review-2026-05-30/48-contract-fixes-summary.md",
+    "codex_round3_response": "docs/discussions/codex-review-2026-05-30/49-contract-fixes-codex-response.md",
+    "p1_fixes_summary": "docs/discussions/codex-review-2026-05-30/50-p1-fixes-summary.md",
+    "p1_fixes_confirmation_request": "docs/discussions/codex-review-2026-05-30/51-p1-fixes-confirmation-request.md",
     "project_summary": "docs/PROJECT-SUMMARY.md",
     "system_design": "docs/design/2026-05-27-system-design.md"
   }

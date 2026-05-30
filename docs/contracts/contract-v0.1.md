@@ -451,6 +451,20 @@ class MockDormCheckoutProvider:
 
 ### 6.2 错误Mock
 
+**400 Validation Error：**
+```json
+{
+  "error": {
+    "code": "VALIDATION_ERROR",
+    "message": "请求参数验证失败",
+    "details": {
+      "field": "leave_date",
+      "reason": "离校日期不能早于今天"
+    }
+  }
+}
+```
+
 **401 Unauthorized：**
 ```json
 {
@@ -471,6 +485,33 @@ class MockDormCheckoutProvider:
 }
 ```
 
+**404 Not Found：**
+```json
+{
+  "error": {
+    "code": "NOT_FOUND",
+    "message": "申请不存在",
+    "details": {
+      "application_id": "app_999"
+    }
+  }
+}
+```
+
+**409 Conflict：**
+```json
+{
+  "error": {
+    "code": "CONFLICT",
+    "message": "申请已存在，不能重复提交",
+    "details": {
+      "student_id": "2020001",
+      "existing_application_id": "app_001"
+    }
+  }
+}
+```
+
 **422 Dorm Blocked：**
 ```json
 {
@@ -481,6 +522,20 @@ class MockDormCheckoutProvider:
       "student_id": "2020002",
       "dorm_status": "pending",
       "blocking_reason": "宿舍物品未清理"
+    }
+  }
+}
+```
+
+**500 Internal Error：**
+```json
+{
+  "error": {
+    "code": "INTERNAL_ERROR",
+    "message": "服务器内部错误",
+    "details": {
+      "error_id": "err_20240530_001",
+      "message": "数据库连接失败"
     }
   }
 }

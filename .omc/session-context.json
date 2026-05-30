@@ -1,5 +1,5 @@
 {
-  "last_updated": "2026-05-30T18:28:00Z",
+  "last_updated": "2026-05-31T02:48:00Z",
   "completed": [
     "Codex识别Phase 1三个遗漏缺陷（Dean权限、status过滤、smoke test逻辑）",
     "Claude完全同意Codex分析，达成共识",
@@ -8,21 +8,23 @@
     "修复smoke test负向测试逻辑（使用正确的approval ID）",
     "Smoke test验证通过（happy path + negative test）",
     "提交并推送Phase 1收口修复到远程仓库",
-    "更新PROJECT-SUMMARY.md记录Phase 1收口工作"
+    "更新PROJECT-SUMMARY.md记录Phase 1收口工作",
+    "Week 3 Closure Gate完成：API样例收集、风险文档、v0.2前端契约、CSV导入验证"
   ],
   "pending": [],
   "evidence": [
-    "Smoke test输出: Happy path全部通过（学生→辅导员→学工部审批流程）",
-    "Smoke test输出: Negative test通过（跨辅导员审批返回403）",
-    "Git commit: fix: Phase 1 收口 - 修复3个权限和测试缺陷",
-    "修改文件: backend/apps/applications/views.py (添加Dean权限检查 + status过滤)",
-    "修改文件: tests/smoke_test.sh (修复负向测试逻辑)"
+    "API samples: 10个真实响应样例（.omc/artifacts/api-samples/*.json）",
+    "Known risks: P0/P1/P2风险清单（.omc/artifacts/week3-known-risks.md）",
+    "Frontend contract: v0.2契约快照（.omc/artifacts/frontend-contract-v0.2.md）",
+    "CSV verification: 基础导入功能验证通过（.omc/artifacts/csv-import-verification.md）"
   ],
-  "next_focus": "Phase 1已完成收口，Week 3最小闭环已验证通过。下一步可以考虑：1) 前端对接 2) CSV导入稳定性验证 3) 更多筛选和分页功能",
+  "next_focus": "Week 3 closure gate完成。下一步：启动小程序窄切片（skeleton + API client + login + lists + detail只读）",
   "suggested_skills": [],
   "artifacts": {
-    "codex_analysis": ".omc/artifacts/ask/codex-phase-1-day-3-get-api-approvals-get-api-applications-12-24-2-2026-05-30T18-22-35-514Z.md",
-    "claude_response": ".omc/artifacts/ask/claude-response-phase1-gaps-2026-05-30T18-24-50.md"
+    "api_samples": ".omc/artifacts/api-samples/",
+    "known_risks": ".omc/artifacts/week3-known-risks.md",
+    "frontend_contract": ".omc/artifacts/frontend-contract-v0.2.md",
+    "csv_verification": ".omc/artifacts/csv-import-verification.md"
   },
   "blocking_issues": []
 }

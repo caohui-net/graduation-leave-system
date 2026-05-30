@@ -1,5 +1,5 @@
 {
-  "last_updated": "2026-05-31T04:30:00Z",
+  "last_updated": "2026-05-31T04:45:00Z",
   "completed": [
     "Week 3 Closure Gate完成",
     "Phase 2完成：P0后端修复（resubmission + approval filter + 单元测试）",
@@ -10,10 +10,14 @@
     "Phase 0完成：事实核对（代码分析，45分钟）",
     "Phase 1完成：安全+状态机验证（所有测试已存在，15分钟）",
     "Phase 2完成：契约v0.2创建（comprehensive版本）",
-    "Phase 3完成：类型/Mock对齐验证（已对齐，10分钟）"
+    "Phase 3完成：类型/Mock对齐验证（已对齐，10分钟）",
+    "Week 4策略共识达成：validation-first approach（Claude-Codex协商）"
   ],
   "pending": [
-    "WeChat DevTools验证（外部阻塞，P2优先级）"
+    "Phase 4A: WeChat DevTools验证（外部阻塞，1-3天）",
+    "Phase 4B: 窄小程序MVP（4页面，3-5天）",
+    "Phase 4C: 附件MVP（2-4天）",
+    "宿舍系统对接调研（并行轨道）"
   ],
   "evidence": [
     "Codex执行：validators.py + test_permissions.py + test_state_machine.py",
@@ -23,9 +27,11 @@
     "Phase 1验证：.omc/collaboration/artifacts/20260531-0220-phase1-complete.md",
     "Phase 3验证：.omc/collaboration/artifacts/20260531-0225-phase3-complete.md",
     "测试验证：10 approval tests OK + 37 backend tests OK",
-    "Django check通过"
+    "Django check通过",
+    "Week 4共识：.omc/collaboration/artifacts/20260531-0440-week4-execution-plan-consensus.md",
+    "宿舍调研：.omc/collaboration/artifacts/20260531-0445-dorm-provider-discovery.md"
   ],
-  "next_focus": "Week 3完成。Week 4策略共识达成：validation-first approach。Phase 4A: DevTools验证(1-3天) → Phase 4B: 窄MVP(4页) → Phase 4C: 附件MVP。并行：宿舍系统对接调研",
+  "next_focus": "Week 4策略共识达成：validation-first approach。Phase 4A: DevTools验证(1-3天) → Phase 4B: 窄MVP(4页) → Phase 4C: 附件MVP。并行：宿舍系统对接调研",
   "suggested_skills": [],
   "artifacts": {
     "codex_contract": "docs/contracts/contract-v0.2.md",
@@ -37,7 +43,12 @@
     "phase1_complete": ".omc/collaboration/artifacts/20260531-0220-phase1-complete.md",
     "phase3_complete": ".omc/collaboration/artifacts/20260531-0225-phase3-complete.md",
     "execution_plan": ".omc/collaboration/artifacts/20260531-0210-week3-execution-consensus.md",
-    "codex_consensus": ".omc/collaboration/artifacts/20260531-0405-codex-week3-consensus-response.md"
+    "codex_consensus": ".omc/collaboration/artifacts/20260531-0405-codex-week3-consensus-response.md",
+    "week4_execution_plan": ".omc/collaboration/artifacts/20260531-0440-week4-execution-plan-consensus.md",
+    "dorm_discovery": ".omc/collaboration/artifacts/20260531-0445-dorm-provider-discovery.md"
   },
-  "blocking_issues": []
+  "blocking_issues": [
+    "WeChat DevTools安装（Phase 4A外部依赖）",
+    "宿舍系统联系人/文档/凭证（生产阻塞）"
+  ]
 }

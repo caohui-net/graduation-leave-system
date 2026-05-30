@@ -1,10 +1,11 @@
 {
-  "last_updated": "2026-05-30T08:25:00Z",
+  "last_updated": "2026-05-30T08:43:00Z",
   "completed": [
     "Week 0契约冻结工作完成",
     "Codex第四轮审查确认：达到可执行契约标准",
     "冻结contract-v0.1.md为v0.1 Final",
-    "Week 1 Day 1实施完成：Django骨架、User模型、JWT认证、seed数据"
+    "Week 1 Day 1实施完成：Django骨架、User模型、JWT认证、seed数据",
+    "Claude-Codex协作机制MVP完成：protocol v0.2 + 技能固化（.claude/skills/claude-codex-collab/）"
   ],
   "pending": [
     "Week 1 Day 1验证（需要环境准备：虚拟环境、依赖安装、PostgreSQL）",
@@ -30,6 +31,9 @@
     "project_summary": "docs/PROJECT-SUMMARY.md",
     "system_design": "docs/design/2026-05-27-system-design.md",
     "user_model": "backend/apps/users/models.py",
-    "seed_command": "backend/apps/users/management/commands/seed_data.py"
+    "seed_command": "backend/apps/users/management/commands/seed_data.py",
+    "collab_protocol": ".omc/collaboration/protocol.md",
+    "collab_skill": ".claude/skills/claude-codex-collab/SKILL.md",
+    "collab_state": ".omc/collaboration/state.json"
   }
 }

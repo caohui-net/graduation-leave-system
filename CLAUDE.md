@@ -9,6 +9,14 @@
 
 ---
 
+## Claude-Codex协作机制
+
+**协作协议：** `.omc/collaboration/protocol.md`
+
+**强制规则：** When participating in Claude-Codex collaboration workflow, read and follow `.omc/collaboration/protocol.md` for task execution, artifact generation, and state management.
+
+---
+
 ## Codex审查流程（强制要求）
 
 **流程文档：** `docs/codex-review-protocol.md`

@@ -1,0 +1,63 @@
+<view class="container">
+  <view class="header">
+    <text class="title">申请详情</text>
+  </view>
+
+  <view class="content" wx:if="{{!loading && detail}}">
+    <view class="section">
+      <text class="section-title">基本信息</text>
+      <view class="field">
+        <text class="label">申请ID:</text>
+        <text class="value">{{detail.application_id}}</text>
+      </view>
+      <view class="field">
+        <text class="label">学生:</text>
+        <text class="value">{{detail.student_name}} ({{detail.student_id}})</text>
+      </view>
+      <view class="field">
+        <text class="label">班级:</text>
+        <text class="value">{{detail.class_id}}</text>
+      </view>
+      <view class="field">
+        <text class="label">离校日期:</text>
+        <text class="value">{{detail.leave_date}}</text>
+      </view>
+      <view class="field">
+        <text class="label">申请原因:</text>
+        <text class="value">{{detail.reason}}</text>
+      </view>
+      <view class="field">
+        <text class="label">状态:</text>
+        <text class="value status-{{detail.status}}">{{statusText}}</text>
+      </view>
+    </view>
+
+    <view class="section">
+      <text class="section-title">审批记录</text>
+      <view class="approval-item" wx:for="{{detail.approvals}}" wx:key="approval_id">
+        <view class="approval-header">
+          <text class="step">{{item.step}}</text>
+          <text class="decision decision-{{item.decision}}">{{decisionText[item.decision]}}</text>
+        </view>
+        <view class="approval-body">
+          <text class="approver">审批人: {{item.approver_name}}</text>
+          <text class="comment" wx:if="{{item.comment}}">备注: {{item.comment}}</text>
+        </view>
+      </view>
+    </view>
+
+    <view class="actions" wx:if="{{canApprove}}">
+      <button class="btn approve" bindtap="onApprove">通过</button>
+      <button class="btn reject" bindtap="onReject">拒绝</button>
+    </view>
+  </view>
+
+  <view class="loading" wx:if="{{loading}}">
+    <text>加载中...</text>
+  </view>
+
+  <view class="error" wx:if="{{error}}">
+    <text>{{error}}</text>
+    <button bindtap="onRetry">重试</button>
+  </view>
+</view>

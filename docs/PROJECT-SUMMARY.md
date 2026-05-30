@@ -698,6 +698,43 @@
 - frontend/services/mock.ts（mock fixtures）
 - tests/test_p0_fixes.sh（集成测试）
 
+**Phase A - 小程序Skeleton（2026-05-30完成）：**
+- ✓ 核心配置文件
+  - app.json（页面路由、窗口配置）
+  - project.config.json（WeChat DevTools配置）
+  - sitemap.json（搜索索引配置）
+  - app.ts（应用入口、全局数据）
+- ✓ 类型定义
+  - types/api.ts（从frontend复制）
+- ✓ API客户端
+  - services/api.ts（wx.request适配版本）
+  - 支持所有7个API端点
+  - JWT token注入 + 401处理
+- ✓ 登录页面
+  - pages/login/login.wxml（UI标记）
+  - pages/login/login.wxss（样式）
+  - pages/login/login.ts（登录逻辑）
+- ✓ 审批列表页面
+  - pages/approvals/approvals.wxml（列表UI）
+  - pages/approvals/approvals.wxss（样式）
+  - pages/approvals/approvals.ts（列表加载、导航）
+- ✓ 详情页面
+  - pages/detail/detail.wxml（详情UI）
+  - pages/detail/detail.wxss（样式）
+  - pages/detail/detail.ts（详情加载、审批操作）
+
+**产出物：**
+- miniprogram/app.json, project.config.json, sitemap.json, app.ts
+- miniprogram/types/api.ts
+- miniprogram/services/api.ts
+- miniprogram/pages/login/*（wxml, wxss, ts）
+- miniprogram/pages/approvals/*（wxml, wxss, ts）
+- miniprogram/pages/detail/*（wxml, wxss, ts）
+
+**验证指南：**
+- .omc/artifacts/wechat-devtools-verification-guide.md
+
 **下一步：**
-- Phase A: 小程序skeleton搭建（需WeChat DevTools）
-- 或：整理Phase 2完成报告，等待用户review
+- 在WeChat DevTools中导入并验证
+- Mock模式测试（登录→列表→详情）
+- 真实API测试（连接localhost:8001）

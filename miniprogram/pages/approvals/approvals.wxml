@@ -1,0 +1,39 @@
+<view class="container">
+  <view class="header">
+    <text class="title">待审批列表</text>
+    <text class="user-info">{{userInfo.name}} ({{roleText}})</text>
+  </view>
+
+  <view class="list" wx:if="{{!loading && approvals.length > 0}}">
+    <view class="item" wx:for="{{approvals}}" wx:key="approval_id" bindtap="onItemTap" data-id="{{item.application_id}}">
+      <view class="item-header">
+        <text class="student-name">{{item.approver_name}}</text>
+        <text class="status pending">待审批</text>
+      </view>
+      <view class="item-body">
+        <text class="label">申请ID:</text>
+        <text class="value">{{item.application_id}}</text>
+      </view>
+      <view class="item-body">
+        <text class="label">审批步骤:</text>
+        <text class="value">{{item.step}}</text>
+      </view>
+      <view class="item-footer">
+        <text class="time">{{item.created_at}}</text>
+      </view>
+    </view>
+  </view>
+
+  <view class="empty" wx:if="{{!loading && approvals.length === 0}}">
+    <text>暂无待审批项</text>
+  </view>
+
+  <view class="loading" wx:if="{{loading}}">
+    <text>加载中...</text>
+  </view>
+
+  <view class="error" wx:if="{{error}}">
+    <text>{{error}}</text>
+    <button bindtap="onRetry">重试</button>
+  </view>
+</view>

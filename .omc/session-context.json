@@ -1,30 +1,37 @@
 {
-  "last_updated": "2026-05-31T03:15:00Z",
+  "last_updated": "2026-05-31T03:34:00Z",
   "completed": [
     "Week 3 Closure Gate完成",
     "Phase 1完成：验收清单、风险文档、项目结构",
     "Phase 2A完成：P0后端修复（resubmission + filter）",
     "Phase 2B完成：TypeScript types + API client",
     "B-small完成：P0单元测试（6/6通过）",
-    "C-minimal完成：类型修正 + mock fixtures"
+    "C-minimal完成：类型修正 + mock fixtures",
+    "Phase A完成：小程序skeleton（核心配置 + 3页面 + wx.request API client）"
   ],
   "pending": [
-    "Phase A: 小程序skeleton（需WeChat DevTools）"
+    "WeChat DevTools验证（导入 + Mock模式 + 真实API）"
   ],
   "evidence": [
     "P0修复：tests/test_p0_fixes.sh + 6单元测试",
     "类型对齐：frontend/types/api.ts修正",
     "Mock数据：frontend/services/mock.ts",
+    "小程序skeleton：miniprogram/目录完整结构",
+    "验证指南：.omc/artifacts/wechat-devtools-verification-guide.md",
     "文档更新：PROJECT-SUMMARY.md"
   ],
-  "next_focus": "Phase 2完成。下一步：小程序skeleton或等待用户review",
+  "next_focus": "Phase 2 + Phase A完成。小程序skeleton已创建，等待WeChat DevTools验证",
   "suggested_skills": [],
   "artifacts": {
     "p0_test": "tests/test_p0_fixes.sh",
     "p0_unit_tests": "backend/apps/applications/tests/test_p0_fixes.py",
     "frontend_types": "frontend/types/api.ts",
     "frontend_client": "frontend/services/api.ts",
-    "mock_fixtures": "frontend/services/mock.ts"
+    "mock_fixtures": "frontend/services/mock.ts",
+    "miniprogram_config": "miniprogram/app.json",
+    "miniprogram_api": "miniprogram/services/api.ts",
+    "miniprogram_pages": "miniprogram/pages/{login,approvals,detail}/",
+    "verification_guide": ".omc/artifacts/wechat-devtools-verification-guide.md"
   },
   "blocking_issues": []
 }

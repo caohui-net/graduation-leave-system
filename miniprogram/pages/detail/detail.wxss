@@ -1,0 +1,150 @@
+.container {
+  min-height: 100vh;
+  background: #f5f5f5;
+}
+
+.header {
+  background: white;
+  padding: 32rpx;
+  border-bottom: 2rpx solid #f0f0f0;
+}
+
+.title {
+  font-size: 36rpx;
+  font-weight: bold;
+  color: #333;
+}
+
+.content {
+  padding: 20rpx;
+}
+
+.section {
+  background: white;
+  border-radius: 12rpx;
+  padding: 24rpx;
+  margin-bottom: 20rpx;
+}
+
+.section-title {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #333;
+  display: block;
+  margin-bottom: 20rpx;
+}
+
+.field {
+  display: flex;
+  margin-bottom: 16rpx;
+}
+
+.label {
+  font-size: 28rpx;
+  color: #999;
+  width: 160rpx;
+}
+
+.value {
+  font-size: 28rpx;
+  color: #333;
+  flex: 1;
+}
+
+.status-pending_counselor, .status-pending_dean {
+  color: #fa8c16;
+}
+
+.status-approved {
+  color: #52c41a;
+}
+
+.status-rejected {
+  color: #ff4d4f;
+}
+
+.approval-item {
+  border-left: 4rpx solid #1890ff;
+  padding-left: 16rpx;
+  margin-bottom: 20rpx;
+}
+
+.approval-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 8rpx;
+}
+
+.step {
+  font-size: 28rpx;
+  font-weight: bold;
+  color: #333;
+}
+
+.decision {
+  font-size: 24rpx;
+  padding: 4rpx 12rpx;
+  border-radius: 4rpx;
+}
+
+.decision-pending {
+  background: #fff7e6;
+  color: #fa8c16;
+}
+
+.decision-approved {
+  background: #f6ffed;
+  color: #52c41a;
+}
+
+.decision-rejected {
+  background: #fff1f0;
+  color: #ff4d4f;
+}
+
+.approval-body {
+  display: flex;
+  flex-direction: column;
+}
+
+.approver, .comment {
+  font-size: 24rpx;
+  color: #666;
+  margin-bottom: 4rpx;
+}
+
+.actions {
+  display: flex;
+  gap: 20rpx;
+  padding: 20rpx;
+}
+
+.btn {
+  flex: 1;
+  height: 88rpx;
+  border: none;
+  border-radius: 8rpx;
+  font-size: 32rpx;
+}
+
+.approve {
+  background: #52c41a;
+  color: white;
+}
+
+.reject {
+  background: #ff4d4f;
+  color: white;
+}
+
+.loading, .error {
+  text-align: center;
+  padding: 100rpx 40rpx;
+  color: #999;
+}
+
+.error button {
+  margin-top: 20rpx;
+  background: #1890ff;
+  color: white;
+}

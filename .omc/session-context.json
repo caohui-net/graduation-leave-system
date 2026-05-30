@@ -25,7 +25,8 @@
     "claude_response": ".omc/collaboration/artifacts/20260530-1655-claude-step2-phase1-response.md",
     "codex_review": ".omc/artifacts/ask/codex-step-2-phase-1-omc-collaboration-artifacts-20260530-1655-cla-2026-05-30T17-00-29-067Z.md",
     "protocol": ".omc/collaboration/protocol.md",
-    "phase1b_consensus": ".omc/collaboration/phase1b-implementation-consensus.md"
+    "phase1b_consensus": ".omc/collaboration/phase1b-implementation-consensus.md",
+    "next_steps_plan": ".omc/plans/step2-phase1-next-steps.md"
   },
   "blocking_issues": [
     "collab_task.py手写writer路径需要迁移策略",

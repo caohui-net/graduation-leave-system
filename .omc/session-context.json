@@ -1,31 +1,30 @@
 {
-  "last_updated": "2026-05-31T03:03:00Z",
+  "last_updated": "2026-05-31T03:15:00Z",
   "completed": [
     "Week 3 Closure Gate完成",
-    "Phase 1完成：前端验收清单、风险文档、项目结构设计",
-    "Codex咨询：建议Option D（P0修复→types/client→skeleton）",
-    "Phase 2A完成：P0后端语义修复（resubmission + approval filter）"
+    "Phase 1完成：验收清单、风险文档、项目结构",
+    "Phase 2A完成：P0后端修复（resubmission + filter）",
+    "Phase 2B完成：TypeScript types + API client",
+    "B-small完成：P0单元测试（6/6通过）",
+    "C-minimal完成：类型修正 + mock fixtures"
   ],
   "pending": [
-    "Phase 2B: TypeScript types + API client",
-    "Phase 2C: Mini-program skeleton",
-    "Phase 3: API client + Auth store",
-    "Phase 4: Login flow",
-    "Phase 5: Approvals flow"
+    "Phase A: 小程序skeleton（需WeChat DevTools）"
   ],
   "evidence": [
-    "P0修复测试通过: tests/test_p0_fixes.sh",
-    "Resubmission验证: ✓ 驳回后可重新提交",
-    "Approval filter验证: ✓ pending/rejected/all过滤正常",
-    "Contract更新: frontend-contract-v0.2.md",
-    "Git commit: feat: P0后端语义修复"
+    "P0修复：tests/test_p0_fixes.sh + 6单元测试",
+    "类型对齐：frontend/types/api.ts修正",
+    "Mock数据：frontend/services/mock.ts",
+    "文档更新：PROJECT-SUMMARY.md"
   ],
-  "next_focus": "Phase 2B: 创建TypeScript类型定义和API client（基于更新后的v0.2契约），可在Node.js环境独立测试",
+  "next_focus": "Phase 2完成。下一步：小程序skeleton或等待用户review",
   "suggested_skills": [],
   "artifacts": {
     "p0_test": "tests/test_p0_fixes.sh",
-    "contract_v0.2": ".omc/artifacts/frontend-contract-v0.2.md",
-    "phase2_approach": ".omc/artifacts/ask/claude-response-phase2-approach-2026-05-31.md"
+    "p0_unit_tests": "backend/apps/applications/tests/test_p0_fixes.py",
+    "frontend_types": "frontend/types/api.ts",
+    "frontend_client": "frontend/services/api.ts",
+    "mock_fixtures": "frontend/services/mock.ts"
   },
   "blocking_issues": []
 }

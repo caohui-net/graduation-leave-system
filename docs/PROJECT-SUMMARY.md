@@ -660,3 +660,44 @@
 
 **最后更新：** 2026-05-30  
 **更新人：** Claude Opus 4.7
+
+### 2026-05-31
+
+**Phase 2 完成：P0修复 + 前端基础设施**
+
+**Phase 2A - P0后端语义修复：**
+- ✓ 移除Application.student唯一约束，允许驳回后重新提交
+- ✓ 添加验证逻辑：仅阻止重复pending/approved申请
+- ✓ GET /api/approvals/支持decision过滤（pending/approved/rejected/all）
+- ✓ 数据库迁移：0004_remove_unique_student_constraint
+- ✓ 测试验证：smoke test + 6个单元测试通过
+
+**Phase 2B - TypeScript类型 + API Client：**
+- ✓ 创建frontend/types/api.ts（基于v0.2契约）
+- ✓ 创建frontend/services/api.ts（最小化实现）
+- ✓ 支持所有7个API端点
+- ✓ JWT token注入 + 401处理
+
+**B-small - P0单元测试：**
+- ✓ 添加test_p0_fixes.py（6个测试）
+- ✓ 测试覆盖：resubmission + approval filter
+- ✓ 所有测试通过（30个测试总计）
+
+**C-minimal - 类型修正 + Mock Fixtures：**
+- ✓ 修正前端类型与真实API对齐
+- ✓ 关键修复：application_id, step, approver_id字段
+- ✓ 创建mock.ts（基于Week 3真实样例）
+
+**产出物：**
+- backend/apps/applications/models.py（移除约束）
+- backend/apps/applications/views.py（更新验证）
+- backend/apps/approvals/views.py（decision过滤）
+- backend/apps/applications/tests/test_p0_fixes.py（单元测试）
+- frontend/types/api.ts（类型定义）
+- frontend/services/api.ts（API client）
+- frontend/services/mock.ts（mock fixtures）
+- tests/test_p0_fixes.sh（集成测试）
+
+**下一步：**
+- Phase A: 小程序skeleton搭建（需WeChat DevTools）
+- 或：整理Phase 2完成报告，等待用户review

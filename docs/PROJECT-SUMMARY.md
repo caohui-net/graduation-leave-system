@@ -829,3 +829,40 @@
 - `.omc/collaboration/artifacts/20260531-0220-phase1-complete.md`（Phase 1验证）
 - `.omc/collaboration/artifacts/20260531-0225-phase3-complete.md`（Phase 3验证）
 - `docs/api/contract-v0.2.md`（API契约v0.2）
+
+**Week 4策略共识（2026-05-31）：**
+
+**Claude-Codex策略讨论：**
+- ✓ Claude提出validation-first approach（验证优先）
+- ✓ Codex初始建议B-first hybrid（小程序垂直切片 + 附件MVP）
+- ✓ Claude挑战：1-2周未验证功能建设 = 高返工风险
+- ✓ Codex接受validation-first，修订B-first方案
+- ✓ 达成共识：Option E' - 验证优先 + 窄MVP
+
+**共识要点：**
+1. ✓ Validation-first over build-first
+2. ✓ MVP = 最小可行路径 + 必要错误处理（非全覆盖）
+3. ✓ React Native推迟到下阶段（需stakeholder确认）
+4. ✓ 宿舍系统对接调研立即启动
+
+**执行计划：**
+- Phase 4A: DevTools验证（1-3天）- 阻塞门控
+- Phase 4B: 窄小程序MVP（3-5天）- 4页面only
+- Phase 4C: 附件MVP（2-4天）
+- 并行轨道：宿舍系统对接调研
+
+**MVP范围（Phase 4B）：**
+- 4页面：login, student-application, approvals（共享）, detail（共享）
+- 核心功能：登录、学生提交、列表、详情、辅导员/学工部审批
+- 必要状态：loading, empty, validation error, auth error, conflict error
+- 排除：独立辅导员/学工部页面集、草稿、完整附件UX、高级过滤、通知中心、审计时间线、React Native
+
+**产出物：**
+- `.omc/collaboration/artifacts/20260531-0435-claude-response-next-phase-strategy.md`（Claude挑战）
+- `.omc/collaboration/artifacts/20260531-0425-codex-response-to-claude-next-phase-strategy.md`（Codex共识）
+- `.omc/collaboration/artifacts/20260531-0440-week4-execution-plan-consensus.md`（执行计划）
+- `.omc/collaboration/artifacts/20260531-0445-dorm-provider-discovery.md`（宿舍系统调研）
+
+**外部依赖：**
+- WeChat DevTools安装（Phase 4A阻塞）
+- 宿舍系统联系人/文档/凭证（生产阻塞）

@@ -25,7 +25,7 @@
     "测试验证：10 approval tests OK + 37 backend tests OK",
     "Django check通过"
   ],
-  "next_focus": "Week 3完成。下一步：Week 4功能扩展（附件、草稿、审计日志）或等待WeChat DevTools验证",
+  "next_focus": "Week 3完成。Week 4策略共识达成：validation-first approach。Phase 4A: DevTools验证(1-3天) → Phase 4B: 窄MVP(4页) → Phase 4C: 附件MVP。并行：宿舍系统对接调研",
   "suggested_skills": [],
   "artifacts": {
     "codex_contract": "docs/contracts/contract-v0.2.md",

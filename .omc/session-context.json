@@ -1,37 +1,37 @@
 {
-  "last_updated": "2026-05-30T14:43:00Z",
+  "last_updated": "2026-05-30T15:52:00Z",
   "completed": [
-    "TASK-20260530-06 全部完成（3.5小时）",
-    "Phase 1: Readiness gate (4 P0修复)",
-    "Phase 2: Minimal tests (4测试通过)",
-    "Phase 3: Day 0 pilot (P0安全修复)",
-    "Phase 4: Operator checklist (证据文档)",
-    "Codex阻塞项修复：可执行smoke_test.sh",
-    "技能重命名：claude-codex-collab → claude-codex-gemini-collab",
-    "创建独立项目：/home/caohui/projects/claude-codex-gemini-collab",
-    "协议更新：v0.3支持三模型协作（Claude+Codex+Gemini）"
+    "Week 3 Day 1: 最小闭环验证（8项标准全部通过）",
+    "Week 3 Day 1: P0问题修复（migrations、dev.py、端口、DNS）",
+    "Week 3 Day 2 Phase 1: T0 Gate前置校验（15分钟）",
+    "Week 3 Day 2 Phase 2: Seed/Mock/Reset实现（10分钟）",
+    "Week 3 Day 2 Phase 3: 核心安全修复（15分钟）",
+    "Week 3 Day 2 Phase 4: 自动化测试（65分钟，4个测试通过）",
+    "Week 3 Day 2 Phase 5: 4.5h决策检查点（继续到Phase 6）",
+    "Week 3 Day 2 Phase 6: Smoke测试与证据收集（3个场景通过）"
   ],
   "pending": [
-    "Week 3 Day 1: 执行smoke test验证最小闭环",
-    "Week 3 Day 2: 修复P0阻塞，创建回归测试"
+    "Week 3 Day 2 Phase 7: 文档同步（进行中）",
+    "Week 3 Day 2 Phase 8: 6h决策门（待评估）",
+    "Week 3 Day 3: 列表接口、负向验证、剩余硬化"
   ],
   "evidence": [
-    "P0修复：dorm mock 2020006=completed",
-    "P0修复：审批权限检查（approver_id）",
-    "Codex验证：代码修复正确",
-    "smoke_test.sh：端口8001，access_token，动态ID",
-    "协作验证：50事件，无重复，无锁",
-    "提交已推送：P0修复+smoke test",
-    "技能迁移：11文件，1094行，git初始化完成"
+    "自动化测试：4/4通过（test_permissions、test_state_machine、test_constraints）",
+    "Smoke测试：3/3通过（重复提交409、跨辅导员403、重复审批409）",
+    "数据库约束：Application.student唯一约束已添加",
+    "事务保护：transaction.atomic() + select_for_update()已实现",
+    "权限校验：辅导员只能审批/查看分配班级",
+    "状态机验证：approval.step必须匹配application.status",
+    "Seed/reset：seed_data --reset功能正常，T001/T002两条链路可重复生成"
   ],
-  "next_focus": "Week 3 Day 1: docker compose up → migrate → seed → 执行smoke_test.sh → 记录结果",
+  "next_focus": "Phase 7完成文档同步，Phase 8评估Day 2成果并决策：Conditional Go / Day 3继续 / 降范围",
   "suggested_skills": [],
   "artifacts": {
-    "consensus": ".omc/collaboration/artifacts/20260530-1008-codex-phase3-consensus.md",
-    "day0_completion": ".omc/collaboration/artifacts/20260530-1015-day0-completion.md",
-    "operator_checklist": ".omc/collaboration/artifacts/20260530-1025-phase4-operator-checklist.md",
-    "codex_verification": ".omc/collaboration/artifacts/20260530-2225-codex-day0-verification.md",
-    "smoke_test": "tests/smoke_test.sh",
-    "skill_project": "/home/caohui/projects/claude-codex-gemini-collab"
+    "day2_smoke_test_plan": ".omc/artifacts/day2-smoke-test-plan.md",
+    "day2_smoke_test_evidence": ".omc/artifacts/day2-smoke-test-evidence.md",
+    "test_constraints": "backend/apps/applications/tests/test_constraints.py",
+    "test_state_machine": "backend/apps/approvals/tests/test_state_machine.py",
+    "test_permissions": "backend/apps/approvals/tests/test_permissions.py",
+    "migration_unique_constraint": "backend/apps/applications/migrations/0003_application_unique_student_application.py"
   }
 }

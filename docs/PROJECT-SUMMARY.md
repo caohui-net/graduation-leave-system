@@ -409,7 +409,60 @@
   6. 正向smoke与证据整理（60分钟）：可重复证据链
   7. 文档同步（20分钟）：关键字段不误导
   8. 决策门（10分钟）：Conditional Go / No-Go / Day 3 P0
-- ⏳ 待执行：Day 2实施（按最终执行计划）
+
+**Week 3 Day 2实施（2026-05-30完成）：**
+- ✓ T0 Gate前置校验（15分钟）
+  - 测试基线检查：4个自动化测试全部通过
+  - Docker/API健康检查：backend容器运行正常，API响应正常
+  - Seed/reset语义验证：seed_data --reset功能正常
+- ✓ Phase 2: Seed/Mock/Reset（10分钟）
+  - 实现seed_data --reset功能（清空Application和Approval表）
+  - 修复删除顺序（Approval先于Application，避免外键约束错误）
+  - 修复2020002班级映射（CS2020-01→CS2020-02）
+  - 修复get_or_create不更新问题（改用update_or_create）
+- ✓ Phase 3: 核心安全修复（15分钟）
+  - 添加Application.student唯一约束（防止重复提交）
+  - 添加事务保护（@transaction.atomic + select_for_update）
+  - 添加状态/步骤验证（防止状态机不一致）
+  - 添加重复dean审批检查（防止重复创建）
+  - 修复get_application权限检查（辅导员只能查看分配班级）
+- ✓ Phase 4: 自动化测试（65分钟）
+  - 创建test_constraints.py（重复提交返回409）
+  - 创建test_state_machine.py（重复审批返回409）
+  - 创建test_permissions.py（跨辅导员审批/驳回返回403）
+  - 修复测试问题（添加format='json'，添加D001 dean用户）
+  - 所有4个测试通过
+- ✓ Phase 5: 4.5h决策检查点（19分钟时完成）
+  - 核心代码已落地：约束、事务、权限、状态验证
+  - 验证方向有效：自动化测试全部通过
+  - 决策：继续到Phase 6
+- ✓ Phase 6: Smoke测试与证据收集（完成）
+  - Scenario 1: 重复提交防护（201→409）✓
+  - Scenario 2: 跨辅导员权限检查（403）✓
+  - Scenario 3: 重复审批防护（200→409）✓
+  - 证据文档：.omc/artifacts/day2-smoke-test-evidence.md
+- ⏳ Phase 7: 文档同步（进行中）
+  - 更新PROJECT-SUMMARY.md（本次更新）
+  - 更新.omc/session-context.json（待完成）
+- ⏳ Phase 8: 6h决策门（待评估）
+
+**Day 2核心成果：**
+- ✓ 数据库约束：Application.student唯一约束（防止重复提交）
+- ✓ 事务保护：transaction.atomic() + select_for_update()（防止竞态）
+- ✓ 权限校验：辅导员只能审批分配班级、只能查看分配班级申请
+- ✓ 状态机验证：approval.step必须匹配application.status
+- ✓ 重复操作防护：重复审批返回409、重复提交返回409
+- ✓ 自动化测试：4个测试覆盖403/409场景
+- ✓ Smoke测试：3个关键场景验证通过
+
+**Day 2时间统计：**
+- T0 Gate: 15分钟
+- Phase 2: 10分钟
+- Phase 3: 15分钟
+- Phase 4: 65分钟（含调试）
+- Phase 5: 即时评估
+- Phase 6: 10分钟
+- 总计: ~115分钟（远低于4.5小时预算）
 
 ## 文档清单
 

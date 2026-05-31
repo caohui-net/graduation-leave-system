@@ -929,3 +929,25 @@
 **状态：**
 - Phase 4A准备文档已修复，可执行
 - 等待WeChat DevTools可用（外部依赖）
+
+**Phase 4B准备验证（2026-05-31凌晨）：**
+
+**Codex建议：** 硬停止实现，可选30-45分钟只读验证
+
+**验证结果：**
+- ✓ api.ts和types.ts被所有页面实际使用（非仅存在）
+- ✓ 页面注册正确（3个页面，student-application未注册）
+- ⚠️ ApiClient配置重复（每个页面实例化自己的ApiClient）
+
+**Phase 4B优化机会：**
+1. 高优先级：实现student-application页面 + 基于角色的路由（修复已知gap）
+2. 中优先级：集中化API客户端配置（减少重复）
+3. 低优先级：优化409测试场景（提高验证精度）
+
+**产出物：**
+- `.omc/collaboration/artifacts/phase4b-prep-note.md`（Phase 4B准备笔记）
+
+**状态：**
+- Phase 4A和Phase 4B准备工作完成
+- 硬停止：等待DevTools或宿舍系统输入
+- 下一个门控：WeChat DevTools可用性

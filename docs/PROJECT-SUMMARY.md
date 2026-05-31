@@ -866,3 +866,36 @@
 **外部依赖：**
 - WeChat DevTools安装（Phase 4A阻塞）
 - 宿舍系统联系人/文档/凭证（生产阻塞）
+
+**Week 4准备工作（2026-05-30晚）：**
+
+**Claude-Codex准备工作讨论：**
+- ✓ Codex分析6个选项，推荐A+C+E bundle（低返工准备）
+- ✓ Claude批判性审查：3个修改建议（立即修复、3独立文档、仅文档化）
+- ✓ Codex接受修改并提出1个反修改（artifacts路径）
+- ✓ 达成共识：立即修复陈旧引用 + 3聚焦文档 + 2.5h硬停
+
+**共识要点：**
+1. ✓ 立即修复：dorm_provider.py → providers.py（30秒）
+2. ✓ 3独立文档（非单一元文档）：validation checklist, DevTools setup, skeleton gaps
+3. ✓ 仅文档化gap（student-application注册、API client重复），不修复直到DevTools验证
+4. ✓ 时间盒：目标2.0h，硬停2.5h
+
+**执行结果：**
+- ✓ 修复陈旧文件引用（providers.py）
+- ✓ 创建Phase 4A验证清单（8个验证场景 + pass/fail字段 + 证据槽）
+- ✓ 创建DevTools设置指南（9步安装/配置 + 5个常见问题）
+- ✓ 创建骨架gap审计（现有结构 + 缺失部分 + 风险区域 + 阻塞项）
+
+**产出物：**
+- `.omc/collaboration/artifacts/20260531-0439-codex-week4-blocked-prep-analysis.md`（Codex分析）
+- `.omc/collaboration/artifacts/20260530-2048-claude-response-codex-prep-analysis.md`（Claude批判）
+- `.omc/collaboration/artifacts/20260530-2053-codex-response-to-claude-week4-prep.md`（Codex共识）
+- `.omc/collaboration/artifacts/phase4a-validation-checklist.md`（验证清单）
+- `.omc/collaboration/artifacts/phase4a-devtools-setup.md`（设置指南）
+- `.omc/collaboration/artifacts/phase4b-skeleton-gaps.md`（gap审计）
+
+**状态：**
+- Phase 4A准备完成，等待DevTools可用
+- Phase 4B实施计划已文档化
+- 已识别gap但未修复（等待验证）

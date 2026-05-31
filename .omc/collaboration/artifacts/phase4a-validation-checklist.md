@@ -143,7 +143,7 @@ docker compose exec backend python manage.py seed_data --reset
 **Scenario:** 403 error displays correctly
 
 **Test steps:**
-1. Login as student (2020006/password)
+1. Login as student (2020006/2020006)
 2. Try to access counselor-only approval
 3. Observe 403 response
 
@@ -257,7 +257,8 @@ docker compose exec backend python manage.py seed_data --reset
 
 **Required artifacts:**
 - Compilation success screenshot
-- Login flow screenshots (all roles)
+- Login flow screenshots (counselor/dean successful login)
+- Student 403 evidence (student login redirects to forbidden approvals page)
 - Network tab screenshots (API calls)
 - Error handling screenshots (401/403/409)
 - Console logs (if errors occur)

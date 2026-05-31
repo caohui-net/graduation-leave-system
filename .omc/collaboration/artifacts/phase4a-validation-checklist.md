@@ -19,9 +19,20 @@
 
 | Role | User ID | Password | Class ID |
 |------|---------|----------|----------|
-| Student | 2020006 | password | CS2020 |
-| Counselor | C001 | password | CS2020 |
-| Dean | D001 | password | - |
+| Student | 2020006 | 2020006 | CS2020-02 |
+| Counselor | T001 | T001 | CS2020-01 |
+| Counselor | T002 | T002 | CS2020-02 |
+| Dean | D001 | D001 | - |
+
+**Setup command:**
+```bash
+docker compose exec backend python manage.py seed_data
+```
+
+**Reset command (clears applications/approvals):**
+```bash
+docker compose exec backend python manage.py seed_data --reset
+```
 
 ---
 
@@ -43,19 +54,33 @@
 
 ### 2. Login Flow
 
-**Scenario:** Login works for all roles
+**Scenario:** Login works for counselor and dean roles
 
-**Test steps:**
+**Test steps (Counselor):**
 1. Open login page
-2. Enter student credentials (2020006/password)
+2. Enter counselor credentials (T001/T001)
 3. Submit login
 4. Verify redirect to approvals page
 
 - [ ] **Pass:** Login succeeds, token stored
 - [ ] **Pass:** Redirect to /pages/approvals/approvals
 - [ ] **Pass:** User info displayed correctly
+- [ ] **Pass:** Approval list loads (counselor has access)
 
-**Evidence slot:** Screenshot of successful login + approvals page
+**Test steps (Dean):**
+1. Logout if logged in
+2. Enter dean credentials (D001/D001)
+3. Submit login
+4. Verify redirect to approvals page
+
+- [ ] **Pass:** Login succeeds, token stored
+- [ ] **Pass:** Redirect to /pages/approvals/approvals
+- [ ] **Pass:** User info displayed correctly
+- [ ] **Pass:** Approval list loads (dean has access)
+
+**Known Phase 4B gap:** Student login (2020006/2020006) succeeds but redirects to /pages/approvals/approvals where students receive 403 FORBIDDEN. Students need dedicated home page or application list page.
+
+**Evidence slot:** Screenshot of successful login + approvals page for counselor and dean
 
 **Fail action:** Check network tab, verify API response format
 
@@ -66,7 +91,7 @@
 **Scenario:** API call using wx.request succeeds
 
 **Test steps:**
-1. Login as counselor (C001/password)
+1. Login as counselor (T001/T001)
 2. Navigate to approvals page
 3. Observe network request to `/api/approvals/`
 
@@ -86,18 +111,30 @@
 **Scenario:** 401 error triggers logout
 
 **Test steps:**
-1. Login successfully
-2. Stop backend server
-3. Navigate to approvals page (triggers 401)
+1. Login as counselor (T001/T001)
+2. Navigate to approvals page (verify it loads)
+3. Open DevTools console
+4. Manually delete token from storage:
+   ```javascript
+   wx.removeStorageSync('token')
+   ```
+5. Pull down to refresh or navigate to another page
 
 - [ ] **Pass:** 401 detected by API client
 - [ ] **Pass:** Token cleared from storage
 - [ ] **Pass:** Redirect to login page
 - [ ] **Pass:** Error message displayed
 
+**Alternative test (if storage manipulation not available):**
+1. Login successfully
+2. Wait for token expiry (if tokens have short TTL)
+3. Try to access approvals page
+
 **Evidence slot:** Console log showing 401 handling
 
 **Fail action:** Check onUnauthorized callback in api.ts
+
+**Note:** Stopping backend server creates network failure (connection refused), not 401. This scenario requires token manipulation.
 
 ---
 

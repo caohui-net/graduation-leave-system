@@ -31,13 +31,13 @@
 
 | Service | Path | Status | Purpose |
 |---------|------|--------|---------|
-| API Client | Duplicated in each page | ⚠️ Risky | HTTP request wrapper with auth |
+| API Client | `services/api.ts` | ✅ Exists (2.9K) | HTTP request wrapper with auth |
 | Auth Service | Inline in pages | ⚠️ Risky | Token storage/retrieval |
 
 **Current implementation:**
-- Each page has its own `api` object with `baseUrl` and request methods
-- No shared API client module
-- Auth logic duplicated across pages
+- Shared API client exists at `services/api.ts`
+- Pages import and use shared API client
+- Auth logic may still be duplicated across pages (needs verification)
 
 ---
 
@@ -45,14 +45,15 @@
 
 | Type | Path | Status | Purpose |
 |------|------|--------|---------|
-| User | Inline in pages | ⚠️ Risky | User model (id, name, role) |
-| Approval | Inline in pages | ⚠️ Risky | Approval model |
+| API Types | `types/api.ts` | ✅ Exists (2.0K) | Shared type definitions for API |
+| User | Inline or in types | ⚠️ Needs verification | User model (id, name, role) |
+| Approval | Inline or in types | ⚠️ Needs verification | Approval model |
 | Application | Not defined | ❌ Missing | Student application model |
 
 **Current implementation:**
-- Types defined inline in page `.ts` files
-- No shared type definitions
-- Risk of type inconsistency across pages
+- Shared type definitions exist at `types/api.ts`
+- Need to verify if User/Approval/Application types are defined there or inline in pages
+- Risk of type inconsistency if some types still inline
 
 ---
 
@@ -73,30 +74,38 @@
 
 ---
 
-### 2. Shared API Client
+### 2. Student Home Page
 
 **Status:** ❌ Not implemented
 
-**Current state:**
-- API client code duplicated in:
-  - `pages/login/login.ts`
-  - `pages/approvals/approvals.ts`
-  - `pages/detail/detail.ts`
+**Issue:** Student login redirects to `/pages/approvals/approvals` but students receive 403 FORBIDDEN (students cannot access approval list).
 
 **Required:**
-- Shared module: `services/api.ts` or `utils/request.ts`
-- Centralized baseUrl configuration
-- Centralized auth header injection
-- Centralized error handling (401 → logout, 403/409 → display)
-- Export reusable request methods
+- Dedicated student home page or application list page
+- Update login redirect logic for student role
+- Navigation to student-application page (submit new application)
+- Navigation to student's own applications (view status)
 
-**Blocked by:** DevTools validation of `baseUrl` behavior (does `http://localhost:8001` work?)
+**Blocked by:** DevTools validation of navigation and page structure
 
 ---
 
-### 3. Shared Type Definitions
+### 3. Shared API Client Verification
 
-**Status:** ❌ Not implemented
+**Status:** ⚠️ Needs verification
+
+**Current state:**
+- `services/api.ts` exists (2.9K)
+- Need to verify if pages actually import and use it
+- Need to verify if baseUrl is centralized or still duplicated
+
+**Action:** During Phase 4A validation, check if pages import from `services/api.ts` or have inline API code
+
+---
+
+### 4. Shared Type Definitions Verification
+
+**Status:** ⚠️ Needs verification
 
 **Required:**
 - `types/user.ts`: User interface
@@ -110,50 +119,44 @@
 
 ## Risky Areas
 
-### 1. Hardcoded Base URL
+### 1. Hardcoded Base URL (Needs Verification)
 
-**Location:** Each page file
+**Location:** Possibly in page files or centralized in `services/api.ts`
 
-**Current implementation:**
-```typescript
-const baseUrl = 'http://localhost:8001';
-```
+**Status:** `services/api.ts` exists (2.9K) - need to verify if pages use it or have inline baseUrl
 
-**Risk:**
-- Duplicated across 3+ files
+**Potential risk if not centralized:**
+- Duplicated across multiple files
 - Needs manual update for production deployment
 - May not work in DevTools (network policy unknown)
 
-**Validation needed:**
-- Does `http://localhost:8001` work in DevTools simulator?
-- Does it work on real device preview?
-- What base URL is needed for production?
+**Validation needed during Phase 4A:**
+- Check if pages import from `services/api.ts` or have inline baseUrl
+- Test if `http://localhost:8001` works in DevTools simulator
+- Test if it works on real device preview
+- Determine what base URL is needed for production
 
 **Blocked by:** DevTools validation
 
 ---
 
-### 2. Duplicated Auth Logic
+### 2. Duplicated Auth Logic (Needs Verification)
 
-**Location:** Each page file
+**Location:** Possibly in page files or centralized in `services/api.ts`
 
-**Current implementation:**
-```typescript
-// Login page
-wx.setStorageSync('token', response.data.token);
-wx.setStorageSync('user', response.data.user);
+**Status:** `services/api.ts` exists (2.9K) - need to verify if it handles auth or if pages have inline auth code
 
-// Other pages
-const token = wx.getStorageSync('token');
-headers['Authorization'] = `Bearer ${token}`;
-```
-
-**Risk:**
+**Potential risk if not centralized:**
 - Auth logic duplicated across pages
 - Inconsistent error handling
 - Hard to maintain (change in one place requires updating all pages)
 
-**Recommendation:**
+**Validation needed during Phase 4A:**
+- Check if `services/api.ts` handles token injection and 401 errors
+- Check if pages have inline auth code or use shared service
+- Verify token storage/retrieval is centralized
+
+**Recommendation if duplicated:**
 - Extract to shared auth service after DevTools validation
 - Centralize token management
 - Centralize 401 handling

@@ -899,3 +899,33 @@
 - Phase 4A准备完成，等待DevTools可用
 - Phase 4B实施计划已文档化
 - 已识别gap但未修复（等待验证）
+
+**Phase 4A准备文档修复（2026-05-31凌晨）：**
+
+**Codex发现4个问题：**
+- ✓ 陈旧测试账号（checklist使用错误凭证）
+- ✓ 错误401场景（停止后端=网络失败，非401）
+- ✓ 陈旧skeleton gaps（api.ts和types.ts已存在）
+- ✓ 学生重定向bug（学生禁止访问审批列表）
+
+**Claude-Codex共识：**
+- ✓ Codex推荐Phase 4A准备修复pass（60-90分钟）
+- ✓ Claude接受所有问题并提出执行计划
+- ✓ Codex确认并提出2个修正（运行时验证、协作记账）
+- ✓ 达成共识，立即执行
+
+**执行结果：**
+- ✓ Step 1: 验证当前状态（运行时支持）- 所有4个问题已验证
+- ✓ Step 2: 修复验证清单（正确凭证、401场景、登录流程）
+- ✓ Step 3: 修复skeleton gaps（反映现有文件、添加学生主页gap）
+- ✓ Step 4: 创建宿舍系统利益相关者请求模板
+
+**产出物：**
+- `.omc/collaboration/artifacts/20260531-0325-step1-verification-results.md`（验证结果）
+- `.omc/collaboration/artifacts/phase4a-validation-checklist.md`（已修复）
+- `.omc/collaboration/artifacts/phase4b-skeleton-gaps.md`（已修复）
+- `.omc/collaboration/artifacts/dorm-system-stakeholder-request.md`（利益相关者请求）
+
+**状态：**
+- Phase 4A准备文档已修复，可执行
+- 等待WeChat DevTools可用（外部依赖）

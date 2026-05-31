@@ -1,5 +1,5 @@
 {
-  "last_updated": "2026-05-30T21:02:00Z",
+  "last_updated": "2026-05-31T03:35:00Z",
   "completed": [
     "Week 3 Closure Gate完成",
     "Phase 2完成：P0后端修复（resubmission + approval filter + 单元测试）",
@@ -12,7 +12,8 @@
     "Phase 2完成：契约v0.2创建（comprehensive版本）",
     "Phase 3完成：类型/Mock对齐验证（已对齐，10分钟）",
     "Week 4策略共识达成：validation-first approach（Claude-Codex协商）",
-    "Week 4准备工作完成：3聚焦文档（validation checklist + DevTools setup + skeleton gaps）"
+    "Week 4准备工作完成：3聚焦文档（validation checklist + DevTools setup + skeleton gaps）",
+    "Phase 4A准备文档修复完成：修复4个问题（陈旧凭证、错误401、陈旧gaps、学生重定向）"
   ],
   "pending": [
     "Phase 4A: WeChat DevTools验证（外部阻塞，1-3天）",
@@ -31,9 +32,10 @@
     "Django check通过",
     "Week 4共识：.omc/collaboration/artifacts/20260531-0440-week4-execution-plan-consensus.md",
     "宿舍调研：.omc/collaboration/artifacts/20260531-0445-dorm-provider-discovery.md",
-    "Week 4准备：phase4a-validation-checklist.md + phase4a-devtools-setup.md + phase4b-skeleton-gaps.md"
+    "Week 4准备：phase4a-validation-checklist.md + phase4a-devtools-setup.md + phase4b-skeleton-gaps.md",
+    "准备文档修复：step1-verification-results.md + 修复后的checklist和gaps + dorm-stakeholder-request.md"
   ],
-  "next_focus": "Phase 4A准备完成，等待WeChat DevTools可用。准备文档：验证清单（8场景）+ 设置指南（9步）+ gap审计（现有/缺失/风险/阻塞）。DevTools可用后立即执行Phase 4A验证。",
+  "next_focus": "Phase 4A准备文档已修复（正确凭证、401场景、skeleton gaps、学生主页gap）。等待WeChat DevTools可用后立即执行验证清单。",
   "suggested_skills": [],
   "artifacts": {
     "codex_contract": "docs/contracts/contract-v0.2.md",
@@ -50,7 +52,9 @@
     "dorm_discovery": ".omc/collaboration/artifacts/20260531-0445-dorm-provider-discovery.md",
     "phase4a_validation_checklist": ".omc/collaboration/artifacts/phase4a-validation-checklist.md",
     "phase4a_devtools_setup": ".omc/collaboration/artifacts/phase4a-devtools-setup.md",
-    "phase4b_skeleton_gaps": ".omc/collaboration/artifacts/phase4b-skeleton-gaps.md"
+    "phase4b_skeleton_gaps": ".omc/collaboration/artifacts/phase4b-skeleton-gaps.md",
+    "step1_verification": ".omc/collaboration/artifacts/20260531-0325-step1-verification-results.md",
+    "dorm_stakeholder_request": ".omc/collaboration/artifacts/dorm-system-stakeholder-request.md"
   },
   "blocking_issues": [
     "WeChat DevTools安装（Phase 4A外部依赖）",

@@ -1522,3 +1522,36 @@
 - ✅ Track 3 Phase 0完成（通知契约草案）
 - ⏸ 硬停止，等待用户授权进入Phase 1实现
 - ⏸ Phase 1需要：Django model + migration + API + 测试（0.5-1天）
+
+**Track 3 契约修正（2026-06-01完成）：**
+
+**背景：**
+- Phase 0完成后，用户再次要求继续讨论下一步
+- Claude推荐启动Phase 1实现
+- Codex审查发现契约存在5个P1/P2问题，建议先修正契约
+- 用户选择Option B：先修正契约
+
+**Claude-Codex协作流程（2轮）：**
+1. ✓ Claude分析Phase 0后策略（推荐Phase 1实现）
+2. ✓ Codex审查识别5个契约问题（分页/幂等键/验收标准/错误结构/测试数据）
+3. ✓ Claude完全接受Codex修正建议
+
+**已完成的5个修正：**
+1. ✓ 分页参数统一：page/page_size → limit/offset + {count, results}
+2. ✓ 幂等键增加recipient维度：UNIQUE(recipient_id, entity_type, entity_id, type)
+3. ✓ Phase 1验收标准调整：移除业务幂等测试，改为数据库唯一约束测试
+4. ✓ 错误响应结构统一：{error, message} → {error: {code, message}}
+5. ✓ 测试数据路径定义：management command + Django shell + fixture
+
+**产出物：**
+- docs/api/notification-contract-v0.1.md（已修正）
+- docs/discussions/phase4c-next-steps/28-claude-post-phase0-next-strategy.md
+- docs/discussions/phase4c-next-steps/29-codex-post-phase0-next-strategy-response.md
+- docs/discussions/phase4c-next-steps/30-claude-consensus-contract-revision-gate.md
+
+**时间统计：**
+- 契约修正：30-60分钟（符合预期）
+
+**状态：**
+- ✅ 契约修正完成
+- ⏸ 硬停止，等待用户明确授权Phase 1后端MVP实现

@@ -147,8 +147,8 @@ INDEX idx_recipient_created (recipient_id, created_at DESC)
 -- 未读通知查询索引
 INDEX idx_recipient_unread (recipient_id, read_at) WHERE read_at IS NULL
 
--- 关联实体查询索引（用于幂等检查）
-INDEX idx_entity (entity_type, entity_id, type)
+-- 幂等性唯一约束（防止重复通知）
+UNIQUE INDEX idx_notification_idempotency (recipient_id, entity_type, entity_id, type)
 ```
 
 ---
@@ -163,12 +163,12 @@ INDEX idx_entity (entity_type, entity_id, type)
 
 **查询参数：**
 - `read` (可选): `true`/`false`/`all`，默认`all`
-- `page` (可选): 页码，默认1
-- `page_size` (可选): 每页数量，默认20，最大100
+- `limit` (可选): 每页数量，默认20，最大100
+- `offset` (可选): 偏移量，默认0
 
 **请求示例：**
 ```http
-GET /api/notifications/?read=false&page=1&page_size=20
+GET /api/notifications/?read=false&limit=20&offset=0
 Authorization: Bearer {access_token}
 ```
 
@@ -176,8 +176,6 @@ Authorization: Bearer {access_token}
 ```json
 {
   "count": 5,
-  "next": null,
-  "previous": null,
   "results": [
     {
       "notification_id": "not_a1b2c3d4",
@@ -247,8 +245,10 @@ Authorization: Bearer {access_token}
 **错误响应（403 FORBIDDEN）：**
 ```json
 {
-  "error": "PERMISSION_DENIED",
-  "message": "您无权标记此通知为已读"
+  "error": {
+    "code": "FORBIDDEN",
+    "message": "您无权标记此通知为已读"
+  }
 }
 ```
 
@@ -279,16 +279,18 @@ Authorization: Bearer {access_token}
 
 ### 5.1 通知创建幂等
 
-**规则：** 同一业务状态变更不重复创建同类通知
+**规则：** 同一业务状态变更不重复创建同类通知给同一接收者
 
 **实现建议：**
-- 在创建通知前检查是否已存在相同的(entity_type, entity_id, type)组合
+- 在创建通知前检查是否已存在相同的(recipient_id, entity_type, entity_id, type)组合
 - 如果已存在，跳过创建
+- 数据库唯一约束保证幂等性：`UNIQUE(recipient_id, entity_type, entity_id, type)`
 
 **示例：**
 ```python
 # 伪代码
 existing = Notification.objects.filter(
+    recipient_id=recipient_id,
     entity_type='approval',
     entity_id=approval_id,
     type='APPROVAL_APPROVED'
@@ -328,10 +330,11 @@ if not existing:
 
 | 错误码 | HTTP状态码 | 说明 |
 |--------|-----------|------|
-| PERMISSION_DENIED | 403 | 无权访问该通知 |
-| NOTIFICATION_NOT_FOUND | 404 | 通知不存在 |
-| ALREADY_READ | 400 | 通知已标记为已读 |
-| VALIDATION_ERROR | 400 | 请求参数验证失败 |
+| FORBIDDEN | 403 | 无权访问该通知 |
+| NOT_FOUND | 404 | 通知不存在 |
+| VALIDATION_ERROR | 400 | 请求参数验证失败（包括通知已读等状态错误） |
+
+**注意：** 复用现有后端错误码，保持API一致性。`ALREADY_READ`等业务状态错误归入`VALIDATION_ERROR`类别。
 
 ---
 
@@ -363,8 +366,39 @@ if not existing:
 **验收标准：**
 - 所有API端点可通过Postman/curl验证
 - 单元测试覆盖率>80%
-- 幂等性测试通过
+- 数据库唯一约束测试通过（UNIQUE(recipient_id, entity_type, entity_id, type)）
 - RBAC权限测试通过
+- 已读状态测试通过
+- 分页/过滤测试通过
+
+**注意：** 业务幂等性测试（同一业务状态变更不重复创建通知）推迟到Phase 2（信号触发）实现。
+
+**测试数据创建：**
+
+Phase 1不实现通知创建API（通知应由系统自动创建），因此需要其他方式创建测试数据：
+
+1. **Management Command（推荐）：** `python manage.py seed_notifications`
+   - 创建预定义的测试通知数据
+   - 支持--user参数指定接收者
+   - 支持--count参数指定数量
+   - 可重复执行，用于自动化测试和演示
+
+2. **Django Shell：** 手动创建通知对象
+   ```python
+   from apps.notifications.models import Notification
+   Notification.objects.create(
+       recipient_id="2020001",
+       type="APPROVAL_APPROVED",
+       title="审批通过",
+       body="您的离校申请已通过辅导员审批。",
+       entity_type="approval",
+       entity_id="apv_12345678"
+   )
+   ```
+
+3. **Test Fixture：** 用于单元测试
+   - `apps/notifications/fixtures/test_notifications.json`
+   - 包含各种场景的测试数据
 
 ---
 

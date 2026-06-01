@@ -1,8 +1,8 @@
 {
   "workflow_id": "claude-codex-collab-mvp",
-  "current_task": "track3_phase0_completed",
+  "current_task": "track3_contract_revision_completed",
   "active_agent": "claude",
-  "status": "completed",
-  "last_event_id": 85,
-  "updated_at": "2026-06-01T15:00:00Z"
+  "status": "waiting",
+  "last_event_id": 87,
+  "updated_at": "2026-06-01T15:40:54Z"
 }

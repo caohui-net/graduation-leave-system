@@ -1,5 +1,5 @@
 {
-  "last_updated": "2026-06-01T15:00:00Z",
+  "last_updated": "2026-06-01T15:40:54Z",
   "completed": [
     "Week 3 Closure Gate完成",
     "Phase 4C前端code-complete完成：P1修复 + P0修复 + WXSS + 静态验证",
@@ -12,7 +12,8 @@
     "Phase 4C证据闭环完成：4个Task（验收清单 + 证据索引 + 演示脚本 + 已知问题清单）",
     "Claude-Codex证据闭环协作：3轮讨论达成共识（收窄为2小时证据包 + 硬停止）",
     "证据闭环后策略讨论：Claude-Codex达成共识（决策门 + 窄Track 3契约草案）",
-    "Track 3 Phase 0完成：通知契约草案v0.1（纯文档，不改代码）"
+    "Track 3 Phase 0完成：通知契约草案v0.1（纯文档，不改代码）",
+    "Track 3契约修正完成：5个P1/P2问题修正（分页/幂等键/验收标准/错误结构/测试数据）"
   ],
   "pending": [
     "Track 3 Phase 1：后端MVP实现（需用户明确授权）",
@@ -29,10 +30,11 @@
     "证据闭环: phase4c-demo-script.md（13步可执行演示）",
     "证据闭环: phase4c-known-issues.md（6项DevTools阻塞 + 5项外部系统阻塞 + 10项范围推迟 + 8项已知风险）",
     "Track 3 Phase 0: notification-contract-v0.1.md（5种事件 + 10字段 + 4 API + RBAC + 幂等规则）",
+    "Track 3契约修正: notification-contract-v0.1.md已修正（分页limit/offset + 幂等键recipient_id + 错误结构统一 + Phase 1验收调整 + 测试数据路径）",
     "Git commits: 3个（Track 1 + Track 2 + 证据闭环）",
-    "协作日志：event 84（证据闭环共识）"
+    "协作日志：event 84（证据闭环共识）+ event 85（Track 3 Phase 0完成）"
   ],
-  "next_focus": "Track 3 Phase 0（通知契约草案）完成。硬停止，等待用户授权进入Phase 1实现（Django model + migration + API + 测试，0.5-1天）。或等待DevTools验证、宿舍系统信息。",
+  "next_focus": "Track 3契约修正完成（5个P1/P2问题已修正）。硬停止，等待用户明确授权Phase 1后端MVP实现（Django model + migration + API + 测试，0.5-1天）。或等待DevTools验证、宿舍系统信息。",
   "suggested_skills": [],
   "artifacts": {
     "track1_import_csv": "backend/apps/users/management/commands/import_csv.py",
@@ -54,6 +56,9 @@
     "claude_post_evidence_strategy": "docs/discussions/phase4c-next-steps/25-claude-post-evidence-next-strategy.md",
     "codex_post_evidence_review": "docs/discussions/phase4c-next-steps/26-codex-post-evidence-strategy-review.md",
     "claude_decision_gate_consensus": "docs/discussions/phase4c-next-steps/27-claude-consensus-decision-gate.md",
+    "claude_post_phase0_strategy": "docs/discussions/phase4c-next-steps/28-claude-post-phase0-next-strategy.md",
+    "codex_post_phase0_review": "docs/discussions/phase4c-next-steps/29-codex-post-phase0-next-strategy-response.md",
+    "claude_contract_revision_consensus": "docs/discussions/phase4c-next-steps/30-claude-consensus-contract-revision-gate.md",
     "collaboration_events": ".omc/collaboration/events.jsonl",
     "collaboration_state": ".omc/collaboration/state.json"
   },

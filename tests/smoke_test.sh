@@ -179,16 +179,32 @@ echo "✓ Counselor login success"
 
 # Verify counselor received APPLICATION_SUBMITTED notification
 echo "  Verifying counselor notification..."
-COUNSELOR_NOTIF_COUNT=$(curl -s "$BASE_URL/api/notifications/unread_count/" \
-  -H "Authorization: Bearer $T001_TOKEN" \
-  | jq -r '.unread_count')
+COUNSELOR_NOTIFS=$(curl -s "$BASE_URL/api/notifications/" \
+  -H "Authorization: Bearer $T001_TOKEN")
 
-if [ "$COUNSELOR_NOTIF_COUNT" -lt "1" ]; then
-  echo "✗ Counselor notification not created: expected ≥1, got $COUNSELOR_NOTIF_COUNT"
+COUNSELOR_APP_NOTIF=$(echo "$COUNSELOR_NOTIFS" | jq -r ".results[] | select(.type == \"application_submitted\" and (.message | contains(\"2020001\")))")
+
+if [ -z "$COUNSELOR_APP_NOTIF" ]; then
+  echo "✗ Counselor APPLICATION_SUBMITTED notification not found"
+  echo "Available notifications:"
+  echo "$COUNSELOR_NOTIFS" | jq '.results[] | {type, message}'
   exit 1
 fi
 
-echo "  ✓ Counselor has $COUNSELOR_NOTIF_COUNT unread notification(s)"
+NOTIF_TYPE=$(echo "$COUNSELOR_APP_NOTIF" | jq -r '.type')
+NOTIF_ENTITY_TYPE=$(echo "$COUNSELOR_APP_NOTIF" | jq -r '.entity_type')
+
+if [ "$NOTIF_TYPE" != "application_submitted" ]; then
+  echo "✗ Notification type wrong: $NOTIF_TYPE (expected: application_submitted)"
+  exit 1
+fi
+
+if [ "$NOTIF_ENTITY_TYPE" != "approval" ]; then
+  echo "✗ Notification entity_type wrong: $NOTIF_ENTITY_TYPE (expected: approval)"
+  exit 1
+fi
+
+echo "  ✓ Counselor received APPLICATION_SUBMITTED notification (type: $NOTIF_TYPE, entity_type: $NOTIF_ENTITY_TYPE)"
 
 # 8. Counselor approve
 echo "8. Counselor approve..."
@@ -209,14 +225,32 @@ echo "✓ Counselor approved"
 
 # Verify student received APPROVAL_APPROVED notification
 echo "  Verifying student notification..."
-STUDENT_NOTIF_COUNT=$(curl -s "$BASE_URL/api/notifications/unread_count/" \
-  -H "Authorization: Bearer $STUDENT_TOKEN" \
-  | jq -r '.unread_count')
+STUDENT_NOTIFS=$(curl -s "$BASE_URL/api/notifications/" \
+  -H "Authorization: Bearer $STUDENT_TOKEN")
 
-if [ "$STUDENT_NOTIF_COUNT" -lt "1" ]; then
-  echo "✗ Student notification not created: expected ≥1, got $STUDENT_NOTIF_COUNT"
+STUDENT_APPROVE_NOTIF=$(echo "$STUDENT_NOTIFS" | jq -r ".results[] | select(.type == \"approval_approved\" and (.message | contains(\"辅导员\")))")
+
+if [ -z "$STUDENT_APPROVE_NOTIF" ]; then
+  echo "✗ Student APPROVAL_APPROVED notification not found"
+  echo "Available notifications:"
+  echo "$STUDENT_NOTIFS" | jq '.results[] | {type, message}'
   exit 1
 fi
+
+NOTIF_TYPE=$(echo "$STUDENT_APPROVE_NOTIF" | jq -r '.type')
+NOTIF_ENTITY_TYPE=$(echo "$STUDENT_APPROVE_NOTIF" | jq -r '.entity_type')
+
+if [ "$NOTIF_TYPE" != "approval_approved" ]; then
+  echo "✗ Notification type wrong: $NOTIF_TYPE (expected: approval_approved)"
+  exit 1
+fi
+
+if [ "$NOTIF_ENTITY_TYPE" != "approval" ]; then
+  echo "✗ Notification entity_type wrong: $NOTIF_ENTITY_TYPE (expected: approval)"
+  exit 1
+fi
+
+echo "  ✓ Student received APPROVAL_APPROVED notification (type: $NOTIF_TYPE, entity_type: $NOTIF_ENTITY_TYPE)"
 
 echo "  ✓ Student has $STUDENT_NOTIF_COUNT unread notification(s)"
 
@@ -301,23 +335,10 @@ fi
 echo "✓ Final status: $FINAL_STATUS"
 
 echo ""
-echo "--- N2: Cross-counselor approval (negative test) ---"
+echo "--- H2: Rejection Path (2020002 → T002 reject) ---"
 
-# N2: T002 tries to approve T001's approval (should fail)
-echo "12. T002 login..."
-T002_TOKEN=$(curl -s -X POST "$BASE_URL/api/auth/login" \
-  -H "Content-Type: application/json" \
-  -d '{"user_id":"T002","password":"T002"}' \
-  | jq -r '.access_token')
-
-if [ -z "$T002_TOKEN" ] || [ "$T002_TOKEN" = "null" ]; then
-  echo "✗ T002 login failed"
-  exit 1
-fi
-echo "✓ T002 login success"
-
-# Login as student 2020002 (CS2020-02, counselor T002)
-echo "13. Student 2020002 login..."
+# 12. Student 2020002 login
+echo "12. Student 2020002 login..."
 STUDENT2_TOKEN=$(curl -s -X POST "$BASE_URL/api/auth/login" \
   -H "Content-Type: application/json" \
   -d '{"user_id":"2020002","password":"2020002"}' \
@@ -329,21 +350,95 @@ if [ -z "$STUDENT2_TOKEN" ] || [ "$STUDENT2_TOKEN" = "null" ]; then
 fi
 echo "✓ Student 2020002 login success"
 
-# Create application for 2020002 (will be assigned to T002)
-echo "14. Create application for 2020002..."
-TEST_APP_RESPONSE=$(curl -s -X POST "$BASE_URL/api/applications/" \
+# 13. Submit application
+echo "13. Submit application..."
+APP2_RESPONSE=$(curl -s -X POST "$BASE_URL/api/applications/" \
   -H "Authorization: Bearer $STUDENT2_TOKEN" \
   -H "Content-Type: application/json" \
-  -d "{\"reason\":\"测试跨班级审批\",\"leave_date\":\"$LEAVE_DATE\"}")
+  -d "{\"reason\":\"测试驳回流程\",\"leave_date\":\"$LEAVE_DATE\"}")
 
-TEST_APP_ID=$(echo "$TEST_APP_RESPONSE" | jq -r '.application_id')
-TEST_COUNSELOR_APPROVAL=$(echo "$TEST_APP_RESPONSE" | jq -r '.approvals[] | select(.step=="counselor") | .approval_id')
+APP2_ID=$(echo "$APP2_RESPONSE" | jq -r '.application_id')
+COUNSELOR2_APPROVAL_ID=$(echo "$APP2_RESPONSE" | jq -r '.approvals[] | select(.step=="counselor") | .approval_id')
 
-echo "  Test application: $TEST_APP_ID"
-echo "  Test approval (T002): $TEST_COUNSELOR_APPROVAL"
+if [ -z "$APP2_ID" ] || [ "$APP2_ID" = "null" ]; then
+  echo "✗ Application submit failed"
+  exit 1
+fi
 
-# T002 tries to approve T001's approval
-echo "15. T002 tries to approve T001's approval (should fail)..."
+echo "✓ Application submitted: $APP2_ID"
+echo "  Counselor approval: $COUNSELOR2_APPROVAL_ID"
+
+# 14. T002 login
+echo "14. T002 login..."
+T002_TOKEN=$(curl -s -X POST "$BASE_URL/api/auth/login" \
+  -H "Content-Type: application/json" \
+  -d '{"user_id":"T002","password":"T002"}' \
+  | jq -r '.access_token')
+
+if [ -z "$T002_TOKEN" ] || [ "$T002_TOKEN" = "null" ]; then
+  echo "✗ T002 login failed"
+  exit 1
+fi
+echo "✓ T002 login success"
+
+# 15. T002 reject
+echo "15. T002 reject..."
+REJECT_RESPONSE=$(curl -s -X POST "$BASE_URL/api/approvals/$COUNSELOR2_APPROVAL_ID/reject/" \
+  -H "Authorization: Bearer $T002_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{"comment":"材料不齐全，请补充"}')
+
+REJECT_DECISION=$(echo "$REJECT_RESPONSE" | jq -r '.decision')
+
+if [ "$REJECT_DECISION" != "rejected" ]; then
+  echo "✗ Counselor reject failed"
+  echo "$REJECT_RESPONSE" | jq '.'
+  exit 1
+fi
+
+echo "✓ Counselor rejected"
+
+# Verify student received APPROVAL_REJECTED notification
+echo "  Verifying student rejection notification..."
+STUDENT2_NOTIFS=$(curl -s "$BASE_URL/api/notifications/" \
+  -H "Authorization: Bearer $STUDENT2_TOKEN")
+
+STUDENT2_REJECT_NOTIF=$(echo "$STUDENT2_NOTIFS" | jq -r ".results[] | select(.type == \"approval_rejected\" and (.message | contains(\"材料不齐全\")))")
+
+if [ -z "$STUDENT2_REJECT_NOTIF" ]; then
+  echo "✗ Student APPROVAL_REJECTED notification not found"
+  echo "Available notifications:"
+  echo "$STUDENT2_NOTIFS" | jq '.results[] | {type, message}'
+  exit 1
+fi
+
+NOTIF_TYPE=$(echo "$STUDENT2_REJECT_NOTIF" | jq -r '.type')
+NOTIF_ENTITY_TYPE=$(echo "$STUDENT2_REJECT_NOTIF" | jq -r '.entity_type')
+NOTIF_MESSAGE=$(echo "$STUDENT2_REJECT_NOTIF" | jq -r '.message')
+
+if [ "$NOTIF_TYPE" != "approval_rejected" ]; then
+  echo "✗ Notification type wrong: $NOTIF_TYPE (expected: approval_rejected)"
+  exit 1
+fi
+
+if [ "$NOTIF_ENTITY_TYPE" != "approval" ]; then
+  echo "✗ Notification entity_type wrong: $NOTIF_ENTITY_TYPE (expected: approval)"
+  exit 1
+fi
+
+if ! echo "$NOTIF_MESSAGE" | grep -q "材料不齐全"; then
+  echo "✗ Notification message missing rejection reason: $NOTIF_MESSAGE"
+  exit 1
+fi
+
+echo "  ✓ Student received APPROVAL_REJECTED notification with reason (type: $NOTIF_TYPE, entity_type: $NOTIF_ENTITY_TYPE)"
+
+echo ""
+echo "--- N2: Cross-counselor approval (negative test) ---"
+
+# N2: T002 tries to approve T001's approval (should fail)
+# (Reusing T002_TOKEN from H2 scenario)
+echo "16. T002 tries to approve T001's approval (should fail)..."
 CROSS_APPROVE_STATUS=$(curl -s -w "\n%{http_code}" -X POST "$BASE_URL/api/approvals/$COUNSELOR_APPROVAL_ID/approve/" \
   -H "Authorization: Bearer $T002_TOKEN" \
   -H "Content-Type: application/json" \

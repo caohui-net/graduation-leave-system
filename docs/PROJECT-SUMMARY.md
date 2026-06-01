@@ -1248,4 +1248,141 @@
 
 **状态：**
 - ✅ 策略共识达成
-- ⏳ 开始执行主线1和主线2
+- ✅ 主线1和主线2执行完成
+
+**Track 1: CSV导入v1硬化（2026-06-01完成）：**
+
+**任务14：字段名统一（15分钟）**
+- ✓ 对齐CSV模板与数据对接文档
+  - counselors.csv: active → is_active, 添加department字段
+  - mappings.csv: counselor_id → counselor_employee_id, 移除active字段
+  - students.csv: 移除active字段, 添加department/major/grade字段
+- ✓ 更新import_csv命令字段验证逻辑
+- ✓ 更新CSV模板文件（backend/data/templates/*.csv）
+
+**任务15：Dry-run模式（20分钟）**
+- ✓ 添加--dry-run参数到import_csv命令
+- ✓ 实现预览模式（显示将要导入的数据，不实际写入）
+- ✓ 输出导入摘要（成功/失败/跳过计数）
+
+**任务16：事务保护（15分钟）**
+- ✓ 使用@transaction.atomic装饰器包裹导入函数
+- ✓ 确保导入失败时完整回滚
+- ✓ 保持原子性（全部成功或全部失败）
+
+**任务17：字段校验（30分钟）**
+- ✓ 必填字段验证（student_id, name, class_id等）
+- ✓ 重复主键检测（跳过重复记录并报告）
+- ✓ 外键引用验证（counselor存在性、class mapping存在性）
+- ✓ 布尔值格式验证（true/false）
+
+**任务18：导入摘要（10分钟）**
+- ✓ 输出详细导入结果
+  - 成功导入数量
+  - 失败记录数量（含原因）
+  - 跳过记录数量（重复）
+- ✓ 错误信息清晰可读
+
+**任务19：单元测试（45分钟）**
+- ✓ 创建test_import_csv.py（9个测试）
+  - test_import_students_success（成功导入）
+  - test_import_students_missing_required_field（缺失必填字段）
+  - test_import_students_duplicate（重复记录跳过）
+  - test_import_counselors_success（辅导员导入）
+  - test_import_mappings_success（映射导入）
+  - test_import_mappings_counselor_not_found（辅导员不存在）
+  - test_import_students_class_mapping_missing（班级映射缺失）
+  - test_import_csv_dry_run_mode（dry-run模式）
+  - test_validation_error_skips_invalid_rows（验证错误跳过）
+- ✓ 所有测试通过（9/9）
+
+**Track 1产出物：**
+- backend/apps/users/management/commands/import_csv.py（完全重写）
+- backend/data/templates/counselors_template.csv（字段更新）
+- backend/data/templates/class_mappings_template.csv（字段更新）
+- backend/data/templates/students_template.csv（字段更新）
+- backend/apps/users/tests/test_import_csv.py（9个测试）
+
+**Track 1验证：**
+- ✓ 9/9单元测试通过
+- ✓ Dry-run模式正常工作
+- ✓ 事务回滚验证通过
+- ✓ 字段校验覆盖所有必填字段和外键引用
+
+**Track 2: Docker/media/smoke硬化（2026-06-01完成）：**
+
+**任务20：Docker volume for MEDIA_ROOT（15分钟）**
+- ✓ 添加media_data volume到docker-compose.yml
+- ✓ 挂载到backend容器的/app/media
+- ✓ 确保附件持久化（容器重启后数据不丢失）
+
+**任务21：.env.example补齐（10分钟）**
+- ✓ 创建完整的环境变量模板
+- ✓ 包含所有必需配置项
+  - 数据库配置（DB_ENGINE, DB_NAME, DB_USER, DB_PASSWORD, DB_HOST, DB_PORT）
+  - Django配置（SECRET_KEY, DEBUG, ALLOWED_HOSTS）
+  - 媒体文件配置（MEDIA_ROOT, MEDIA_URL）
+  - JWT配置（JWT_SECRET_KEY, JWT_ACCESS_TOKEN_LIFETIME, JWT_REFRESH_TOKEN_LIFETIME）
+  - Redis/Celery配置（可选，未来使用）
+- ✓ 添加注释说明每个变量的用途
+
+**任务22：DEPLOYMENT.md部署说明（30分钟）**
+- ✓ 创建完整部署指南
+- ✓ 6步快速启动流程
+  1. 环境配置（.env.docker）
+  2. 启动服务（docker compose up -d）
+  3. 数据库迁移（migrate）
+  4. 加载初始数据（seed_data或import_csv）
+  5. 验证安装（smoke_test.sh）
+  6. 访问应用
+- ✓ CSV导入详细说明
+  - 字段要求（counselors/mappings/students）
+  - 导入顺序（counselors → mappings → students）
+  - Dry-run模式使用
+- ✓ 故障排查指南
+- ✓ 维护命令（日志查看、数据库重置、媒体备份）
+
+**任务23：Smoke test增强（20分钟）**
+- ✓ 扩展tests/smoke_test.sh
+- ✓ 新增附件生命周期测试（步骤3-6）
+  - 步骤3：上传附件（POST /api/applications/{id}/attachments/）
+  - 步骤4：列出附件（GET /api/applications/{id}/attachments/）
+  - 步骤5：下载附件（GET /api/applications/{id}/attachments/{id}/download/）
+  - 步骤6：删除附件（DELETE /api/applications/{id}/attachments/{id}/）
+- ✓ 验证附件列表为空（删除后）
+- ✓ 重新编号后续步骤（7-15）
+- ✓ 保持原有happy path和negative test完整性
+
+**Track 2产出物：**
+- docker-compose.yml（添加media_data volume）
+- .env.example（完整环境变量模板）
+- DEPLOYMENT.md（完整部署指南）
+- tests/smoke_test.sh（增强版，15步）
+
+**Track 2验证：**
+- ✓ Docker volume配置正确
+- ✓ .env.example包含所有必需变量
+- ✓ DEPLOYMENT.md流程清晰完整
+- ✓ Smoke test覆盖附件上传/下载/删除
+
+**里程碑达成：**
+- ✅ M1: Backend Ops Hardening Complete
+  - CSV导入v1硬化完成（dry-run + 事务 + 校验 + 摘要 + 9测试）
+  - Docker/media持久化完成
+  - 部署文档完整
+- ✅ M2: Phase 4C Evidence Ready
+  - Smoke test增强完成（15步，包含附件）
+  - 验收证据完整（测试通过 + 文档齐全）
+
+**Git提交：**
+- ✓ Commit 1: feat: CSV导入v1硬化（字段对齐 + dry-run + 事务 + 校验 + 摘要 + 9测试）
+- ✓ Commit 2: feat: Docker/media/smoke硬化（media volume + .env.example + DEPLOYMENT.md + 附件smoke测试）
+- ✓ 已推送到远程仓库
+
+**协作记录：**
+- ✓ Event 80: 策略共识达成（修正版E策略）
+- ✓ 状态切换：discussing → executing → completed（待更新）
+
+**下一步：**
+- ⏳ 可选主线3：通知系统最小契约（0.5天，仅在DevTools不可用时）
+- ⏸ Phase 4A: WeChat DevTools验证（外部阻塞，小程序scope冻结直到验证通过）

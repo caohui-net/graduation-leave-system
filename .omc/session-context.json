@@ -1,5 +1,5 @@
 {
-  "last_updated": "2026-06-01T04:13:00Z",
+  "last_updated": "2026-06-01T06:29:00Z",
   "completed": [
     "Week 3 Closure Gate完成",
     "Phase 2完成：P0后端修复（resubmission + approval filter + 单元测试）",
@@ -28,11 +28,19 @@
     "后端测试覆盖增强完成：Claude-Codex协商达成共识（gap-filling优先）",
     "测试覆盖方案：3轮讨论（初步分析 → Codex批评 → Claude修订 → Codex接受）",
     "新增6个测试：3个detail权限 + 1个approval list leak + 2个timezone边界",
-    "所有48个测试通过（42现有 + 6新增），无回归"
+    "所有48个测试通过（42现有 + 6新增），无回归",
+    "Phase 4C后端MVP启动：附件功能（models + serializers + views）",
+    "Attachment模型：soft delete + 4种类型 + FileField + 权限FK",
+    "AttachmentUploadSerializer：文件大小<10MB + 扩展名白名单验证",
+    "AttachmentSerializer：只读响应序列化器",
+    "4个视图函数：upload（学生only）+ list（RBAC）+ download（RBAC）+ delete（学生only软删除）",
+    "权限规则：学生（own only）+ 辅导员（own class/approval scope）+ 学工部（own dean approval）"
   ],
   "pending": [
+    "Phase 4C后端MVP完成：URL routing + migrations + 后端测试 + 回归验证",
+    "Phase 4C契约草案：contract-v0.3-draft.md",
     "Phase 4A: WeChat DevTools验证（外部阻塞，1-3天）",
-    "Phase 4C: 附件MVP（2-4天）",
+    "Phase 4C前端：小程序附件上传/列表/下载UI",
     "其他小程序页面：detail页面改进、历史记录页面等",
     "宿舍系统对接调研（并行轨道）"
   ],
@@ -70,9 +78,14 @@
     "Codex第二轮反馈：.omc/collaboration/artifacts/20260601-0405-codex-test-coverage-feedback.md",
     "测试覆盖最终共识：.omc/collaboration/artifacts/test-coverage-final-consensus.md",
     "新增测试文件：test_detail_permissions.py（3测试）+ test_list_permissions.py扩展（1测试）+ test_serializer_validation.py扩展（2测试）",
-    "全部测试通过：48 tests OK（42现有 + 6新增），无回归"
+    "全部测试通过：48 tests OK（42现有 + 6新增），无回归",
+    "Phase 4C后端MVP启动：Attachment模型 + 序列化器 + 视图函数",
+    "Attachment模型：backend/apps/attachments/models.py（soft delete + 4类型 + FileField）",
+    "AttachmentUploadSerializer：backend/apps/attachments/serializers.py（10MB + 扩展名验证）",
+    "4个视图：upload/list/download/delete with RBAC权限检查",
+    "apps.attachments已添加到INSTALLED_APPS"
   ],
-  "next_focus": "后端测试覆盖增强完成。下一步选项：A) Phase 4C附件MVP（2-4天，后端优先）B) 继续小程序页面（detail改进/history）C) 其他优化。外部阻塞：WeChat DevTools验证（Phase 4A）+ 宿舍系统对接。建议：按Codex原建议，Phase 4C后端部分 + 加强后端测试已完成，可考虑Phase 4C前端或其他工作。",
+  "next_focus": "Phase 4C后端MVP进行中（models/serializers/views已完成）。下一步：URL routing + migrations + 后端测试（upload/permissions/soft delete）+ 回归验证（48测试）+ contract-v0.3-draft。完成后选项：A) Phase 4C前端UI B) 其他小程序页面 C) 等待DevTools验证（Phase 4A外部阻塞）。",
   "suggested_skills": [],
   "artifacts": {
     "codex_contract": "docs/contracts/contract-v0.2.md",
@@ -109,7 +122,10 @@
     "test_coverage_codex_feedback": ".omc/collaboration/artifacts/20260601-0405-codex-test-coverage-feedback.md",
     "test_coverage_final_consensus": ".omc/collaboration/artifacts/test-coverage-final-consensus.md",
     "detail_permissions_tests": "backend/apps/applications/tests/test_detail_permissions.py",
-    "approval_list_permissions_tests": "backend/apps/approvals/tests/test_list_permissions.py"
+    "approval_list_permissions_tests": "backend/apps/approvals/tests/test_list_permissions.py",
+    "attachment_model": "backend/apps/attachments/models.py",
+    "attachment_serializers": "backend/apps/attachments/serializers.py",
+    "attachment_views": "backend/apps/attachments/views.py"
   },
   "blocking_issues": [
     "WeChat DevTools安装（Phase 4A外部依赖）",

@@ -1100,3 +1100,44 @@
 - ✅ 后端测试覆盖增强完成
 - ✅ 所有测试通过
 - ✅ 已提交并推送到远程仓库
+
+**Phase 4C后端MVP启动（2026-06-01）：**
+
+**背景：**
+- Codex建议：Phase 4C后端部分优先（避免前端风险累积，DevTools未验证）
+- 目标：附件功能后端MVP + 强测试 + 契约草案
+
+**已完成：**
+- ✓ 创建attachments app结构（models + serializers + views）
+- ✓ Attachment模型设计
+  - 主键：attachment_id（att_xxxxxxxx格式）
+  - 外键：application（CASCADE）+ uploaded_by（PROTECT）
+  - 文件：FileField（upload_to='attachments/%Y/%m/%d/'）
+  - 类型：4种（宿舍清退/图书馆清书/财务结清/其他）
+  - 软删除：is_deleted + deleted_at
+- ✓ AttachmentUploadSerializer验证
+  - 文件大小：<10MB
+  - 扩展名白名单：jpg/jpeg/png/pdf/doc/docx
+- ✓ AttachmentSerializer（只读响应）
+- ✓ 4个视图函数with RBAC权限
+  - upload_attachment：POST，学生only（own application）
+  - list_attachments：GET，RBAC（学生own/辅导员class+approval/学工部dean approval）
+  - download_attachment：GET，RBAC（同list）
+  - delete_attachment：DELETE，学生only（软删除）
+- ✓ 添加apps.attachments到INSTALLED_APPS
+
+**待完成：**
+- URL routing（4个endpoint）
+- Migrations（创建attachments表）
+- 后端测试（upload成功/失败、权限、软删除）
+- 回归验证（48个现有测试）
+- 契约草案（contract-v0.3-draft.md）
+
+**产出物：**
+- backend/apps/attachments/models.py
+- backend/apps/attachments/serializers.py
+- backend/apps/attachments/views.py
+
+**状态：**
+- ⏳ Phase 4C后端MVP进行中（models/serializers/views完成）
+- ⏳ 下一步：URL routing + migrations + 测试

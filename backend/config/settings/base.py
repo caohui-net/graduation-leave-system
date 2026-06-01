@@ -33,6 +33,7 @@ INSTALLED_APPS = [
     'apps.users',
     'apps.applications',
     'apps.approvals',
+    'apps.attachments',
 ]
 
 MIDDLEWARE = [

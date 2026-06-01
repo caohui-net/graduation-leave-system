@@ -1200,3 +1200,52 @@
 - ✅ 所有5个阶段完成：契约骨架 → P0修复 → 测试 → 回归 → 契约最终版
 - ✅ 19个attachment测试全部通过
 - ✅ 无回归问题
+
+**下一步策略共识（2026-06-01）：**
+
+**Claude-Codex策略讨论（3轮）：**
+1. ✓ Claude提出混合策略（数据导入工具 + 部署脚本 + 通知系统 + detail改进）
+2. ✓ Codex审查识别5个关键问题（P0: 违反scope冻结共识，P1: CSV应为v1硬化，P1: Docker应聚焦media持久化，P2: 通知系统应降级，P2: 遗漏验收证据包）
+3. ✓ Claude完全接受Codex修正版E策略：后端/运维硬化优先的窄混合策略
+
+**最终共识：修正版E策略（两条主线并行）**
+
+**主线1：CSV导入v1硬化（0.5-1.5天）**
+- 统一CSV字段名与数据对接文档一致
+- 增加dry-run模式和事务保护
+- 增加强校验（必填字段、重复主键、映射引用）
+- 实现软停用策略或明确暂缓
+- 增加单元测试覆盖
+
+**主线2：Docker/media/smoke验收硬化（0.5-1天）**
+- 为MEDIA_ROOT增加Docker volume
+- 补齐.env.example和部署说明
+- 明确启动、迁移、seed/import、smoke顺序
+- 将附件上传/下载纳入smoke验证
+- 更新Phase 4C验证清单和CSV样例
+
+**可选主线3：通知系统最小契约（0.5天）**
+- 仅在主线1-2完成且DevTools不可用时启动
+- 定义通知事件类型和模型草案
+- 不实现小程序通知页
+
+**关键约束：**
+- 小程序scope保持冻结直到DevTools验证
+- 不新增历史记录页、通知页、个人中心页
+- detail页面改进仅限修复阻断验证的P0/P1问题
+
+**里程碑：**
+- M1: Backend Ops Hardening Complete（1-2天）
+- M2: Phase 4C Evidence Ready（0.5-1天）
+- M3: Notification Contract Ready（0.5天，可选）
+
+**产出物：**
+- docs/discussions/phase4c-next-steps/19-claude-next-phase-strategy-request.md
+- docs/discussions/phase4c-next-steps/20-codex-next-phase-strategy-response.md
+- docs/discussions/phase4c-next-steps/21-claude-consensus-narrowed-strategy.md
+- .omc/collaboration/events.jsonl（event 80：共识达成）
+- .omc/collaboration/state.json（状态切换为executing）
+
+**状态：**
+- ✅ 策略共识达成
+- ⏳ 开始执行主线1和主线2

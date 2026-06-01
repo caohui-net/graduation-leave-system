@@ -1,8 +1,8 @@
 {
   "workflow_id": "claude-codex-collab-mvp",
-  "current_task": "phase4b_prep_verification_complete",
-  "active_agent": "none",
-  "status": "complete",
-  "last_event_id": 70,
-  "updated_at": "2026-05-31T03:40:00.000Z"
+  "current_task": "backend_ops_hardening",
+  "active_agent": "claude",
+  "status": "executing",
+  "last_event_id": 80,
+  "updated_at": "2026-06-01T10:18:00Z"
 }

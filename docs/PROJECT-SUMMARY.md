@@ -1742,3 +1742,46 @@
 - ⏸ Phase 2C推迟（审批超时提醒，需Celery）
 - ⏸ Phase 3推迟（小程序通知页，等待DevTools）
 - ⏸ Phase 4推迟（微信模板消息，生产部署阶段）
+
+---
+
+### Track 3 Phase 2A稳定化（2026-06-02完成）
+
+**目标：** 修复Phase 2A自动通知的契约一致性和测试缺口
+
+**完成内容：**
+
+1. **修复通知type枚举值（Task 1）**
+   - 修改services.py使用NotificationType枚举值
+   - 不再使用裸字符串常量
+
+2. **修正测试断言（Task 2）**
+   - 修改test_auto_notifications.py断言小写枚举值
+   - 所有断言与实际枚举值一致
+
+3. **补充API路径级测试（Task 3）**
+   - 创建test_auto_notifications_api.py
+   - 测试提交申请后辅导员通知API可见
+   - 测试审批通过/驳回后学生通知API可见
+   - 验证通知type、entity_type、entity_id与契约一致
+
+4. **负向路径测试（Task 4）**
+   - 测试权限拒绝不创建通知
+   - 测试状态冲突不创建通知
+   - 测试宿舍阻断不创建通知
+
+**产出物：**
+- backend/apps/notifications/services.py（修复枚举值）
+- backend/apps/notifications/tests/test_auto_notifications.py（修正断言）
+- backend/apps/notifications/tests/test_auto_notifications_api.py（新增6个API测试）
+
+**测试统计：**
+- 服务层测试：6/6通过
+- API层测试：6/6通过
+- 总计：12/12通过
+
+**状态：**
+- ✅ Phase 2A稳定化完成
+- ✅ 通知type枚举值契约一致性修复
+- ✅ API路径级测试覆盖完成
+- ✅ 负向路径测试覆盖完成

@@ -7,6 +7,7 @@ from .models import Application, ApplicationStatus, DormCheckoutStatus
 from .serializers import ApplicationSerializer, ApplicationCreateSerializer, ApplicationListSerializer
 from .pagination import ApplicationLimitOffsetPagination
 from .providers import MockDormCheckoutProvider
+from .permissions import can_view_application
 from apps.approvals.models import Approval, ApprovalStep, ApprovalDecision
 from apps.users.models import UserRole
 from apps.users.class_mapping import ClassMapping
@@ -145,29 +146,9 @@ def get_application(request, application_id):
 
     user = request.user
 
-    # Student: can only view own application
-    if user.role == UserRole.STUDENT and application.student.user_id != user.user_id:
+    # Check permission using shared helper
+    if not can_view_application(user, application):
         return Response({'error': {'code': 'FORBIDDEN', 'message': '无权限访问此资源'}},
                         status=status.HTTP_403_FORBIDDEN)
-
-    # Counselor: can only view applications from assigned classes
-    if user.role == UserRole.COUNSELOR:
-        try:
-            class_mapping = ClassMapping.objects.get(counselor=user, class_id=application.class_id, active=True)
-        except ClassMapping.DoesNotExist:
-            return Response({'error': {'code': 'FORBIDDEN', 'message': '无权限访问此资源'}},
-                            status=status.HTTP_403_FORBIDDEN)
-
-    # Dean: can only view applications with own pending dean approvals
-    if user.role == UserRole.DEAN:
-        has_pending_approval = Approval.objects.filter(
-            application=application,
-            approver=user,
-            step=ApprovalStep.DEAN,
-            decision=ApprovalDecision.PENDING
-        ).exists()
-        if not has_pending_approval:
-            return Response({'error': {'code': 'FORBIDDEN', 'message': '无权限访问此资源'}},
-                            status=status.HTTP_403_FORBIDDEN)
 
     return Response(ApplicationSerializer(application).data)

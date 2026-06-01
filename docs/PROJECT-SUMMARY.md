@@ -1126,18 +1126,34 @@
   - delete_attachment：DELETE，学生only（软删除）
 - ✓ 添加apps.attachments到INSTALLED_APPS
 
-**待完成：**
-- URL routing（4个endpoint）
-- Migrations（创建attachments表）
-- 后端测试（upload成功/失败、权限、软删除）
-- 回归验证（48个现有测试）
-- 契约草案（contract-v0.3-draft.md）
+**已完成（续）：**
+- ✓ URL routing（4个endpoint，dispatcher view for GET/POST）
+- ✓ RBAC helper提取（can_view_application共享函数）
+- ✓ 应用detail和attachment views统一使用RBAC helper
+- ✓ MEDIA settings配置（MEDIA_URL + MEDIA_ROOT）
+- ✓ Migrations（0001_initial.py，创建attachments表）
+- ✓ 后端测试（19个测试，100%通过）
+  - test_upload.py: 5个测试（成功/forbidden/validation）
+  - test_list.py: 6个测试（RBAC visibility matrix）
+  - test_download.py: 4个测试（positive/forbidden/soft-deleted）
+  - test_delete.py: 4个测试（owner/non-owner/already-deleted）
+- ✓ 回归验证（现有测试无回归）
+- ✓ 契约最终版（contract-v0.3.md）
 
 **产出物：**
 - backend/apps/attachments/models.py
 - backend/apps/attachments/serializers.py
 - backend/apps/attachments/views.py
+- backend/apps/attachments/urls.py
+- backend/apps/attachments/tests/ (4个测试文件)
+- backend/apps/attachments/migrations/0001_initial.py
+- backend/apps/applications/permissions.py (RBAC helper)
+- docs/api/contract-v0.3.md
+- docs/api/contract-v0.3-skeleton.md
+- docs/discussions/phase4c-next-steps/ (Claude-Codex讨论记录)
 
 **状态：**
-- ⏳ Phase 4C后端MVP进行中（models/serializers/views完成）
-- ⏳ 下一步：URL routing + migrations + 测试
+- ✅ Phase 4C后端MVP完成（2026-06-01）
+- ✅ 所有5个阶段完成：契约骨架 → P0修复 → 测试 → 回归 → 契约最终版
+- ✅ 19个attachment测试全部通过
+- ✅ 无回归问题

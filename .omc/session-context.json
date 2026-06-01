@@ -1,5 +1,5 @@
 {
-  "last_updated": "2026-06-01T06:29:00Z",
+  "last_updated": "2026-06-01T07:35:00Z",
   "completed": [
     "Week 3 Closure Gate完成",
     "Phase 2完成：P0后端修复（resubmission + approval filter + 单元测试）",
@@ -34,11 +34,17 @@
     "AttachmentUploadSerializer：文件大小<10MB + 扩展名白名单验证",
     "AttachmentSerializer：只读响应序列化器",
     "4个视图函数：upload（学生only）+ list（RBAC）+ download（RBAC）+ delete（学生only软删除）",
-    "权限规则：学生（own only）+ 辅导员（own class/approval scope）+ 学工部（own dean approval）"
+    "权限规则：学生（own only）+ 辅导员（own class/approval scope）+ 学工部（own dean approval）",
+    "Phase 4C后端MVP完成：URL routing + migrations + 19个测试 + 回归验证 + contract-v0.3",
+    "RBAC helper提取：can_view_application共享函数（统一application detail和attachment views）",
+    "URL routing：dispatcher view处理GET/POST on same path + 4个endpoints",
+    "MEDIA settings：MEDIA_URL + MEDIA_ROOT配置",
+    "Migrations：0001_initial.py创建attachments表",
+    "后端测试：19个测试100%通过（upload:5 + list:6 + download:4 + delete:4）",
+    "回归验证：现有测试无回归",
+    "契约最终版：contract-v0.3.md（Final status，19 tests coverage）"
   ],
   "pending": [
-    "Phase 4C后端MVP完成：URL routing + migrations + 后端测试 + 回归验证",
-    "Phase 4C契约草案：contract-v0.3-draft.md",
     "Phase 4A: WeChat DevTools验证（外部阻塞，1-3天）",
     "Phase 4C前端：小程序附件上传/列表/下载UI",
     "其他小程序页面：detail页面改进、历史记录页面等",
@@ -83,9 +89,15 @@
     "Attachment模型：backend/apps/attachments/models.py（soft delete + 4类型 + FileField）",
     "AttachmentUploadSerializer：backend/apps/attachments/serializers.py（10MB + 扩展名验证）",
     "4个视图：upload/list/download/delete with RBAC权限检查",
-    "apps.attachments已添加到INSTALLED_APPS"
+    "apps.attachments已添加到INSTALLED_APPS",
+    "Phase 4C讨论记录：docs/discussions/phase4c-next-steps/（Claude-Codex策略讨论）",
+    "Phase 4C URL routing：backend/apps/attachments/urls.py（dispatcher view）",
+    "Phase 4C RBAC helper：backend/apps/applications/permissions.py（can_view_application）",
+    "Phase 4C migrations：backend/apps/attachments/migrations/0001_initial.py",
+    "Phase 4C测试：19个测试100%通过（test_upload/test_list/test_download/test_delete）",
+    "Phase 4C契约：docs/api/contract-v0.3.md（Final status）"
   ],
-  "next_focus": "Phase 4C后端MVP进行中（models/serializers/views已完成）。下一步：URL routing + migrations + 后端测试（upload/permissions/soft delete）+ 回归验证（48测试）+ contract-v0.3-draft。完成后选项：A) Phase 4C前端UI B) 其他小程序页面 C) 等待DevTools验证（Phase 4A外部阻塞）。",
+  "next_focus": "Phase 4C后端MVP完成（2026-06-01）。所有5个阶段完成：契约骨架 → P0修复 → 测试 → 回归 → 契约最终版。19个attachment测试全部通过，无回归。下一步选项：A) Phase 4C前端UI（小程序附件上传/列表/下载） B) 其他小程序页面改进 C) 等待DevTools验证（Phase 4A外部阻塞）。",
   "suggested_skills": [],
   "artifacts": {
     "codex_contract": "docs/contracts/contract-v0.2.md",
@@ -125,7 +137,14 @@
     "approval_list_permissions_tests": "backend/apps/approvals/tests/test_list_permissions.py",
     "attachment_model": "backend/apps/attachments/models.py",
     "attachment_serializers": "backend/apps/attachments/serializers.py",
-    "attachment_views": "backend/apps/attachments/views.py"
+    "attachment_views": "backend/apps/attachments/views.py",
+    "attachment_urls": "backend/apps/attachments/urls.py",
+    "attachment_tests": "backend/apps/attachments/tests/",
+    "attachment_migration": "backend/apps/attachments/migrations/0001_initial.py",
+    "rbac_helper": "backend/apps/applications/permissions.py",
+    "contract_v03": "docs/api/contract-v0.3.md",
+    "contract_v03_skeleton": "docs/api/contract-v0.3-skeleton.md",
+    "phase4c_discussions": "docs/discussions/phase4c-next-steps/"
   },
   "blocking_issues": [
     "WeChat DevTools安装（Phase 4A外部依赖）",

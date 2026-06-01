@@ -7,14 +7,23 @@ from django.http import FileResponse, Http404
 from django.utils import timezone
 from apps.users.models import UserRole
 from apps.applications.models import Application
+from apps.applications.permissions import can_view_application
 from apps.approvals.models import Approval, ApprovalStep
 from .models import Attachment
 from .serializers import AttachmentUploadSerializer, AttachmentSerializer
 import uuid
 
 
-@api_view(['POST'])
+@api_view(['GET', 'POST'])
 @permission_classes([IsAuthenticated])
+def attachments_view(request, application_id):
+    """Dispatcher for attachment list (GET) and upload (POST)"""
+    if request.method == 'GET':
+        return list_attachments(request, application_id)
+    else:
+        return upload_attachment(request, application_id)
+
+
 @parser_classes([MultiPartParser, FormParser])
 def upload_attachment(request, application_id):
     user = request.user
@@ -34,13 +43,14 @@ def upload_attachment(request, application_id):
     # Validate
     serializer = AttachmentUploadSerializer(data=request.data)
     if not serializer.is_valid():
-        return Response({'error': {'code': 'VALIDATION_ERROR', 'message': '请求参数验证失败'}},
+        return Response({'error': {'code': 'VALIDATION_ERROR', 'message': '请求参数验证失败',
+                                    'details': serializer.errors}},
                         status=status.HTTP_400_BAD_REQUEST)
 
     # Create attachment
     file = serializer.validated_data['file']
     attachment = Attachment.objects.create(
-        attachment_id=f'att_{uuid.uuid4().hex[:8]}',
+        attachment_id=f'att_{uuid.uuid4().hex[:12]}',
         application=application,
         uploaded_by=user,
         file=file,
@@ -53,8 +63,6 @@ def upload_attachment(request, application_id):
     return Response(AttachmentSerializer(attachment).data, status=status.HTTP_201_CREATED)
 
 
-@api_view(['GET'])
-@permission_classes([IsAuthenticated])
 def list_attachments(request, application_id):
     user = request.user
 
@@ -65,21 +73,8 @@ def list_attachments(request, application_id):
         return Response({'error': {'code': 'NOT_FOUND', 'message': '申请不存在'}},
                         status=status.HTTP_404_NOT_FOUND)
 
-    # Permission check
-    has_permission = False
-    if user.role == UserRole.STUDENT and application.student_id == user.user_id:
-        has_permission = True
-    elif user.role == UserRole.COUNSELOR:
-        # Counselor can see if application is from their class
-        if application.class_id == user.class_id or \
-           Approval.objects.filter(application=application, step=ApprovalStep.COUNSELOR, approver=user).exists():
-            has_permission = True
-    elif user.role == UserRole.DEAN:
-        # Dean can see if they have dean approval for this application
-        if Approval.objects.filter(application=application, step=ApprovalStep.DEAN, approver=user).exists():
-            has_permission = True
-
-    if not has_permission:
+    # Permission check using shared helper
+    if not can_view_application(user, application):
         return Response({'error': {'code': 'FORBIDDEN', 'message': '无权限查看附件'}},
                         status=status.HTTP_403_FORBIDDEN)
 
@@ -106,25 +101,18 @@ def download_attachment(request, attachment_id):
         return Response({'error': {'code': 'NOT_FOUND', 'message': '附件不存在'}},
                         status=status.HTTP_404_NOT_FOUND)
 
-    # Permission check (same as list)
+    # Permission check using shared helper
     application = attachment.application
-    has_permission = False
-    if user.role == UserRole.STUDENT and application.student_id == user.user_id:
-        has_permission = True
-    elif user.role == UserRole.COUNSELOR:
-        if application.class_id == user.class_id or \
-           Approval.objects.filter(application=application, step=ApprovalStep.COUNSELOR, approver=user).exists():
-            has_permission = True
-    elif user.role == UserRole.DEAN:
-        if Approval.objects.filter(application=application, step=ApprovalStep.DEAN, approver=user).exists():
-            has_permission = True
-
-    if not has_permission:
+    if not can_view_application(user, application):
         return Response({'error': {'code': 'FORBIDDEN', 'message': '无权限下载附件'}},
                         status=status.HTTP_403_FORBIDDEN)
 
     # Return file
-    return FileResponse(attachment.file.open('rb'), as_attachment=True, filename=attachment.file_name)
+    try:
+        return FileResponse(attachment.file.open('rb'), as_attachment=True, filename=attachment.file_name, content_type=attachment.content_type)
+    except FileNotFoundError:
+        return Response({'error': {'code': 'NOT_FOUND', 'message': '文件不存在'}},
+                        status=status.HTTP_404_NOT_FOUND)
 
 
 @api_view(['DELETE'])
@@ -136,6 +124,11 @@ def delete_attachment(request, attachment_id):
     try:
         attachment = Attachment.objects.select_related('application').get(attachment_id=attachment_id)
     except Attachment.DoesNotExist:
+        return Response({'error': {'code': 'NOT_FOUND', 'message': '附件不存在'}},
+                        status=status.HTTP_404_NOT_FOUND)
+
+    # Check if already deleted
+    if attachment.is_deleted:
         return Response({'error': {'code': 'NOT_FOUND', 'message': '附件不存在'}},
                         status=status.HTTP_404_NOT_FOUND)
 

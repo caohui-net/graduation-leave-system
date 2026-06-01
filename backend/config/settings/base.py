@@ -28,6 +28,7 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt',
     'corsheaders',
     'django_filters',
+    'drf_spectacular',
 
     # Local apps
     'apps.users',
@@ -122,7 +123,17 @@ REST_FRAMEWORK = {
     'DEFAULT_PARSER_CLASSES': (
         'rest_framework.parsers.JSONParser',
     ),
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
     'TEST_REQUEST_DEFAULT_FORMAT': 'json',
+}
+
+# API Documentation
+SPECTACULAR_SETTINGS = {
+    'TITLE': '毕业生离校申请审批系统 API',
+    'DESCRIPTION': '毕业生离校申请审批系统后端API文档',
+    'VERSION': '1.0.0',
+    'SERVE_INCLUDE_SCHEMA': False,
+    'COMPONENT_SPLIT_REQUEST': True,
 }
 
 # JWT Settings

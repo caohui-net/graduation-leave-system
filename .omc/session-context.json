@@ -1,5 +1,5 @@
 {
-  "last_updated": "2026-06-02T01:28:00Z",
+  "last_updated": "2026-06-02T01:36:00Z",
   "completed": [
     "Week 3 Closure Gate完成",
     "Phase 4C前端code-complete完成：P1修复 + P0修复 + WXSS + 静态验证",
@@ -18,11 +18,12 @@
     "Track 3 Phase 2A完成：自动通知闭环（服务层 + 业务集成 + 6测试 + smoke验证）",
     "Track 3 Phase 2A稳定化完成：枚举值修复 + API测试补充 + 负向路径测试（12测试通过）",
     "Option E-lite Step 1.0完成：Smoke可重复运行门禁（SMOKE_RESET=1 + DEPLOYMENT.md更新）",
-    "Option E-lite Step 1完成：Smoke增强（通知验证 + H2驳回场景 + attachment修复，全部通过）"
+    "Option E-lite Step 1完成：Smoke增强（通知验证 + H2驳回场景 + attachment修复，全部通过）",
+    "Option E-lite Step 2完成：API文档基线（drf-spectacular + schema验证 + 待完善清单）"
   ],
   "pending": [
-    "Option E-lite Step 2: API文档基线（drf-spectacular + schema验证 + 待完善清单）",
     "Option E-lite Step 3: 部署文档补漏（环境变量表 + 故障排查指南）",
+    "与Codex讨论：Step 3执行或优化方案",
     "Track 3 Phase 2B-2C：宿舍阻断通知 + 审批超时提醒（需契约修正/Celery）",
     "Track 3 Phase 3-4：miniprogram通知页 + WeChat templates（推迟到DevTools可用）",
     "WeChat DevTools验证（外部阻塞，小程序验收门控）",
@@ -60,10 +61,19 @@
     "Option E-lite Step 1: smoke修复attachment文件类型（.txt → .pdf）",
     "Option E-lite Step 1: smoke修复attachment URL（download/delete路径）",
     "Option E-lite Step 1: smoke全部通过（H1 Happy Path + H2 Rejection + N2 Negative）",
+    "Option E-lite Step 2: drf-spectacular==0.27.1添加到requirements/base.txt",
+    "Option E-lite Step 2: settings.py配置完成（INSTALLED_APPS + REST_FRAMEWORK + SPECTACULAR_SETTINGS）",
+    "Option E-lite Step 2: schema路由添加（/api/schema/ + /api/schema/swagger-ui/）",
+    "Option E-lite Step 2: schema端点验证通过（HTTP 200）",
+    "Option E-lite Step 2: Swagger UI验证通过（HTTP 200）",
+    "Option E-lite Step 2: 15个端点出现在schema中",
+    "Option E-lite Step 2: JWT Bearer认证可见（type: http, scheme: bearer）",
+    "Option E-lite Step 2: 生成器警告已记录（13个function-based views需extend_schema）",
+    "Option E-lite Step 2: 待完善清单创建（docs/api/api-schema-todo.md）",
     "Git commits: 4个（Track 1 + Track 2 + 证据闭环 + Phase 2A稳定化）",
     "协作日志：event 91（授权门共识）"
   ],
-  "next_focus": "Option E-lite Step 1完成（Smoke可重复运行 + 通知验证 + H2驳回场景 + attachment修复，全部通过）。下一步：Step 2（API文档基线 - drf-spectacular + schema验证 + 待完善清单）。",
+  "next_focus": "Option E-lite Step 2完成（API文档基线：drf-spectacular + 15端点 + JWT认证 + 待完善清单）。下一步：与Codex讨论Step 3执行或优化方案。",
   "suggested_skills": [],
   "artifacts": {
     "track1_import_csv": "backend/apps/users/management/commands/import_csv.py",

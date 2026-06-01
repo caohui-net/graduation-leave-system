@@ -1818,5 +1818,27 @@
 **状态：**
 - ✅ Step 1.0完成
 - ✅ Step 1完成
-- ⏭ 下一步：Step 2（API文档基线）
-- ✅ 负向路径测试覆盖完成
+- ✅ Step 2完成
+- ⏭ 下一步：Step 3（部署文档补漏）或与Codex讨论优化
+
+**Step 2: API文档基线（已完成）：**
+- ✓ 引入drf-spectacular（v0.27.1）
+- ✓ 配置settings.py（INSTALLED_APPS + REST_FRAMEWORK + SPECTACULAR_SETTINGS）
+- ✓ 添加schema和Swagger UI路由
+- ✓ 验证基线可访问（/api/schema/ + /api/schema/swagger-ui/）
+- ✓ 验证端点清单（15个端点）
+- ✓ 验证JWT Bearer认证可见
+- ✓ 创建待完善清单（docs/api/api-schema-todo.md）
+
+**产出物：**
+- backend/requirements/base.txt（添加drf-spectacular==0.27.1）
+- backend/config/settings/base.py（配置drf-spectacular）
+- backend/config/urls.py（添加schema路由）
+- docs/api/api-schema-todo.md（待完善清单：13个function-based views需extend_schema）
+
+**验收结果：**
+- /api/schema/: HTTP 200 ✓
+- /api/schema/swagger-ui/: HTTP 200 ✓
+- 端点数量: 15个 ✓
+- JWT认证: Bearer JWT ✓
+- 生成器警告: 已记录到待完善清单 ✓

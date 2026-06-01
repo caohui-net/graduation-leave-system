@@ -1,18 +1,7 @@
-import { ApiClient } from '../../services/api';
+import { createDefaultApiClient } from '../../services/api';
 
 const app = getApp<IAppOption>();
-
-const apiClient = new ApiClient({
-  baseUrl: 'http://localhost:8001',
-  getToken: () => app.globalData.token,
-  onUnauthorized: () => {
-    wx.removeStorageSync('token');
-    wx.removeStorageSync('userInfo');
-    app.globalData.token = '';
-    app.globalData.userInfo = null;
-    wx.reLaunch({ url: '/pages/login/login' });
-  },
-});
+const apiClient = createDefaultApiClient();
 
 Page({
   data: {
@@ -48,7 +37,17 @@ Page({
       app.globalData.token = res.access_token;
       app.globalData.userInfo = res.user;
 
-      wx.redirectTo({ url: '/pages/approvals/approvals' });
+      if (res.user.role === 'student') {
+        wx.redirectTo({ url: '/pages/student-application/student-application' });
+      } else if (res.user.role === 'counselor' || res.user.role === 'dean') {
+        wx.redirectTo({ url: '/pages/approvals/approvals' });
+      } else {
+        wx.removeStorageSync('token');
+        wx.removeStorageSync('userInfo');
+        app.globalData.token = '';
+        app.globalData.userInfo = null;
+        this.setData({ error: '角色错误', loading: false });
+      }
     } catch (err: any) {
       this.setData({
         error: err.error?.message || err.message || '登录失败',

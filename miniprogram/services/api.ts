@@ -3,8 +3,8 @@ import type {
   LoginRequest,
   LoginResponse,
   ApplicationCreateRequest,
-  Application,
   ApplicationDetail,
+  Application,
   ApprovalListItem,
   ApprovalActionRequest,
   ApprovalActionResponse,
@@ -72,7 +72,7 @@ export class ApiClient {
     });
   }
 
-  async createApplication(req: ApplicationCreateRequest): Promise<Application> {
+  async createApplication(req: ApplicationCreateRequest): Promise<ApplicationDetail> {
     return this.request('/api/applications/', {
       method: 'POST',
       data: req,
@@ -121,4 +121,32 @@ export class ApiClient {
       data: req,
     });
   }
+}
+
+export function createDefaultApiClient(): ApiClient {
+  const app = getApp<IAppOption>();
+  return new ApiClient({
+    baseUrl: 'http://localhost:8001',
+    getToken: () => app.globalData.token,
+    onUnauthorized: () => {
+      wx.removeStorageSync('token');
+      wx.removeStorageSync('userInfo');
+      app.globalData.token = '';
+      app.globalData.userInfo = null;
+      wx.reLaunch({ url: '/pages/login/login' });
+    }
+  });
+}
+
+export function formatApiError(
+  err: any,
+  customMessages?: Record<string, string | ((details: any) => string)>
+): string {
+  if (!err.error) return err.message || '操作失败';
+  const { code, message, details } = err.error;
+  if (customMessages && code && customMessages[code]) {
+    const custom = customMessages[code];
+    return typeof custom === 'function' ? custom(details) : custom;
+  }
+  return message || '操作失败';
 }

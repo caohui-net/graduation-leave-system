@@ -951,3 +951,56 @@
 - Phase 4A和Phase 4B准备工作完成
 - 硬停止：等待DevTools或宿舍系统输入
 - 下一个门控：WeChat DevTools可用性
+
+### 2026-06-01
+
+**Phase 4B实施：学生申请页面（2026-06-01凌晨）：**
+
+**Claude-Codex实施策略讨论：**
+- ✓ Claude提出实施方案草案（5个关键问题）
+- ✓ Codex第一轮审查发现5个问题（实施顺序、角色保护、错误处理、表单验证、成功跳转）
+- ✓ Claude响应提出5个分歧点（骨架vs结构优先、onShow检查、后端同步、延迟时间、预查申请）
+- ✓ Codex第二轮响应达成最终共识
+
+**最终共识：**
+1. ✓ 实施顺序：结构化骨架优先（完整UI结构 + 页面骨架 + 注册 + 登录路由smoke + 提交逻辑）
+2. ✓ 角色保护：onLoad + onShow双重检查（onShow轻量幂等）
+3. ✓ 错误处理：提取formatApiError到api.ts（通用函数）
+4. ✓ 表单验证：前端trim非空 + ≤500字 + 日期≥今天；后端同步最小验证
+5. ✓ 成功跳转：500ms toast + redirectTo详情页
+6. ✓ CONFLICT处理：读取existing_application_id并跳转详情页
+
+**实施完成：**
+- ✓ 前端小程序页面
+  - miniprogram/pages/student-application/student-application.wxml（表单UI）
+  - miniprogram/pages/student-application/student-application.wxss（样式）
+  - miniprogram/pages/student-application/student-application.json（页面配置）
+  - miniprogram/pages/student-application/student-application.ts（页面逻辑 + 角色保护 + 表单验证 + 提交）
+- ✓ 页面注册
+  - miniprogram/app.json（添加student-application页面）
+- ✓ 登录路由矩阵
+  - miniprogram/pages/login/login.ts（student→student-application, counselor/dean→approvals, 未知角色清理会话）
+- ✓ 错误处理工具
+  - miniprogram/services/api.ts（添加formatApiError函数）
+- ✓ 后端验证
+  - backend/apps/applications/serializers.py（reason max_length=500 + trim, leave_date≥today）
+- ✓ 后端测试
+  - backend/apps/applications/tests/test_serializer_validation.py（5个单元测试）
+
+**关键实现细节：**
+- 角色保护：onLoad完整检查 + onShow静默复查
+- 表单验证：reason trim非空且≤500字，leave_date必填且≥今天
+- 错误处理：formatApiError支持自定义消息映射（DORM_BLOCKED/CONFLICT/VALIDATION_ERROR）
+- 成功流程：showToast 500ms + redirectTo detail页面
+- CONFLICT处理：读取existing_application_id并自动跳转
+
+**产出物：**
+- docs/discussions/codex-review-2026-05-27/34-implementation-order-challenge.md（审查请求）
+- docs/discussions/codex-review-2026-05-27/35-claude-response-implementation-strategy.md（Claude响应）
+- .omc/artifacts/ask/codex-*.md（Codex审查结果）
+
+**状态：**
+- ✅ 学生申请页面实现完成
+- ✅ 登录路由矩阵实现完成
+- ✅ 后端验证同步完成
+- ⏳ 等待WeChat DevTools验证（外部依赖）

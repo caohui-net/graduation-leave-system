@@ -33,5 +33,17 @@ class ApplicationSerializer(serializers.ModelSerializer):
 
 
 class ApplicationCreateSerializer(serializers.Serializer):
-    reason = serializers.CharField()
+    reason = serializers.CharField(max_length=500, trim_whitespace=True)
     leave_date = serializers.DateField()
+
+    def validate_reason(self, value):
+        if not value or not value.strip():
+            raise serializers.ValidationError('离校原因不能为空')
+        return value
+
+    def validate_leave_date(self, value):
+        from django.utils import timezone
+        today = timezone.now().date()
+        if value < today:
+            raise serializers.ValidationError('离校日期不能早于今天')
+        return value

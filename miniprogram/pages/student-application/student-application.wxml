@@ -1,0 +1,38 @@
+<view class="container">
+  <view class="form">
+    <view class="field">
+      <text class="label">离校原因</text>
+      <textarea
+        class="textarea"
+        placeholder="请输入离校原因（最多500字）"
+        value="{{reason}}"
+        bindinput="onReasonInput"
+        maxlength="500"
+        auto-height
+      />
+      <text class="char-count">{{reason.length}}/500</text>
+    </view>
+
+    <view class="field">
+      <text class="label">离校日期</text>
+      <picker
+        mode="date"
+        value="{{leaveDate}}"
+        start="{{today}}"
+        bindchange="onDateChange"
+      >
+        <view class="picker">{{leaveDate || '请选择日期'}}</view>
+      </picker>
+    </view>
+
+    <button
+      class="submit-btn"
+      bindtap="onSubmit"
+      disabled="{{submitting}}"
+    >
+      {{submitting ? '提交中...' : '提交申请'}}
+    </button>
+
+    <view class="error" wx:if="{{error}}">{{error}}</view>
+  </view>
+</view>

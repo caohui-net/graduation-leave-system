@@ -1,5 +1,5 @@
 {
-  "last_updated": "2026-06-02T19:00:00Z",
+  "last_updated": "2026-06-02T19:18:00Z",
   "completed": [
     "Week 3 Closure Gate完成",
     "Phase 4C前端code-complete完成：P1修复 + P0修复 + WXSS + 静态验证",
@@ -35,12 +35,15 @@
     "Option A-prime Step 1完成：修复login响应schema（创建LoginResponseSerializer + 修改views.py + 更新api-schema-todo.md v2.1）",
     "Option A-prime Step 2受阻：环境验证失败（psycopg2-binary编译错误，缺少libpq-dev）",
     "Option A-prime Step 3完成：P1状态判定为'代码完成，未验收'（6项修复完成，4项验证待环境）",
-    "Claude-Codex Option A-prime共识：58号共识文档（部分完成，环境验证受阻）"
+    "    "Claude-Codex Option A-prime共识：58号共识文档（部分完成，环境验证受阻）",
+    "Claude-Codex最终共识：59号Option 2提案 + 60号Codex审查 + 61号D0+A-lite共识",
+    "D0完成：API Schema文档一致性修正（状态改为'代码完成，验收阻塞'，基线验收改为'待环境复验'，v2.2）""
   ],
   "pending": [
+    "A-lite Step 1：Phase 2B契约修正（宿舍阻断通知实体/幂等问题，30-60分钟）",
+    "A-lite Step 2：Phase 2B实现（契约明确后执行，1-2小时）",
+    "Phase 2C：审批超时提醒（单独立项，2B完成后讨论）",
     "API Schema P1验收：在可用环境中验证schema生成无警告、/api/schema/可访问、operation IDs唯一",
-    "与Codex讨论下一步选项：Option 1硬停止等待环境/Option 2接受当前状态继续其他工作/Option 3安装libpq-dev",
-    "Track 3 Phase 2B-2C：宿舍阻断通知 + 审批超时提醒（需契约修正/Celery）",
     "Track 3 Phase 3-4：miniprogram通知页 + WeChat templates（推迟到DevTools可用）",
     "WeChat DevTools验证（外部阻塞，小程序验收门控）",
     "宿舍系统真实集成（外部阻塞，需API文档和测试凭证）"
@@ -107,9 +110,12 @@
     "Option A-prime: login视图@extend_schema修复（backend/apps/users/views.py）",
     "Option A-prime: api-schema-todo.md v2.1（添加第6项Login响应Schema修复）",
     "Option A-prime: 环境验证失败（psycopg2-binary编译错误，满足硬停止条件）",
-    "Option A-prime: P1状态'代码完成，未验收'（6项修复完成，4项验证待环境）"
+    "    "Option A-prime: P1状态'代码完成，未验收'（6项修复完成，4项验证待环境）",
+    "Claude-Codex共识讨论: 59号Option 2提案 + 60号Codex审查（D0+A-lite建议）+ 61号最终共识",
+    "D0: api-schema-todo.md v2.2（状态修正为'代码完成，验收阻塞'，基线验收改为'待环境复验'）",
+    "D0: PROJECT-SUMMARY.md更新（D0完成记录）""
   ],
-  "next_focus": "Option A-prime部分完成（login响应schema已修复，环境验证受阻）。下一步：与Codex讨论3个选项（硬停止等待环境/接受当前状态继续其他工作/安装libpq-dev），达成共识后执行。",
+  "next_focus": "D0完成（API Schema文档一致性修正）。下一步：A-lite Step 1（Phase 2B契约修正，30-60分钟）- 决定宿舍阻断是否创建通知，定义实体类型和幂等规则。",
   "suggested_skills": [],
   "artifacts": {
     "track1_import_csv": "backend/apps/users/management/commands/import_csv.py",
@@ -184,6 +190,9 @@
     "codex_post_api_schema_p1_response": "docs/discussions/phase4c-next-steps/56-codex-post-api-schema-p1-next-strategy-response.md",
     "claude_accept_option_a_prime": "docs/discussions/phase4c-next-steps/57-claude-response-accept-option-a-prime.md",
     "claude_codex_option_a_prime_consensus": "docs/discussions/phase4c-next-steps/58-claude-codex-consensus-option-a-prime-partial.md",
+    "claude_option_2_proposal": "docs/discussions/phase4c-next-steps/59-claude-codex-final-consensus-option-2.md",
+    "codex_option_2_review": "docs/discussions/phase4c-next-steps/60-codex-final-consensus-option-2-review-response.md",
+    "claude_codex_d0_a_lite_consensus": "docs/discussions/phase4c-next-steps/61-claude-codex-final-consensus-d0-a-lite.md",
     "api_schema_p1_users_serializers": "backend/apps/users/serializers.py",
     "collaboration_events": ".omc/collaboration/events.jsonl",
     "collaboration_state": ".omc/collaboration/state.json"

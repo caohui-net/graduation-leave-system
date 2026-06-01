@@ -2,17 +2,18 @@
 
 **创建日期：** 2026-06-02  
 **最后更新：** 2026-06-02  
-**状态：** P1完成（API Schema基础完善），P2待后续完善
+**状态：** P1代码完成，验收阻塞（环境依赖未满足），P2待后续完善
 
 ---
 
 ## 基线验收状态
 
-✓ `/api/schema/` 可访问（HTTP 200）  
-✓ Swagger UI 可访问（HTTP 200）  
-✓ 13条path/15个operation出现在schema中  
-✓ JWT Bearer认证可见（type: http, scheme: bearer, bearerFormat: JWT）  
-✓ 生成器警告已记录（见下方待完善项）
+⏸ 待可用环境复验（Django环境依赖未满足）
+- `/api/schema/` 端点可访问性
+- Swagger UI 可访问性
+- Operation统计（13条path/15个operation）
+- JWT Bearer认证配置
+- Schema生成警告检查
 
 ---
 
@@ -121,6 +122,6 @@ P2项（请求/响应示例）可在后续Phase中添加，建议在Track 3 Phas
 
 ---
 
-**文档版本：** v2.1  
+**文档版本：** v2.2  
 **最后更新：** 2026-06-02  
-**变更：** P1修复（Login响应schema不匹配），添加LoginResponseSerializer
+**变更：** D0修正：状态改为"代码完成，验收阻塞"，基线验收改为"待环境复验"

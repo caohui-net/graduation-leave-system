@@ -1,19 +1,9 @@
-import { ApiClient } from '../../services/api';
+import { createDefaultApiClient } from '../../services/api';
 import type { ApprovalListItem } from '../../types/api';
+import { checkRoleAndRedirect } from '../../utils/role-guard';
 
 const app = getApp<IAppOption>();
-
-const apiClient = new ApiClient({
-  baseUrl: 'http://localhost:8001',
-  getToken: () => app.globalData.token,
-  onUnauthorized: () => {
-    wx.removeStorageSync('token');
-    wx.removeStorageSync('userInfo');
-    app.globalData.token = '';
-    app.globalData.userInfo = null;
-    wx.reLaunch({ url: '/pages/login/login' });
-  },
-});
+const apiClient = createDefaultApiClient();
 
 Page({
   data: {
@@ -25,12 +15,9 @@ Page({
   },
 
   onLoad() {
-    const userInfo = app.globalData.userInfo;
-    if (!userInfo) {
-      wx.reLaunch({ url: '/pages/login/login' });
-      return;
-    }
+    if (checkRoleAndRedirect(app.globalData.userInfo, ['counselor', 'dean'])) return;
 
+    const userInfo = app.globalData.userInfo!;
     const roleMap: Record<string, string> = {
       student: '学生',
       counselor: '辅导员',
@@ -43,6 +30,10 @@ Page({
     });
 
     this.loadApprovals();
+  },
+
+  onShow() {
+    if (checkRoleAndRedirect(app.globalData.userInfo, ['counselor', 'dean'])) return;
   },
 
   async loadApprovals() {

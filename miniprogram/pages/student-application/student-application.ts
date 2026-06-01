@@ -1,4 +1,6 @@
 import { createDefaultApiClient, formatApiError } from '../../services/api';
+import { checkRoleAndRedirect } from '../../utils/role-guard';
+import { getShanghaiDateString } from '../../utils/date';
 
 const app = getApp<IAppOption>();
 const apiClient = createDefaultApiClient();
@@ -9,28 +11,16 @@ Page({
     leaveDate: '',
     submitting: false,
     error: '',
-    today: new Date().toISOString().split('T')[0],
+    today: getShanghaiDateString(),
   },
 
   onLoad() {
-    const userInfo = app.globalData.userInfo;
-    if (!userInfo) {
-      wx.reLaunch({ url: '/pages/login/login' });
-      return;
-    }
-    if (userInfo.role !== 'student') {
-      wx.showToast({ title: '无权限访问', icon: 'none' });
-      wx.redirectTo({ url: '/pages/approvals/approvals' });
-      return;
-    }
+    if (checkRoleAndRedirect(app.globalData.userInfo, ['student'])) return;
   },
 
   onShow() {
-    const userInfo = app.globalData.userInfo;
-    if (!userInfo || userInfo.role !== 'student') {
-      wx.reLaunch({ url: '/pages/login/login' });
-      return;
-    }
+    if (checkRoleAndRedirect(app.globalData.userInfo, ['student'])) return;
+    this.setData({ today: getShanghaiDateString() });
   },
 
   onReasonInput(e: any) {
@@ -56,7 +46,7 @@ Page({
       this.setData({ error: '请选择离校日期' });
       return;
     }
-    const today = new Date().toISOString().split('T')[0];
+    const today = getShanghaiDateString();
     if (leaveDate < today) {
       this.setData({ error: '离校日期不能早于今天' });
       return;

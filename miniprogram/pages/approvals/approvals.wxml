@@ -7,7 +7,7 @@
   <view class="list" wx:if="{{!loading && approvals.length > 0}}">
     <view class="item" wx:for="{{approvals}}" wx:key="approval_id" bindtap="onItemTap" data-id="{{item.application_id}}">
       <view class="item-header">
-        <text class="student-name">{{item.approver_name}}</text>
+        <text class="student-name">申请 {{item.application_id}}</text>
         <text class="status pending">待审批</text>
       </view>
       <view class="item-body">

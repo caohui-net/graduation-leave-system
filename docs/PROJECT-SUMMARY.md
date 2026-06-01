@@ -1839,6 +1839,37 @@
 **验收结果：**
 - /api/schema/: HTTP 200 ✓
 - /api/schema/swagger-ui/: HTTP 200 ✓
-- 端点数量: 15个 ✓
+- 端点数量: 13条path/15个operation ✓
 - JWT认证: Bearer JWT ✓
 - 生成器警告: 已记录到待完善清单 ✓
+
+**Step 3: 部署文档补漏（已完成）：**
+- ✓ 补充DEPLOYMENT.md环境变量表（基于settings.py实际读取的9个变量）
+- ✓ 补充DEPLOYMENT.md故障排查指南（覆盖8个真实场景）
+- ✓ 修正api-schema-todo.md表述（13条path/15个operation，修正mark-as-read路径）
+- ✓ 更新PROJECT-SUMMARY.md标记Option E-lite完成
+
+**产出物：**
+- DEPLOYMENT.md（环境变量表 + 扩展故障排查指南）
+- docs/api/api-schema-todo.md（修正表述）
+
+**验收结果：**
+- 环境变量表: 9个变量，区分必填/默认值/生产建议 ✓
+- 故障排查指南: 覆盖409/422/401/403/media/Docker/数据库/schema场景 ✓
+- api-schema-todo.md: 修正path/operation表述和mark-as-read路径 ✓
+
+**Option E-lite总结（已完成）：**
+- ✅ Step 1.0: Smoke可重复运行门禁
+- ✅ Step 1: Smoke增强（通知验证 + H2驳回场景 + attachment修复）
+- ✅ Step 2: API文档基线（drf-spectacular + 13条path/15个operation + 待完善清单）
+- ✅ Step 3: 部署文档补漏（环境变量表 + 故障排查指南）
+
+**执行约束遵守情况：**
+- ✓ 未承诺完整API schema（P1/P2待完善项已记录到api-schema-todo.md）
+- ✓ 未无条件自动重置数据库（SMOKE_RESET=1为可选开关）
+- ✓ 硬停止于Step 3完成（后续工作需新任务明确）
+
+**状态：**
+- ✅ Option E-lite完成
+- ⏸ API schema P1/P2完善留待后续Phase
+- ⏸ 下一步工作需与Codex讨论或用户明确指示

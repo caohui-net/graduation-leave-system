@@ -9,7 +9,7 @@
 
 ✓ `/api/schema/` 可访问（HTTP 200）  
 ✓ Swagger UI 可访问（HTTP 200）  
-✓ 15个端点出现在schema中  
+✓ 13条path/15个operation出现在schema中  
 ✓ JWT Bearer认证可见（type: http, scheme: bearer, bearerFormat: JWT）  
 ✓ 生成器警告已记录（见下方待完善项）
 
@@ -21,7 +21,7 @@
 
 **影响端点：**
 - `/api/notifications/` - list_notifications
-- `/api/notifications/mark_as_read/` - mark_as_read
+- `/api/notifications/{notification_id}/read/` - mark_as_read
 - `/api/notifications/mark_all_read/` - mark_all_read
 - `/api/notifications/unread_count/` - unread_count
 - `/api/applications/` - applications_view

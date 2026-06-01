@@ -1826,7 +1826,7 @@
 - ✓ 配置settings.py（INSTALLED_APPS + REST_FRAMEWORK + SPECTACULAR_SETTINGS）
 - ✓ 添加schema和Swagger UI路由
 - ✓ 验证基线可访问（/api/schema/ + /api/schema/swagger-ui/）
-- ✓ 验证端点清单（15个端点）
+- ✓ 验证端点清单（13条path/15个operation）
 - ✓ 验证JWT Bearer认证可见
 - ✓ 创建待完善清单（docs/api/api-schema-todo.md）
 

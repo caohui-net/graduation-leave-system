@@ -21,10 +21,12 @@
     "Option E-lite Step 1完成：Smoke增强（通知验证 + H2驳回场景 + attachment修复，全部通过）",
     "Option E-lite Step 2完成：API文档基线（drf-spectacular + schema验证 + 待完善清单）",
     "Option E-lite Step 3完成：部署文档补漏（环境变量表 + 故障排查指南 + 表述修正）",
-    "Option E-lite完成：3步骤全部完成（Smoke增强 + API文档基线 + 部署文档补漏）"
+    "Option E-lite完成：3步骤全部完成（Smoke增强 + API文档基线 + 部署文档补漏）",
+    "Option E-lite收尾修正：PROJECT-SUMMARY.md表述修正（13条path/15个operation）",
+    "Claude-Codex Option E-lite完成共识：Codex审查确认完成，执行收尾修正后关闭"
   ],
   "pending": [
-    "与Codex讨论：Option E-lite完成后的下一步策略",
+    "与Codex讨论或等待用户指示：下一步工作方向（API Schema P1/Smoke清理/Track 3 Phase 2B-2C/其他）",
     "Track 3 Phase 2B-2C：宿舍阻断通知 + 审批超时提醒（需契约修正/Celery）",
     "Track 3 Phase 3-4：miniprogram通知页 + WeChat templates（推迟到DevTools可用）",
     "WeChat DevTools验证（外部阻塞，小程序验收门控）",
@@ -75,10 +77,14 @@
     "Option E-lite Step 3: DEPLOYMENT.md故障排查指南（8个真实场景：409/422/401/403/media/Docker/数据库/schema）",
     "Option E-lite Step 3: api-schema-todo.md表述修正（13条path/15个operation + mark-as-read路径）",
     "Option E-lite Step 3: PROJECT-SUMMARY.md更新（Option E-lite完成标记 + 执行约束遵守情况）",
-    "Git commits: 4个（Track 1 + Track 2 + 证据闭环 + Phase 2A稳定化）",
+    "Option E-lite收尾修正: PROJECT-SUMMARY.md line 1829表述修正（15个端点 → 13条path/15个operation）",
+    "Option E-lite收尾修正: api-schema-todo.md line 24路径已正确（{notification_id}/read/）",
+    "Claude-Codex协作: 47号策略提案 + 48号Codex审查 + 49号完成共识",
+    "Codex审查确认: Step 3已完成，支持Option D关闭Option E-lite",
+    "Git commits: 5个（Track 1 + Track 2 + 证据闭环 + Phase 2A稳定化 + Option E-lite完成）",
     "协作日志：event 91（授权门共识）"
   ],
-  "next_focus": "Option E-lite完成（3步骤：Smoke增强 + API文档基线 + 部署文档补漏）。下一步：与Codex讨论后续策略或等待用户指示。",
+  "next_focus": "Option E-lite已完成并关闭。下一步：与Codex讨论后续工作方向（API Schema P1完善/Smoke清理/Track 3 Phase 2B-2C/其他）或等待用户明确指示。",
   "suggested_skills": [],
   "artifacts": {
     "track1_import_csv": "backend/apps/users/management/commands/import_csv.py",
@@ -126,6 +132,13 @@
     "claude_phase2a_post_strategy": "docs/discussions/phase4c-next-steps/40-claude-post-phase2a-next-strategy.md",
     "codex_phase2a_stabilization_review": "docs/discussions/phase4c-next-steps/41-codex-post-phase2a-next-strategy-response.md",
     "claude_phase2a_stabilization_consensus": "docs/discussions/phase4c-next-steps/42-claude-consensus-phase2a-stabilization.md",
+    "claude_post_phase2a_stabilization_strategy": "docs/discussions/phase4c-next-steps/43-claude-post-phase2a-stabilization-next-strategy.md",
+    "codex_option_e_lite_review": "docs/discussions/phase4c-next-steps/44-codex-post-phase2a-stabilization-next-strategy-response.md",
+    "claude_option_e_lite_response": "docs/discussions/phase4c-next-steps/45-claude-response-to-codex-option-e-lite-review.md",
+    "claude_codex_option_e_lite_consensus": "docs/discussions/phase4c-next-steps/46-claude-codex-consensus-option-e-lite.md",
+    "claude_post_step2_strategy": "docs/discussions/phase4c-next-steps/47-claude-post-step2-next-strategy.md",
+    "codex_post_step2_review": "docs/discussions/phase4c-next-steps/48-codex-post-step2-next-strategy-response.md",
+    "claude_option_e_lite_complete_consensus": "docs/discussions/phase4c-next-steps/49-claude-consensus-option-e-lite-complete.md",
     "collaboration_events": ".omc/collaboration/events.jsonl",
     "collaboration_state": ".omc/collaboration/state.json"
   },

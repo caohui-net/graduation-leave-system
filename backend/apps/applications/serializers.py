@@ -47,3 +47,9 @@ class ApplicationCreateSerializer(serializers.Serializer):
         if value < today:
             raise serializers.ValidationError('离校日期不能早于今天')
         return value
+
+
+class ApplicationListResponseSerializer(serializers.Serializer):
+    """Schema-only: application list response with pagination"""
+    count = serializers.IntegerField()
+    results = ApplicationListSerializer(many=True)

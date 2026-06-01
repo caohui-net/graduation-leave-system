@@ -3,8 +3,10 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from django.utils import timezone
+from drf_spectacular.utils import extend_schema, OpenApiParameter
+from drf_spectacular.types import OpenApiTypes
 from .models import Application, ApplicationStatus, DormCheckoutStatus
-from .serializers import ApplicationSerializer, ApplicationCreateSerializer, ApplicationListSerializer
+from .serializers import ApplicationSerializer, ApplicationCreateSerializer, ApplicationListSerializer, ApplicationListResponseSerializer
 from .pagination import ApplicationLimitOffsetPagination
 from .providers import MockDormCheckoutProvider
 from .permissions import can_view_application
@@ -12,9 +14,42 @@ from apps.approvals.models import Approval, ApprovalStep, ApprovalDecision
 from apps.users.models import UserRole
 from apps.users.class_mapping import ClassMapping
 from apps.notifications.services import notify_application_submitted
+from backend.schema import ErrorResponseSerializer
 import uuid
 
 
+@extend_schema(
+    methods=['GET'],
+    operation_id='applications_list',
+    summary='获取申请列表',
+    description='获取当前用户的申请列表（学生/辅导员/学工部）',
+    parameters=[
+        OpenApiParameter('status', OpenApiTypes.STR, description='状态过滤'),
+        OpenApiParameter('limit', OpenApiTypes.INT, description='每页数量（默认20）'),
+        OpenApiParameter('offset', OpenApiTypes.INT, description='偏移量（默认0）'),
+    ],
+    responses={
+        200: ApplicationListResponseSerializer,
+        403: ErrorResponseSerializer,
+    },
+    tags=['申请']
+)
+@extend_schema(
+    methods=['POST'],
+    operation_id='applications_create',
+    summary='提交离校申请',
+    description='学生提交新的离校申请',
+    request=ApplicationCreateSerializer,
+    responses={
+        201: ApplicationSerializer,
+        400: ErrorResponseSerializer,
+        403: ErrorResponseSerializer,
+        404: ErrorResponseSerializer,
+        409: ErrorResponseSerializer,
+        422: ErrorResponseSerializer,
+    },
+    tags=['申请']
+)
 @api_view(['GET', 'POST'])
 @permission_classes([IsAuthenticated])
 def applications_view(request):
@@ -137,6 +172,17 @@ def create_application(request):
     return Response(ApplicationSerializer(application).data, status=status.HTTP_201_CREATED)
 
 
+@extend_schema(
+    operation_id='applications_get',
+    summary='获取申请详情',
+    description='获取指定申请的详细信息（包括审批记录）',
+    responses={
+        200: ApplicationSerializer,
+        403: ErrorResponseSerializer,
+        404: ErrorResponseSerializer,
+    },
+    tags=['申请']
+)
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def get_application(request, application_id):

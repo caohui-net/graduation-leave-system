@@ -1,5 +1,5 @@
 {
-  "last_updated": "2026-06-02T01:36:00Z",
+  "last_updated": "2026-06-02T18:40:00Z",
   "completed": [
     "Week 3 Closure Gate完成",
     "Phase 4C前端code-complete完成：P1修复 + P0修复 + WXSS + 静态验证",
@@ -23,10 +23,17 @@
     "Option E-lite Step 3完成：部署文档补漏（环境变量表 + 故障排查指南 + 表述修正）",
     "Option E-lite完成：3步骤全部完成（Smoke增强 + API文档基线 + 部署文档补漏）",
     "Option E-lite收尾修正：PROJECT-SUMMARY.md表述修正（13条path/15个operation）",
-    "Claude-Codex Option E-lite完成共识：Codex审查确认完成，执行收尾修正后关闭"
+    "Claude-Codex Option E-lite完成共识：Codex审查确认完成，执行收尾修正后关闭",
+    "B-mini完成：修复smoke test typo（STUDENT_NOTIF_COUNT未赋值）",
+    "A-corrected Step 1完成：Schema清单和契约对齐（13个views路由和响应结构）",
+    "A-corrected Step 2完成：Schema-only serializers（5个响应serializers + ErrorResponseSerializer）",
+    "A-corrected Step 3完成：Method-scoped extend_schema（13个views装饰器，2个dispatchers）",
+    "A-corrected Step 5完成：文档更新（api-schema-todo.md v2.0 + PROJECT-SUMMARY.md + session-context.json）",
+    "API Schema P1完成：13个views有@extend_schema，operation IDs明确，错误响应统一"
   ],
   "pending": [
-    "与Codex讨论或等待用户指示：下一步工作方向（API Schema P1/Smoke清理/Track 3 Phase 2B-2C/其他）",
+    "A-corrected Step 4验证：在可用环境中验证schema生成无警告、/api/schema/可访问、operation IDs唯一",
+    "与Codex讨论或等待用户指示：下一步工作方向（API Schema P2示例/Smoke清理/Track 3 Phase 2B-2C/其他）",
     "Track 3 Phase 2B-2C：宿舍阻断通知 + 审批超时提醒（需契约修正/Celery）",
     "Track 3 Phase 3-4：miniprogram通知页 + WeChat templates（推迟到DevTools可用）",
     "WeChat DevTools验证（外部阻塞，小程序验收门控）",
@@ -82,9 +89,16 @@
     "Claude-Codex协作: 47号策略提案 + 48号Codex审查 + 49号完成共识",
     "Codex审查确认: Step 3已完成，支持Option D关闭Option E-lite",
     "Git commits: 5个（Track 1 + Track 2 + 证据闭环 + Phase 2A稳定化 + Option E-lite完成）",
-    "协作日志：event 91（授权门共识）"
+    "协作日志：event 91（授权门共识）",
+    "B-mini: tests/smoke_test.sh line 255 typo修复（删除未赋值的STUDENT_NOTIF_COUNT echo）",
+    "A-corrected: backend/schema.py创建（ErrorDetailSerializer + ErrorResponseSerializer）",
+    "A-corrected: 5个响应serializers创建（Notification/Attachment/Application/Approval List Response）",
+    "A-corrected: 13个views添加@extend_schema装饰器（2个dispatchers使用method-scoped）",
+    "A-corrected: docs/api/api-schema-todo.md v2.0（P1完成标记，P2待完善）",
+    "A-corrected: 代码语法正确（Edit工具成功返回）",
+    "Git commits: 6个（Track 1 + Track 2 + 证据闭环 + Phase 2A稳定化 + Option E-lite完成 + B-mini修复）"
   ],
-  "next_focus": "Option E-lite已完成并关闭。下一步：与Codex讨论后续工作方向（API Schema P1完善/Smoke清理/Track 3 Phase 2B-2C/其他）或等待用户明确指示。",
+  "next_focus": "API Schema P1完成（代码修改）。需要在可用环境中验证schema生成。下一步：与Codex讨论后续工作方向（API Schema P2示例/其他）或等待用户明确指示。",
   "suggested_skills": [],
   "artifacts": {
     "track1_import_csv": "backend/apps/users/management/commands/import_csv.py",
@@ -139,6 +153,22 @@
     "claude_post_step2_strategy": "docs/discussions/phase4c-next-steps/47-claude-post-step2-next-strategy.md",
     "codex_post_step2_review": "docs/discussions/phase4c-next-steps/48-codex-post-step2-next-strategy-response.md",
     "claude_option_e_lite_complete_consensus": "docs/discussions/phase4c-next-steps/49-claude-consensus-option-e-lite-complete.md",
+    "claude_post_option_e_lite_strategy": "docs/discussions/phase4c-next-steps/50-claude-post-option-e-lite-next-strategy.md",
+    "codex_option_e_lite_next_review": "docs/discussions/phase4c-next-steps/51-codex-option-e-lite-next-strategy-review.md",
+    "claude_option_a_corrected_response": "docs/discussions/phase4c-next-steps/52-claude-response-option-a-corrected.md",
+    "codex_option_a_corrected_confirmation": "docs/discussions/phase4c-next-steps/53-codex-confirmation-option-a-corrected.md",
+    "claude_codex_option_a_execution_consensus": "docs/discussions/phase4c-next-steps/54-claude-codex-consensus-option-a-execution.md",
+    "api_schema_p1_schema_serializers": "backend/schema.py",
+    "api_schema_p1_notifications_serializers": "backend/apps/notifications/serializers.py",
+    "api_schema_p1_attachments_serializers": "backend/apps/attachments/serializers.py",
+    "api_schema_p1_applications_serializers": "backend/apps/applications/serializers.py",
+    "api_schema_p1_approvals_serializers": "backend/apps/approvals/serializers.py",
+    "api_schema_p1_users_views": "backend/apps/users/views.py",
+    "api_schema_p1_notifications_views": "backend/apps/notifications/views.py",
+    "api_schema_p1_approvals_views": "backend/apps/approvals/views.py",
+    "api_schema_p1_applications_views": "backend/apps/applications/views.py",
+    "api_schema_p1_attachments_views": "backend/apps/attachments/views.py",
+    "api_schema_todo_v2": "docs/api/api-schema-todo.md",
     "collaboration_events": ".omc/collaboration/events.jsonl",
     "collaboration_state": ".omc/collaboration/state.json"
   },

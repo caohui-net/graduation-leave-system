@@ -25,3 +25,8 @@ class AttachmentSerializer(serializers.ModelSerializer):
         model = Attachment
         fields = ['attachment_id', 'file_name', 'file_size', 'content_type', 'attachment_type', 'uploaded_at']
         read_only_fields = ['attachment_id', 'file_name', 'file_size', 'content_type', 'uploaded_at']
+
+
+class AttachmentListResponseSerializer(serializers.Serializer):
+    """Schema-only: attachment list response with wrapper"""
+    attachments = AttachmentSerializer(many=True)

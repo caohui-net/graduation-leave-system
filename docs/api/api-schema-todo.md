@@ -1,7 +1,8 @@
 # API Schema 待完善清单
 
 **创建日期：** 2026-06-02  
-**状态：** Option E-lite Step 2基线完成，待后续完善
+**最后更新：** 2026-06-02  
+**状态：** P1完成（API Schema基础完善），P2待后续完善
 
 ---
 
@@ -15,181 +16,51 @@
 
 ---
 
-## 待完善项
+## 已完成项（P1）
 
-### 1. Function-based Views需要extend_schema装饰器
+### 1. ✓ Function-based Views的extend_schema装饰器
 
-**影响端点：**
-- `/api/notifications/` - list_notifications
-- `/api/notifications/{notification_id}/read/` - mark_as_read
-- `/api/notifications/mark_all_read/` - mark_all_read
-- `/api/notifications/unread_count/` - unread_count
-- `/api/applications/` - applications_view
-- `/api/applications/{application_id}/` - get_application
-- `/api/applications/{application_id}/attachments/` - attachments_view
-- `/api/approvals/` - list_approvals
-- `/api/approvals/{approval_id}/approve/` - approve_approval
-- `/api/approvals/{approval_id}/reject/` - reject_approval
-- `/api/attachments/{attachment_id}/` - delete_attachment
-- `/api/attachments/{attachment_id}/download/` - download_attachment
-- `/api/auth/login/` - login
-
-**问题：**
-```
-Error [function_name]: unable to guess serializer. This is graceful fallback handling for APIViews.
-Consider using GenericAPIView as view base class, if view is under your control.
-Either way you may want to add a serializer_class (or method). Ignoring view for now.
-```
-
-**解决方案：**
-为每个function-based view添加`@extend_schema`装饰器，明确指定：
-- request body schema（POST/PUT/PATCH）
-- response schema（所有方法）
-- parameters（query/path参数）
-- examples（请求/响应示例）
-
-**示例：**
-```python
-from drf_spectacular.utils import extend_schema, OpenApiParameter, OpenApiExample
-
-@extend_schema(
-    request=LoginSerializer,
-    responses={200: TokenSerializer, 400: ErrorSerializer},
-    examples=[
-        OpenApiExample(
-            'Login Success',
-            value={'access_token': 'eyJ...', 'refresh_token': 'eyJ...'},
-            response_only=True,
-        ),
-    ],
-)
-@api_view(['POST'])
-def login(request):
-    ...
-```
+**完成状态：** 已为所有13个function-based views添加@extend_schema装饰器
+- 2个dispatchers使用method-scoped装饰器（applications_view, attachments_view）
+- 11个单方法views使用标准装饰器
+- 明确指定request/response schema、parameters、operationId
 
 ---
 
-### 2. OperationId冲突
+### 2. ✓ OperationId冲突修复
 
-**问题：**
-```
-Warning: operationId "applications_retrieve" has collisions 
-[('/api/applications/', 'get'), ('/api/applications/{application_id}/', 'get')]. 
-resolving with numeral suffixes.
-```
-
-**影响：**
-- `/api/applications/` GET - 列表端点
-- `/api/applications/{application_id}/` GET - 详情端点
-
-**当前解决：**
-drf-spectacular自动添加数字后缀（applications_retrieve, applications_retrieve_2）
-
-**建议改进：**
-使用`@extend_schema`明确指定operationId：
-```python
-@extend_schema(operation_id='list_applications')
-@api_view(['GET'])
-def applications_view(request):
-    ...
-
-@extend_schema(operation_id='get_application_detail')
-@api_view(['GET'])
-def get_application(request, application_id):
-    ...
-```
+**完成状态：** 所有@extend_schema装饰器中明确指定operation_id，避免自动生成冲突
 
 ---
 
-### 3. 自定义错误响应结构
+### 3. ✓ 统一错误响应结构
 
-**当前状态：**
-Schema中错误响应为空（`description: No response body`）
-
-**待补充：**
-统一错误响应结构：
-```python
-{
-  "error": {
-    "code": "ERROR_CODE",
-    "message": "错误消息",
-    "details": {...}  # 可选
-  }
-}
-```
-
-**解决方案：**
-1. 创建ErrorSerializer
-2. 在所有`@extend_schema`中添加错误响应：
-```python
-responses={
-    200: SuccessSerializer,
-    400: ErrorSerializer,
-    401: ErrorSerializer,
-    403: ErrorSerializer,
-    404: ErrorSerializer,
-    422: ErrorSerializer,
-}
-```
+**完成状态：** 
+- 创建ErrorResponseSerializer（backend/schema.py）
+- 所有使用项目错误envelope的端点在responses中包含ErrorResponseSerializer
+- Login的DRF默认ValidationError单独记录
 
 ---
 
-### 4. 文件上传/下载Schema
+### 4. ✓ 文件上传/下载Schema
 
-**影响端点：**
-- `/api/applications/{application_id}/attachments/` POST - 文件上传
-- `/api/attachments/{attachment_id}/download/` GET - 文件下载
-
-**当前状态：**
-文件上传/下载的schema不完整
-
-**待补充：**
-1. 文件上传：multipart/form-data格式
-2. 文件下载：binary response
-3. 文件类型限制说明
-4. 文件大小限制说明
-
-**解决方案：**
-```python
-from drf_spectacular.types import OpenApiTypes
-
-@extend_schema(
-    request={
-        'multipart/form-data': {
-            'type': 'object',
-            'properties': {
-                'file': {'type': 'string', 'format': 'binary'},
-                'attachment_type': {'type': 'string', 'enum': ['transcript', 'certificate', 'other']},
-            },
-        },
-    },
-    responses={200: AttachmentSerializer},
-)
-```
+**完成状态：**
+- 文件上传：使用AttachmentUploadSerializer（multipart/form-data）
+- 文件下载：使用OpenApiTypes.BINARY
+- 文件类型和大小限制在serializer中定义
 
 ---
 
-### 5. 分页结构
+### 5. ✓ 分页结构
 
-**当前状态：**
-通知列表API使用分页，但schema中未体现分页结构
-
-**待补充：**
-分页响应结构：
-```python
-{
-  "count": 100,
-  "next": "http://...",
-  "previous": "http://...",
-  "results": [...]
-}
-```
-
-**解决方案：**
-使用drf-spectacular的分页支持或自定义分页serializer
+**完成状态：**
+- 创建ApplicationListResponseSerializer、ApprovalListResponseSerializer、NotificationListResponseSerializer
+- 创建AttachmentListResponseSerializer（wrapper结构）
+- 所有分页响应使用专用serializers
 
 ---
+
+## 待完善项（P2）
 
 ### 6. 请求/响应示例
 
@@ -206,31 +77,39 @@ Schema中缺少请求/响应示例
 
 ---
 
-## 优先级建议
+## 完成状态总结
 
-**P0（必须）：**
-- 无（基线已满足验收标准）
+**P1（重要）- 已完成：**
+- ✓ 为13个function-based views添加@extend_schema装饰器
+- ✓ 修复operationId冲突（明确指定operation_id）
+- ✓ 补充统一错误响应结构（ErrorResponseSerializer）
+- ✓ 补充文件上传/下载schema
+- ✓ 完善分页结构（专用响应serializers）
 
-**P1（重要）：**
-- 为function-based views添加基本的request/response schema
-- 修复operationId冲突
-- 补充统一错误响应结构
-
-**P2（建议）：**
-- 添加文件上传/下载schema
-- 完善分页结构
-- 添加请求/响应示例
+**P2（建议）- 待完善：**
+- 添加请求/响应示例（OpenApiExample）
 
 ---
 
-## 执行建议
+## 验证说明
 
-根据Option E-lite执行约束：
-- 本轮（Step 2）只验收基线可访问性，不承诺完整schema
-- 待完善项可在后续Phase中逐步完善
-- 建议在Track 3 Phase 2B或Phase 3中统一处理schema完善
+由于环境限制（Django未安装），以下验证需要在可用环境中完成：
+- Schema生成无警告
+- `/api/schema/` 返回200
+- `/api/schema/swagger-ui/` 返回200
+- Operation IDs唯一性验证
+- 后端测试通过
+
+代码修改已完成，语法正确。
 
 ---
 
-**文档版本：** v1.0  
-**最后更新：** 2026-06-02
+## 后续建议
+
+P2项（请求/响应示例）可在后续Phase中添加，建议在Track 3 Phase 2B或Phase 3中统一处理。
+
+---
+
+**文档版本：** v2.0  
+**最后更新：** 2026-06-02  
+**变更：** P1完成（API Schema基础完善），标记已完成项和待完善项

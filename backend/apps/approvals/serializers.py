@@ -29,3 +29,9 @@ class ApprovalSerializer(serializers.ModelSerializer):
 
 class ApprovalActionSerializer(serializers.Serializer):
     comment = serializers.CharField(required=False, allow_blank=True)
+
+
+class ApprovalListResponseSerializer(serializers.Serializer):
+    """Schema-only: approval list response with pagination"""
+    count = serializers.IntegerField()
+    results = ApprovalListSerializer(many=True)

@@ -21,3 +21,9 @@ class NotificationSerializer(serializers.ModelSerializer):
 
     recipient_id = serializers.CharField(source='recipient.user_id', read_only=True)
     actor_id = serializers.CharField(source='actor.user_id', read_only=True, allow_null=True)
+
+
+class NotificationListResponseSerializer(serializers.Serializer):
+    """Schema-only: notification list response with custom pagination"""
+    count = serializers.IntegerField()
+    results = NotificationSerializer(many=True)

@@ -4,16 +4,34 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from django.utils import timezone
 from django.db import transaction
+from drf_spectacular.utils import extend_schema, OpenApiParameter, OpenApiTypes
+from drf_spectacular.types import OpenApiTypes as Types
 from .models import Approval, ApprovalDecision, ApprovalStep
-from .serializers import ApprovalSerializer, ApprovalActionSerializer, ApprovalListSerializer
+from .serializers import ApprovalSerializer, ApprovalActionSerializer, ApprovalListSerializer, ApprovalListResponseSerializer
 from .pagination import ApprovalLimitOffsetPagination
 from .validators import approval_step_matches_application_status
 from apps.applications.models import Application, ApplicationStatus
 from apps.users.models import UserRole
 from apps.notifications.services import notify_approval_decided
+from backend.schema import ErrorResponseSerializer
 import uuid
 
 
+@extend_schema(
+    operation_id='approvals_list',
+    summary='获取审批列表',
+    description='获取当前用户的待审批列表（辅导员或学工部）',
+    parameters=[
+        OpenApiParameter('decision', Types.STR, description='决策过滤：pending/approved/rejected/all（默认pending）'),
+        OpenApiParameter('limit', Types.INT, description='每页数量（默认20）'),
+        OpenApiParameter('offset', Types.INT, description='偏移量（默认0）'),
+    ],
+    responses={
+        200: ApprovalListResponseSerializer,
+        403: ErrorResponseSerializer,
+    },
+    tags=['审批']
+)
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def list_approvals(request):
@@ -64,6 +82,20 @@ def list_approvals(request):
     return paginator.get_paginated_response(serializer.data)
 
 
+@extend_schema(
+    operation_id='approvals_approve',
+    summary='通过审批',
+    description='审批人通过指定的审批申请',
+    request=ApprovalActionSerializer,
+    responses={
+        200: ApprovalSerializer,
+        400: ErrorResponseSerializer,
+        403: ErrorResponseSerializer,
+        404: ErrorResponseSerializer,
+        409: ErrorResponseSerializer,
+    },
+    tags=['审批']
+)
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 @transaction.atomic
@@ -135,6 +167,20 @@ def approve_approval(request, approval_id):
     return Response(ApprovalSerializer(approval).data)
 
 
+@extend_schema(
+    operation_id='approvals_reject',
+    summary='驳回审批',
+    description='审批人驳回指定的审批申请',
+    request=ApprovalActionSerializer,
+    responses={
+        200: ApprovalSerializer,
+        400: ErrorResponseSerializer,
+        403: ErrorResponseSerializer,
+        404: ErrorResponseSerializer,
+        409: ErrorResponseSerializer,
+    },
+    tags=['审批']
+)
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 @transaction.atomic

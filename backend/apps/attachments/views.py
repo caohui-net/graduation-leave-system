@@ -5,15 +5,44 @@ from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework.response import Response
 from django.http import FileResponse, Http404
 from django.utils import timezone
+from drf_spectacular.utils import extend_schema, OpenApiResponse
+from drf_spectacular.types import OpenApiTypes
 from apps.users.models import UserRole
 from apps.applications.models import Application
 from apps.applications.permissions import can_view_application
 from apps.approvals.models import Approval, ApprovalStep
 from .models import Attachment
-from .serializers import AttachmentUploadSerializer, AttachmentSerializer
+from .serializers import AttachmentUploadSerializer, AttachmentSerializer, AttachmentListResponseSerializer
+from backend.schema import ErrorResponseSerializer
 import uuid
 
 
+@extend_schema(
+    methods=['GET'],
+    operation_id='attachments_list',
+    summary='获取附件列表',
+    description='获取指定申请的附件列表',
+    responses={
+        200: AttachmentListResponseSerializer,
+        403: ErrorResponseSerializer,
+        404: ErrorResponseSerializer,
+    },
+    tags=['附件']
+)
+@extend_schema(
+    methods=['POST'],
+    operation_id='attachments_upload',
+    summary='上传附件',
+    description='为指定申请上传附件（仅申请所有者可上传）',
+    request=AttachmentUploadSerializer,
+    responses={
+        201: AttachmentSerializer,
+        400: ErrorResponseSerializer,
+        403: ErrorResponseSerializer,
+        404: ErrorResponseSerializer,
+    },
+    tags=['附件']
+)
 @api_view(['GET', 'POST'])
 @permission_classes([IsAuthenticated])
 @parser_classes([MultiPartParser, FormParser])
@@ -84,6 +113,17 @@ def list_attachments(request, application_id):
     return Response({'attachments': serializer.data})
 
 
+@extend_schema(
+    operation_id='attachments_download',
+    summary='下载附件',
+    description='下载指定附件文件',
+    responses={
+        200: OpenApiResponse(response=OpenApiTypes.BINARY, description='附件文件内容'),
+        403: ErrorResponseSerializer,
+        404: ErrorResponseSerializer,
+    },
+    tags=['附件']
+)
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def download_attachment(request, attachment_id):
@@ -115,6 +155,18 @@ def download_attachment(request, attachment_id):
                         status=status.HTTP_404_NOT_FOUND)
 
 
+@extend_schema(
+    operation_id='attachments_delete',
+    summary='删除附件',
+    description='软删除指定附件（仅申请所有者可删除）',
+    request=None,
+    responses={
+        204: OpenApiResponse(description='删除成功'),
+        403: ErrorResponseSerializer,
+        404: ErrorResponseSerializer,
+    },
+    tags=['附件']
+)
 @api_view(['DELETE'])
 @permission_classes([IsAuthenticated])
 def delete_attachment(request, attachment_id):

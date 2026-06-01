@@ -59,12 +59,28 @@ CSV templates: `backend/data/templates/*.csv`
 
 ### 5. Verify Installation
 
-Run smoke test:
+**Prerequisites for smoke test:**
+- Clean database (no existing applications for test users 2020001, 2020002)
+- Seeded test data (users, class mappings)
+
+**Option A: Auto-reset (recommended for first run)**
+```bash
+SMOKE_RESET=1 ./tests/smoke_test.sh
+```
+
+This will automatically:
+1. Stop containers and remove volumes
+2. Restart containers
+3. Run migrations
+4. Seed test data
+5. Run smoke test
+
+**Option B: Manual verification (if environment is already clean)**
 ```bash
 ./tests/smoke_test.sh
 ```
 
-Expected output: All tests pass, no errors.
+**Expected output:** All tests pass, no errors.
 
 ### 6. Access Application
 

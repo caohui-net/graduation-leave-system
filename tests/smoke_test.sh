@@ -1,10 +1,42 @@
 #!/bin/bash
 # Week 3 Day 1 Smoke Test - Minimum Viable Loop
 # Base URL: http://localhost:8001 (Docker Compose)
+#
+# Prerequisites:
+# - Clean database (no existing applications for test users)
+# - Seeded test data (users, class mappings)
+#
+# To reset environment before running:
+#   SMOKE_RESET=1 ./tests/smoke_test.sh
+#
+# Manual reset steps:
+#   docker compose down -v
+#   docker compose up -d --wait
+#   docker compose exec backend python manage.py migrate
+#   docker compose exec backend python manage.py seed_data
 
 set -e
 
 BASE_URL="http://localhost:8001"
+
+# Check and handle SMOKE_RESET
+if [ "${SMOKE_RESET}" = "1" ]; then
+  echo "=== SMOKE_RESET=1: Resetting environment ==="
+  echo "1. Stopping containers and removing volumes..."
+  docker compose down -v
+
+  echo "2. Starting containers..."
+  docker compose up -d --wait
+
+  echo "3. Running migrations..."
+  docker compose exec backend python manage.py migrate
+
+  echo "4. Seeding test data..."
+  docker compose exec backend python manage.py seed_data
+
+  echo "✓ Environment reset complete"
+  echo ""
+fi
 
 echo "=== Week 3 Day 1 Smoke Test ==="
 echo "Base URL: $BASE_URL"

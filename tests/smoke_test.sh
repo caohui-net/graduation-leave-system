@@ -252,8 +252,6 @@ fi
 
 echo "  ✓ Student received APPROVAL_APPROVED notification (type: $NOTIF_TYPE, entity_type: $NOTIF_ENTITY_TYPE)"
 
-echo "  ✓ Student has $STUDENT_NOTIF_COUNT unread notification(s)"
-
 # Verify application status changed
 APP_STATUS_AFTER=$(curl -s "$BASE_URL/api/applications/$APP_ID/" \
   -H "Authorization: Bearer $STUDENT_TOKEN" \

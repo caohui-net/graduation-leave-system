@@ -1,6 +1,7 @@
 from django.test import TestCase
 from django.utils import timezone
-from datetime import timedelta
+from datetime import timedelta, datetime
+from unittest.mock import patch
 from apps.applications.serializers import ApplicationCreateSerializer
 
 
@@ -53,3 +54,38 @@ class ApplicationCreateSerializerTest(TestCase):
         serializer = ApplicationCreateSerializer(data=data)
         self.assertTrue(serializer.is_valid())
         self.assertEqual(serializer.validated_data['reason'], '毕业离校')
+
+    @patch('django.utils.timezone.now')
+    def test_leave_date_validation_at_midnight_boundary(self, mock_now):
+        """Test leave_date validation at 23:59:59 boundary"""
+        # Mock timezone.now() to 2026-06-01 23:59:59 Asia/Shanghai
+        mock_now.return_value = timezone.make_aware(
+            datetime(2026, 6, 1, 23, 59, 59),
+            timezone.get_current_timezone()
+        )
+
+        # Submit with leave_date=tomorrow (2026-06-02)
+        data = {
+            'reason': '毕业离校',
+            'leave_date': '2026-06-02'
+        }
+        serializer = ApplicationCreateSerializer(data=data)
+        self.assertTrue(serializer.is_valid())
+
+    @patch('django.utils.timezone.now')
+    def test_leave_date_validation_after_midnight(self, mock_now):
+        """Test leave_date validation rejects past date after midnight"""
+        # Mock timezone.now() to 2026-06-02 00:00:01 Asia/Shanghai
+        mock_now.return_value = timezone.make_aware(
+            datetime(2026, 6, 2, 0, 0, 1),
+            timezone.get_current_timezone()
+        )
+
+        # Submit with leave_date=yesterday (2026-06-01)
+        data = {
+            'reason': '毕业离校',
+            'leave_date': '2026-06-01'
+        }
+        serializer = ApplicationCreateSerializer(data=data)
+        self.assertFalse(serializer.is_valid())
+        self.assertIn('leave_date', serializer.errors)

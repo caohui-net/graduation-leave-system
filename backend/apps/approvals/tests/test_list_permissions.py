@@ -97,3 +97,54 @@ class ApprovalListPermissionTest(TestCase):
         self.assertIn('results', response.data)
         self.assertNotIn('next', response.data)
         self.assertNotIn('previous', response.data)
+
+    def test_decision_all_does_not_leak_cross_approver_data(self):
+        # Create second application and approval for counselor1 (approved)
+        app2 = Application.objects.create(
+            application_id='app_002',
+            student=self.student,
+            student_name='学生',
+            class_id='CS2020-01',
+            reason='测试2',
+            leave_date='2024-07-02',
+            status=ApplicationStatus.APPROVED
+        )
+        approval_c1_approved = Approval.objects.create(
+            approval_id='apv_c1_approved',
+            application=app2,
+            step=ApprovalStep.COUNSELOR,
+            approver=self.counselor1,
+            approver_name='辅导员1',
+            decision=ApprovalDecision.APPROVED
+        )
+
+        # Create approval for counselor2
+        app3 = Application.objects.create(
+            application_id='app_003',
+            student=self.student,
+            student_name='学生',
+            class_id='CS2020-01',
+            reason='测试3',
+            leave_date='2024-07-03',
+            status=ApplicationStatus.PENDING_COUNSELOR
+        )
+        approval_c2 = Approval.objects.create(
+            approval_id='apv_c2',
+            application=app3,
+            step=ApprovalStep.COUNSELOR,
+            approver=self.counselor2,
+            approver_name='辅导员2',
+            decision=ApprovalDecision.PENDING
+        )
+
+        # Counselor1 calls decision=all
+        self.client.force_authenticate(user=self.counselor1)
+        response = self.client.get('/api/approvals/?decision=all')
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data['count'], 2)
+
+        # Verify only counselor1's approvals returned
+        approval_ids = [a['approval_id'] for a in response.data['results']]
+        self.assertIn('apv_c1', approval_ids)
+        self.assertIn('apv_c1_approved', approval_ids)
+        self.assertNotIn('apv_c2', approval_ids)

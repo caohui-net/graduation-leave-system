@@ -60,6 +60,16 @@
 
 ---
 
+### 6. ✓ Login响应Schema修复
+
+**完成状态：**
+- 创建LoginResponseSerializer（schema-only）
+- 修复auth_login的200响应schema不匹配问题
+- 原问题：@extend_schema使用LoginSerializer（字段：user_id, password），但运行时返回{access_token, token_type, user}
+- 修复后：200响应使用LoginResponseSerializer，准确描述实际响应结构
+
+---
+
 ## 待完善项（P2）
 
 ### 6. 请求/响应示例
@@ -85,6 +95,7 @@ Schema中缺少请求/响应示例
 - ✓ 补充统一错误响应结构（ErrorResponseSerializer）
 - ✓ 补充文件上传/下载schema
 - ✓ 完善分页结构（专用响应serializers）
+- ✓ 修复login响应schema不匹配（LoginResponseSerializer）
 
 **P2（建议）- 待完善：**
 - 添加请求/响应示例（OpenApiExample）
@@ -110,6 +121,6 @@ P2项（请求/响应示例）可在后续Phase中添加，建议在Track 3 Phas
 
 ---
 
-**文档版本：** v2.0  
+**文档版本：** v2.1  
 **最后更新：** 2026-06-02  
-**变更：** P1完成（API Schema基础完善），标记已完成项和待完善项
+**变更：** P1修复（Login响应schema不匹配），添加LoginResponseSerializer

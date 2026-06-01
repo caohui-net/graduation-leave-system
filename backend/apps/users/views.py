@@ -3,7 +3,7 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from drf_spectacular.utils import extend_schema, OpenApiResponse
-from .serializers import LoginSerializer
+from .serializers import LoginSerializer, LoginResponseSerializer
 
 
 @extend_schema(
@@ -13,7 +13,7 @@ from .serializers import LoginSerializer
     request=LoginSerializer,
     responses={
         200: OpenApiResponse(
-            response=LoginSerializer,
+            response=LoginResponseSerializer,
             description='登录成功，返回access token和用户信息'
         ),
         400: OpenApiResponse(

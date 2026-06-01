@@ -1,5 +1,5 @@
 {
-  "last_updated": "2026-06-02T18:40:00Z",
+  "last_updated": "2026-06-02T19:00:00Z",
   "completed": [
     "Week 3 Closure Gate完成",
     "Phase 4C前端code-complete完成：P1修复 + P0修复 + WXSS + 静态验证",
@@ -29,11 +29,17 @@
     "A-corrected Step 2完成：Schema-only serializers（5个响应serializers + ErrorResponseSerializer）",
     "A-corrected Step 3完成：Method-scoped extend_schema（13个views装饰器，2个dispatchers）",
     "A-corrected Step 5完成：文档更新（api-schema-todo.md v2.0 + PROJECT-SUMMARY.md + session-context.json）",
-    "API Schema P1完成：13个views有@extend_schema，operation IDs明确，错误响应统一"
+    "API Schema P1完成：13个views有@extend_schema，operation IDs明确，错误响应统一",
+    "Claude-Codex API Schema P1后续讨论：55号策略提案 + 56号Codex审查 + 57号Claude响应",
+    "Codex发现P1级问题：login响应schema不匹配（文档用LoginSerializer，运行时返回access_token/token_type/user）",
+    "Option A-prime Step 1完成：修复login响应schema（创建LoginResponseSerializer + 修改views.py + 更新api-schema-todo.md v2.1）",
+    "Option A-prime Step 2受阻：环境验证失败（psycopg2-binary编译错误，缺少libpq-dev）",
+    "Option A-prime Step 3完成：P1状态判定为'代码完成，未验收'（6项修复完成，4项验证待环境）",
+    "Claude-Codex Option A-prime共识：58号共识文档（部分完成，环境验证受阻）"
   ],
   "pending": [
-    "A-corrected Step 4验证：在可用环境中验证schema生成无警告、/api/schema/可访问、operation IDs唯一",
-    "与Codex讨论或等待用户指示：下一步工作方向（API Schema P2示例/Smoke清理/Track 3 Phase 2B-2C/其他）",
+    "API Schema P1验收：在可用环境中验证schema生成无警告、/api/schema/可访问、operation IDs唯一",
+    "与Codex讨论下一步选项：Option 1硬停止等待环境/Option 2接受当前状态继续其他工作/Option 3安装libpq-dev",
     "Track 3 Phase 2B-2C：宿舍阻断通知 + 审批超时提醒（需契约修正/Celery）",
     "Track 3 Phase 3-4：miniprogram通知页 + WeChat templates（推迟到DevTools可用）",
     "WeChat DevTools验证（外部阻塞，小程序验收门控）",
@@ -96,9 +102,14 @@
     "A-corrected: 13个views添加@extend_schema装饰器（2个dispatchers使用method-scoped）",
     "A-corrected: docs/api/api-schema-todo.md v2.0（P1完成标记，P2待完善）",
     "A-corrected: 代码语法正确（Edit工具成功返回）",
-    "Git commits: 6个（Track 1 + Track 2 + 证据闭环 + Phase 2A稳定化 + Option E-lite完成 + B-mini修复）"
+    "Git commits: 6个（Track 1 + Track 2 + 证据闭环 + Phase 2A稳定化 + Option E-lite完成 + B-mini修复）",
+    "Option A-prime: LoginResponseSerializer创建（backend/apps/users/serializers.py）",
+    "Option A-prime: login视图@extend_schema修复（backend/apps/users/views.py）",
+    "Option A-prime: api-schema-todo.md v2.1（添加第6项Login响应Schema修复）",
+    "Option A-prime: 环境验证失败（psycopg2-binary编译错误，满足硬停止条件）",
+    "Option A-prime: P1状态'代码完成，未验收'（6项修复完成，4项验证待环境）"
   ],
-  "next_focus": "API Schema P1完成（代码修改）。需要在可用环境中验证schema生成。下一步：与Codex讨论后续工作方向（API Schema P2示例/其他）或等待用户明确指示。",
+  "next_focus": "Option A-prime部分完成（login响应schema已修复，环境验证受阻）。下一步：与Codex讨论3个选项（硬停止等待环境/接受当前状态继续其他工作/安装libpq-dev），达成共识后执行。",
   "suggested_skills": [],
   "artifacts": {
     "track1_import_csv": "backend/apps/users/management/commands/import_csv.py",
@@ -169,6 +180,11 @@
     "api_schema_p1_applications_views": "backend/apps/applications/views.py",
     "api_schema_p1_attachments_views": "backend/apps/attachments/views.py",
     "api_schema_todo_v2": "docs/api/api-schema-todo.md",
+    "claude_post_api_schema_p1_strategy": "docs/discussions/phase4c-next-steps/55-claude-post-api-schema-p1-next-strategy.md",
+    "codex_post_api_schema_p1_response": "docs/discussions/phase4c-next-steps/56-codex-post-api-schema-p1-next-strategy-response.md",
+    "claude_accept_option_a_prime": "docs/discussions/phase4c-next-steps/57-claude-response-accept-option-a-prime.md",
+    "claude_codex_option_a_prime_consensus": "docs/discussions/phase4c-next-steps/58-claude-codex-consensus-option-a-prime-partial.md",
+    "api_schema_p1_users_serializers": "backend/apps/users/serializers.py",
     "collaboration_events": ".omc/collaboration/events.jsonl",
     "collaboration_state": ".omc/collaboration/state.json"
   },

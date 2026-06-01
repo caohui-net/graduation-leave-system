@@ -1917,6 +1917,61 @@
 - ✓ 更新docs/PROJECT-SUMMARY.md（本记录）
 - ✓ 更新.omc/session-context.json（待执行）
 
+---
+
+## Option A-prime: P1验证与修正（2026-06-02）
+
+**背景：**
+- Codex审查55号策略提案，发现P1级问题
+- 建议执行Option A-prime而非直接进入P2
+- Claude完全接受Codex建议（57号文档）
+
+**Codex发现的P1问题（56号文档）：**
+- Login响应schema不匹配
+- 文档使用LoginSerializer（字段：user_id, password）
+- 运行时返回{access_token, token_type, user}
+
+**Step 1: 修复login响应schema（已完成，15分钟）**
+- ✓ 创建LoginResponseSerializer（backend/apps/users/serializers.py）
+  - 字段：access_token, token_type, user（AuthUserSerializer）
+  - 标记为schema-only
+- ✓ 修改backend/apps/users/views.py
+  - 导入LoginResponseSerializer
+  - 修改@extend_schema的200响应
+- ✓ 更新docs/api/api-schema-todo.md（v2.1）
+  - 添加第6项：Login响应Schema修复
+  - 更新完成状态总结
+
+**Step 2: 环境验证（受阻）**
+- ✓ 检查venv可用性
+- ✓ 创建临时venv
+- ❌ 安装依赖失败（psycopg2-binary编译错误）
+- 原因：缺少PostgreSQL开发库（libpq-dev）
+
+**硬停止条件确认：**
+- ✓ 不能安装项目依赖
+- ✓ 不能访问测试数据库
+- ✓ 无法运行schema生成
+- ✓ 无法确认operationId唯一性
+
+**Step 3: 状态判定（已完成）**
+- P1状态：代码完成，未验收
+- 已完成：6项P1修复（含login响应schema）
+- 未验收：4项验证（schema生成、端点访问、operationId唯一性）
+
+**产出物：**
+- backend/apps/users/serializers.py（LoginResponseSerializer）
+- backend/apps/users/views.py（修改@extend_schema）
+- docs/api/api-schema-todo.md（v2.1）
+- docs/discussions/phase4c-next-steps/56-codex-post-api-schema-p1-next-strategy-response.md
+- docs/discussions/phase4c-next-steps/57-claude-response-accept-option-a-prime.md
+- docs/discussions/phase4c-next-steps/58-claude-codex-consensus-option-a-prime-partial.md
+
+**状态：**
+- ✅ Option A-prime部分完成（代码修复完成）
+- ⏸ 环境验证受阻（等待可验证环境）
+- ⏸ 下一步待讨论（P2/Track 3/其他）
+
 **产出物：**
 - backend/schema.py（通用schema serializers）
 - backend/apps/*/serializers.py（5个响应serializers）

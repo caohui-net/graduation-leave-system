@@ -43,3 +43,10 @@ class LoginSerializer(serializers.Serializer):
             'token_type': 'Bearer',
             'user': AuthUserSerializer(user).data
         }
+
+
+class LoginResponseSerializer(serializers.Serializer):
+    """登录成功响应（schema-only，用于OpenAPI文档）"""
+    access_token = serializers.CharField(help_text="JWT access token")
+    token_type = serializers.CharField(default='Bearer', help_text="Token type")
+    user = AuthUserSerializer(help_text="用户信息")

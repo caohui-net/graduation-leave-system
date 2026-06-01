@@ -1555,3 +1555,109 @@
 **状态：**
 - ✅ 契约修正完成
 - ⏸ 硬停止，等待用户明确授权Phase 1后端MVP实现
+
+**Track 3 Phase 1: 通知系统后端MVP（2026-06-01完成）：**
+
+**背景：**
+- 契约修正完成后，用户要求继续讨论下一步
+- Claude-Codex协作：授权门讨论 + Phase 1实施
+- 用户明确授权Phase 1实现（回复"1"）
+
+**Claude-Codex协作流程（授权门）：**
+1. ✓ Claude请求Codex解释用户"继续"指令是否构成授权
+2. ✓ Codex明确回应：不构成授权，建议最小确认门
+3. ✓ Claude接受Codex建议，呈现授权门
+4. ✓ 用户明确授权（选择Option 1）
+
+**Phase 1A: Model + Migration（完成）：**
+- ✓ 创建Notification模型（10个字段）
+  - notification_id（PK，not_xxxxxxxx格式）
+  - recipient（FK User）
+  - actor（FK User，nullable）
+  - type（5种类型枚举）
+  - entity_type（2种实体枚举）
+  - entity_id（关联实体ID）
+  - title、message（通知内容）
+  - read_at（已读时间，nullable）
+  - created_at（创建时间）
+- ✓ 唯一约束：(recipient, entity_type, entity_id, type)
+- ✓ 索引：(recipient, created_at)、(recipient, read_at)
+- ✓ 生成并执行migration
+- ✓ 模型单元测试：5/5通过
+  - create_notification
+  - notification_id_auto_generated
+  - unique_constraint
+  - different_recipient_allows_duplicate
+  - ordering
+
+**Phase 1B: API Implementation（完成）：**
+- ✓ NotificationSerializer（8个字段）
+- ✓ 4个API端点实现
+  - GET /api/notifications/（列表，支持read过滤和limit/offset分页）
+  - GET /api/notifications/unread_count/（未读数）
+  - PATCH /api/notifications/{id}/read/（标记已读，幂等）
+  - POST /api/notifications/mark_all_read/（全部已读）
+- ✓ RBAC权限：用户只能访问自己的通知
+- ✓ 错误处理：403 FORBIDDEN、404 NOT_FOUND
+- ✓ URL路由配置
+- ✓ Django admin配置
+
+**Phase 1C: Testing（完成）：**
+- ✓ API集成测试：10/10通过
+  - test_list_notifications
+  - test_list_with_read_filter
+  - test_list_pagination
+  - test_list_rbac
+  - test_unread_count
+  - test_mark_as_read
+  - test_mark_as_read_idempotent
+  - test_mark_as_read_forbidden
+  - test_mark_as_read_not_found
+  - test_mark_all_read
+- ✓ seed_notifications管理命令
+  - 为前3个学生创建测试通知
+  - 包含已读和未读通知
+  - 测试执行成功（创建4条通知）
+
+**Phase 1D: Verification（完成）：**
+- ✓ API端点验证（curl测试）
+  - GET /api/notifications/：返回2条通知 ✓
+  - GET /api/notifications/unread_count/：返回1条未读 ✓
+  - PATCH /api/notifications/{id}/read/：标记已读成功 ✓
+  - POST /api/notifications/mark_all_read/：返回marked_count=0 ✓
+- ✓ 权限验证：用户只能访问自己的通知 ✓
+- ✓ 分页验证：limit/offset参数正常工作 ✓
+- ✓ 幂等性验证：重复标记已读保持read_at不变 ✓
+
+**产出物：**
+- backend/apps/notifications/models.py（Notification模型）
+- backend/apps/notifications/serializers.py（NotificationSerializer）
+- backend/apps/notifications/views.py（4个API端点）
+- backend/apps/notifications/urls.py（URL路由）
+- backend/apps/notifications/admin.py（Django admin）
+- backend/apps/notifications/migrations/0001_initial.py（数据库迁移）
+- backend/apps/notifications/tests/test_models.py（5个模型测试）
+- backend/apps/notifications/tests/test_api.py（10个API测试）
+- backend/apps/notifications/management/commands/seed_notifications.py（seed命令）
+- docs/discussions/phase4c-next-steps/34-claude-authorization-interpretation-request.md
+- docs/discussions/phase4c-next-steps/35-codex-authorization-interpretation-response.md
+- docs/discussions/phase4c-next-steps/36-claude-consensus-minimal-confirmation.md
+
+**测试统计：**
+- 模型测试：5/5通过
+- API测试：10/10通过
+- 总计：15/15通过
+
+**时间统计：**
+- Phase 1A（Model + Migration）：~30分钟
+- Phase 1B（API Implementation）：~45分钟
+- Phase 1C（Testing）：~30分钟
+- Phase 1D（Verification）：~15分钟
+- 总计：~2小时（符合0.5-1天预期）
+
+**状态：**
+- ✅ Track 3 Phase 1完成（通知系统后端MVP）
+- ✅ 15个测试全部通过
+- ✅ 4个API端点验证通过
+- ⏳ Phase 1D文档更新进行中（PROJECT-SUMMARY.md、session-context.json）
+- ⏸ Phase 2-4推迟（signals、miniprogram、WeChat templates）

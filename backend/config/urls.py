@@ -8,4 +8,5 @@ urlpatterns = [
     path('api/', include('apps.attachments.urls')),
     path('api/applications/', include('apps.applications.urls')),
     path('api/approvals/', include('apps.approvals.urls')),
+    path('api/notifications/', include('apps.notifications.urls')),
 ]

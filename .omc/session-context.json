@@ -1,5 +1,5 @@
 {
-  "last_updated": "2026-06-01T15:40:54Z",
+  "last_updated": "2026-06-02T00:11:00Z",
   "completed": [
     "Week 3 Closure Gate完成",
     "Phase 4C前端code-complete完成：P1修复 + P0修复 + WXSS + 静态验证",
@@ -13,10 +13,11 @@
     "Claude-Codex证据闭环协作：3轮讨论达成共识（收窄为2小时证据包 + 硬停止）",
     "证据闭环后策略讨论：Claude-Codex达成共识（决策门 + 窄Track 3契约草案）",
     "Track 3 Phase 0完成：通知契约草案v0.1（纯文档，不改代码）",
-    "Track 3契约修正完成：5个P1/P2问题修正（分页/幂等键/验收标准/错误结构/测试数据）"
+    "Track 3契约修正完成：5个P1/P2问题修正（分页/幂等键/验收标准/错误结构/测试数据）",
+    "Track 3 Phase 1完成：通知系统后端MVP（model + migration + API + 测试 + 验证）"
   ],
   "pending": [
-    "Track 3 Phase 1：后端MVP实现（需用户明确授权）",
+    "Track 3 Phase 2-4：signals + miniprogram + WeChat templates（范围推迟）",
     "WeChat DevTools验证（外部阻塞，小程序验收门控）",
     "宿舍系统真实集成（外部阻塞，需API文档和测试凭证）"
   ],
@@ -31,10 +32,15 @@
     "证据闭环: phase4c-known-issues.md（6项DevTools阻塞 + 5项外部系统阻塞 + 10项范围推迟 + 8项已知风险）",
     "Track 3 Phase 0: notification-contract-v0.1.md（5种事件 + 10字段 + 4 API + RBAC + 幂等规则）",
     "Track 3契约修正: notification-contract-v0.1.md已修正（分页limit/offset + 幂等键recipient_id + 错误结构统一 + Phase 1验收调整 + 测试数据路径）",
+    "Track 3 Phase 1: 15/15测试通过（5个模型测试 + 10个API测试）",
+    "Track 3 Phase 1: 4/4 API端点验证通过（list + unread_count + mark_as_read + mark_all_read）",
+    "Track 3 Phase 1: seed_notifications命令创建成功（4条测试通知）",
+    "Track 3 Phase 1: RBAC验证通过（用户只能访问自己的通知）",
+    "Track 3 Phase 1: 幂等性验证通过（重复标记已读保持read_at不变）",
     "Git commits: 3个（Track 1 + Track 2 + 证据闭环）",
-    "协作日志：event 84（证据闭环共识）+ event 85（Track 3 Phase 0完成）"
+    "协作日志：event 91（授权门共识）"
   ],
-  "next_focus": "Track 3契约修正完成（5个P1/P2问题已修正）。硬停止，等待用户明确授权Phase 1后端MVP实现（Django model + migration + API + 测试，0.5-1天）。或等待DevTools验证、宿舍系统信息。",
+  "next_focus": "Track 3 Phase 1完成（通知系统后端MVP：model + migration + 4 API + 15测试全部通过）。Phase 2-4推迟（signals、miniprogram、WeChat templates）。等待用户指示下一步工作方向。",
   "suggested_skills": [],
   "artifacts": {
     "track1_import_csv": "backend/apps/users/management/commands/import_csv.py",
@@ -49,6 +55,15 @@
     "evidence_demo_script": "docs/acceptance/phase4c-demo-script.md",
     "evidence_known_issues": "docs/acceptance/phase4c-known-issues.md",
     "track3_phase0_contract": "docs/api/notification-contract-v0.1.md",
+    "track3_phase1_model": "backend/apps/notifications/models.py",
+    "track3_phase1_serializer": "backend/apps/notifications/serializers.py",
+    "track3_phase1_views": "backend/apps/notifications/views.py",
+    "track3_phase1_urls": "backend/apps/notifications/urls.py",
+    "track3_phase1_admin": "backend/apps/notifications/admin.py",
+    "track3_phase1_migration": "backend/apps/notifications/migrations/0001_initial.py",
+    "track3_phase1_test_models": "backend/apps/notifications/tests/test_models.py",
+    "track3_phase1_test_api": "backend/apps/notifications/tests/test_api.py",
+    "track3_phase1_seed": "backend/apps/notifications/management/commands/seed_notifications.py",
     "codex_strategy_response": "docs/discussions/phase4c-next-steps/20-codex-next-phase-strategy-response.md",
     "claude_consensus": "docs/discussions/phase4c-next-steps/21-claude-consensus-narrowed-strategy.md",
     "codex_evidence_response": "docs/discussions/phase4c-next-steps/23-codex-post-execution-next-steps-response.md",
@@ -59,11 +74,13 @@
     "claude_post_phase0_strategy": "docs/discussions/phase4c-next-steps/28-claude-post-phase0-next-strategy.md",
     "codex_post_phase0_review": "docs/discussions/phase4c-next-steps/29-codex-post-phase0-next-strategy-response.md",
     "claude_contract_revision_consensus": "docs/discussions/phase4c-next-steps/30-claude-consensus-contract-revision-gate.md",
+    "claude_authorization_request": "docs/discussions/phase4c-next-steps/34-claude-authorization-interpretation-request.md",
+    "codex_authorization_response": "docs/discussions/phase4c-next-steps/35-codex-authorization-interpretation-response.md",
+    "claude_authorization_consensus": "docs/discussions/phase4c-next-steps/36-claude-consensus-minimal-confirmation.md",
     "collaboration_events": ".omc/collaboration/events.jsonl",
     "collaboration_state": ".omc/collaboration/state.json"
   },
   "blocking_issues": [
-    "Track 3 Phase 1需要用户明确授权（Django model + migration + API实现）",
     "WeChat DevTools安装（Phase 4A外部依赖，小程序验收门控）",
     "宿舍管理系统联系人和API文档（生产部署门控）"
   ]

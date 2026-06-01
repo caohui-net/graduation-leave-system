@@ -20,20 +20,16 @@
 - Fields:
   - `file`: File (required)
   - `attachment_type`: String (required) - one of: `dorm_checkout`, `library_clearance`, `finance_clearance`, `other`
-  - `description`: String (optional, max 500 chars)
 
 **Response (201 Created):**
 ```json
 {
   "attachment_id": "att_<12-char-hex>",
-  "application_id": "app_<uuid>",
   "attachment_type": "dorm_checkout",
   "file_name": "example.pdf",
   "file_size": 1024000,
   "content_type": "application/pdf",
-  "description": "宿舍退房证明",
-  "uploaded_at": "2026-06-01T07:00:00Z",
-  "uploaded_by": "student_id"
+  "uploaded_at": "2026-06-01T07:00:00Z"
 }
 ```
 
@@ -61,9 +57,7 @@
       "file_name": "example.pdf",
       "file_size": 1024000,
       "content_type": "application/pdf",
-      "description": "宿舍退房证明",
-      "uploaded_at": "2026-06-01T07:00:00Z",
-      "uploaded_by": "student_id"
+      "uploaded_at": "2026-06-01T07:00:00Z"
     }
   ]
 }
@@ -204,9 +198,23 @@ All errors follow this format:
 
 ---
 
-**Next Steps:**
-1. Implement P0 fixes (RBAC helper, file handling, validation details, MEDIA settings)
-2. Create URL routing
-3. Generate migration
-4. Write focused tests
-5. Finalize contract with tested examples
+## Implementation Status
+
+**Backend:** Complete (19/19 tests passing, verified 2026-06-01)
+- RBAC permission helper implemented
+- File upload/download/delete endpoints operational
+- Multipart parser configuration fixed (P0 bug resolved)
+- Soft delete behavior verified
+- Error handling and validation complete
+- Test coverage: upload (5), list (6), download (4), delete (4)
+
+**Frontend:** In progress (Phase 4C)
+- WeChat Miniprogram UI implementation
+- Attachment list/upload/download/delete functionality
+- P1 fixes complete: field alignment, error handling, status codes, file precheck
+- Awaiting: WXSS styling, static validation, WeChat DevTools acceptance
+
+**Contract Status:** Final (v0.3)
+- All fields match backend serializer output
+- Response formats verified with backend tests
+- No further breaking changes planned for MVP

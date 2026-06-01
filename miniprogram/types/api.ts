@@ -24,10 +24,12 @@ export interface User {
   user_id: string;
   name: string;
   role: UserRole;
+  class_id?: string | null;
 }
 
 export interface LoginResponse {
   access_token: string;
+  token_type: 'Bearer';
   user: User;
 }
 
@@ -40,6 +42,8 @@ export interface ApplicationCreateRequest {
 export interface Application {
   application_id: string;
   student_id: string;
+  student_name: string;
+  class_id: string;
   reason: string;
   leave_date: string;
   status: ApplicationStatus;
@@ -48,8 +52,6 @@ export interface Application {
 }
 
 export interface ApplicationDetail extends Application {
-  student_name: string;
-  class_id: string;
   dorm_checkout_status: string;
   approvals: ApprovalDetail[];
 }
@@ -90,9 +92,27 @@ export interface ApprovalActionResponse {
 // Pagination
 export interface PaginatedResponse<T> {
   count: number;
-  next: string | null;
-  previous: string | null;
   results: T[];
+}
+
+// Attachments
+export type AttachmentType =
+  | 'dorm_checkout'
+  | 'library_clearance'
+  | 'finance_clearance'
+  | 'other';
+
+export interface Attachment {
+  attachment_id: string;
+  attachment_type: AttachmentType;
+  file_name: string;
+  file_size: number;
+  content_type: string;
+  uploaded_at: string;
+}
+
+export interface AttachmentListResponse {
+  attachments: Attachment[];
 }
 
 // Errors

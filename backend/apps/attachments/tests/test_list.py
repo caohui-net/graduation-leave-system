@@ -114,8 +114,8 @@ class AttachmentListTestCase(TestCase):
         )
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(len(response.data), 1)
-        self.assertEqual(response.data[0]['attachment_id'], 'att_test001')
+        self.assertEqual(len(response.data['attachments']), 1)
+        self.assertEqual(response.data['attachments'][0]['attachment_id'], 'att_test001')
 
     def test_list_student_other_negative(self):
         """Student cannot list another student's attachments"""
@@ -137,7 +137,7 @@ class AttachmentListTestCase(TestCase):
         )
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(len(response.data), 1)
+        self.assertEqual(len(response.data['attachments']), 1)
 
     def test_list_cross_counselor_negative(self):
         """Cross-counselor cannot list application attachments"""
@@ -159,7 +159,7 @@ class AttachmentListTestCase(TestCase):
         )
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(len(response.data), 1)
+        self.assertEqual(len(response.data['attachments']), 1)
 
     def test_list_excludes_soft_deleted(self):
         """List excludes soft-deleted attachments"""
@@ -174,4 +174,4 @@ class AttachmentListTestCase(TestCase):
         )
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(len(response.data), 0)
+        self.assertEqual(len(response.data['attachments']), 0)

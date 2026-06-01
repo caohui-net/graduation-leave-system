@@ -1,5 +1,5 @@
 {
-  "last_updated": "2026-06-01T07:35:00Z",
+  "last_updated": "2026-06-01T10:00:00Z",
   "completed": [
     "Week 3 Closure Gate完成",
     "Phase 2完成：P0后端修复（resubmission + approval filter + 单元测试）",
@@ -46,7 +46,7 @@
   ],
   "pending": [
     "Phase 4A: WeChat DevTools验证（外部阻塞，1-3天）",
-    "Phase 4C前端：小程序附件上传/列表/下载UI",
+    "Phase 4C前端：WeChat DevTools acceptance验证（code-complete已达成，等待DevTools）",
     "其他小程序页面：detail页面改进、历史记录页面等",
     "宿舍系统对接调研（并行轨道）"
   ],
@@ -95,9 +95,18 @@
     "Phase 4C RBAC helper：backend/apps/applications/permissions.py（can_view_application）",
     "Phase 4C migrations：backend/apps/attachments/migrations/0001_initial.py",
     "Phase 4C测试：19个测试100%通过（test_upload/test_list/test_download/test_delete）",
-    "Phase 4C契约：docs/api/contract-v0.3.md（Final status）"
+    "    "Phase 4C契约：docs/api/contract-v0.3.md（Final status）",
+    "Phase 4C前端P1修复完成：字段对齐 + 错误处理 + 下载状态码 + 文件预检",
+    "Phase 4C前端字段对齐：miniprogram/types/api.ts移除uploaded_by + contract-v0.3.md字段收窄",
+    "Phase 4C前端错误处理：loadAttachments()互斥状态 + WXML error/empty/list优先级渲染",
+    "Phase 4C前端下载优化：ApiClient.handleUnauthorized()统一401处理 + 403/404状态码",
+    "Phase 4C前端文件预检：扩展名白名单 + 10MB限制 + 兜底逻辑",
+    "Phase 4C后端P0修复：@parser_classes装饰器移至attachments_view()入口点",
+    "Phase 4C后端完整验证：19/19测试通过（upload:5 + list:6 + download:4 + delete:4）",
+    "Phase 4C前端WXSS样式：attachment-error/empty/list/item/actions + btn-small/upload",
+    "Phase 4C前端静态验证：WXML绑定 + TS类型 + API调用 + 角色逻辑全部验证通过""
   ],
-  "next_focus": "Phase 4C后端MVP完成（2026-06-01）。所有5个阶段完成：契约骨架 → P0修复 → 测试 → 回归 → 契约最终版。19个attachment测试全部通过，无回归。下一步选项：A) Phase 4C前端UI（小程序附件上传/列表/下载） B) 其他小程序页面改进 C) 等待DevTools验证（Phase 4A外部阻塞）。",
+  "next_focus": "Phase 4C前端code-complete完成（2026-06-01）。后端19/19测试通过，前端P1修复+WXSS+静态验证全部完成。Claude-Codex协作：7轮讨论（P1方案审查 → P1实施 → P0 bug发现 → P0修复 → 验证通过）。下一步：等待WeChat DevTools验证达成accepted状态，或继续其他小程序页面开发。",
   "suggested_skills": [],
   "artifacts": {
     "codex_contract": "docs/contracts/contract-v0.2.md",

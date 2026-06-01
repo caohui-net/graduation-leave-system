@@ -10,6 +10,9 @@ import type {
   ApprovalActionResponse,
   PaginatedResponse,
   ApiError,
+  AttachmentType,
+  Attachment,
+  AttachmentListResponse,
 } from '../types/api';
 
 export interface ApiConfig {
@@ -23,6 +26,10 @@ export class ApiClient {
 
   constructor(config: ApiConfig) {
     this.config = config;
+  }
+
+  handleUnauthorized() {
+    this.config.onUnauthorized?.();
   }
 
   private async request<T>(
@@ -120,6 +127,70 @@ export class ApiClient {
       method: 'POST',
       data: req,
     });
+  }
+
+  async listAttachments(applicationId: string): Promise<Attachment[]> {
+    const response = await this.request<AttachmentListResponse>(
+      `/api/applications/${applicationId}/attachments/`
+    );
+    return response.attachments || [];
+  }
+
+  async uploadAttachment(
+    applicationId: string,
+    filePath: string,
+    attachmentType: AttachmentType
+  ): Promise<Attachment> {
+    const token = this.config.getToken?.();
+
+    return new Promise((resolve, reject) => {
+      wx.uploadFile({
+        url: `${this.config.baseUrl}/api/applications/${applicationId}/attachments/`,
+        filePath,
+        name: 'file',
+        formData: {
+          attachment_type: attachmentType,
+        },
+        header: token ? { Authorization: `Bearer ${token}` } : {},
+        success: (res) => {
+          if (res.statusCode === 401) {
+            this.config.onUnauthorized?.();
+            reject(new Error('Unauthorized'));
+            return;
+          }
+
+          if (res.statusCode >= 400) {
+            try {
+              const error = JSON.parse(res.data as string);
+              reject(error as ApiError);
+            } catch {
+              reject({ error: { code: 'UPLOAD_ERROR', message: '上传失败' } });
+            }
+            return;
+          }
+
+          try {
+            const data = typeof res.data === 'string' ? JSON.parse(res.data) : res.data;
+            resolve(data as Attachment);
+          } catch {
+            reject({ error: { code: 'PARSE_ERROR', message: '响应解析失败' } });
+          }
+        },
+        fail: (err) => {
+          reject(new Error(err.errMsg));
+        },
+      });
+    });
+  }
+
+  async deleteAttachment(attachmentId: string): Promise<void> {
+    await this.request(`/api/attachments/${attachmentId}/`, {
+      method: 'DELETE',
+    });
+  }
+
+  getDownloadUrl(attachmentId: string): string {
+    return `${this.config.baseUrl}/api/attachments/${attachmentId}/download/`;
   }
 }
 

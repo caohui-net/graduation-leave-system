@@ -16,6 +16,7 @@ import uuid
 
 @api_view(['GET', 'POST'])
 @permission_classes([IsAuthenticated])
+@parser_classes([MultiPartParser, FormParser])
 def attachments_view(request, application_id):
     """Dispatcher for attachment list (GET) and upload (POST)"""
     if request.method == 'GET':
@@ -24,7 +25,6 @@ def attachments_view(request, application_id):
         return upload_attachment(request, application_id)
 
 
-@parser_classes([MultiPartParser, FormParser])
 def upload_attachment(request, application_id):
     user = request.user
 
@@ -81,7 +81,7 @@ def list_attachments(request, application_id):
     # List attachments (exclude soft-deleted)
     attachments = Attachment.objects.filter(application=application, is_deleted=False)
     serializer = AttachmentSerializer(attachments, many=True)
-    return Response(serializer.data)
+    return Response({'attachments': serializer.data})
 
 
 @api_view(['GET'])

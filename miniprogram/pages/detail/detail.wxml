@@ -46,6 +46,31 @@
       </view>
     </view>
 
+    <view class="section">
+      <text class="section-title">附件</text>
+      <view class="attachment-error" wx:if="{{attachmentError}}">
+        <text>{{attachmentError}}</text>
+      </view>
+      <view class="empty-attachments" wx:elif="{{attachments.length === 0}}">
+        <text>暂无附件</text>
+      </view>
+      <view class="attachment-list" wx:else>
+        <view class="attachment-item" wx:for="{{attachments}}" wx:key="attachment_id">
+          <view class="attachment-info">
+            <text class="file-name">{{item.file_name}}</text>
+            <text class="file-size">{{item.file_size / 1024}} KB</text>
+          </view>
+          <view class="attachment-actions">
+            <button class="btn-small download" bindtap="onDownloadAttachment" data-attachment="{{item}}">下载</button>
+            <button class="btn-small delete" wx:if="{{isOwner}}" bindtap="onDeleteAttachment" data-id="{{item.attachment_id}}">删除</button>
+          </view>
+        </view>
+      </view>
+      <button class="btn-upload" wx:if="{{isOwner}}" bindtap="onChooseFile" disabled="{{uploading}}">
+        {{uploading ? '上传中...' : '上传附件'}}
+      </button>
+    </view>
+
     <view class="actions" wx:if="{{canApprove}}">
       <button class="btn approve" bindtap="onApprove">通过</button>
       <button class="btn reject" bindtap="onReject">拒绝</button>

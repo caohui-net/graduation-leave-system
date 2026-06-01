@@ -6,7 +6,7 @@
 **项目状态：** Week 0契约已冻结，准备启动Week 1 Day 1  
 **当前阶段：** contract-v0.1.md已冻结为v0.1 Final（可执行契约标准）  
 **创建日期：** 2026-05-27  
-**最后更新：** 2026-05-30
+**最后更新：** 2026-06-01
 
 ## 项目目标
 
@@ -1147,6 +1147,49 @@
 - backend/apps/attachments/urls.py
 - backend/apps/attachments/tests/ (4个测试文件)
 - backend/apps/attachments/migrations/0001_initial.py
+- backend/apps/applications/permissions.py（RBAC helper）
+- docs/api/contract-v0.3.md（Final status）
+
+**状态：**
+- ✅ Phase 4C后端MVP完成
+- ✅ 19个测试100%通过
+- ✅ 契约v0.3 Final
+
+**Phase 4C前端Code-Complete（2026-06-01）：**
+
+**Claude-Codex协作流程（7轮讨论）：**
+1. ✓ P1修复方案审查（字段漂移、错误处理、状态码、文件预检）
+2. ✓ P1实施完成（4步修复：types + WXML + ApiClient + 文件预检）
+3. ✓ P1验证发现P0 bug（上传端点415错误，parser装饰器位置错误）
+4. ✓ P0修复（移动@parser_classes到attachments_view入口点）
+5. ✓ P0验证通过（19/19测试全部通过）
+6. ✓ WXSS样式实现（8个attachment样式类）
+7. ✓ 静态验证通过（WXML绑定 + TS类型 + API调用 + 角色逻辑）
+
+**已完成：**
+- ✓ 前端字段对齐（miniprogram/types/api.ts移除uploaded_by + contract字段收窄）
+- ✓ 错误处理优化（loadAttachments互斥状态 + WXML error/empty/list优先级）
+- ✓ 下载状态码处理（ApiClient.handleUnauthorized统一401 + 403/404分支）
+- ✓ 文件类型预检（扩展名白名单 + 10MB限制 + 兜底逻辑）
+- ✓ 后端P0修复（parser装饰器移至正确位置）
+- ✓ 后端完整验证（19/19测试通过：upload 5 + list 6 + download 4 + delete 4）
+- ✓ WXSS样式（attachment-error/empty/list/item/info/actions + btn-small/upload）
+- ✓ 静态验证（所有绑定、类型、API调用、角色逻辑验证通过）
+
+**产出物：**
+- miniprogram/types/api.ts（Attachment接口字段对齐）
+- miniprogram/pages/detail/detail.ts（错误处理 + 下载状态码 + 文件预检）
+- miniprogram/pages/detail/detail.wxml（互斥状态渲染）
+- miniprogram/pages/detail/detail.wxss（附件UI样式）
+- miniprogram/services/api.ts（handleUnauthorized方法）
+- backend/apps/attachments/views.py（parser装饰器修复）
+- docs/api/contract-v0.3.md（实施状态更新）
+- docs/discussions/phase4c-next-steps/（11-18号讨论文档）
+
+**状态：**
+- ✅ Phase 4C前端code-complete达成
+- ✅ 前后端契约完全对齐
+- ⏳ 等待WeChat DevTools验证（accepted状态）
 - backend/apps/applications/permissions.py (RBAC helper)
 - docs/api/contract-v0.3.md
 - docs/api/contract-v0.3-skeleton.md

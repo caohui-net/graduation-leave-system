@@ -1,5 +1,5 @@
 {
-  "last_updated": "2026-06-01T14:20:00Z",
+  "last_updated": "2026-06-01T14:35:00Z",
   "completed": [
     "Week 3 Closure Gate完成",
     "Phase 4C前端code-complete完成：P1修复 + P0修复 + WXSS + 静态验证",
@@ -8,21 +8,28 @@
     "Track 1完成：CSV导入v1硬化（字段对齐 + dry-run + 事务 + 校验 + 摘要 + 9测试）",
     "Track 2完成：Docker/media/smoke硬化（media volume + .env.example + DEPLOYMENT.md + 附件smoke测试）",
     "M1达成：Backend Ops Hardening Complete",
-    "M2达成：Phase 4C Evidence Ready"
+    "M2达成：Phase 4C Evidence Ready",
+    "Phase 4C证据闭环完成：4个Task（验收清单 + 证据索引 + 演示脚本 + 已知问题清单）",
+    "Claude-Codex证据闭环协作：3轮讨论达成共识（收窄为2小时证据包 + 硬停止）"
   ],
   "pending": [
-    "可选主线3：通知系统最小契约（0.5天，仅在DevTools不可用时）",
-    "Phase 4A: WeChat DevTools验证（外部阻塞，小程序scope冻结直到验证通过）"
+    "WeChat DevTools验证（外部阻塞，小程序验收门控）",
+    "宿舍系统真实集成（外部阻塞，需API文档和测试凭证）",
+    "可选Track 3：通知系统最小契约（需用户授权启动）"
   ],
   "evidence": [
     "Track 1: 9/9单元测试通过（CSV导入成功/失败/重复/dry-run）",
     "Track 2: docker-compose.yml添加media_data volume",
     "Track 2: DEPLOYMENT.md完整部署流程（6步快速启动）",
     "Track 2: smoke_test.sh增强（15步，包含附件上传/下载/删除）",
+    "证据闭环: phase4c-acceptance-checklist.md（91个验证点）",
+    "证据闭环: phase4c-evidence-index.md（测试命令 + 文件路径 + 文档索引）",
+    "证据闭环: phase4c-demo-script.md（13步可执行演示）",
+    "证据闭环: phase4c-known-issues.md（6项DevTools阻塞 + 5项外部系统阻塞 + 10项范围推迟 + 8项已知风险）",
     "Git commits: 2个（Track 1 + Track 2）",
-    "协作日志：event 80（共识达成）"
+    "协作日志：event 80（共识达成）+ event 82（证据闭环共识）"
   ],
-  "next_focus": "两条主线并行执行完成。M1和M2里程碑达成。下一步：等待WeChat DevTools验证或启动可选主线3（通知系统契约）。小程序scope保持冻结。",
+  "next_focus": "Phase 4C证据闭环完成。硬停止，等待外部输入：(1) WeChat DevTools验证结果，(2) 用户授权启动Track 3，(3) 用户提供宿舍系统真实信息，(4) 用户要求进入正式验收/演示准备。",
   "suggested_skills": [],
   "artifacts": {
     "track1_import_csv": "backend/apps/users/management/commands/import_csv.py",
@@ -32,12 +39,19 @@
     "track2_env_example": ".env.example",
     "track2_deployment": "DEPLOYMENT.md",
     "track2_smoke_test": "tests/smoke_test.sh",
+    "evidence_acceptance_checklist": "docs/acceptance/phase4c-acceptance-checklist.md",
+    "evidence_index": "docs/acceptance/phase4c-evidence-index.md",
+    "evidence_demo_script": "docs/acceptance/phase4c-demo-script.md",
+    "evidence_known_issues": "docs/acceptance/phase4c-known-issues.md",
     "codex_strategy_response": "docs/discussions/phase4c-next-steps/20-codex-next-phase-strategy-response.md",
     "claude_consensus": "docs/discussions/phase4c-next-steps/21-claude-consensus-narrowed-strategy.md",
+    "codex_evidence_response": "docs/discussions/phase4c-next-steps/23-codex-post-execution-next-steps-response.md",
+    "claude_evidence_consensus": "docs/discussions/phase4c-next-steps/24-claude-consensus-evidence-closure.md",
     "collaboration_events": ".omc/collaboration/events.jsonl",
     "collaboration_state": ".omc/collaboration/state.json"
   },
   "blocking_issues": [
-    "WeChat DevTools安装（Phase 4A外部依赖，小程序scope冻结门控）"
+    "WeChat DevTools安装（Phase 4A外部依赖，小程序验收门控）",
+    "宿舍管理系统联系人和API文档（生产部署门控）"
   ]
 }

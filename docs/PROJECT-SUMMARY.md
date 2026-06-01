@@ -1386,3 +1386,94 @@
 **下一步：**
 - ⏳ 可选主线3：通知系统最小契约（0.5天，仅在DevTools不可用时）
 - ⏸ Phase 4A: WeChat DevTools验证（外部阻塞，小程序scope冻结直到验证通过）
+
+**Phase 4C验收证据闭环（2026-06-01完成）：**
+
+**背景：**
+- Codex建议：M1/M2已达成，最有价值工作是整理可验收/可复现/可交接证据包
+- 目标：4个Task完成证据闭环，完成后硬停止
+- 时间预算：2小时目标，2.5小时硬停
+
+**Claude-Codex协作流程（3轮）：**
+1. ✓ Claude提出执行后下一步分析（5个选项：A等待DevTools、B Track 3通知、C验收准备、D技术债、E宿舍集成）
+2. ✓ Codex审查收窄为Option A+C（证据闭环2-4小时，Track 3推迟，硬停止）
+3. ✓ Claude完全接受Codex收窄方案（4个Task，2小时目标）
+
+**已完成：**
+
+**Task 1: Phase 4C验收清单（45分钟）**
+- ✓ 创建docs/acceptance/phase4c-acceptance-checklist.md
+- ✓ 7个主要章节
+  1. Backend API功能验收（用户/申请/审批/附件，4模块）
+  2. CSV导入v1验收（dry-run/事务/校验/摘要/测试）
+  3. Docker/media持久化验收（volume/环境变量/部署说明）
+  4. Smoke test验收（15步完整流程）
+  5. Miniprogram静态状态（4页面code-complete）
+  6. WeChat DevTools待验证项（编译/运行/真机）
+  7. 外部依赖阻塞项（DevTools/宿舍系统）
+- ✓ 验收统计：91个验证点通过
+
+**Task 2: 证据索引（30分钟）**
+- ✓ 创建docs/acceptance/phase4c-evidence-index.md
+- ✓ 测试命令索引（后端测试/CSV导入测试/Smoke测试）
+- ✓ 测试通过统计（62个后端测试 + 9个CSV测试）
+- ✓ 文件路径索引（Smoke脚本/CSV导入命令/CSV模板/Docker部署/环境变量/API契约）
+- ✓ 配置文件索引（Backend配置/Frontend配置）
+- ✓ 文档索引（数据对接/系统设计/Claude-Codex讨论记录）
+- ✓ Git提交记录索引
+
+**Task 3: 演示脚本（30分钟）**
+- ✓ 创建docs/acceptance/phase4c-demo-script.md
+- ✓ 13步可执行演示流程
+  1. Docker启动（docker compose up -d）
+  2. 数据库迁移（migrate）
+  3. 加载数据（seed_data）
+  4. 学生登录并提交申请
+  5. 上传附件
+  6. 列出附件
+  7. 下载附件
+  8. 辅导员审批
+  9. 验证状态变更
+  10. 学工部审批
+  11. 验证最终状态
+  12. 错误处理演示 - 跨辅导员审批（403）
+  13. 错误处理演示 - 重复提交（409）
+- ✓ 完整bash脚本（可自动化执行）
+- ✓ 预期输出标注
+
+**Task 4: 已知问题清单（15分钟）**
+- ✓ 创建docs/acceptance/phase4c-known-issues.md
+- ✓ 6个主要章节
+  1. Blocked by WeChat DevTools（6项：编译/运行/真机/上传/网络/路由）
+  2. Blocked by External System（5项：宿舍系统联系人/API文档/测试凭证/状态查询/回调）
+  3. Deferred by Scope（10项：通知系统/小程序页面/RN版本/模板消息/运维监控/Nginx/对象存储/CI/CD）
+  4. Known Residual Risks（8项：并发压测/对象存储/连接池/HTTPS/CORS/日志轮转/数据库备份/监控告警）
+  5. 验证通过但有限制的功能（5项：CSV导入/附件上传/附件存储/审批流程/角色系统）
+  6. 不是问题的"问题"（5项：明文密码/审批不可撤销/附件软删除/单次申请/辅导员权限）
+- ✓ 阻塞项统计：6项DevTools + 5项外部系统 + 10项范围推迟 + 8项已知风险
+
+**产出物：**
+- docs/acceptance/phase4c-acceptance-checklist.md（验收清单）
+- docs/acceptance/phase4c-evidence-index.md（证据索引）
+- docs/acceptance/phase4c-demo-script.md（演示脚本）
+- docs/acceptance/phase4c-known-issues.md（已知问题清单）
+- docs/discussions/phase4c-next-steps/22-claude-post-execution-next-steps.md
+- docs/discussions/phase4c-next-steps/23-codex-post-execution-next-steps-response.md
+- docs/discussions/phase4c-next-steps/24-claude-consensus-evidence-closure.md
+
+**时间统计：**
+- Task 1: 45分钟
+- Task 2: 30分钟
+- Task 3: 30分钟
+- Task 4: 15分钟
+- 总计: 2小时（符合目标）
+
+**状态：**
+- ✅ Phase 4C证据闭环完成
+- ✅ 4个Task全部完成
+- ✅ 验收证据包完整（清单 + 索引 + 演示 + 问题）
+- ⏸ 硬停止，等待外部输入：
+  1. WeChat DevTools验证结果
+  2. 用户授权启动Track 3（通知系统）
+  3. 用户提供宿舍系统真实信息
+  4. 用户要求进入正式验收/演示准备

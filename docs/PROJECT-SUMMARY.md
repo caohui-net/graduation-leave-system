@@ -1003,4 +1003,54 @@
 - ✅ 学生申请页面实现完成
 - ✅ 登录路由矩阵实现完成
 - ✅ 后端验证同步完成
+
+**Phase 4B审查和修复（2026-06-01凌晨）：**
+
+**Codex审查识别5个问题：**
+- P1-1: 后端测试日期硬编码（14测试中7失败）
+- P1-2: 角色保护重复代码（student-application.ts和approvals.ts）
+- P1-3: 时区不一致（前端UTC vs 后端Asia/Shanghai）
+- P2-4: 审批列表UI显示审批人而非申请ID
+- P2-5: onShow未刷新today（跨午夜后picker的start变旧）
+
+**Claude修复方案：**
+- ✓ 8文件修复计划（4后端测试 + 4前端）
+- ✓ 执行顺序：P1优先（后端测试 + 角色保护 + 时区），P2次之（UI + onShow）
+- ✓ 时间估算：65分钟
+
+**Codex审查修复方案：**
+- ✓ 接受所有调整
+- ✓ 3个修正建议：后端测试用timezone.now() + timedelta，前端创建date.ts工具，smoke测试用$(date -d "+1 day")
+
+**修复完成：**
+- ✓ 后端测试动态日期（4个Django测试文件 + 2个smoke脚本）
+  - backend/apps/applications/tests/test_application_flow.py
+  - backend/apps/applications/tests/test_error_cases.py
+  - backend/apps/applications/tests/test_constraints.py
+  - backend/apps/approvals/tests/test_rejection_flow.py
+  - tests/smoke_test.sh
+  - tests/test_p0_fixes.sh
+- ✓ 前端工具函数
+  - miniprogram/utils/role-guard.ts（防止重复跳转的角色保护）
+  - miniprogram/utils/date.ts（Asia/Shanghai时区helper）
+- ✓ 前端页面更新
+  - miniprogram/pages/student-application/student-application.ts（使用role-guard + date工具，onShow刷新today）
+  - miniprogram/pages/approvals/approvals.ts（使用role-guard）
+  - miniprogram/pages/approvals/approvals.wxml（显示申请ID而非审批人）
+
+**验证结果：**
+- ✓ P0测试通过（tests/test_p0_fixes.sh）
+- ✓ Resubmission after rejection works
+- ✓ Approval history filter works
+
+**产出物：**
+- docs/discussions/codex-review-2026-05-27/36-claude-response-phase4b-review.md（修复方案）
+- docs/discussions/codex-review-2026-05-27/37-codex-review-phase4b-fixes.md（Codex审查）
+- docs/discussions/codex-review-2026-05-27/38-final-consensus-phase4b-fixes.md（最终共识）
+
+**状态：**
+- ✅ Phase 4B修复完成（5个问题全部解决）
+- ✅ 后端测试回归通过
+- ✅ 前端角色保护和时区对齐完成
+
 - ⏳ 等待WeChat DevTools验证（外部依赖）

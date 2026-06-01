@@ -1477,3 +1477,48 @@
   2. 用户授权启动Track 3（通知系统）
   3. 用户提供宿舍系统真实信息
   4. 用户要求进入正式验收/演示准备
+
+**Track 3 Phase 0: 通知契约草案（2026-06-01完成）：**
+
+**背景：**
+- 证据闭环完成后，用户要求继续讨论下一步
+- Claude-Codex协作：决策门 + 窄Track 3契约草案（仅文档）
+- 用户选择Option C：通知契约草案
+
+**Claude-Codex协作流程（3轮）：**
+1. ✓ Claude提出5个可选策略（Track 3/生产部署/技术债/Mock增强/前端增强）
+2. ✓ Codex审查收窄为决策门（DevTools验证/宿舍系统信息/通知契约草案）
+3. ✓ Claude完全接受Codex收窄建议（纯文档契约，不改代码）
+
+**已完成：**
+- ✓ 创建通知契约v0.1文档（docs/api/notification-contract-v0.1.md）
+- ✓ 定义5种通知事件类型
+  - APPLICATION_SUBMITTED（申请提交）
+  - APPROVAL_APPROVED（审批通过）
+  - APPROVAL_REJECTED（审批驳回）
+  - DORM_CLEARANCE_BLOCKED（宿舍清退阻断）
+  - APPROVAL_TIMEOUT_WARNING（审批超时提醒）
+- ✓ 设计Notification数据结构（10个字段）
+- ✓ 定义4个API端点
+  - GET /api/notifications/（列表）
+  - GET /api/notifications/unread_count/（未读数）
+  - PATCH /api/notifications/{id}/read/（标记已读）
+  - POST /api/notifications/mark_all_read/（全部已读）
+- ✓ 定义RBAC权限矩阵
+- ✓ 定义幂等性规则
+- ✓ 划分4个实现阶段（Phase 0-3）
+
+**产出物：**
+- docs/api/notification-contract-v0.1.md（通知契约草案）
+- docs/discussions/phase4c-next-steps/25-claude-post-evidence-next-strategy.md
+- docs/discussions/phase4c-next-steps/26-codex-post-evidence-strategy-review.md
+- docs/discussions/phase4c-next-steps/27-claude-consensus-decision-gate.md
+
+**时间统计：**
+- 契约草案创建：2.5小时
+- 符合2-3小时目标
+
+**状态：**
+- ✅ Track 3 Phase 0完成（通知契约草案）
+- ⏸ 硬停止，等待用户授权进入Phase 1实现
+- ⏸ Phase 1需要：Django model + migration + API + 测试（0.5-1天）

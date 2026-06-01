@@ -1,5 +1,5 @@
 {
-  "last_updated": "2026-06-01T14:35:00Z",
+  "last_updated": "2026-06-01T15:00:00Z",
   "completed": [
     "Week 3 Closure Gate完成",
     "Phase 4C前端code-complete完成：P1修复 + P0修复 + WXSS + 静态验证",
@@ -10,12 +10,14 @@
     "M1达成：Backend Ops Hardening Complete",
     "M2达成：Phase 4C Evidence Ready",
     "Phase 4C证据闭环完成：4个Task（验收清单 + 证据索引 + 演示脚本 + 已知问题清单）",
-    "Claude-Codex证据闭环协作：3轮讨论达成共识（收窄为2小时证据包 + 硬停止）"
+    "Claude-Codex证据闭环协作：3轮讨论达成共识（收窄为2小时证据包 + 硬停止）",
+    "证据闭环后策略讨论：Claude-Codex达成共识（决策门 + 窄Track 3契约草案）",
+    "Track 3 Phase 0完成：通知契约草案v0.1（纯文档，不改代码）"
   ],
   "pending": [
+    "Track 3 Phase 1：后端MVP实现（需用户明确授权）",
     "WeChat DevTools验证（外部阻塞，小程序验收门控）",
-    "宿舍系统真实集成（外部阻塞，需API文档和测试凭证）",
-    "可选Track 3：通知系统最小契约（需用户授权启动）"
+    "宿舍系统真实集成（外部阻塞，需API文档和测试凭证）"
   ],
   "evidence": [
     "Track 1: 9/9单元测试通过（CSV导入成功/失败/重复/dry-run）",
@@ -26,10 +28,11 @@
     "证据闭环: phase4c-evidence-index.md（测试命令 + 文件路径 + 文档索引）",
     "证据闭环: phase4c-demo-script.md（13步可执行演示）",
     "证据闭环: phase4c-known-issues.md（6项DevTools阻塞 + 5项外部系统阻塞 + 10项范围推迟 + 8项已知风险）",
-    "Git commits: 2个（Track 1 + Track 2）",
-    "协作日志：event 80（共识达成）+ event 82（证据闭环共识）"
+    "Track 3 Phase 0: notification-contract-v0.1.md（5种事件 + 10字段 + 4 API + RBAC + 幂等规则）",
+    "Git commits: 3个（Track 1 + Track 2 + 证据闭环）",
+    "协作日志：event 84（证据闭环共识）"
   ],
-  "next_focus": "Phase 4C证据闭环完成。硬停止，等待外部输入：(1) WeChat DevTools验证结果，(2) 用户授权启动Track 3，(3) 用户提供宿舍系统真实信息，(4) 用户要求进入正式验收/演示准备。",
+  "next_focus": "Track 3 Phase 0（通知契约草案）完成。硬停止，等待用户授权进入Phase 1实现（Django model + migration + API + 测试，0.5-1天）。或等待DevTools验证、宿舍系统信息。",
   "suggested_skills": [],
   "artifacts": {
     "track1_import_csv": "backend/apps/users/management/commands/import_csv.py",
@@ -43,14 +46,19 @@
     "evidence_index": "docs/acceptance/phase4c-evidence-index.md",
     "evidence_demo_script": "docs/acceptance/phase4c-demo-script.md",
     "evidence_known_issues": "docs/acceptance/phase4c-known-issues.md",
+    "track3_phase0_contract": "docs/api/notification-contract-v0.1.md",
     "codex_strategy_response": "docs/discussions/phase4c-next-steps/20-codex-next-phase-strategy-response.md",
     "claude_consensus": "docs/discussions/phase4c-next-steps/21-claude-consensus-narrowed-strategy.md",
     "codex_evidence_response": "docs/discussions/phase4c-next-steps/23-codex-post-execution-next-steps-response.md",
     "claude_evidence_consensus": "docs/discussions/phase4c-next-steps/24-claude-consensus-evidence-closure.md",
+    "claude_post_evidence_strategy": "docs/discussions/phase4c-next-steps/25-claude-post-evidence-next-strategy.md",
+    "codex_post_evidence_review": "docs/discussions/phase4c-next-steps/26-codex-post-evidence-strategy-review.md",
+    "claude_decision_gate_consensus": "docs/discussions/phase4c-next-steps/27-claude-consensus-decision-gate.md",
     "collaboration_events": ".omc/collaboration/events.jsonl",
     "collaboration_state": ".omc/collaboration/state.json"
   },
   "blocking_issues": [
+    "Track 3 Phase 1需要用户明确授权（Django model + migration + API实现）",
     "WeChat DevTools安装（Phase 4A外部依赖，小程序验收门控）",
     "宿舍管理系统联系人和API文档（生产部署门控）"
   ]

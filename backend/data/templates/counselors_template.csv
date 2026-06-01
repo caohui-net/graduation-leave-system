@@ -1,3 +1,3 @@
-employee_id,name,active,password
-T001,李老师,true,T001
-T002,王老师,true,T002
+employee_id,name,department,is_active,password
+T001,李老师,计算机学院,true,T001
+T002,王老师,软件学院,true,T002

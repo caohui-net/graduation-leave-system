@@ -1,5 +1,5 @@
 {
-  "last_updated": "2026-06-01T02:17:00Z",
+  "last_updated": "2026-06-01T03:27:00Z",
   "completed": [
     "Week 3 Closure Gate完成",
     "Phase 2完成：P0后端修复（resubmission + approval filter + 单元测试）",
@@ -20,11 +20,14 @@
     "登录路由矩阵：student→student-application, counselor/dean→approvals, 未知角色清理",
     "错误处理工具：formatApiError提取到api.ts（支持自定义消息映射）",
     "后端验证同步：reason max_length=500 + trim, leave_date≥today",
-    "后端测试：test_serializer_validation.py（5个单元测试）"
+    "后端测试：test_serializer_validation.py（5个单元测试）",
+    "Codex Phase 4B审查完成：识别5个问题（3 P1 + 2 P2）",
+    "Claude修复方案响应完成：8文件修复计划（4后端 + 4前端）",
+    "Codex审查修复方案完成：接受所有调整，达成共识",
+    "Phase 4B修复完成：后端测试动态日期 + 角色保护 + 时区helper + UI优化（5文件，P0测试通过）"
   ],
   "pending": [
     "Phase 4A: WeChat DevTools验证（外部阻塞，1-3天）",
-    "Phase 4B: 窄小程序MVP剩余工作（如需要）",
     "Phase 4C: 附件MVP（2-4天）",
     "宿舍系统对接调研（并行轨道）"
   ],
@@ -49,9 +52,15 @@
     "登录路由：miniprogram/pages/login/login.ts（角色矩阵）",
     "错误处理：miniprogram/services/api.ts（formatApiError函数）",
     "后端验证：backend/apps/applications/serializers.py（ApplicationCreateSerializer）",
-    "后端测试：backend/apps/applications/tests/test_serializer_validation.py"
+    "后端测试：backend/apps/applications/tests/test_serializer_validation.py",
+    "Codex Phase 4B审查：.omc/artifacts/ask/codex-phase-4b-student-application-*.md（5问题识别）",
+    "后端测试回归：14测试中7失败（日期校验导致）",
+    "Claude修复方案：docs/discussions/codex-review-2026-05-27/36-claude-response-phase4b-review.md",
+    "Codex修复方案共识：docs/discussions/codex-review-2026-05-27/38-final-consensus-phase4b-fixes.md",
+    "Phase 4B修复完成：5文件修改（role-guard.ts + date.ts + student-application.ts + approvals.ts + approvals.wxml）",
+    "P0测试通过：tests/test_p0_fixes.sh（resubmission + approval filter验证）"
   ],
-  "next_focus": "学生申请页面实现完成。等待WeChat DevTools验证（外部依赖）。下一步：DevTools可用后进行Phase 4A验证，或继续Phase 4B其他页面实施。",
+  "next_focus": "Phase 4B完成（角色保护+时区+UI优化）。下一步：Phase 4C附件MVP或继续其他小程序页面（审批详情/历史记录）。外部阻塞：WeChat DevTools验证（Phase 4A）+ 宿舍系统对接。",
   "suggested_skills": [],
   "artifacts": {
     "codex_contract": "docs/contracts/contract-v0.2.md",
@@ -79,7 +88,10 @@
     "login_routing": "miniprogram/pages/login/login.ts",
     "error_handler": "miniprogram/services/api.ts",
     "backend_serializer": "backend/apps/applications/serializers.py",
-    "serializer_tests": "backend/apps/applications/tests/test_serializer_validation.py"
+    "serializer_tests": "backend/apps/applications/tests/test_serializer_validation.py",
+    "role_guard_util": "miniprogram/utils/role-guard.ts",
+    "date_util": "miniprogram/utils/date.ts",
+    "phase4b_fixes_consensus": "docs/discussions/codex-review-2026-05-27/38-final-consensus-phase4b-fixes.md"
   },
   "blocking_issues": [
     "WeChat DevTools安装（Phase 4A外部依赖）",

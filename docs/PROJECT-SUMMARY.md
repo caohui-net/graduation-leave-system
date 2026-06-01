@@ -1784,4 +1784,39 @@
 - ✅ Phase 2A稳定化完成
 - ✅ 通知type枚举值契约一致性修复
 - ✅ API路径级测试覆盖完成
+
+---
+
+### Option E-lite执行（2026-06-01）
+
+**背景：**
+- Phase 2A稳定化完成后，Claude-Codex协作讨论下一步策略
+- 共识执行Option E-lite：Smoke增强 + API文档基线 + 部署文档补漏
+- 执行约束：不承诺完整API schema，不无条件自动重置数据库
+
+**Step 1.0: Smoke可重复运行门禁（已完成）：**
+- ✓ 实现SMOKE_RESET=1环境重置开关
+- ✓ 更新DEPLOYMENT.md说明前置条件和使用方法
+- ✓ 验证可重复运行（连续两次执行不失败）
+
+**Step 1: Smoke增强（已完成）：**
+- ✓ 增强通知验证（验证type、entity_type、message字段）
+- ✓ 添加H2审批驳回场景（验证APPROVAL_REJECTED通知）
+- ✓ 修复attachment文件类型问题（.txt → .pdf）
+- ✓ 修复attachment URL问题（download/delete路径错误）
+- ✓ 所有smoke test通过（H1 Happy Path + H2 Rejection + N2 Negative）
+
+**产出物：**
+- tests/smoke_test.sh（SMOKE_RESET + 通知验证 + H2场景 + attachment修复）
+- DEPLOYMENT.md（smoke前置条件说明）
+
+**测试结果：**
+- H1 Happy Path: ✓ 通过
+- H2 Rejection Path: ✓ 通过
+- N2 Cross-counselor negative test: ✓ 通过
+
+**状态：**
+- ✅ Step 1.0完成
+- ✅ Step 1完成
+- ⏭ 下一步：Step 2（API文档基线）
 - ✅ 负向路径测试覆盖完成

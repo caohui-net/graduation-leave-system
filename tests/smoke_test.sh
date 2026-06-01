@@ -94,10 +94,10 @@ echo "  Counselor approval: $COUNSELOR_APPROVAL_ID"
 
 # 3. Upload attachment
 echo "3. Upload attachment..."
-echo "Test attachment content" > /tmp/test_attachment.txt
+echo "Test attachment content" > /tmp/test_attachment.pdf
 UPLOAD_RESPONSE=$(curl -s -X POST "$BASE_URL/api/applications/$APP_ID/attachments/" \
   -H "Authorization: Bearer $STUDENT_TOKEN" \
-  -F "file=@/tmp/test_attachment.txt" \
+  -F "file=@/tmp/test_attachment.pdf" \
   -F "attachment_type=other")
 
 ATTACHMENT_ID=$(echo "$UPLOAD_RESPONSE" | jq -r '.attachment_id')
@@ -127,7 +127,7 @@ echo "✓ Attachment list success: $ATTACHMENT_COUNT attachment(s)"
 # 5. Download attachment
 echo "5. Download attachment..."
 DOWNLOAD_STATUS=$(curl -s -w "\n%{http_code}" -o /tmp/downloaded_attachment.txt \
-  "$BASE_URL/api/applications/$APP_ID/attachments/$ATTACHMENT_ID/download/" \
+  "$BASE_URL/api/attachments/$ATTACHMENT_ID/download/" \
   -H "Authorization: Bearer $STUDENT_TOKEN" \
   | tail -1)
 
@@ -141,7 +141,7 @@ echo "✓ Attachment download success"
 # 6. Delete attachment
 echo "6. Delete attachment..."
 DELETE_STATUS=$(curl -s -w "\n%{http_code}" -X DELETE \
-  "$BASE_URL/api/applications/$APP_ID/attachments/$ATTACHMENT_ID/" \
+  "$BASE_URL/api/attachments/$ATTACHMENT_ID/" \
   -H "Authorization: Bearer $STUDENT_TOKEN" \
   | tail -1)
 

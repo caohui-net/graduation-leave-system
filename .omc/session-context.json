@@ -1,5 +1,5 @@
 {
-  "last_updated": "2026-06-02T01:05:00Z",
+  "last_updated": "2026-06-02T01:28:00Z",
   "completed": [
     "Week 3 Closure Gate完成",
     "Phase 4C前端code-complete完成：P1修复 + P0修复 + WXSS + 静态验证",
@@ -16,10 +16,13 @@
     "Track 3契约修正完成：5个P1/P2问题修正（分页/幂等键/验收标准/错误结构/测试数据）",
     "Track 3 Phase 1完成：通知系统后端MVP（model + migration + API + 测试 + 验证）",
     "Track 3 Phase 2A完成：自动通知闭环（服务层 + 业务集成 + 6测试 + smoke验证）",
-    "Track 3 Phase 2A稳定化完成：枚举值修复 + API测试补充 + 负向路径测试（12测试通过）"
+    "Track 3 Phase 2A稳定化完成：枚举值修复 + API测试补充 + 负向路径测试（12测试通过）",
+    "Option E-lite Step 1.0完成：Smoke可重复运行门禁（SMOKE_RESET=1 + DEPLOYMENT.md更新）",
+    "Option E-lite Step 1完成：Smoke增强（通知验证 + H2驳回场景 + attachment修复，全部通过）"
   ],
   "pending": [
-    "Track 3 Phase 2A后续：Smoke增强 + API文档基线 + 部署文档补漏（Option E-lite）",
+    "Option E-lite Step 2: API文档基线（drf-spectacular + schema验证 + 待完善清单）",
+    "Option E-lite Step 3: 部署文档补漏（环境变量表 + 故障排查指南）",
     "Track 3 Phase 2B-2C：宿舍阻断通知 + 审批超时提醒（需契约修正/Celery）",
     "Track 3 Phase 3-4：miniprogram通知页 + WeChat templates（推迟到DevTools可用）",
     "WeChat DevTools验证（外部阻塞，小程序验收门控）",
@@ -49,10 +52,18 @@
     "Track 3 Phase 2A稳定化: API路径级测试覆盖（提交/审批通过/审批驳回）",
     "Track 3 Phase 2A稳定化: 负向路径测试覆盖（权限拒绝/状态冲突/宿舍阻断）",
     "Track 3 Phase 2A稳定化: Claude-Codex协作2轮达成共识（稳定化门禁 + Option E-lite）",
+    "Option E-lite Step 1.0: SMOKE_RESET=1环境重置开关实现",
+    "Option E-lite Step 1.0: DEPLOYMENT.md更新smoke前置条件说明",
+    "Option E-lite Step 1.0: smoke可重复运行验证通过（连续两次执行不失败）",
+    "Option E-lite Step 1: smoke增强通知验证（type/entity_type/message字段）",
+    "Option E-lite Step 1: smoke增加H2审批驳回场景（APPROVAL_REJECTED通知）",
+    "Option E-lite Step 1: smoke修复attachment文件类型（.txt → .pdf）",
+    "Option E-lite Step 1: smoke修复attachment URL（download/delete路径）",
+    "Option E-lite Step 1: smoke全部通过（H1 Happy Path + H2 Rejection + N2 Negative）",
     "Git commits: 4个（Track 1 + Track 2 + 证据闭环 + Phase 2A稳定化）",
     "协作日志：event 91（授权门共识）"
   ],
-  "next_focus": "Track 3 Phase 2A稳定化完成（枚举值修复 + API测试 + 负向路径测试，12/12通过）。下一步：Option E-lite（Smoke增强 + API文档基线 + 部署文档补漏）。等待用户指示是否继续执行Option E-lite或调整方向。",
+  "next_focus": "Option E-lite Step 1完成（Smoke可重复运行 + 通知验证 + H2驳回场景 + attachment修复，全部通过）。下一步：Step 2（API文档基线 - drf-spectacular + schema验证 + 待完善清单）。",
   "suggested_skills": [],
   "artifacts": {
     "track1_import_csv": "backend/apps/users/management/commands/import_csv.py",

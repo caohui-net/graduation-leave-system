@@ -67,7 +67,7 @@ class AutoNotificationTest(TestCase):
         self.assertTrue(created)
         self.assertEqual(notification.recipient, self.counselor)
         self.assertEqual(notification.actor, self.student)
-        self.assertEqual(notification.type, 'APPLICATION_SUBMITTED')
+        self.assertEqual(notification.type, 'application_submitted')
         self.assertEqual(notification.entity_type, 'approval')
         self.assertEqual(notification.entity_id, approval.pk)
         self.assertIn('测试学生', notification.message)
@@ -99,7 +99,7 @@ class AutoNotificationTest(TestCase):
         self.assertTrue(created)
         self.assertEqual(notification.recipient, self.student)
         self.assertEqual(notification.actor, self.counselor)
-        self.assertEqual(notification.type, 'APPROVAL_APPROVED')
+        self.assertEqual(notification.type, 'approval_approved')
         self.assertEqual(notification.entity_type, 'approval')
         self.assertEqual(notification.entity_id, approval.pk)
         self.assertIn('辅导员', notification.message)
@@ -130,7 +130,7 @@ class AutoNotificationTest(TestCase):
         self.assertTrue(created)
         self.assertEqual(notification.recipient, self.student)
         self.assertEqual(notification.actor, self.dean)
-        self.assertEqual(notification.type, 'APPROVAL_APPROVED')
+        self.assertEqual(notification.type, 'approval_approved')
         self.assertIn('学工部', notification.message)
 
     def test_approval_rejected_notification(self):
@@ -160,7 +160,7 @@ class AutoNotificationTest(TestCase):
         self.assertTrue(created)
         self.assertEqual(notification.recipient, self.student)
         self.assertEqual(notification.actor, self.counselor)
-        self.assertEqual(notification.type, 'APPROVAL_REJECTED')
+        self.assertEqual(notification.type, 'approval_rejected')
         self.assertIn('驳回', notification.message)
         self.assertIn('材料不齐全', notification.message)
 
@@ -196,7 +196,7 @@ class AutoNotificationTest(TestCase):
             recipient=self.counselor,
             entity_type='approval',
             entity_id=approval.pk,
-            type='APPLICATION_SUBMITTED'
+            type='application_submitted'
         ).count(), 1)
 
     def test_idempotency_approval_decided(self):
@@ -231,5 +231,5 @@ class AutoNotificationTest(TestCase):
             recipient=self.student,
             entity_type='approval',
             entity_id=approval.pk,
-            type='APPROVAL_APPROVED'
+            type='approval_approved'
         ).count(), 1)

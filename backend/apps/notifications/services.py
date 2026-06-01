@@ -6,7 +6,7 @@ when key events occur (application submission, approval decisions).
 """
 
 from django.contrib.auth import get_user_model
-from .models import Notification
+from .models import Notification, NotificationType
 from apps.approvals.models import ApprovalDecision
 
 User = get_user_model()
@@ -30,7 +30,7 @@ def notify_application_submitted(application, approval):
         recipient=approval.approver,
         entity_type='approval',
         entity_id=approval.pk,
-        type='APPLICATION_SUBMITTED',
+        type=NotificationType.APPLICATION_SUBMITTED,
         defaults={
             'actor': application.student,
             'title': title,
@@ -54,11 +54,11 @@ def notify_approval_decided(approval):
     if approval.decision == ApprovalDecision.APPROVED:
         title = "审批通过"
         message = f"您的离校申请已通过{approver_role}审批。"
-        notification_type = 'APPROVAL_APPROVED'
+        notification_type = NotificationType.APPROVAL_APPROVED
     else:  # rejected
         title = "审批驳回"
         message = f"您的离校申请被{approver_role}驳回。驳回原因：{approval.comment}"
-        notification_type = 'APPROVAL_REJECTED'
+        notification_type = NotificationType.APPROVAL_REJECTED
 
     return Notification.objects.get_or_create(
         recipient=approval.application.student,

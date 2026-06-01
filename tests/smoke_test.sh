@@ -28,10 +28,11 @@ echo "✓ Student login success"
 
 # 2. Submit application
 echo "2. Submit application..."
+LEAVE_DATE=$(date -d "+1 day" +%Y-%m-%d)
 APP_RESPONSE=$(curl -s -X POST "$BASE_URL/api/applications/" \
   -H "Authorization: Bearer $STUDENT_TOKEN" \
   -H "Content-Type: application/json" \
-  -d '{"reason":"毕业离校","leave_date":"2024-06-30"}')
+  -d "{\"reason\":\"毕业离校\",\"leave_date\":\"$LEAVE_DATE\"}")
 
 APP_ID=$(echo "$APP_RESPONSE" | jq -r '.application_id')
 APP_STATUS=$(echo "$APP_RESPONSE" | jq -r '.status')
@@ -59,8 +60,80 @@ fi
 
 echo "  Counselor approval: $COUNSELOR_APPROVAL_ID"
 
-# 3. Counselor login
-echo "3. Counselor T001 login..."
+# 3. Upload attachment
+echo "3. Upload attachment..."
+echo "Test attachment content" > /tmp/test_attachment.txt
+UPLOAD_RESPONSE=$(curl -s -X POST "$BASE_URL/api/applications/$APP_ID/attachments/" \
+  -H "Authorization: Bearer $STUDENT_TOKEN" \
+  -F "file=@/tmp/test_attachment.txt" \
+  -F "attachment_type=other")
+
+ATTACHMENT_ID=$(echo "$UPLOAD_RESPONSE" | jq -r '.attachment_id')
+
+if [ -z "$ATTACHMENT_ID" ] || [ "$ATTACHMENT_ID" = "null" ]; then
+  echo "✗ Attachment upload failed"
+  echo "$UPLOAD_RESPONSE" | jq '.'
+  exit 1
+fi
+
+echo "✓ Attachment uploaded: $ATTACHMENT_ID"
+
+# 4. List attachments
+echo "4. List attachments..."
+LIST_RESPONSE=$(curl -s "$BASE_URL/api/applications/$APP_ID/attachments/" \
+  -H "Authorization: Bearer $STUDENT_TOKEN")
+
+ATTACHMENT_COUNT=$(echo "$LIST_RESPONSE" | jq -r '.attachments | length')
+
+if [ "$ATTACHMENT_COUNT" != "1" ]; then
+  echo "✗ Attachment list failed: expected 1, got $ATTACHMENT_COUNT"
+  exit 1
+fi
+
+echo "✓ Attachment list success: $ATTACHMENT_COUNT attachment(s)"
+
+# 5. Download attachment
+echo "5. Download attachment..."
+DOWNLOAD_STATUS=$(curl -s -w "\n%{http_code}" -o /tmp/downloaded_attachment.txt \
+  "$BASE_URL/api/applications/$APP_ID/attachments/$ATTACHMENT_ID/download/" \
+  -H "Authorization: Bearer $STUDENT_TOKEN" \
+  | tail -1)
+
+if [ "$DOWNLOAD_STATUS" != "200" ]; then
+  echo "✗ Attachment download failed: HTTP $DOWNLOAD_STATUS"
+  exit 1
+fi
+
+echo "✓ Attachment download success"
+
+# 6. Delete attachment
+echo "6. Delete attachment..."
+DELETE_STATUS=$(curl -s -w "\n%{http_code}" -X DELETE \
+  "$BASE_URL/api/applications/$APP_ID/attachments/$ATTACHMENT_ID/" \
+  -H "Authorization: Bearer $STUDENT_TOKEN" \
+  | tail -1)
+
+if [ "$DELETE_STATUS" != "204" ]; then
+  echo "✗ Attachment delete failed: HTTP $DELETE_STATUS"
+  exit 1
+fi
+
+echo "✓ Attachment deleted"
+
+# Verify attachment list is empty
+FINAL_LIST=$(curl -s "$BASE_URL/api/applications/$APP_ID/attachments/" \
+  -H "Authorization: Bearer $STUDENT_TOKEN")
+FINAL_COUNT=$(echo "$FINAL_LIST" | jq -r '.attachments | length')
+
+if [ "$FINAL_COUNT" != "0" ]; then
+  echo "✗ Attachment still exists after delete"
+  exit 1
+fi
+
+echo "  Verified: attachment list empty"
+
+# 7. Counselor login
+echo "7. Counselor T001 login..."
 T001_TOKEN=$(curl -s -X POST "$BASE_URL/api/auth/login" \
   -H "Content-Type: application/json" \
   -d '{"user_id":"T001","password":"T001"}' \
@@ -72,8 +145,8 @@ if [ -z "$T001_TOKEN" ] || [ "$T001_TOKEN" = "null" ]; then
 fi
 echo "✓ Counselor login success"
 
-# 4. Counselor approve
-echo "4. Counselor approve..."
+# 8. Counselor approve
+echo "8. Counselor approve..."
 APPROVE_RESPONSE=$(curl -s -X POST "$BASE_URL/api/approvals/$COUNSELOR_APPROVAL_ID/approve/" \
   -H "Authorization: Bearer $T001_TOKEN" \
   -H "Content-Type: application/json" \
@@ -113,8 +186,8 @@ fi
 
 echo "  Dean approval: $DEAN_APPROVAL_ID"
 
-# 5. Dean login
-echo "5. Dean D001 login..."
+# 9. Dean login
+echo "9. Dean D001 login..."
 DEAN_TOKEN=$(curl -s -X POST "$BASE_URL/api/auth/login" \
   -H "Content-Type: application/json" \
   -d '{"user_id":"D001","password":"D001"}' \
@@ -126,8 +199,8 @@ if [ -z "$DEAN_TOKEN" ] || [ "$DEAN_TOKEN" = "null" ]; then
 fi
 echo "✓ Dean login success"
 
-# 6. Dean approve
-echo "6. Dean approve..."
+# 10. Dean approve
+echo "10. Dean approve..."
 DEAN_APPROVE_RESPONSE=$(curl -s -X POST "$BASE_URL/api/approvals/$DEAN_APPROVAL_ID/approve/" \
   -H "Authorization: Bearer $DEAN_TOKEN" \
   -H "Content-Type: application/json" \
@@ -143,8 +216,8 @@ fi
 
 echo "✓ Dean approved"
 
-# 7. Verify final status
-echo "7. Verify final status..."
+# 11. Verify final status
+echo "11. Verify final status..."
 FINAL_STATUS=$(curl -s "$BASE_URL/api/applications/$APP_ID/" \
   -H "Authorization: Bearer $STUDENT_TOKEN" \
   | jq -r '.status')
@@ -160,7 +233,7 @@ echo ""
 echo "--- N2: Cross-counselor approval (negative test) ---"
 
 # N2: T002 tries to approve T001's approval (should fail)
-echo "8. T002 login..."
+echo "12. T002 login..."
 T002_TOKEN=$(curl -s -X POST "$BASE_URL/api/auth/login" \
   -H "Content-Type: application/json" \
   -d '{"user_id":"T002","password":"T002"}' \
@@ -173,7 +246,7 @@ fi
 echo "✓ T002 login success"
 
 # Login as student 2020002 (CS2020-02, counselor T002)
-echo "9. Student 2020002 login..."
+echo "13. Student 2020002 login..."
 STUDENT2_TOKEN=$(curl -s -X POST "$BASE_URL/api/auth/login" \
   -H "Content-Type: application/json" \
   -d '{"user_id":"2020002","password":"2020002"}' \
@@ -186,11 +259,11 @@ fi
 echo "✓ Student 2020002 login success"
 
 # Create application for 2020002 (will be assigned to T002)
-echo "10. Create application for 2020002..."
+echo "14. Create application for 2020002..."
 TEST_APP_RESPONSE=$(curl -s -X POST "$BASE_URL/api/applications/" \
   -H "Authorization: Bearer $STUDENT2_TOKEN" \
   -H "Content-Type: application/json" \
-  -d '{"reason":"测试跨班级审批","leave_date":"2024-06-30"}')
+  -d "{\"reason\":\"测试跨班级审批\",\"leave_date\":\"$LEAVE_DATE\"}")
 
 TEST_APP_ID=$(echo "$TEST_APP_RESPONSE" | jq -r '.application_id')
 TEST_COUNSELOR_APPROVAL=$(echo "$TEST_APP_RESPONSE" | jq -r '.approvals[] | select(.step=="counselor") | .approval_id')
@@ -199,7 +272,7 @@ echo "  Test application: $TEST_APP_ID"
 echo "  Test approval (T002): $TEST_COUNSELOR_APPROVAL"
 
 # T002 tries to approve T001's approval
-echo "10. T002 tries to approve T001's approval (should fail)..."
+echo "15. T002 tries to approve T001's approval (should fail)..."
 CROSS_APPROVE_STATUS=$(curl -s -w "\n%{http_code}" -X POST "$BASE_URL/api/approvals/$COUNSELOR_APPROVAL_ID/approve/" \
   -H "Authorization: Bearer $T002_TOKEN" \
   -H "Content-Type: application/json" \

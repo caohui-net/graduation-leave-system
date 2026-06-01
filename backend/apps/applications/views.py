@@ -11,6 +11,7 @@ from .permissions import can_view_application
 from apps.approvals.models import Approval, ApprovalStep, ApprovalDecision
 from apps.users.models import UserRole
 from apps.users.class_mapping import ClassMapping
+from apps.notifications.services import notify_application_submitted
 import uuid
 
 
@@ -122,7 +123,7 @@ def create_application(request):
         dorm_checkout_status=dorm_status.status
     )
 
-    Approval.objects.create(
+    counselor_approval = Approval.objects.create(
         approval_id=f'apv_{uuid.uuid4().hex[:8]}',
         application=application,
         step=ApprovalStep.COUNSELOR,
@@ -130,6 +131,8 @@ def create_application(request):
         approver_name=class_mapping.counselor_name,
         decision=ApprovalDecision.PENDING
     )
+
+    notify_application_submitted(application, counselor_approval)
 
     return Response(ApplicationSerializer(application).data, status=status.HTTP_201_CREATED)
 

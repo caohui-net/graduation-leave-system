@@ -145,6 +145,19 @@ if [ -z "$T001_TOKEN" ] || [ "$T001_TOKEN" = "null" ]; then
 fi
 echo "✓ Counselor login success"
 
+# Verify counselor received APPLICATION_SUBMITTED notification
+echo "  Verifying counselor notification..."
+COUNSELOR_NOTIF_COUNT=$(curl -s "$BASE_URL/api/notifications/unread_count/" \
+  -H "Authorization: Bearer $T001_TOKEN" \
+  | jq -r '.unread_count')
+
+if [ "$COUNSELOR_NOTIF_COUNT" -lt "1" ]; then
+  echo "✗ Counselor notification not created: expected ≥1, got $COUNSELOR_NOTIF_COUNT"
+  exit 1
+fi
+
+echo "  ✓ Counselor has $COUNSELOR_NOTIF_COUNT unread notification(s)"
+
 # 8. Counselor approve
 echo "8. Counselor approve..."
 APPROVE_RESPONSE=$(curl -s -X POST "$BASE_URL/api/approvals/$COUNSELOR_APPROVAL_ID/approve/" \
@@ -161,6 +174,19 @@ if [ "$APPROVE_DECISION" != "approved" ]; then
 fi
 
 echo "✓ Counselor approved"
+
+# Verify student received APPROVAL_APPROVED notification
+echo "  Verifying student notification..."
+STUDENT_NOTIF_COUNT=$(curl -s "$BASE_URL/api/notifications/unread_count/" \
+  -H "Authorization: Bearer $STUDENT_TOKEN" \
+  | jq -r '.unread_count')
+
+if [ "$STUDENT_NOTIF_COUNT" -lt "1" ]; then
+  echo "✗ Student notification not created: expected ≥1, got $STUDENT_NOTIF_COUNT"
+  exit 1
+fi
+
+echo "  ✓ Student has $STUDENT_NOTIF_COUNT unread notification(s)"
 
 # Verify application status changed
 APP_STATUS_AFTER=$(curl -s "$BASE_URL/api/applications/$APP_ID/" \
@@ -215,6 +241,19 @@ if [ "$DEAN_DECISION" != "approved" ]; then
 fi
 
 echo "✓ Dean approved"
+
+# Verify student received second APPROVAL_APPROVED notification
+echo "  Verifying student notification..."
+STUDENT_NOTIF_COUNT_FINAL=$(curl -s "$BASE_URL/api/notifications/unread_count/" \
+  -H "Authorization: Bearer $STUDENT_TOKEN" \
+  | jq -r '.unread_count')
+
+if [ "$STUDENT_NOTIF_COUNT_FINAL" -lt "2" ]; then
+  echo "✗ Student notification count wrong: expected ≥2, got $STUDENT_NOTIF_COUNT_FINAL"
+  exit 1
+fi
+
+echo "  ✓ Student has $STUDENT_NOTIF_COUNT_FINAL unread notification(s)"
 
 # 11. Verify final status
 echo "11. Verify final status..."

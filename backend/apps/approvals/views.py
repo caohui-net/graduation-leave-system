@@ -7,8 +7,10 @@ from django.db import transaction
 from .models import Approval, ApprovalDecision, ApprovalStep
 from .serializers import ApprovalSerializer, ApprovalActionSerializer, ApprovalListSerializer
 from .pagination import ApprovalLimitOffsetPagination
+from .validators import approval_step_matches_application_status
 from apps.applications.models import Application, ApplicationStatus
 from apps.users.models import UserRole
+from apps.notifications.services import notify_approval_decided
 import uuid
 
 
@@ -88,12 +90,7 @@ def approve_approval(request, approval_id):
         return Response({'error': {'code': 'CONFLICT', 'message': '审批已完成，不能重复操作'}},
                         status=status.HTTP_409_CONFLICT)
 
-    # Validate status/step matching
-    application = approval.application
-    if approval.step == ApprovalStep.COUNSELOR and application.status != ApplicationStatus.PENDING_COUNSELOR:
-        return Response({'error': {'code': 'CONFLICT', 'message': '申请状态与审批步骤不匹配'}},
-                        status=status.HTTP_409_CONFLICT)
-    if approval.step == ApprovalStep.DEAN and application.status != ApplicationStatus.PENDING_DEAN:
+    if not approval_step_matches_application_status(approval):
         return Response({'error': {'code': 'CONFLICT', 'message': '申请状态与审批步骤不匹配'}},
                         status=status.HTTP_409_CONFLICT)
 
@@ -106,6 +103,8 @@ def approve_approval(request, approval_id):
     approval.comment = serializer.validated_data.get('comment', '')
     approval.decided_at = timezone.now()
     approval.save()
+
+    notify_approval_decided(approval)
 
     application = approval.application
     if approval.step == ApprovalStep.COUNSELOR:
@@ -162,12 +161,7 @@ def reject_approval(request, approval_id):
         return Response({'error': {'code': 'CONFLICT', 'message': '审批已完成，不能重复操作'}},
                         status=status.HTTP_409_CONFLICT)
 
-    # Validate status/step matching
-    application = approval.application
-    if approval.step == ApprovalStep.COUNSELOR and application.status != ApplicationStatus.PENDING_COUNSELOR:
-        return Response({'error': {'code': 'CONFLICT', 'message': '申请状态与审批步骤不匹配'}},
-                        status=status.HTTP_409_CONFLICT)
-    if approval.step == ApprovalStep.DEAN and application.status != ApplicationStatus.PENDING_DEAN:
+    if not approval_step_matches_application_status(approval):
         return Response({'error': {'code': 'CONFLICT', 'message': '申请状态与审批步骤不匹配'}},
                         status=status.HTTP_409_CONFLICT)
 
@@ -180,6 +174,8 @@ def reject_approval(request, approval_id):
     approval.comment = serializer.validated_data.get('comment', '')
     approval.decided_at = timezone.now()
     approval.save()
+
+    notify_approval_decided(approval)
 
     application = approval.application
     application.status = ApplicationStatus.REJECTED

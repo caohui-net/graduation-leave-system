@@ -1,5 +1,5 @@
 {
-  "last_updated": "2026-06-02T00:11:00Z",
+  "last_updated": "2026-06-02T00:40:00Z",
   "completed": [
     "Week 3 Closure Gate完成",
     "Phase 4C前端code-complete完成：P1修复 + P0修复 + WXSS + 静态验证",
@@ -14,10 +14,12 @@
     "证据闭环后策略讨论：Claude-Codex达成共识（决策门 + 窄Track 3契约草案）",
     "Track 3 Phase 0完成：通知契约草案v0.1（纯文档，不改代码）",
     "Track 3契约修正完成：5个P1/P2问题修正（分页/幂等键/验收标准/错误结构/测试数据）",
-    "Track 3 Phase 1完成：通知系统后端MVP（model + migration + API + 测试 + 验证）"
+    "Track 3 Phase 1完成：通知系统后端MVP（model + migration + API + 测试 + 验证）",
+    "Track 3 Phase 2A完成：自动通知闭环（服务层 + 业务集成 + 6测试 + smoke验证）"
   ],
   "pending": [
-    "Track 3 Phase 2-4：signals + miniprogram + WeChat templates（范围推迟）",
+    "Track 3 Phase 2B-2C：宿舍阻断通知 + 审批超时提醒（需契约修正/Celery）",
+    "Track 3 Phase 3-4：miniprogram通知页 + WeChat templates（推迟到DevTools可用）",
     "WeChat DevTools验证（外部阻塞，小程序验收门控）",
     "宿舍系统真实集成（外部阻塞，需API文档和测试凭证）"
   ],
@@ -37,10 +39,13 @@
     "Track 3 Phase 1: seed_notifications命令创建成功（4条测试通知）",
     "Track 3 Phase 1: RBAC验证通过（用户只能访问自己的通知）",
     "Track 3 Phase 1: 幂等性验证通过（重复标记已读保持read_at不变）",
+    "Track 3 Phase 2A: 6/6自动通知测试通过（申请提交 + 审批通过 + 审批驳回 + 幂等性）",
+    "Track 3 Phase 2A: smoke_test.sh增加3个通知验证点（辅导员通知 + 学生通知x2）",
+    "Track 3 Phase 2A: Claude-Codex协作3轮达成共识（Option A-lite：3种通知 + 服务层优先）",
     "Git commits: 3个（Track 1 + Track 2 + 证据闭环）",
     "协作日志：event 91（授权门共识）"
   ],
-  "next_focus": "Track 3 Phase 1完成（通知系统后端MVP：model + migration + 4 API + 15测试全部通过）。Phase 2-4推迟（signals、miniprogram、WeChat templates）。等待用户指示下一步工作方向。",
+  "next_focus": "Track 3 Phase 2A完成（自动通知闭环：3种通知类型自动触发 + 幂等性验证 + smoke验证）。Phase 2B-2C推迟（宿舍阻断通知需契约修正，审批超时提醒需Celery）。Phase 3-4推迟（小程序通知页和微信模板消息等待DevTools）。等待用户指示下一步工作方向。",
   "suggested_skills": [],
   "artifacts": {
     "track1_import_csv": "backend/apps/users/management/commands/import_csv.py",
@@ -64,6 +69,10 @@
     "track3_phase1_test_models": "backend/apps/notifications/tests/test_models.py",
     "track3_phase1_test_api": "backend/apps/notifications/tests/test_api.py",
     "track3_phase1_seed": "backend/apps/notifications/management/commands/seed_notifications.py",
+    "track3_phase2a_services": "backend/apps/notifications/services.py",
+    "track3_phase2a_test_auto": "backend/apps/notifications/tests/test_auto_notifications.py",
+    "track3_phase2a_applications_views": "backend/apps/applications/views.py",
+    "track3_phase2a_approvals_views": "backend/apps/approvals/views.py",
     "codex_strategy_response": "docs/discussions/phase4c-next-steps/20-codex-next-phase-strategy-response.md",
     "claude_consensus": "docs/discussions/phase4c-next-steps/21-claude-consensus-narrowed-strategy.md",
     "codex_evidence_response": "docs/discussions/phase4c-next-steps/23-codex-post-execution-next-steps-response.md",
@@ -77,6 +86,9 @@
     "claude_authorization_request": "docs/discussions/phase4c-next-steps/34-claude-authorization-interpretation-request.md",
     "codex_authorization_response": "docs/discussions/phase4c-next-steps/35-codex-authorization-interpretation-response.md",
     "claude_authorization_consensus": "docs/discussions/phase4c-next-steps/36-claude-consensus-minimal-confirmation.md",
+    "claude_phase2_strategy": "docs/discussions/phase4c-next-steps/37-claude-post-phase1-next-strategy.md",
+    "codex_phase2_review": "docs/discussions/phase4c-next-steps/38-codex-post-phase1-next-strategy-response.md",
+    "claude_phase2a_consensus": "docs/discussions/phase4c-next-steps/39-claude-consensus-option-a-lite.md",
     "collaboration_events": ".omc/collaboration/events.jsonl",
     "collaboration_state": ".omc/collaboration/state.json"
   },

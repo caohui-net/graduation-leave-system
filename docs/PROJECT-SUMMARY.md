@@ -1661,3 +1661,84 @@
 - ✅ 4个API端点验证通过
 - ⏳ Phase 1D文档更新进行中（PROJECT-SUMMARY.md、session-context.json）
 - ⏸ Phase 2-4推迟（signals、miniprogram、WeChat templates）
+
+**Track 3: 通知系统Phase 2A - 自动通知闭环（2026-06-01完成）：**
+
+**背景：**
+- Phase 1完成通知系统后端MVP（模型 + API）
+- Phase 2A目标：实现3种自动通知触发（申请提交、审批通过、审批驳回）
+- 范围收窄：排除宿舍阻断通知（架构约束）和审批超时提醒（需Celery）
+
+**Claude-Codex协作流程（3轮讨论）：**
+1. ✓ Claude提出Option A策略（4种通知类型 + signals实现）
+2. ✓ Codex审查识别架构约束（DORM_CLEARANCE_BLOCKED无法实现，失败在Application.objects.create()之前）
+3. ✓ Claude完全接受Option A-lite修正（3种通知 + 服务层优先）
+
+**已完成：**
+
+**Step 1: 通知服务层（45分钟）**
+- ✓ 创建backend/apps/notifications/services.py
+- ✓ 实现notify_application_submitted(application, approval)
+- ✓ 实现notify_approval_decided(approval)
+- ✓ 幂等封装：使用get_or_create避免IntegrityError
+- ✓ 导入ApprovalDecision枚举
+- ✓ 修正字段名：approval.pk（不是.id）、approval.decision（不是.status）
+
+**Step 2: 业务集成（30分钟）**
+- ✓ backend/apps/applications/views.py:create_application
+  - 导入notify_application_submitted
+  - 申请创建后调用通知服务（辅导员收到APPLICATION_SUBMITTED通知）
+- ✓ backend/apps/approvals/views.py:approve_approval
+  - 导入notify_approval_decided
+  - 审批通过后调用通知服务（学生收到APPROVAL_APPROVED通知）
+- ✓ backend/apps/approvals/views.py:reject_approval
+  - 审批驳回后调用通知服务（学生收到APPROVAL_REJECTED通知）
+
+**Step 3: 自动通知测试（45分钟）**
+- ✓ 创建backend/apps/notifications/tests/test_auto_notifications.py
+- ✓ 6个测试用例：
+  - test_application_submitted_notification（申请提交通知创建）
+  - test_approval_approved_notification_counselor（辅导员审批通过通知）
+  - test_approval_approved_notification_dean（学工部审批通过通知）
+  - test_approval_rejected_notification（审批驳回通知）
+  - test_idempotency_application_submitted（幂等性：申请提交）
+  - test_idempotency_approval_decided（幂等性：审批决策）
+- ✓ 修正测试断言：使用.pk代替.id
+- ✓ 所有6个测试通过
+
+**Step 4: Smoke验证（15分钟）**
+- ✓ 更新tests/smoke_test.sh
+- ✓ 添加3个通知验证点：
+  - 辅导员登录后验证收到APPLICATION_SUBMITTED通知
+  - 辅导员审批后验证学生收到APPROVAL_APPROVED通知
+  - 学工部审批后验证学生收到第二条APPROVAL_APPROVED通知
+
+**产出物：**
+- backend/apps/notifications/services.py（通知服务层）
+- backend/apps/applications/views.py（集成notify_application_submitted）
+- backend/apps/approvals/views.py（集成notify_approval_decided）
+- backend/apps/notifications/tests/test_auto_notifications.py（6个测试）
+- tests/smoke_test.sh（3个通知验证点）
+- docs/discussions/phase4c-next-steps/37-claude-post-phase1-next-strategy.md
+- docs/discussions/phase4c-next-steps/38-codex-post-phase1-next-strategy-response.md
+- docs/discussions/phase4c-next-steps/39-claude-consensus-option-a-lite.md
+
+**测试统计：**
+- 自动通知测试：6/6通过
+- 总计：6/6通过
+
+**时间统计：**
+- Step 1（服务层）：~45分钟
+- Step 2（业务集成）：~30分钟
+- Step 3（测试）：~45分钟
+- Step 4（Smoke验证）：~15分钟
+- 总计：~2-2.5小时（符合预期）
+
+**状态：**
+- ✅ Track 3 Phase 2A完成（自动通知闭环）
+- ✅ 3种通知类型自动触发验证通过
+- ✅ 幂等性验证通过
+- ⏸ Phase 2B推迟（宿舍阻断通知，需契约修正）
+- ⏸ Phase 2C推迟（审批超时提醒，需Celery）
+- ⏸ Phase 3推迟（小程序通知页，等待DevTools）
+- ⏸ Phase 4推迟（微信模板消息，生产部署阶段）

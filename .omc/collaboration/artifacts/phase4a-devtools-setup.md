@@ -177,8 +177,8 @@ curl http://localhost:8001/api/health/
    - If not, click "重新编译" (Recompile)
 
 3. **Enter Test Credentials:**
-   - User ID: `2020006`
-   - Password: `password`
+   - User ID: `T001`
+   - Password: `T001`
 
 4. **Click Login Button**
 
@@ -191,6 +191,9 @@ curl http://localhost:8001/api/health/
 6. **Verify Redirect:**
    - Should redirect to `/pages/approvals/approvals`
    - Check console for navigation logs
+   - Approval list should load for counselor role
+
+**Student note:** `2020006/2020006` is a valid seed account, but student login currently redirects to `/pages/approvals/approvals` and receives 403 because the student home/application page is a Phase 4B gap. Use the Phase 4A validation checklist for that known-failure evidence, not as the setup smoke test.
 
 ---
 

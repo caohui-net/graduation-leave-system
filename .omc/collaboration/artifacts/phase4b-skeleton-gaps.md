@@ -32,12 +32,13 @@
 | Service | Path | Status | Purpose |
 |---------|------|--------|---------|
 | API Client | `services/api.ts` | ✅ Exists (2.9K) | HTTP request wrapper with auth |
-| Auth Service | Inline in pages | ⚠️ Risky | Token storage/retrieval |
+| Auth Service | Config duplicated in pages | ⚠️ Risky | Token storage/retrieval and 401 handling |
 
 **Current implementation:**
 - Shared API client exists at `services/api.ts`
 - Pages import and use shared API client
-- Auth logic may still be duplicated across pages (needs verification)
+- Token injection and 401 callback are configured through `ApiClient`
+- Each page still instantiates `ApiClient` with duplicated `baseUrl`, `getToken`, and `onUnauthorized` config
 
 ---
 
@@ -46,14 +47,14 @@
 | Type | Path | Status | Purpose |
 |------|------|--------|---------|
 | API Types | `types/api.ts` | ✅ Exists (2.0K) | Shared type definitions for API |
-| User | Inline or in types | ⚠️ Needs verification | User model (id, name, role) |
-| Approval | Inline or in types | ⚠️ Needs verification | Approval model |
-| Application | Not defined | ❌ Missing | Student application model |
+| User | `types/api.ts` | ✅ Exists | User model (`user_id`, `name`, `role`, `class_id`) |
+| Approval | `types/api.ts` | ✅ Exists | Approval detail/list/action models |
+| Application | `types/api.ts` | ✅ Exists | Application model and create request |
 
 **Current implementation:**
 - Shared type definitions exist at `types/api.ts`
-- Need to verify if User/Approval/Application types are defined there or inline in pages
-- Risk of type inconsistency if some types still inline
+- `User`, `Application`, `ApplicationDetail`, `ApprovalDetail`, `ApprovalListItem`, and action request/response types are defined there
+- Current residual risk is not missing types; it is whether future Phase 4B page work continues to import these shared types instead of reintroducing inline shapes
 
 ---
 
@@ -65,12 +66,12 @@
 
 **Required components:**
 - Page files: `student-application.wxml`, `student-application.wxss`, `student-application.ts`, `student-application.json`
-- Form fields: reason, start_date, end_date, destination
+- Form fields: reason, leave_date (按当前API契约v0.2)
 - Submit button with API call to `POST /api/applications/`
 - Success/error handling
 - Navigation back to home or status page
 
-**Blocked by:** DevTools validation of form behavior and API integration
+**Implementation status:** Ready to implement (blocker removed)
 
 ---
 
@@ -90,40 +91,37 @@
 
 ---
 
-### 3. Shared API Client Verification
+### 3. Shared API Client Centralization
 
-**Status:** ⚠️ Needs verification
+**Status:** ⚠️ Partially verified
 
 **Current state:**
-- `services/api.ts` exists (2.9K)
-- Need to verify if pages actually import and use it
-- Need to verify if baseUrl is centralized or still duplicated
+- `services/api.ts` exists and is imported by login, approvals, and detail pages
+- `baseUrl`, `getToken`, and `onUnauthorized` are still duplicated in each page's `new ApiClient(...)` config
 
-**Action:** During Phase 4A validation, check if pages import from `services/api.ts` or have inline API code
+**Action:** Centralize the default API client/config during Phase 4B if DevTools validation does not reveal a base URL requirement that changes the design.
 
 ---
 
-### 4. Shared Type Definitions Verification
+### 4. Shared Type Definition Discipline
 
-**Status:** ⚠️ Needs verification
+**Status:** ✅ Existing, enforce during Phase 4B
 
 **Required:**
-- `types/user.ts`: User interface
-- `types/approval.ts`: Approval interface
-- `types/application.ts`: Application interface
-- `types/api.ts`: API response interfaces
+- Reuse `types/api.ts` for user, approval, application, pagination, and error types
+- Avoid adding inline response types in new student pages unless the API contract introduces a genuinely new shape
 
-**Blocked by:** None (can implement anytime, but low priority until pages stabilize)
+**Blocked by:** None. This is an implementation discipline item for future page work.
 
 ---
 
 ## Risky Areas
 
-### 1. Hardcoded Base URL (Needs Verification)
+### 1. Hardcoded Base URL (Runtime Behavior Needs Verification)
 
-**Location:** Possibly in page files or centralized in `services/api.ts`
+**Location:** Page-level `new ApiClient(...)` config in login, approvals, and detail pages
 
-**Status:** `services/api.ts` exists (2.9K) - need to verify if pages use it or have inline baseUrl
+**Status:** `services/api.ts` exists and is used, but `http://localhost:8001` is duplicated in page configs
 
 **Potential risk if not centralized:**
 - Duplicated across multiple files
@@ -131,7 +129,6 @@
 - May not work in DevTools (network policy unknown)
 
 **Validation needed during Phase 4A:**
-- Check if pages import from `services/api.ts` or have inline baseUrl
 - Test if `http://localhost:8001` works in DevTools simulator
 - Test if it works on real device preview
 - Determine what base URL is needed for production
@@ -140,11 +137,11 @@
 
 ---
 
-### 2. Duplicated Auth Logic (Needs Verification)
+### 2. Duplicated Auth Config
 
-**Location:** Possibly in page files or centralized in `services/api.ts`
+**Location:** Page-level `new ApiClient(...)` config in login, approvals, and detail pages
 
-**Status:** `services/api.ts` exists (2.9K) - need to verify if it handles auth or if pages have inline auth code
+**Status:** Token injection and 401 behavior are implemented through `ApiClient`, but each page repeats the same `getToken` and `onUnauthorized` callback
 
 **Potential risk if not centralized:**
 - Auth logic duplicated across pages
@@ -152,12 +149,11 @@
 - Hard to maintain (change in one place requires updating all pages)
 
 **Validation needed during Phase 4A:**
-- Check if `services/api.ts` handles token injection and 401 errors
-- Check if pages have inline auth code or use shared service
 - Verify token storage/retrieval is centralized
+- Verify `wx.reLaunch` on 401 behaves correctly in DevTools
 
 **Recommendation if duplicated:**
-- Extract to shared auth service after DevTools validation
+- Extract default API client/auth config after DevTools validation
 - Centralize token management
 - Centralize 401 handling
 
@@ -232,7 +228,8 @@
 
 | Item | Reason | Risk |
 |------|--------|------|
-| Shared type definitions | No runtime dependency | Low |
+| Enforce shared type imports in new pages | Existing `types/api.ts` already covers current API shapes | Low |
+| Centralized API client config | Pure refactor, but should preserve any DevTools-discovered base URL requirement | Low |
 | Documentation | No code changes | None |
 | Test data preparation | No code changes | None |
 
@@ -246,11 +243,11 @@
 
 1. **High Priority:**
    - Implement student-application page
-   - Extract shared API client
+   - Centralize API client configuration
    - Fix hardcoded baseUrl (use config or environment)
 
 2. **Medium Priority:**
-   - Extract shared type definitions
+   - Reuse shared type definitions in new pages
    - Improve error handling UX
    - Add loading states
 

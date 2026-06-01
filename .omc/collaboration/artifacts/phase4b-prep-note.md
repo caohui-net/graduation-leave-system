@@ -37,10 +37,13 @@
 ```typescript
 const apiClient = new ApiClient({
   baseUrl: 'http://localhost:8001',
+  getToken: () => app.globalData.token,
   onUnauthorized: () => {
     wx.removeStorageSync('token');
-    wx.removeStorageSync('user');
-    wx.redirectTo({ url: '/pages/login/login' });
+    wx.removeStorageSync('userInfo');
+    app.globalData.token = '';
+    app.globalData.userInfo = null;
+    wx.reLaunch({ url: '/pages/login/login' });
   }
 });
 ```
@@ -63,22 +66,29 @@ const apiClient = new ApiClient({
 
 ### A. Centralize API Client Configuration
 
-**Current state:** Each page duplicates baseUrl and onUnauthorized config.
+**Current state:** Each page duplicates `baseUrl`, `getToken`, and `onUnauthorized` config.
 
 **Optimization:**
 ```typescript
-// services/api.ts - add default config
-export const defaultApiClient = new ApiClient({
-  baseUrl: 'http://localhost:8001',
-  onUnauthorized: () => {
-    wx.removeStorageSync('token');
-    wx.removeStorageSync('user');
-    wx.redirectTo({ url: '/pages/login/login' });
-  }
-});
+// services/api.ts - add default client factory/config
+export function createDefaultApiClient() {
+  const app = getApp<IAppOption>();
+  return new ApiClient({
+    baseUrl: 'http://localhost:8001',
+    getToken: () => app.globalData.token,
+    onUnauthorized: () => {
+      wx.removeStorageSync('token');
+      wx.removeStorageSync('userInfo');
+      app.globalData.token = '';
+      app.globalData.userInfo = null;
+      wx.reLaunch({ url: '/pages/login/login' });
+    }
+  });
+}
 
 // pages/*.ts - use default
-import { defaultApiClient } from '../../services/api';
+import { createDefaultApiClient } from '../../services/api';
+const apiClient = createDefaultApiClient();
 ```
 
 **Benefit:** Single source of truth for baseUrl and auth handling. Easier to update for production.

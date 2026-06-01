@@ -1054,3 +1054,49 @@
 - ✅ 前端角色保护和时区对齐完成
 
 - ⏳ 等待WeChat DevTools验证（外部依赖）
+
+**后端测试覆盖增强（2026-06-01）：**
+
+**Claude-Codex测试方案讨论：**
+- ✓ Claude创建初步测试覆盖分析（识别3个高优先级gap）
+- ✓ Codex第一轮审查发现4个问题（重复测试、产品规则冲突、状态机范围过大、时区范围过广）
+- ✓ Claude响应并修订方案（接受3个批评，澄清状态机测试范围）
+- ✓ Codex第二轮审查接受修订方案并提供具体缩减建议
+- ✓ 达成最终共识：gap-filling优先，不创建大而全的测试矩阵
+
+**最终共识：**
+1. ✓ Detail endpoint isolation: 3个测试（学生/辅导员/学工部权限隔离）
+2. ✓ Approval list leak: 1个测试（decision=all不泄漏跨审批人数据）
+3. ✓ State machine gaps: 已被现有测试覆盖（resubmission, terminal protection）
+4. ✓ Timezone boundaries: 2个测试（午夜边界验证，合并到现有文件）
+
+**实施完成：**
+- ✓ 新增test_detail_permissions.py（3个测试）
+  - test_student_cannot_access_other_student_application
+  - test_counselor_cannot_access_cross_class_application
+  - test_dean_cannot_access_non_assigned_application
+- ✓ 扩展test_list_permissions.py（1个测试）
+  - test_decision_all_does_not_leak_cross_approver_data
+- ✓ 扩展test_serializer_validation.py（2个测试）
+  - test_leave_date_validation_at_midnight_boundary
+  - test_leave_date_validation_after_midnight
+
+**验证结果：**
+- ✓ 所有48个测试通过（42个现有 + 6个新增）
+- ✓ 无回归
+- ✓ 测试覆盖关键安全和边界场景
+
+**产出物：**
+- .omc/collaboration/artifacts/test-coverage-analysis.md（初步分析）
+- .omc/collaboration/artifacts/test-coverage-claude-response.md（Claude修订方案）
+- .omc/collaboration/artifacts/20260601-0405-codex-test-coverage-feedback.md（Codex详细反馈）
+- .omc/collaboration/artifacts/test-coverage-final-consensus.md（最终共识）
+
+**时间统计：**
+- 实际时间：约5小时（0.6天）
+- 与估算一致（0.6-0.7天）
+
+**状态：**
+- ✅ 后端测试覆盖增强完成
+- ✅ 所有测试通过
+- ✅ 已提交并推送到远程仓库

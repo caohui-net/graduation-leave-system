@@ -95,7 +95,7 @@ Identify and document requirements for integrating with real dormitory managemen
 
 ## Current Mock Provider
 
-**Location:** `backend/apps/applications/dorm_provider.py`
+**Location:** `backend/apps/applications/providers.py`
 
 **Interface:**
 ```python

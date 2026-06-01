@@ -1,5 +1,5 @@
 {
-  "last_updated": "2026-06-01T03:27:00Z",
+  "last_updated": "2026-06-01T04:13:00Z",
   "completed": [
     "Week 3 Closure Gate完成",
     "Phase 2完成：P0后端修复（resubmission + approval filter + 单元测试）",
@@ -24,11 +24,16 @@
     "Codex Phase 4B审查完成：识别5个问题（3 P1 + 2 P2）",
     "Claude修复方案响应完成：8文件修复计划（4后端 + 4前端）",
     "Codex审查修复方案完成：接受所有调整，达成共识",
-    "Phase 4B修复完成：后端测试动态日期 + 角色保护 + 时区helper + UI优化（5文件，P0测试通过）"
+    "Phase 4B修复完成：后端测试动态日期 + 角色保护 + 时区helper + UI优化（5文件，P0测试通过）",
+    "后端测试覆盖增强完成：Claude-Codex协商达成共识（gap-filling优先）",
+    "测试覆盖方案：3轮讨论（初步分析 → Codex批评 → Claude修订 → Codex接受）",
+    "新增6个测试：3个detail权限 + 1个approval list leak + 2个timezone边界",
+    "所有48个测试通过（42现有 + 6新增），无回归"
   ],
   "pending": [
     "Phase 4A: WeChat DevTools验证（外部阻塞，1-3天）",
     "Phase 4C: 附件MVP（2-4天）",
+    "其他小程序页面：detail页面改进、历史记录页面等",
     "宿舍系统对接调研（并行轨道）"
   ],
   "evidence": [
@@ -58,9 +63,16 @@
     "Claude修复方案：docs/discussions/codex-review-2026-05-27/36-claude-response-phase4b-review.md",
     "Codex修复方案共识：docs/discussions/codex-review-2026-05-27/38-final-consensus-phase4b-fixes.md",
     "Phase 4B修复完成：5文件修改（role-guard.ts + date.ts + student-application.ts + approvals.ts + approvals.wxml）",
-    "P0测试通过：tests/test_p0_fixes.sh（resubmission + approval filter验证）"
+    "P0测试通过：tests/test_p0_fixes.sh（resubmission + approval filter验证）",
+    "测试覆盖初步分析：.omc/collaboration/artifacts/test-coverage-analysis.md",
+    "Codex第一轮批评：.omc/artifacts/ask/codex-omc-collaboration-artifacts-test-coverage-analysis-md-gap-1--2026-06-01T03-36-40-648Z.md",
+    "Claude修订方案：.omc/collaboration/artifacts/test-coverage-claude-response.md",
+    "Codex第二轮反馈：.omc/collaboration/artifacts/20260601-0405-codex-test-coverage-feedback.md",
+    "测试覆盖最终共识：.omc/collaboration/artifacts/test-coverage-final-consensus.md",
+    "新增测试文件：test_detail_permissions.py（3测试）+ test_list_permissions.py扩展（1测试）+ test_serializer_validation.py扩展（2测试）",
+    "全部测试通过：48 tests OK（42现有 + 6新增），无回归"
   ],
-  "next_focus": "Phase 4B完成（角色保护+时区+UI优化）。下一步：Phase 4C附件MVP或继续其他小程序页面（审批详情/历史记录）。外部阻塞：WeChat DevTools验证（Phase 4A）+ 宿舍系统对接。",
+  "next_focus": "后端测试覆盖增强完成。下一步选项：A) Phase 4C附件MVP（2-4天，后端优先）B) 继续小程序页面（detail改进/history）C) 其他优化。外部阻塞：WeChat DevTools验证（Phase 4A）+ 宿舍系统对接。建议：按Codex原建议，Phase 4C后端部分 + 加强后端测试已完成，可考虑Phase 4C前端或其他工作。",
   "suggested_skills": [],
   "artifacts": {
     "codex_contract": "docs/contracts/contract-v0.2.md",
@@ -91,7 +103,13 @@
     "serializer_tests": "backend/apps/applications/tests/test_serializer_validation.py",
     "role_guard_util": "miniprogram/utils/role-guard.ts",
     "date_util": "miniprogram/utils/date.ts",
-    "phase4b_fixes_consensus": "docs/discussions/codex-review-2026-05-27/38-final-consensus-phase4b-fixes.md"
+    "phase4b_fixes_consensus": "docs/discussions/codex-review-2026-05-27/38-final-consensus-phase4b-fixes.md",
+    "test_coverage_analysis": ".omc/collaboration/artifacts/test-coverage-analysis.md",
+    "test_coverage_claude_response": ".omc/collaboration/artifacts/test-coverage-claude-response.md",
+    "test_coverage_codex_feedback": ".omc/collaboration/artifacts/20260601-0405-codex-test-coverage-feedback.md",
+    "test_coverage_final_consensus": ".omc/collaboration/artifacts/test-coverage-final-consensus.md",
+    "detail_permissions_tests": "backend/apps/applications/tests/test_detail_permissions.py",
+    "approval_list_permissions_tests": "backend/apps/approvals/tests/test_list_permissions.py"
   },
   "blocking_issues": [
     "WeChat DevTools安装（Phase 4A外部依赖）",

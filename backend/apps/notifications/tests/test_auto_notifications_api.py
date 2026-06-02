@@ -34,21 +34,28 @@ class AutoNotificationAPITest(TestCase):
             name='张老师',
             role='counselor'
         )
+        self.dorm_manager = User.objects.create_user(
+            user_id='M001',
+            name='宿管员',
+            role='dorm_manager'
+        )
         self.dean = User.objects.create_user(
             user_id='D001',
-            name='赵主任',
+            name='学工部',
             role='dean'
         )
 
         ClassMapping.objects.create(
             class_id='CS2021-1',
+            dorm_manager=self.dorm_manager,
+            dorm_manager_name=self.dorm_manager.name,
             counselor=self.counselor,
             counselor_name=self.counselor.name,
             active=True
         )
 
     def test_application_submitted_notification_visible_via_api(self):
-        """Test counselor can see APPLICATION_SUBMITTED notification via API after student submits."""
+        """Test dorm manager can see APPLICATION_SUBMITTED notification via API after student submits."""
         # Student submits application (triggers notification)
         self.client.force_authenticate(user=self.student)
         response = self.client.post('/api/applications/', {
@@ -57,8 +64,8 @@ class AutoNotificationAPITest(TestCase):
         })
         self.assertEqual(response.status_code, 201)
 
-        # Counselor checks notifications via API
-        self.client.force_authenticate(user=self.counselor)
+        # Dorm manager checks notifications via API
+        self.client.force_authenticate(user=self.dorm_manager)
         response = self.client.get('/api/notifications/')
         self.assertEqual(response.status_code, 200)
 
@@ -200,7 +207,7 @@ class AutoNotificationAPITest(TestCase):
             class_id=self.student.class_id,
             reason='毕业离校',
             leave_date='2026-07-01',
-            status=ApplicationStatus.PENDING_DEAN  # Already past counselor
+            status=ApplicationStatus.APPROVED
         )
 
         approval = Approval.objects.create(
@@ -252,6 +259,6 @@ class AutoNotificationAPITest(TestCase):
 
         # Verify no notification was created for counselor
         self.assertEqual(Notification.objects.filter(
-            recipient=self.counselor,
+            recipient=self.dorm_manager,
             type='application_submitted'
         ).count(), 0)

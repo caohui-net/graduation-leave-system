@@ -1,10 +1,12 @@
 from django.test import TestCase
 from rest_framework.test import APIClient
 from rest_framework import status
+from django.utils import timezone
+from datetime import timedelta
 from apps.users.models import User, UserRole
 from apps.users.class_mapping import ClassMapping
 from apps.applications.models import Application, ApplicationStatus
-from apps.approvals.models import Approval, ApprovalDecision
+from apps.approvals.models import ApprovalDecision, ApprovalStep
 
 
 class ApplicationFlowTestCase(TestCase):
@@ -29,6 +31,13 @@ class ApplicationFlowTestCase(TestCase):
             role=UserRole.COUNSELOR
         )
 
+        self.dorm_manager = User.objects.create_user(
+            user_id='M001',
+            password='M001',
+            name='宿管员',
+            role=UserRole.DORM_MANAGER
+        )
+
         self.dean = User.objects.create_user(
             user_id='D001',
             password='D001',
@@ -39,13 +48,15 @@ class ApplicationFlowTestCase(TestCase):
         # Create class mapping
         ClassMapping.objects.create(
             class_id='CS2020-01',
+            dorm_manager=self.dorm_manager,
+            dorm_manager_name='宿管员',
             counselor=self.counselor,
             counselor_name='李老师',
             active=True
         )
 
     def test_complete_application_flow(self):
-        """测试完整的申请流程：登录→提交→辅导员审批→学工部审批→查询"""
+        """测试完整的申请流程：登录→提交→宿管员审批→辅导员审批→学工部归档查询"""
 
         # Step 1: 学生登录
         response = self.client.post('/api/auth/login', {
@@ -59,22 +70,42 @@ class ApplicationFlowTestCase(TestCase):
         self.client.credentials(HTTP_AUTHORIZATION=f'Bearer {student_token}')
         response = self.client.post('/api/applications/', {
             'reason': '毕业离校',
-            'leave_date': '2024-06-30'
+            'leave_date': (timezone.now().date() + timedelta(days=1)).isoformat()
         }, format='json')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        self.assertEqual(response.data['status'], ApplicationStatus.PENDING_COUNSELOR)
+        self.assertEqual(response.data['status'], ApplicationStatus.PENDING_DORM_MANAGER)
         application_id = response.data['application_id']
 
-        # Step 3: 辅导员登录
+        # Step 3: 宿管员登录
+        response = self.client.post('/api/auth/login', {
+            'user_id': 'M001',
+            'password': 'M001'
+        }, format='json')
+        dorm_manager_token = response.data['access_token']
+
+        # Step 4: 宿管员审批通过
+        application = Application.objects.get(application_id=application_id)
+        dorm_manager_approval = application.approvals.get(step=ApprovalStep.DORM_MANAGER)
+
+        self.client.credentials(HTTP_AUTHORIZATION=f'Bearer {dorm_manager_token}')
+        response = self.client.post(f'/api/approvals/{dorm_manager_approval.approval_id}/approve/', {
+            'comment': '宿舍清退通过'
+        }, format='json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data['decision'], ApprovalDecision.APPROVED)
+
+        application.refresh_from_db()
+        self.assertEqual(application.status, ApplicationStatus.PENDING_COUNSELOR)
+
+        # Step 5: 辅导员登录
         response = self.client.post('/api/auth/login', {
             'user_id': 'T001',
             'password': 'T001'
         }, format='json')
         counselor_token = response.data['access_token']
 
-        # Step 4: 辅导员审批通过
-        application = Application.objects.get(application_id=application_id)
-        counselor_approval = application.approvals.filter(step='counselor').first()
+        # Step 6: 辅导员审批通过
+        counselor_approval = application.approvals.get(step=ApprovalStep.COUNSELOR)
 
         self.client.credentials(HTTP_AUTHORIZATION=f'Bearer {counselor_token}')
         response = self.client.post(f'/api/approvals/{counselor_approval.approval_id}/approve/', {
@@ -83,25 +114,28 @@ class ApplicationFlowTestCase(TestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data['decision'], ApprovalDecision.APPROVED)
 
-        # Step 5: 学工部登录
+        # Step 7: 查询申请状态 - 应该是待学工部审批
+        application.refresh_from_db()
+        self.assertEqual(application.status, ApplicationStatus.PENDING_DEAN)
+
+        # Step 8: 学工部登录并审批
         response = self.client.post('/api/auth/login', {
             'user_id': 'D001',
             'password': 'D001'
         }, format='json')
         dean_token = response.data['access_token']
 
-        # Step 6: 学工部审批通过
-        application.refresh_from_db()
-        self.assertEqual(application.status, ApplicationStatus.PENDING_DEAN)
-        dean_approval = application.approvals.filter(step='dean').first()
+        # Step 9: 学工部审批通过
+        dean_approval = application.approvals.get(step=ApprovalStep.DEAN)
 
         self.client.credentials(HTTP_AUTHORIZATION=f'Bearer {dean_token}')
         response = self.client.post(f'/api/approvals/{dean_approval.approval_id}/approve/', {
-            'comment': '同意离校'
+            'comment': '学工部备案通过'
         }, format='json')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data['decision'], ApprovalDecision.APPROVED)
 
-        # Step 7: 查询申请状态
+        # Step 10: 最终状态查询
         application.refresh_from_db()
         self.assertEqual(application.status, ApplicationStatus.APPROVED)
 
@@ -109,4 +143,11 @@ class ApplicationFlowTestCase(TestCase):
         response = self.client.get(f'/api/applications/{application_id}/')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data['status'], ApplicationStatus.APPROVED)
-        self.assertEqual(len(response.data['approvals']), 2)
+        self.assertEqual(len(response.data['approvals']), 3)
+
+        # Step 11: 学工部归档查询已通过申请
+        self.client.credentials(HTTP_AUTHORIZATION=f'Bearer {dean_token}')
+        response = self.client.get('/api/applications/')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data['count'], 1)
+        self.assertEqual(response.data['results'][0]['application_id'], application_id)

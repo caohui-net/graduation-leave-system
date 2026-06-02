@@ -38,6 +38,7 @@ class Application(models.Model):
         active_statuses = [
             ApplicationStatus.PENDING_DORM_MANAGER,
             ApplicationStatus.PENDING_COUNSELOR,
+            ApplicationStatus.PENDING_DEAN,
             ApplicationStatus.APPROVED,
         ]
         if self.status in active_statuses:

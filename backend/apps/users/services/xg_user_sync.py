@@ -21,7 +21,7 @@ def plan_xg_user_sync(xg_users: List[dict]) -> Dict:
             'skipped_by_reason': dict,
             'existing_count': int,
             'missing_local_count': int,
-            'would_update_count': int,
+            'would_update_count': int,  # 现有学生同步候选数，不代表当前模型可持久化写入数
             'conflicts': list,
             'warnings': list
         }
@@ -52,6 +52,8 @@ def plan_xg_user_sync(xg_users: List[dict]) -> Dict:
         user_id = mapped['user_id']
 
         # 检查本地是否存在
+        # user_id是主键，不会出现MultipleObjectsReturned
+        # 如果发生，说明数据库完整性已破坏，应让异常暴露
         try:
             local_user = User.objects.get(user_id=user_id)
             result['existing_count'] += 1
@@ -76,6 +78,9 @@ def plan_xg_user_sync(xg_users: List[dict]) -> Dict:
 
     # 模型字段gap警告
     if result['would_update_count'] > 0:
-        result['warnings'].append("User model lacks phone/email/department fields - cannot persist API supplemental data")
+        result['warnings'].append(
+            f"{result['would_update_count']} sync candidates exist, but no API supplemental fields can be persisted "
+            "until User model adds phone/email/department or name overwrite policy is approved"
+        )
 
     return result

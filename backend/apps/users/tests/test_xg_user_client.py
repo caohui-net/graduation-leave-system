@@ -26,11 +26,10 @@ class GenerateSignTests(TestCase):
         self.assertEqual(sign, 'baeaa6693fb7b9914c9ff9e388654878b8754515')
 
     def test_md5_encryption(self):
-        """测试md5加密"""
+        """测试md5加密（固定期望值）"""
         sign = generate_sign('secret', '1234567890', 'random', 'md5')
-        # 验证返回32位hex字符串
-        self.assertEqual(len(sign), 32)
-        self.assertTrue(all(c in '0123456789abcdef' for c in sign))
+        # 验证固定期望值（字典排序：1234567890, random, secret）
+        self.assertEqual(sign, '2a471e23465cf11561ef7455fff00a86')
 
     def test_invalid_encryption_type(self):
         """测试非法加密类型"""

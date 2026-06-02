@@ -2276,3 +2276,43 @@
 - ✅ Step 3完成
 - ⏭ 可选：Step 3.5 dry-run演示命令
 - ⏭ 待定：Step 4幂等upsert + Step 5 management command
+
+**Phase 4C：Claude-Codex讨论 - Step 3后续优先级共识（2026-06-02）：**
+
+**讨论流程（doc 94-97）：**
+- ✓ Claude提出优先级讨论请求
+- ✓ Codex审查并推荐B-prime策略
+- ✓ Claude完全同意Codex分析
+- ✓ 达成共识：Step 4A同步计划服务优先
+
+**Codex关键发现（2个P1）：**
+1. User模型缺失phone/email/department字段
+   - mapper输出这些字段
+   - 字段契约定义为API补充字段
+   - 但模型只到graduation_year
+   - Step 4B真实upsert阻塞
+
+2. 新用户创建边界需显式执行
+   - Phase 1：API不创建缺核心字段的用户
+   - mapper成功但本地不存在 → 不创建
+
+**共识决策：B-prime**
+- ✓ Step 4A：同步计划服务（内置dry-run summary，不写DB）
+- ⏸ Step 4B：真实upsert（等待模型扩展决策）
+- ⏸ Step 5：命令入口（等待Step 4B）
+- ❌ 不单独做Step 3.5命令
+
+**下一步：**
+- 待执行：Step 4A实现（40-50分钟）
+- 待讨论：User模型扩展策略（增加phone/email/department）
+
+**产出物：**
+- docs/discussions/phase4c-next-steps/94-post-step3-next-priority-request.md
+- docs/discussions/phase4c-next-steps/95-post-step3-next-priority-codex-response.md
+- docs/discussions/phase4c-next-steps/96-claude-response-agree-step4a.md
+- docs/discussions/phase4c-next-steps/97-consensus-step4a-first.md
+
+**状态：**
+- ✅ 讨论完成，共识达成
+- ⏸ 暂停执行（按用户要求）
+- ⏭ 下次继续：Step 4A实现

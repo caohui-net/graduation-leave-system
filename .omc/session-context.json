@@ -1,24 +1,26 @@
 {
-  "last_updated": "2026-06-02T06:30:00Z",
+  "last_updated": "2026-06-02T06:45:00Z",
   "completed": [
-    "Step 2B: XG API客户端分页+测试+诊断优化（38/38测试通过）",
-    "Step 2C-lite: 字段映射契约文档（docs/phase4c-xg-field-coverage.md）",
-    "Step 3: 只读mapper函数+8个单元测试（8/8测试通过）"
+    "Step 2B: XG API客户端分页+测试（38/38）",
+    "Step 2C-lite: 字段映射契约文档",
+    "Step 3: 只读mapper+测试（8/8）",
+    "讨论：Step 3后续优先级（doc 94-97，共识达成）"
   ],
   "pending": [
-    "可选：Step 3.5 dry-run演示命令",
-    "待定：Step 4幂等upsert服务",
-    "待定：Step 5 management command入口"
+    "Step 4A: 同步计划服务（待执行）",
+    "讨论：User模型扩展策略",
+    "Step 4B: 真实upsert（阻塞：模型字段gap）",
+    "Step 5: 命令入口"
   ],
   "evidence": [
-    "docker compose exec -T backend python manage.py test apps.users.tests.test_xg_user_client: 38/38 passed",
-    "docker compose exec -T backend python manage.py test apps.users.tests.test_xg_user_mapper: 8/8 passed",
-    "docs/phase4c-xg-field-coverage.md: 字段映射契约完整"
+    "mapper测试: 8/8 passed",
+    "Codex发现: User模型缺phone/email/department",
+    "共识: Step 4A优先，不做Step 3.5"
   ],
-  "next_focus": "讨论下一步：Step 3.5 dry-run命令 vs Step 4/5实现 vs 其他优先级",
+  "next_focus": "执行Step 4A实现（xg_user_sync.py服务+测试），然后讨论模型扩展",
   "artifacts": {
     "field_coverage": "docs/phase4c-xg-field-coverage.md",
     "mapper": "backend/apps/users/integrations/xg_user_mapper.py",
-    "discussions": "docs/discussions/phase4c-next-steps/90-93"
+    "discussions": "docs/discussions/phase4c-next-steps/94-97"
   }
 }

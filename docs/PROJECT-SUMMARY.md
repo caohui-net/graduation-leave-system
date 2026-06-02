@@ -1833,6 +1833,58 @@
 
 ---
 
+### Track 3 Phase 2B Step 2实现（2026-06-02完成）
+
+**目标：** 实现APPROVAL_TIMEOUT_WARNING通知（降级版）
+
+**Claude-Codex协作流程（3轮）：**
+1. ✓ Claude提出3个策略选项（69号文档）
+2. ✓ Codex推荐B-mini → 降级版Option A（70号文档）
+3. ✓ Claude接受，执行Management Command方案（71-72号文档）
+
+**完成内容：**
+
+1. **契约简化**
+   - 将"工作日"改为"自然日"（避免chinese-calendar复杂度）
+   - 添加v0.1实现说明（Management Command，调度后置）
+
+2. **服务层实现**
+   - backend/apps/notifications/services.py：create_approval_timeout_warnings()
+   - 扫描pending审批，判断超时（counselor 3天，dean 2天）
+   - 一次性提醒，利用现有幂等约束
+   - 支持dry_run模式
+
+3. **Management Command**
+   - backend/apps/notifications/management/commands/send_approval_timeout_warnings.py
+   - 支持--dry-run参数
+   - 输出摘要统计
+
+4. **测试覆盖**
+   - backend/apps/notifications/tests/test_timeout_warnings.py
+   - 6个测试：counselor/dean超时、未超时、已审批、幂等性、dry_run
+
+**产出物：**
+- docs/api/notification-contract-v0.1.md（自然日简化）
+- backend/apps/notifications/services.py（新增函数）
+- backend/apps/notifications/management/commands/send_approval_timeout_warnings.py（新增）
+- backend/apps/notifications/tests/test_timeout_warnings.py（新增）
+
+**测试统计：**
+- 超时提醒测试：6/6通过（用时0.081s）
+
+**设计决策：**
+- 不引入Celery beat（当前无Redis/worker/beat配置）
+- 使用自然日（避免节假日语义争议）
+- 调度基础设施后置（Phase 2C单独立项）
+
+**状态：**
+- ✅ Phase 2B Step 2完成（降级版Option A）
+- ✅ 审批超时提醒服务层实现
+- ✅ Management Command可用
+- ⏸ Celery beat自动调度推迟到Phase 2C
+
+---
+
 ### Option E-lite执行（2026-06-01）
 
 **背景：**
@@ -2053,3 +2105,51 @@
 - ✅ D0完成（15分钟）
 - ⏸ 下一步：A-lite Step 1（Phase 2B契约修正）
 - ⏸ 下一步工作需与Codex讨论或用户明确指示
+
+**Phase 4C：学工API数据对接 - Step 1完成（2026-06-02）：**
+
+**Claude-Codex协作流程：**
+- ✓ Step 1A完成审查（doc 80-83）
+- ✓ Codex审查识别P1问题（MD5测试过弱）
+- ✓ 策略共识：先Step 1B-lite后Step 1C（避免逻辑重复）
+- ✓ 三步执行：Step 1A补丁 → Step 1B-lite → Step 1C
+
+**实施完成：**
+
+*Step 1A补丁：*
+- ✓ backend/apps/users/tests/test_xg_user_client.py
+  - MD5测试从宽松断言改为固定期望值（2a471e23465cf11561ef7455fff00a86）
+
+*Step 1B-lite（配置+客户端+Mock测试）：*
+- ✓ backend/apps/users/integrations/xg_user_client.py
+  - XGUserAPIConfig：环境读取+校验+归一化encryptionType
+  - XGUserAPIClient：build_headers()+build_form_data()+fetch_users_page()
+  - 响应解析：协议层+分页+人员列表
+- ✓ backend/apps/users/tests/test_xg_user_client.py
+  - 新增17个mock测试（配置校验+请求构造+成功/错误场景）
+
+*Step 1C（诊断脚本）：*
+- ✓ backend/scripts/diagnose_xg_api.py
+  - 环境检查+官方签名自检
+  - Dry-run默认（无网络调用）
+  - Live probe硬门禁（XG_RUN_LIVE_API_TEST=1）
+  - 错误分类（8种）+脱敏输出
+  - 支持--format=json和--timeout参数
+  - 复用Step 1B-lite客户端（无逻辑重复）
+
+**测试结果：**
+- ✓ Step 1A：4/4 tests passed (0.006s)
+- ✓ Step 1B-lite：21/21 tests passed (0.049s)
+- ✓ Step 1C：脚本正确检测缺失配置
+
+**产出物：**
+- docs/discussions/phase4c-next-steps/80-step1a-completion-next-review-request.md
+- docs/discussions/phase4c-next-steps/81-step1a-completion-codex-response.md
+- docs/discussions/phase4c-next-steps/82-claude-response-agree-step1b-lite-first.md
+- docs/discussions/phase4c-next-steps/83-consensus-step1b-lite-first.md
+- .omc/artifacts/ask/codex-docs-discussions-phase4c-next-steps-80-*.md
+
+**状态：**
+- ✅ Step 1A/1B/1C完成
+- ✅ 签名函数+配置+客户端+诊断脚本全部就绪
+- ⏭ 下一步：根据诊断结果决定是否进行真实API测试

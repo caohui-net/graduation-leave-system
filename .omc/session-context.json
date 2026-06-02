@@ -1,5 +1,5 @@
 {
-  "last_updated": "2026-06-02T02:34:00Z",
+  "last_updated": "2026-06-02T11:36:00Z",
   "completed": [
     "Week 3 Closure Gate完成",
     "Phase 4C前端code-complete完成：P1修复 + P0修复 + WXSS + 静态验证",
@@ -121,9 +121,13 @@
     "A-lite Step 1: 生成migration 0002_alter_notification_type.py（Django检测choices变更）",
     "A-lite Step 1: makemigrations --check验证通过（无待生成迁移）",
     "A-lite Step 1: 12个通知测试全部通过（验证修改正确）",
-    "A-lite Step 1: PROJECT-SUMMARY.md更新（改为4种通知类型，添加宿舍阻断说明）"
+    "A-lite Step 1: PROJECT-SUMMARY.md更新（改为4种通知类型，添加宿舍阻断说明）",
+    "Phase 4C Step 1A补丁完成：MD5测试固定期望值（2a471e23465cf11561ef7455fff00a86），验证字典排序逻辑",
+    "Phase 4C Step 1B-lite完成：XGUserAPIConfig + XGUserAPIClient + 17个mock测试，21/21测试通过",
+    "Phase 4C Step 1C完成：诊断脚本（环境检查 + 签名自检 + dry-run默认 + live probe门禁 + 8种错误分类 + 脱敏输出）",
+    "Claude-Codex Phase 4C协作：4轮讨论达成共识（Step 1A审查 + 策略共识先Step 1B-lite后Step 1C + 三步执行完成）"
   ],
-  "next_focus": "A-lite Step 1完成（Phase 2B契约修正）。下一步：创建共识文档 + commit + push，然后讨论A-lite Step 2（Phase 2B实现）。",
+  "next_focus": "Phase 4C Step 1完成（Step 1A补丁 + Step 1B-lite + Step 1C诊断脚本）。下一步：根据诊断结果决定是否进行真实API测试。",
   "suggested_skills": [],
   "artifacts": {
     "track1_import_csv": "backend/apps/users/management/commands/import_csv.py",
@@ -207,7 +211,14 @@
     "phase2b_contract_review_request": "docs/discussions/phase4c-next-steps/65-phase2b-option1-execution-review-request.md",
     "phase2b_codex_response": "docs/discussions/phase4c-next-steps/66-phase2b-option1-execution-codex-response.md",
     "phase2b_claude_response": "docs/discussions/phase4c-next-steps/67-claude-response-accept-codex-fixes.md",
-    "phase2b_migration": "backend/apps/notifications/migrations/0002_alter_notification_type.py"
+    "phase2b_migration": "backend/apps/notifications/migrations/0002_alter_notification_type.py",
+    "phase4c_step1a_review_request": "docs/discussions/phase4c-next-steps/80-step1a-completion-next-review-request.md",
+    "phase4c_step1a_codex_response": "docs/discussions/phase4c-next-steps/81-step1a-completion-codex-response.md",
+    "phase4c_claude_response": "docs/discussions/phase4c-next-steps/82-claude-response-agree-step1b-lite-first.md",
+    "phase4c_consensus": "docs/discussions/phase4c-next-steps/83-consensus-step1b-lite-first.md",
+    "phase4c_xg_user_client": "backend/apps/users/integrations/xg_user_client.py",
+    "phase4c_xg_user_tests": "backend/apps/users/tests/test_xg_user_client.py",
+    "phase4c_diagnostic_script": "backend/scripts/diagnose_xg_api.py"
   },
   "blocking_issues": [
     "WeChat DevTools安装（Phase 4A外部依赖，小程序验收门控）",

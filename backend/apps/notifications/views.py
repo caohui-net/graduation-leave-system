@@ -7,7 +7,7 @@ from drf_spectacular.utils import extend_schema, OpenApiParameter, OpenApiRespon
 from drf_spectacular.types import OpenApiTypes
 from .models import Notification
 from .serializers import NotificationSerializer, NotificationListResponseSerializer
-from backend.schema import ErrorResponseSerializer
+from schema import ErrorResponseSerializer
 
 
 @extend_schema(

@@ -14,7 +14,7 @@ from apps.approvals.models import Approval, ApprovalStep, ApprovalDecision
 from apps.users.models import UserRole
 from apps.users.class_mapping import ClassMapping
 from apps.notifications.services import notify_application_submitted
-from backend.schema import ErrorResponseSerializer
+from schema import ErrorResponseSerializer
 import uuid
 
 

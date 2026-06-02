@@ -13,7 +13,7 @@ from apps.applications.permissions import can_view_application
 from apps.approvals.models import Approval, ApprovalStep
 from .models import Attachment
 from .serializers import AttachmentUploadSerializer, AttachmentSerializer, AttachmentListResponseSerializer
-from backend.schema import ErrorResponseSerializer
+from schema import ErrorResponseSerializer
 import uuid
 
 

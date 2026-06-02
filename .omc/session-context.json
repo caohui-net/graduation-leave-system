@@ -1,13 +1,17 @@
 {
-  "last_updated": "2026-06-02T06:45:00Z",
+  "last_updated": "2026-06-02T06:51:00Z",
   "completed": [
     "Step 2B: XG API客户端分页+测试（38/38）",
     "Step 2C-lite: 字段映射契约文档",
     "Step 3: 只读mapper+测试（8/8）",
-    "讨论：Step 3后续优先级（doc 94-97，共识达成）"
+    "讨论：Step 3后续优先级（doc 94-97，共识达成）",
+    "Step 4A服务文件创建：xg_user_sync.py",
+    "讨论文档98：Step 4A实现审查请求"
   ],
   "pending": [
-    "Step 4A: 同步计划服务（待执行）",
+    "Codex审查：Step 4A实现方案（doc 98等待响应）",
+    "Step 4A测试：test_xg_user_sync.py（8个场景）",
+    "Step 4A验证：运行测试",
     "讨论：User模型扩展策略",
     "Step 4B: 真实upsert（阻塞：模型字段gap）",
     "Step 5: 命令入口"
@@ -15,12 +19,15 @@
   "evidence": [
     "mapper测试: 8/8 passed",
     "Codex发现: User模型缺phone/email/department",
-    "共识: Step 4A优先，不做Step 3.5"
+    "共识: Step 4A优先，不做Step 3.5",
+    "服务文件已创建: backend/apps/users/services/xg_user_sync.py"
   ],
-  "next_focus": "执行Step 4A实现（xg_user_sync.py服务+测试），然后讨论模型扩展",
+  "next_focus": "等待Codex审查Step 4A实现（doc 98），然后根据审查结果决定：直接创建测试 或 修正服务逻辑",
+  "blocker": "omc ask codex命令执行失败（ENOENT），需重试或手动调用",
   "artifacts": {
     "field_coverage": "docs/phase4c-xg-field-coverage.md",
     "mapper": "backend/apps/users/integrations/xg_user_mapper.py",
-    "discussions": "docs/discussions/phase4c-next-steps/94-97"
+    "sync_service": "backend/apps/users/services/xg_user_sync.py",
+    "discussions": "docs/discussions/phase4c-next-steps/94-98"
   }
 }

@@ -2316,3 +2316,35 @@
 - ✅ 讨论完成，共识达成
 - ⏸ 暂停执行（按用户要求）
 - ⏭ 下次继续：Step 4A实现
+
+
+**Phase 4C：学工API数据对接 - Step 4A启动（2026-06-02）：**
+
+**实施内容：**
+
+*服务文件创建：*
+- ✓ backend/apps/users/services/xg_user_sync.py
+- plan_xg_user_sync(xg_users: List[dict]) -> Dict
+- 只读分析，不写数据库
+- 实现6条判定规则（mapper skip/本地不存在/角色冲突/已存在学生/核心字段保护/补充字段警告）
+
+*返回结构（9个字段）：*
+- total_fetched, mapped_count, skipped_count, skipped_by_reason
+- existing_count, missing_local_count, would_update_count
+- conflicts, warnings
+
+*讨论文档：*
+- ✓ docs/discussions/phase4c-next-steps/98-step4a-implementation-review-request.md
+- 审查要点：5个核心逻辑验证
+- 关键质疑：5个Q（异常处理/would_update准确性/conflicts结构/skipped统计/测试场景5必要性）
+
+**状态：**
+- ✓ 服务文件已创建
+- ⏳ 等待Codex审查（doc 98）
+- ⏭ 根据审查结果：创建测试 或 修正逻辑
+- ⏭ 后续：8个测试场景 + 验证运行
+
+**产出物：**
+- backend/apps/users/services/xg_user_sync.py
+- docs/discussions/phase4c-next-steps/98-step4a-implementation-review-request.md
+

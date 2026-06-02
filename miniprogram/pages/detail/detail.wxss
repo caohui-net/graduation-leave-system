@@ -51,7 +51,7 @@
   flex: 1;
 }
 
-.status-pending_counselor, .status-pending_dean {
+.status-pending_dorm_manager, .status-pending_counselor {
   color: #fa8c16;
 }
 

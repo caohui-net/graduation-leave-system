@@ -50,8 +50,8 @@ Page({
 
       const statusMap: Record<string, string> = {
         draft: '草稿',
+        pending_dorm_manager: '待宿管员审批',
         pending_counselor: '待辅导员审批',
-        pending_dean: '待院长审批',
         approved: '已通过',
         rejected: '已拒绝',
       };

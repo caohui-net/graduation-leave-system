@@ -21,8 +21,9 @@ Page({
     const userInfo = app.globalData.userInfo!;
     const roleMap: Record<string, string> = {
       student: '学生',
+      dorm_manager: '宿管员',
       counselor: '辅导员',
-      dean: '院长',
+      dean: '学工部',
     };
 
     this.setData({

@@ -1,18 +1,18 @@
 // API Types based on v0.2 Contract
 // Generated: 2026-05-31
 
-export type UserRole = 'student' | 'counselor' | 'dean';
+export type UserRole = 'student' | 'dorm_manager' | 'counselor' | 'dean';
 
 export type ApplicationStatus =
   | 'draft'
+  | 'pending_dorm_manager'
   | 'pending_counselor'
-  | 'pending_dean'
   | 'approved'
   | 'rejected';
 
 export type ApprovalDecision = 'pending' | 'approved' | 'rejected';
 
-export type ApprovalStep = 'counselor' | 'dean';
+export type ApprovalStep = 'dorm_manager' | 'counselor';
 
 // Auth
 export interface LoginRequest {

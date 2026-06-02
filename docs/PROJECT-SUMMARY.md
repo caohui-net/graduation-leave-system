@@ -2455,3 +2455,38 @@
 **产出物：**
 - demo-web/index.html（修改，新增95行JavaScript代码）
 
+**UI审批标签同步 - 修复前端显示（2026-06-02）：**
+
+**问题：**
+- 前端UI仍显示旧审批流程标签（辅导员→院长）
+- 未同步后端已完成的审批流程变更（宿管员→辅导员）
+
+**完成内容：**
+- ✓ demo-web/index.html（4处标签修正）
+  - 审批列表页：当前用户角色"辅导员"→"宿管员"
+  - 审批列表项：审批步骤"辅导员审批"→"宿管员审批"
+  - 审批列表项：审批步骤"院长审批"→"辅导员审批"
+  - 详情页时间轴：审批步骤"辅导员审批"→"宿管员审批"
+
+- ✓ miniprogram/pages/detail/detail.ts
+  - statusMap更新：pending_counselor→pending_dorm_manager, pending_dean→pending_counselor
+
+- ✓ miniprogram/types/api.ts（3个类型定义）
+  - UserRole新增：dorm_manager
+  - ApplicationStatus修正：pending_dorm_manager, pending_counselor
+  - ApprovalStep修正：dorm_manager, counselor
+
+- ✓ miniprogram/pages/detail/detail.wxss
+  - CSS类名：.status-pending_dorm_manager, .status-pending_counselor
+
+- ✓ miniprogram/pages/approvals/approvals.ts
+  - roleMap新增：dorm_manager: '宿管员'
+  - roleMap修正：dean: '学工部'（原'院长'）
+
+**产出物：**
+- demo-web/index.html（修改）
+- miniprogram/pages/detail/detail.ts（修改）
+- miniprogram/types/api.ts（修改）
+- miniprogram/pages/detail/detail.wxss（修改）
+- miniprogram/pages/approvals/approvals.ts（修改）
+

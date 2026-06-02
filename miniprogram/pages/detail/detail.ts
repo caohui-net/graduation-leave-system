@@ -22,6 +22,7 @@ Page({
     uploading: false,
     attachmentError: '',
     isOwner: false,
+    approvalComment: '',
   },
 
   onLoad(options: any) {
@@ -117,16 +118,21 @@ Page({
     });
   },
 
+  onCommentInput(e: any) {
+    this.setData({ approvalComment: e.detail.value });
+  },
+
   async performAction(action: 'approve' | 'reject') {
     wx.showLoading({ title: '处理中...' });
 
     try {
       const approvalId = this.data.pendingApprovalId;
+      const comment = this.data.approvalComment.trim();
 
       if (action === 'approve') {
-        await apiClient.approveApproval(approvalId, { comment: '' });
+        await apiClient.approveApproval(approvalId, { comment });
       } else {
-        await apiClient.rejectApproval(approvalId, { comment: '' });
+        await apiClient.rejectApproval(approvalId, { comment });
       }
 
       wx.hideLoading();

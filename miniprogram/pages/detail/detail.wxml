@@ -72,8 +72,21 @@
     </view>
 
     <view class="actions" wx:if="{{canApprove}}">
-      <button class="btn approve" bindtap="onApprove">通过</button>
-      <button class="btn reject" bindtap="onReject">拒绝</button>
+      <view class="comment-section">
+        <text class="comment-label">审批意见（可选）</text>
+        <textarea
+          class="comment-input"
+          placeholder="请输入审批意见"
+          value="{{approvalComment}}"
+          bindinput="onCommentInput"
+          maxlength="200"
+        />
+        <text class="char-count">{{approvalComment.length}}/200</text>
+      </view>
+      <view class="action-buttons">
+        <button class="btn approve" bindtap="onApprove">通过</button>
+        <button class="btn reject" bindtap="onReject">拒绝</button>
+      </view>
     </view>
   </view>
 

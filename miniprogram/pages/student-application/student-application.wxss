@@ -1,41 +1,41 @@
 .container {
   min-height: 100vh;
   background-color: #f5f5f5;
-  padding: 20px;
+  padding: 40rpx;
 }
 
 /* 用户信息卡片 */
 .user-info-card {
   background-color: #ffffff;
-  border-radius: 8px;
-  padding: 20px;
-  margin-bottom: 20px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  border-radius: 16rpx;
+  padding: 40rpx;
+  margin-bottom: 40rpx;
+  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.06);
 }
 
 .card-title {
-  font-size: 16px;
+  font-size: 32rpx;
   font-weight: 600;
   color: #1890ff;
-  margin-bottom: 16px;
-  padding-bottom: 12px;
-  border-bottom: 1px solid #f0f0f0;
+  margin-bottom: 32rpx;
+  padding-bottom: 24rpx;
+  border-bottom: 2rpx solid #f0f0f0;
 }
 
 .info-row {
   display: flex;
   align-items: center;
-  padding: 10px 0;
+  padding: 20rpx 0;
 }
 
 .info-label {
-  font-size: 14px;
+  font-size: 28rpx;
   color: #666666;
-  width: 80px;
+  width: 160rpx;
 }
 
 .info-value {
-  font-size: 14px;
+  font-size: 28rpx;
   color: #333333;
   flex: 1;
 }
@@ -43,46 +43,46 @@
 /* 表单卡片 */
 .form-card {
   background-color: #ffffff;
-  border-radius: 8px;
-  padding: 20px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  border-radius: 16rpx;
+  padding: 40rpx;
+  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.06);
 }
 
 .field {
-  margin-bottom: 20px;
+  margin-bottom: 40rpx;
 }
 
 .label {
   display: block;
-  font-size: 14px;
+  font-size: 28rpx;
   color: #333333;
-  margin-bottom: 8px;
+  margin-bottom: 16rpx;
   font-weight: 500;
 }
 
 .textarea {
   width: 100%;
-  min-height: 120px;
-  padding: 12px;
-  border: 1px solid #d9d9d9;
-  border-radius: 4px;
-  font-size: 14px;
+  min-height: 240rpx;
+  padding: 24rpx;
+  border: 2rpx solid #d9d9d9;
+  border-radius: 8rpx;
+  font-size: 28rpx;
   box-sizing: border-box;
 }
 
 .char-count {
   display: block;
   text-align: right;
-  font-size: 12px;
+  font-size: 24rpx;
   color: #999999;
-  margin-top: 4px;
+  margin-top: 8rpx;
 }
 
 .picker {
-  padding: 12px;
-  border: 1px solid #d9d9d9;
-  border-radius: 4px;
-  font-size: 14px;
+  padding: 24rpx;
+  border: 2rpx solid #d9d9d9;
+  border-radius: 8rpx;
+  font-size: 28rpx;
   color: #333333;
 }
 
@@ -91,10 +91,10 @@
   background-color: #1890ff;
   color: #ffffff;
   border: none;
-  border-radius: 4px;
-  padding: 12px;
-  font-size: 16px;
-  margin-top: 20px;
+  border-radius: 8rpx;
+  padding: 24rpx;
+  font-size: 32rpx;
+  margin-top: 40rpx;
 }
 
 .submit-btn[disabled] {
@@ -103,11 +103,11 @@
 }
 
 .error {
-  margin-top: 12px;
-  padding: 12px;
+  margin-top: 24rpx;
+  padding: 24rpx;
   background-color: #fff2f0;
-  border: 1px solid #ffccc7;
-  border-radius: 4px;
+  border: 2rpx solid #ffccc7;
+  border-radius: 8rpx;
   color: #ff4d4f;
-  font-size: 14px;
+  font-size: 28rpx;
 }

@@ -2427,3 +2427,31 @@
 - backend/apps/users/tests/test_xg_user_mapper.py（部分修改）
 - docs/discussions/phase4c-next-steps/105-108.md
 
+**UI设计优化 - 附件上传功能实现（2026-06-02）：**
+
+**背景：**
+- 用户要求添加附件上传界面
+- 强调虽然是DEMO，但需要可直接应用到项目
+
+**完成内容：**
+- ✓ demo-web/index.html添加生产级JavaScript实现
+  - 文件选择处理（通过input点击）
+  - 文件验证（大小<10MB，格式：jpg/png/pdf/doc/docx）
+  - 文件列表动态渲染（显示文件名、大小、删除按钮）
+  - 删除功能（从列表移除文件）
+  - 拖拽上传支持（dragover/drop事件处理）
+  - 人性化文件大小格式化（B/KB/MB）
+  - 错误提示（不支持格式、超过大小限制）
+
+**技术实现：**
+- uploadedFiles数组存储已选文件
+- MAX_FILE_SIZE常量：10MB
+- ALLOWED_TYPES数组：6种文件类型
+- handleFiles()：文件验证和添加
+- renderFileList()：动态渲染文件列表
+- removeFile()：删除指定文件
+- formatFileSize()：格式化文件大小显示
+
+**产出物：**
+- demo-web/index.html（修改，新增95行JavaScript代码）
+

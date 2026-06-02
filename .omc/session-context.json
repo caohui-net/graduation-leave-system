@@ -1,5 +1,5 @@
 {
-  "last_updated": "2026-06-02T07:30:00Z",
+  "last_updated": "2026-06-02T09:52:00Z",
   "completed": [
     "Step 2B: XG API客户端分页+测试（38/38）",
     "Step 2C-lite: 字段映射契约文档",
@@ -8,7 +8,8 @@
     "Step 4A: 同步计划服务+测试（8/8 passed, Codex批准）",
     "讨论：User模型扩展策略（doc 105-108，共识达成）",
     "Step 4B Phase 1: User模型扩展+migration（0002已应用）",
-    "Step 4B Phase 2: mapper增加email提取（部分完成）"
+    "Step 4B Phase 2: mapper增加email提取（部分完成）",
+    "UI设计: demo-web附件上传JavaScript实现（文件选择/验证/展示/删除/拖拽）"
   ],
   "pending": [
     "Step 4B Phase 2: 完成test_optional_fields_missing更新",

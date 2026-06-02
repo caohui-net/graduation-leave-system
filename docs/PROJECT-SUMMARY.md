@@ -2153,3 +2153,97 @@
 - ✅ Step 1A/1B/1C完成
 - ✅ 签名函数+配置+客户端+诊断脚本全部就绪
 - ⏭ 下一步：根据诊断结果决定是否进行真实API测试
+
+**Phase 4C：学工API数据对接 - Step 2B完成（2026-06-02）：**
+
+**Claude-Codex协作流程：**
+- ✓ Step 2B实现审查（doc 87-89）
+- ✓ Codex识别3个问题（2个P1 + 1个P2）
+- ✓ Claude完全同意Codex评估和修复建议
+- ✓ 5项修复明确且必要
+
+**实施完成：**
+
+*修复1：fetch_users_page() schema校验（P1）：*
+- ✓ backend/apps/users/integrations/xg_user_client.py (line 131-150)
+- 显式检查data和data.data存在性，缺失抛ValueError
+- 区分"字段缺失"和"字段为空"
+
+*修复2：fetch_all_users() 无界循环保护（P1）：*
+- ✓ backend/apps/users/integrations/xg_user_client.py (line 153-211)
+- 跟踪prev_current_page检查分页前进
+- 校验per_page > 0
+- 防止API返回非前进current_page导致无限循环
+
+*修复3：max_pages参数校验（P2）：*
+- ✓ backend/apps/users/integrations/xg_user_client.py (line 158-160)
+- 增加max_pages校验（None或 > 0）
+
+*修复4：tenant_invalid错误分类优化：*
+- ✓ backend/scripts/diagnose_xg_api.py (line 91-96)
+- 调整判断顺序：tenant消息检查优先于通用401/403
+
+*修复5：补充边界测试（9个）：*
+- ✓ backend/apps/users/tests/test_xg_user_client.py (line 397-522)
+- test_fetch_users_page_missing_data_field
+- test_fetch_users_page_missing_data_data_field
+- test_fetch_users_page_users_not_list
+- test_fetch_all_users_current_page_not_advancing
+- test_fetch_all_users_per_page_zero
+- test_fetch_all_users_per_page_invalid_string
+- test_fetch_all_users_max_pages_zero
+- test_fetch_all_users_max_pages_negative
+- test_fetch_all_users_page_size_one
+- 修复2个已存在测试的mock结构
+
+**测试结果：**
+- ✓ 38/38 tests passed (0.072s)
+- 原29测试 + 9新测试 = 38测试全部通过
+
+**产出物：**
+- docs/discussions/phase4c-next-steps/87-step2b-implementation-review-request.md
+- docs/discussions/phase4c-next-steps/88-step2b-implementation-codex-response.md
+- docs/discussions/phase4c-next-steps/89-claude-response-agree-fixes.md
+- .omc/artifacts/ask/codex-docs-discussions-phase4c-next-steps-87-*.md
+
+**状态：**
+- ✅ Step 2B完成（分页+测试+诊断优化）
+- ✅ XG API客户端schema校验+无界保护完整
+- ⏭ 下一步：讨论Step 2C字段覆盖 vs Step 3同步命令优先级
+
+**Phase 4C：学工API数据对接 - Step 2C-lite完成（2026-06-02）：**
+
+**Claude-Codex协作流程：**
+- ✓ 下一步优先级讨论（doc 90-93）
+- ✓ Codex推荐A-prime：Step 2C-lite字段映射契约优先
+- ✓ Claude完全同意：不跳过Step 2C，不直接实现写库同步命令
+- ✓ 识别5个直接写库风险（主键/权限链/毕业范围/角色/回滚成本）
+
+**实施完成：**
+
+*Step 2C-lite：字段映射契约文档：*
+- ✓ docs/phase4c-xg-field-coverage.md
+- 9个章节：API字段/内部模型/字段映射表/处理规则/并存策略/测试样例/验收标准
+- 字段映射表：4类状态（可映射/角色高风险/无法映射/可选）
+- 处理规则：跳过规则+部分映射规则+错误报告格式
+- API/CSV并存策略：Phase 1（CSV主导+API补充）
+- 测试样例：3个输入+3个预期输出
+
+**核心决策：**
+- ✅ API初期只补充phone/email/department，不创建新用户
+- ✅ class_id/is_graduating/graduation_year继续由CSV维护
+- ✅ user_identity值域未知，只接受明确学生值
+- ✅ 不自动停用本地缺失用户，仅输出差异报告
+
+**产出物：**
+- docs/phase4c-xg-field-coverage.md（v0.1草案）
+- docs/discussions/phase4c-next-steps/90-next-priority-discussion-request.md
+- docs/discussions/phase4c-next-steps/91-next-priority-codex-response.md
+- docs/discussions/phase4c-next-steps/92-claude-response-agree-step2c-lite.md
+- docs/discussions/phase4c-next-steps/93-consensus-step2c-lite-first.md
+
+**状态：**
+- ✅ Step 2C-lite完成（30分钟）
+- ⏭ 下一步：Step 3只读mapper/provider测试（40-50分钟）
+- ⏭ 后续：Step 4幂等upsert + Step 5 management command
+

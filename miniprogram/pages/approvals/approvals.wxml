@@ -1,6 +1,6 @@
 <view class="container">
   <view class="header">
-    <text class="title">审批列表</text>
+    <text class="title">{{userInfo.role === 'dean' ? '备案查询' : '审批列表'}}</text>
     <text class="user-info">{{userInfo.name}} ({{roleText}})</text>
   </view>
 
@@ -38,7 +38,7 @@
   </view>
 
   <view class="empty" wx:if="{{!loading && approvals.length === 0}}">
-    <text>暂无待审批项</text>
+    <text>{{userInfo.role === 'dean' ? '暂无已通过备案申请' : '暂无待审批项'}}</text>
   </view>
 
   <view class="loading" wx:if="{{loading}}">

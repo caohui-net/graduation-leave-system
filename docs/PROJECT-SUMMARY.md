@@ -2490,3 +2490,32 @@
 - miniprogram/pages/detail/detail.wxss（修改）
 - miniprogram/pages/approvals/approvals.ts（修改）
 
+
+### 2026-06-02
+
+**学工部备案UI设计与实施：**
+
+**Claude-Codex协作讨论：**
+- ✓ 问题：学工部不再审批，如何体现备案查询功能
+- ✓ Codex分析：推荐选项A轻量变体（角色化文案，复用列表页）
+- ✓ Claude响应：同意方案，产品语义准确，成本合理
+- ✓ 最终共识：角色化列表标题和按钮控制
+
+**实施完成：**
+- ✓ demo-web/index.html
+  - 角色选择器（宿管员/辅导员/学工部）
+  - 动态标题（审批列表 vs 备案查询）
+  - 学工部隐藏审批按钮
+- ✓ miniprogram/pages/approvals/approvals.wxml
+  - 动态标题：`{{userInfo.role === 'dean' ? '备案查询' : '审批列表'}}`
+  - 动态空状态：学工部显示"暂无已通过备案申请"
+- ✓ miniprogram/pages/detail/detail.wxml
+  - 审批按钮条件：`wx:if="{{canApprove && userInfo.role !== 'dean'}}"`
+
+**产出物：**
+- docs/discussions/ui-design-2026-06-02/08-codex-dean-filing-ui-decision.md
+- docs/discussions/ui-design-2026-06-02/09-claude-response-to-codex-filing-decision.md
+- docs/discussions/ui-design-2026-06-02/10-final-consensus-dean-filing-ui.md
+
+**状态：**
+- ✅ 学工部备案UI实现完成（demo-web + miniprogram）

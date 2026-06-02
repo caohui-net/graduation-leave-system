@@ -1,5 +1,5 @@
 {
-  "last_updated": "2026-06-02T10:05:00Z",
+  "last_updated": "2026-06-02T17:50:00Z",
   "completed": [
     "Step 2B: XG API客户端分页+测试（38/38）",
     "Step 2C-lite: 字段映射契约文档",
@@ -8,12 +8,12 @@
     "Step 4A: 同步计划服务+测试（8/8 passed, Codex批准）",
     "讨论：User模型扩展策略（doc 105-108，共识达成）",
     "Step 4B Phase 1: User模型扩展+migration（0002已应用）",
-    "Step 4B Phase 2: mapper增加email提取（部分完成）",
+    "Step 4B Phase 2: mapper增加email提取（完成）",
     "UI设计: demo-web附件上传JavaScript实现（文件选择/验证/展示/删除/拖拽）",
-    "UI同步: 前端审批标签修正（demo-web+miniprogram，宿管员→辅导员流程）"
+    "UI同步: 前端审批标签修正（demo-web+miniprogram，宿管员→辅导员流程）",
+    "学工部备案UI设计+实施（Claude-Codex讨论，选项A轻量变体，demo-web+miniprogram完成）"
   ],
   "pending": [
-    "Step 4B Phase 2: 完成test_optional_fields_missing更新",
     "Step 4B Phase 3: 同步服务apply模式实现（8个验收场景）",
     "Step 4B Phase 4: 回归验证",
     "Step 5: 命令入口"
@@ -23,9 +23,11 @@
     "同步计划服务测试: 8/8 passed",
     "Migration 0002成功应用（phone/email/department字段）",
     "mapper已支持email提取",
-    "test_complete_fields_success已包含email测试"
+    "test_complete_fields_success已包含email测试",
+    "学工部备案UI: demo-web角色选择器+动态标题+按钮隐藏",
+    "学工部备案UI: miniprogram动态标题+空状态+按钮条件渲染"
   ],
-  "next_focus": "完成test_optional_fields_missing email断言，运行mapper测试验证，然后启动Phase 3同步服务apply实现",
+  "next_focus": "继续Step 4B Phase 3同步服务apply实现，或启动Step 5命令入口",
   "artifacts": {
     "field_coverage": "docs/phase4c-xg-field-coverage.md",
     "mapper": "backend/apps/users/integrations/xg_user_mapper.py",
@@ -33,6 +35,7 @@
     "sync_tests": "backend/apps/users/tests/test_xg_user_sync.py",
     "user_model": "backend/apps/users/models.py",
     "migration_0002": "backend/apps/users/migrations/0002_user_department_user_email_user_phone.py",
+    "dean_filing_ui_discussion": "docs/discussions/ui-design-2026-06-02/08-10",
     "discussions": "docs/discussions/phase4c-next-steps/94-108",
     "consensus": "docs/discussions/phase4c-next-steps/108-step4b-strategy-final-consensus.md"
   }

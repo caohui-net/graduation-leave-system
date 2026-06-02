@@ -71,7 +71,7 @@
       </button>
     </view>
 
-    <view class="actions" wx:if="{{canApprove}}">
+    <view class="actions" wx:if="{{canApprove && userInfo.role !== 'dean'}}">
       <view class="comment-section">
         <text class="comment-label">审批意见（可选）</text>
         <textarea

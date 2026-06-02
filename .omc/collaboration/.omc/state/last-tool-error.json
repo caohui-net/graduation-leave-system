@@ -1,7 +1,7 @@
 {
   "tool_name": "Bash",
-  "tool_input_preview": "{\"command\":\"python3 ../../.claude/skills/claude-codex-collab/scripts/collab_event.py task_created claude TASK-20260530-06 \\\"Created readiness gate + canary pilot task based on synthesis consensus\\\" '[...",
-  "error": "Exit code 1\n❌ Collaboration not initialized",
-  "timestamp": "2026-05-30T09:40:48.918Z",
+  "tool_input_preview": "{\"command\":\"cd /home/caohui/projects/graduation-leave-system && python3 scripts/collab_status.py\",\"description\":\"Check collaboration status\"}",
+  "error": "Exit code 2\npython3: can't open file '/home/caohui/projects/graduation-leave-system/scripts/collab_status.py': [Errno 2] No such file or directory",
+  "timestamp": "2026-06-02T11:45:09.772Z",
   "retry_count": 1
 }

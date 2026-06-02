@@ -84,3 +84,76 @@ def plan_xg_user_sync(xg_users: List[dict]) -> Dict:
         )
 
     return result
+
+
+def apply_xg_user_sync(xg_users: List[dict], dry_run: bool = True) -> Dict:
+    """
+    应用学工用户同步（可选写DB）
+
+    Args:
+        xg_users: 学工API返回的用户列表
+        dry_run: True=仅计划不写DB, False=实际更新DB
+
+    Returns:
+        {
+            'total_fetched': int,
+            'mapped_count': int,
+            'skipped_count': int,
+            'skipped_by_reason': dict,
+            'existing_count': int,
+            'missing_local_count': int,
+            'updated_count': int,
+            'conflicts': list,
+            'warnings': list
+        }
+    """
+    result = {
+        'total_fetched': len(xg_users),
+        'mapped_count': 0,
+        'skipped_count': 0,
+        'skipped_by_reason': {},
+        'existing_count': 0,
+        'missing_local_count': 0,
+        'updated_count': 0,
+        'conflicts': [],
+        'warnings': []
+    }
+
+    for xg_user in xg_users:
+        mapped = map_xg_user_to_internal(xg_user)
+
+        if mapped['skip_reason']:
+            result['skipped_count'] += 1
+            reason = mapped['skip_reason']
+            result['skipped_by_reason'][reason] = result['skipped_by_reason'].get(reason, 0) + 1
+            continue
+
+        result['mapped_count'] += 1
+        user_id = mapped['user_id']
+
+        try:
+            local_user = User.objects.get(user_id=user_id)
+            result['existing_count'] += 1
+
+            if local_user.role != 'student':
+                result['conflicts'].append({
+                    'user_id': user_id,
+                    'reason': 'role_mismatch',
+                    'local_role': local_user.role,
+                    'api_role': mapped['role']
+                })
+                continue
+
+            if not dry_run:
+                local_user.phone = mapped.get('phone', '')
+                local_user.email = mapped.get('email', '')
+                local_user.department = mapped.get('department', '')
+                local_user.save()
+
+            result['updated_count'] += 1
+
+        except User.DoesNotExist:
+            result['missing_local_count'] += 1
+            result['warnings'].append(f"skip_missing_user: {user_id}")
+
+    return result

@@ -9,6 +9,7 @@
     "讨论：User模型扩展策略（doc 105-108，共识达成）",
     "Step 4B Phase 1: User模型扩展+migration（0002已应用）",
     "Step 4B Phase 2: mapper增加email提取（完成）",
+    "Step 4B Phase 3: 同步服务apply模式+8场景测试（实现完成）",
     "UI设计: demo-web附件上传JavaScript实现（文件选择/验证/展示/删除/拖拽）",
     "UI同步: 前端审批标签修正（demo-web+miniprogram，宿管员→辅导员流程）",
     "学工部备案UI设计+实施（Claude-Codex讨论，选项A轻量变体，demo-web+miniprogram完成）",
@@ -18,7 +19,6 @@
     "操作说明书修复：P1问题（附件时机/提交前置条件/审批Tab/部署步骤）"
   ],
   "pending": [
-    "Step 4B Phase 3: 同步服务apply模式实现（8个验收场景）",
     "Step 4B Phase 4: 回归验证",
     "Step 5: 命令入口"
   ],
@@ -28,6 +28,8 @@
     "Migration 0002成功应用（phone/email/department字段）",
     "mapper已支持email提取",
     "test_complete_fields_success已包含email测试",
+    "Step 4B Phase 3: apply_xg_user_sync()函数实现完成",
+    "Step 4B Phase 3: 8个验收场景测试用例已编写",
     "学工部备案UI: demo-web角色选择器+动态标题+按钮隐藏",
     "学工部备案UI: miniprogram动态标题+空状态+按钮条件渲染",
     "操作说明书Codex审查: 完整P0/P1/P2问题列表+行号定位",

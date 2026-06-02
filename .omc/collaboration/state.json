@@ -1,8 +1,8 @@
 {
-  "workflow_id": "claude-codex-collab-mvp",
-  "current_task": "phase4c_next_steps",
-  "active_agent": "claude",
-  "status": "waiting_for_user_decision",
-  "last_event_id": 91,
-  "updated_at": "2026-06-01T15:57:30.000Z"
+  "workflow_id": "claude-codex-gemini-collab",
+  "current_task": "TASK-20260602-02",
+  "active_agent": "none",
+  "status": "completed",
+  "last_event_id": 108,
+  "updated_at": "2026-06-02T18:49:20.104713+00:00"
 }

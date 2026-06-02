@@ -1,7 +1,7 @@
 """学工用户同步计划服务测试"""
 from django.test import TestCase
 from django.contrib.auth import get_user_model
-from apps.users.services.xg_user_sync import plan_xg_user_sync
+from apps.users.services.xg_user_sync import plan_xg_user_sync, apply_xg_user_sync
 
 User = get_user_model()
 
@@ -221,3 +221,163 @@ class XGUserSyncPlanTests(TestCase):
             result['would_update_count']
         )
         self.assertEqual(total_categorized, result['total_fetched'])
+
+
+class XGUserSyncApplyTests(TestCase):
+    """测试学工用户同步apply模式（写DB）"""
+
+    def setUp(self):
+        """测试前准备：创建测试用户"""
+        User.objects.create(
+            user_id='2021001',
+            name='张三',
+            role='student',
+            active=True,
+            class_id='CS2021-1',
+            is_graduating=True,
+            graduation_year=2025,
+            phone='',
+            email='',
+            department=''
+        )
+        User.objects.create(
+            user_id='T001',
+            name='李老师',
+            role='counselor',
+            active=True
+        )
+
+    def test_scenario1_update_existing_student(self):
+        """场景1：成功更新已存在student的3个字段"""
+        xg_users = [{
+            'number': '2021001',
+            'name': '张三',
+            'user_identity': '1',
+            'phone': '13800138000',
+            'email': 'zhangsan@example.com',
+            'department': '计算机学院'
+        }]
+
+        result = apply_xg_user_sync(xg_users, dry_run=False)
+
+        self.assertEqual(result['updated_count'], 1)
+        user = User.objects.get(user_id='2021001')
+        self.assertEqual(user.phone, '13800138000')
+        self.assertEqual(user.email, 'zhangsan@example.com')
+        self.assertEqual(user.department, '计算机学院')
+
+    def test_scenario2_skip_mapper_skip_reason(self):
+        """场景2：跳过mapper标记skip_reason的用户"""
+        xg_users = [
+            {'number': None, 'name': '王五', 'user_identity': '1'},
+            {'number': '2021001', 'name': '张三', 'user_identity': '1', 'phone': '13800138000'}
+        ]
+
+        result = apply_xg_user_sync(xg_users, dry_run=False)
+
+        self.assertEqual(result['skipped_count'], 1)
+        self.assertEqual(result['updated_count'], 1)
+        self.assertIn('missing_user_id', result['skipped_by_reason'])
+
+    def test_scenario3_skip_role_conflict(self):
+        """场景3：检测并跳过role冲突(local非student)"""
+        xg_users = [{'number': 'T001', 'name': '李老师', 'user_identity': '1'}]
+
+        result = apply_xg_user_sync(xg_users, dry_run=False)
+
+        self.assertEqual(result['updated_count'], 0)
+        self.assertEqual(len(result['conflicts']), 1)
+        self.assertEqual(result['conflicts'][0]['reason'], 'role_mismatch')
+
+    def test_scenario4_skip_missing_user(self):
+        """场景4：跳过本地不存在的用户"""
+        xg_users = [{'number': '2021999', 'name': '新学生', 'user_identity': '1', 'phone': '13900139000'}]
+
+        result = apply_xg_user_sync(xg_users, dry_run=False)
+
+        self.assertEqual(result['missing_local_count'], 1)
+        self.assertEqual(result['updated_count'], 0)
+        self.assertFalse(User.objects.filter(user_id='2021999').exists())
+
+    def test_scenario5_dry_run_no_db_write(self):
+        """场景5：dry_run=True不写DB，返回统计"""
+        xg_users = [{
+            'number': '2021001',
+            'name': '张三',
+            'user_identity': '1',
+            'phone': '13800138000',
+            'email': 'zhangsan@example.com',
+            'department': '计算机学院'
+        }]
+
+        result = apply_xg_user_sync(xg_users, dry_run=True)
+
+        self.assertEqual(result['updated_count'], 1)
+        user = User.objects.get(user_id='2021001')
+        self.assertEqual(user.phone, '')
+        self.assertEqual(user.email, '')
+        self.assertEqual(user.department, '')
+
+    def test_scenario6_batch_sync_multiple_users(self):
+        """场景6：批量同步多个用户"""
+        User.objects.create(
+            user_id='2021002',
+            name='李四',
+            role='student',
+            active=True,
+            class_id='CS2021-1',
+            is_graduating=True,
+            graduation_year=2025
+        )
+
+        xg_users = [
+            {'number': '2021001', 'name': '张三', 'user_identity': '1', 'phone': '13800138000'},
+            {'number': '2021002', 'name': '李四', 'user_identity': '1', 'phone': '13800138001'}
+        ]
+
+        result = apply_xg_user_sync(xg_users, dry_run=False)
+
+        self.assertEqual(result['updated_count'], 2)
+        self.assertEqual(User.objects.get(user_id='2021001').phone, '13800138000')
+        self.assertEqual(User.objects.get(user_id='2021002').phone, '13800138001')
+
+    def test_scenario7_detailed_statistics(self):
+        """场景7：返回详细统计"""
+        xg_users = [
+            {'number': None, 'name': '测试', 'user_identity': '1'},
+            {'number': '2021001', 'name': '张三', 'user_identity': '1', 'phone': '13800138000'},
+            {'number': 'T001', 'name': '李老师', 'user_identity': '1'},
+            {'number': '2021999', 'name': '新学生', 'user_identity': '1'}
+        ]
+
+        result = apply_xg_user_sync(xg_users, dry_run=False)
+
+        self.assertIn('total_fetched', result)
+        self.assertIn('mapped_count', result)
+        self.assertIn('skipped_count', result)
+        self.assertIn('updated_count', result)
+        self.assertIn('conflicts', result)
+        self.assertEqual(result['total_fetched'], 4)
+        self.assertEqual(result['skipped_count'], 1)
+        self.assertEqual(result['updated_count'], 1)
+        self.assertEqual(len(result['conflicts']), 1)
+
+    def test_scenario8_no_affect_other_users(self):
+        """场景8：不影响其他用户"""
+        User.objects.create(
+            user_id='2021003',
+            name='王五',
+            role='student',
+            active=True,
+            class_id='CS2021-2',
+            phone='99999999999'
+        )
+
+        xg_users = [{'number': '2021001', 'name': '张三', 'user_identity': '1', 'phone': '13800138000'}]
+
+        apply_xg_user_sync(xg_users, dry_run=False)
+
+        user_2021003 = User.objects.get(user_id='2021003')
+        self.assertEqual(user_2021003.phone, '99999999999')
+        counselor = User.objects.get(user_id='T001')
+        self.assertEqual(counselor.role, 'counselor')

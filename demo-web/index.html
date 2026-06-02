@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>毕业离校申请系统 - UI Demo</title>
+  <link rel="stylesheet" href="css/global.css">
+  <style>
+    /* 导航标签 */
+    .nav-tabs {
+      background: white;
+      display: flex;
+      border-bottom: 1px solid #f0f0f0;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+    .nav-tab {
+      flex: 1;
+      text-align: center;
+      padding: 12px 0;
+      font-size: 14px;
+      color: #666;
+      cursor: pointer;
+      position: relative;
+      border: none;
+      background: none;
+    }
+    .nav-tab.active {
+      color: var(--primary-color);
+      font-weight: 600;
+    }
+    .nav-tab.active::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 30px;
+      height: 2px;
+      background: var(--primary-color);
+      border-radius: 1px;
+    }
+
+    /* 响应式：桌面端Tab导航优化 */
+    @media (min-width: 1024px) {
+      .nav-tabs {
+        padding: 0 40px;
+      }
+      .nav-tab {
+        padding: 16px 24px;
+        font-size: 16px;
+      }
+      .nav-tab.active::after {
+        width: 50px;
+        height: 3px;
+      }
+    }
+
+    .screen {
+      display: none;
+      min-height: calc(100vh - 45px);
+    }
+    .screen.active {
+      display: block;
+    }
+  </style>
+</head>
+<body>
+  <!-- 顶部导航 -->
+  <div class="nav-tabs">
+    <button class="nav-tab active" onclick="showScreen(0)">学生申请</button>
+    <button class="nav-tab" onclick="showScreen(1)">审批列表</button>
+    <button class="nav-tab" onclick="showScreen(2)">申请详情</button>
+  </div>
+
+  <!-- 屏幕1: 学生申请页 -->
+  <div class="screen active" id="screen-0">
+    <div style="padding: 20px;">
+      <!-- 用户信息卡片 -->
+      <div class="card" style="margin-bottom: 20px;">
+        <div style="font-size: 16px; font-weight: 600; color: var(--primary-color); margin-bottom: 16px; padding-bottom: 12px; border-bottom: 1px solid #f0f0f0;">
+          申请人信息
+        </div>
+        <div style="display: flex; align-items: center; padding: 10px 0;">
+          <span style="font-size: 14px; color: #666; width: 80px;">姓名</span>
+          <span style="font-size: 14px; color: #333;">张三</span>
+        </div>
+        <div style="display: flex; align-items: center; padding: 10px 0;">
+          <span style="font-size: 14px; color: #666; width: 80px;">学号</span>
+          <span style="font-size: 14px; color: #333;">2020001</span>
+        </div>
+      </div>
+
+      <!-- 表单卡片 -->
+      <div class="card">
+        <div style="margin-bottom: 20px;">
+          <label style="display: block; font-size: 14px; margin-bottom: 8px; font-weight: 500;">离校原因</label>
+          <textarea style="width: 100%; min-height: 120px; padding: 12px; border: 1px solid #d9d9d9; border-radius: 4px; font-size: 14px;" placeholder="请输入离校原因"></textarea>
+          <span style="display: block; text-align: right; font-size: 12px; color: #999; margin-top: 4px;">0/500</span>
+        </div>
+        <div style="margin-bottom: 20px;">
+          <label style="display: block; font-size: 14px; margin-bottom: 8px; font-weight: 500;">离校日期</label>
+          <input type="date" style="width: 100%; padding: 12px; border: 1px solid #d9d9d9; border-radius: 4px; font-size: 14px;">
+        </div>
+        <button class="btn-primary">提交申请</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 屏幕2: 审批列表页 -->
+  <div class="screen" id="screen-1">
+    <div style="background: white; padding: 16px; display: flex; justify-content: space-between; align-items: center;">
+      <div style="font-size: 18px; font-weight: bold;">审批列表</div>
+      <div style="font-size: 12px; color: #999;">辅导员</div>
+    </div>
+
+    <!-- Tab切换 -->
+    <div style="background: white; display: flex; border-bottom: 1px solid #f0f0f0;">
+      <div class="nav-tab active" style="flex: 1;">全部</div>
+      <div class="nav-tab" style="flex: 1;">待审批</div>
+      <div class="nav-tab" style="flex: 1;">已审批</div>
+    </div>
+
+    <div style="padding: 10px;">
+      <!-- 列表项 -->
+      <div class="card">
+        <div class="flex-row justify-between align-center" style="margin-bottom: 8px;">
+          <span style="font-size: 16px; font-weight: bold;">申请 APP-001</span>
+          <span class="tag tag-pending">待审批</span>
+        </div>
+        <div style="margin-bottom: 4px;">
+          <span style="font-size: 14px; color: #999; margin-right: 8px;">申请ID:</span>
+          <span style="font-size: 14px; color: #333;">APP-001</span>
+        </div>
+        <div style="margin-bottom: 4px;">
+          <span style="font-size: 14px; color: #999; margin-right: 8px;">审批步骤:</span>
+          <span style="font-size: 14px; color: #333;">辅导员审批</span>
+        </div>
+        <div style="margin-top: 8px; padding-top: 8px; border-top: 1px solid #f0f0f0;">
+          <span style="font-size: 12px; color: #999;">2024-06-01 10:30</span>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="flex-row justify-between align-center" style="margin-bottom: 8px;">
+          <span style="font-size: 16px; font-weight: bold;">申请 APP-002</span>
+          <span class="tag tag-approved">已通过</span>
+        </div>
+        <div style="margin-bottom: 4px;">
+          <span style="font-size: 14px; color: #999; margin-right: 8px;">申请ID:</span>
+          <span style="font-size: 14px; color: #333;">APP-002</span>
+        </div>
+        <div style="margin-bottom: 4px;">
+          <span style="font-size: 14px; color: #999; margin-right: 8px;">审批步骤:</span>
+          <span style="font-size: 14px; color: #333;">院长审批</span>
+        </div>
+        <div style="margin-top: 8px; padding-top: 8px; border-top: 1px solid #f0f0f0;">
+          <span style="font-size: 12px; color: #999;">2024-05-30 14:20</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 屏幕3: 申请详情页 -->
+  <div class="screen" id="screen-2">
+    <div style="background: white; padding: 16px;">
+      <div style="font-size: 18px; font-weight: bold;">申请详情</div>
+    </div>
+
+    <div style="padding: 10px;">
+      <!-- 基本信息 -->
+      <div class="card">
+        <div style="font-size: 16px; font-weight: bold; margin-bottom: 10px;">基本信息</div>
+        <div style="display: flex; margin-bottom: 8px;">
+          <span style="font-size: 14px; color: #999; width: 80px;">申请ID:</span>
+          <span style="font-size: 14px; color: #333; flex: 1;">APP-001</span>
+        </div>
+        <div style="display: flex; margin-bottom: 8px;">
+          <span style="font-size: 14px; color: #999; width: 80px;">学生:</span>
+          <span style="font-size: 14px; color: #333; flex: 1;">张三 (2020001)</span>
+        </div>
+        <div style="display: flex; margin-bottom: 8px;">
+          <span style="font-size: 14px; color: #999; width: 80px;">离校日期:</span>
+          <span style="font-size: 14px; color: #333; flex: 1;">2024-06-15</span>
+        </div>
+        <div style="display: flex; margin-bottom: 8px;">
+          <span style="font-size: 14px; color: #999; width: 80px;">申请原因:</span>
+          <span style="font-size: 14px; color: #333; flex: 1;">毕业实习，需要提前离校</span>
+        </div>
+      </div>
+
+      <!-- 审批记录时间轴 -->
+      <div class="card">
+        <div style="font-size: 16px; font-weight: bold; margin-bottom: 10px;">审批记录</div>
+
+        <!-- 时间轴项 -->
+        <div style="position: relative; padding-left: 30px; margin-bottom: 20px;">
+          <div style="position: absolute; left: 10px; top: 4px; width: 10px; height: 10px; border-radius: 50%; background: white; border: 2px solid var(--primary-color);"></div>
+          <div style="position: absolute; left: 14px; top: 16px; bottom: -20px; width: 1px; background: #e8e8e8;"></div>
+          <div class="flex-row justify-between align-center" style="margin-bottom: 6px;">
+            <span style="font-size: 15px; font-weight: 600;">辅导员审批</span>
+            <span class="tag tag-pending">待审批</span>
+          </div>
+          <div style="font-size: 13px; color: #666;">审批人: 李老师</div>
+        </div>
+
+        <div style="position: relative; padding-left: 30px; margin-bottom: 20px;">
+          <div style="position: absolute; left: 10px; top: 4px; width: 10px; height: 10px; border-radius: 50%; background: var(--status-success); border: 2px solid var(--status-success);"></div>
+          <div class="flex-row justify-between align-center" style="margin-bottom: 6px;">
+            <span style="font-size: 15px; font-weight: 600;">提交申请</span>
+            <span class="tag tag-approved">已完成</span>
+          </div>
+          <div style="font-size: 13px; color: #666;">提交时间: 2024-06-01 10:30</div>
+        </div>
+      </div>
+
+      <!-- 审批操作 -->
+      <div style="padding: 10px;">
+        <div class="card" style="margin-bottom: 10px;">
+          <label style="display: block; font-size: 14px; color: #333; margin-bottom: 6px; font-weight: 500;">审批意见（可选）</label>
+          <textarea style="width: 100%; min-height: 60px; padding: 8px; border: 1px solid #e8e8e8; border-radius: 4px; font-size: 14px;" placeholder="请输入审批意见"></textarea>
+          <span style="display: block; text-align: right; font-size: 12px; color: #999; margin-top: 4px;">0/200</span>
+        </div>
+        <div style="display: flex; gap: 10px;">
+          <button class="btn-primary" style="flex: 1;">通过</button>
+          <button class="btn-outline" style="flex: 1;">拒绝</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function showScreen(index) {
+      document.querySelectorAll('.screen').forEach((s, i) => {
+        s.classList.toggle('active', i === index);
+      });
+      document.querySelectorAll('.nav-tabs .nav-tab').forEach((t, i) => {
+        t.classList.toggle('active', i === index);
+      });
+    }
+  </script>
+</body>
+</html>

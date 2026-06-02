@@ -1,31 +1,37 @@
 {
-  "last_updated": "2026-06-02T07:17:00Z",
+  "last_updated": "2026-06-02T07:30:00Z",
   "completed": [
     "Step 2B: XG API客户端分页+测试（38/38）",
     "Step 2C-lite: 字段映射契约文档",
     "Step 3: 只读mapper+测试（8/8）",
     "讨论：Step 3后续优先级（doc 94-97，共识达成）",
     "Step 4A: 同步计划服务+测试（8/8 passed, Codex批准）",
-    "共识文档：Step 4A最终共识（doc 104）"
+    "讨论：User模型扩展策略（doc 105-108，共识达成）",
+    "Step 4B Phase 1: User模型扩展+migration（0002已应用）",
+    "Step 4B Phase 2: mapper增加email提取（部分完成）"
   ],
   "pending": [
-    "讨论：User模型扩展策略（doc 105已发送，等待Codex响应）",
-    "Step 4B: 真实upsert（等待模型扩展决策）",
+    "Step 4B Phase 2: 完成test_optional_fields_missing更新",
+    "Step 4B Phase 3: 同步服务apply模式实现（8个验收场景）",
+    "Step 4B Phase 4: 回归验证",
     "Step 5: 命令入口"
   ],
   "evidence": [
     "mapper测试: 8/8 passed",
-    "同步计划服务测试: 8/8 passed (0.032s)",
-    "Codex最终批准: doc 103通过，进入Step 4B讨论",
-    "服务文件P1修复：would_update_count语义明确+warning强化+主键注释"
+    "同步计划服务测试: 8/8 passed",
+    "Migration 0002成功应用（phone/email/department字段）",
+    "mapper已支持email提取",
+    "test_complete_fields_success已包含email测试"
   ],
-  "next_focus": "等待Codex审查doc 105（User模型扩展策略），然后根据决策执行Step 4B实现或调整方案",
+  "next_focus": "完成test_optional_fields_missing email断言，运行mapper测试验证，然后启动Phase 3同步服务apply实现",
   "artifacts": {
     "field_coverage": "docs/phase4c-xg-field-coverage.md",
     "mapper": "backend/apps/users/integrations/xg_user_mapper.py",
     "sync_service": "backend/apps/users/services/xg_user_sync.py",
     "sync_tests": "backend/apps/users/tests/test_xg_user_sync.py",
-    "discussions": "docs/discussions/phase4c-next-steps/94-105",
-    "latest_request": "docs/discussions/phase4c-next-steps/105-step4b-model-extension-strategy-request.md"
+    "user_model": "backend/apps/users/models.py",
+    "migration_0002": "backend/apps/users/migrations/0002_user_department_user_email_user_phone.py",
+    "discussions": "docs/discussions/phase4c-next-steps/94-108",
+    "consensus": "docs/discussions/phase4c-next-steps/108-step4b-strategy-final-consensus.md"
   }
 }

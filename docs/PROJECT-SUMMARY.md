@@ -2386,3 +2386,44 @@
 - backend/apps/users/tests/test_xg_user_sync.py（新建）
 - docs/discussions/phase4c-next-steps/98-102.md
 
+**Phase 4C：学工API数据对接 - Step 4B启动（2026-06-02）：**
+
+**策略讨论（doc 105-108）：**
+- 105：Claude发起User模型扩展策略讨论
+- 106：Codex推荐选项组合2（扩展模型+不覆盖name）
+- 107：Claude完全同意Codex方案
+- 108：最终共识达成
+
+**核心决策：**
+- 扩展User模型：新增phone/email/department三个nullable字段
+- 字段权威性划分：CSV主导核心字段（user_id/name/role/class_id/is_graduating/graduation_year），API补充联系方式（phone/email/department）
+- 更新规则：API非空且与本地不同→更新；API缺失/None/空→保持本地值
+- 不允许API覆盖name字段（避免CSV与API反复冲突）
+
+**Phase 1完成（模型扩展+migration）：**
+- ✓ backend/apps/users/models.py
+  - 新增3个API补充字段（phone/email/department）
+  - 所有字段nullable（null=True, blank=True）
+- ✓ Migration 0002生成并应用成功
+  - apps/users/migrations/0002_user_department_user_email_user_phone.py
+
+**Phase 2进行中（mapper扩展）：**
+- ✓ backend/apps/users/integrations/xg_user_mapper.py
+  - 新增email字段提取（email = xg_user.get('email')）
+  - 更新docstring和result字典
+- ✓ backend/apps/users/tests/test_xg_user_mapper.py（部分）
+  - test_complete_fields_success已更新（包含email测试）
+  - ⏸ test_optional_fields_missing待更新（验证email=None场景）
+
+**状态：**
+- ✅ Phase 1完成（10-15分钟）
+- ⏳ Phase 2进行中（剩余5分钟）
+- ⏸ Phase 3待启动（同步服务apply模式实现，25-40分钟）
+
+**产出物：**
+- backend/apps/users/models.py（修改）
+- backend/apps/users/migrations/0002_user_department_user_email_user_phone.py（新建）
+- backend/apps/users/integrations/xg_user_mapper.py（修改）
+- backend/apps/users/tests/test_xg_user_mapper.py（部分修改）
+- docs/discussions/phase4c-next-steps/105-108.md
+

@@ -1,7 +1,20 @@
 <view class="container">
   <view class="header">
-    <text class="title">待审批列表</text>
+    <text class="title">审批列表</text>
     <text class="user-info">{{userInfo.name}} ({{roleText}})</text>
+  </view>
+
+  <!-- Tab切换 -->
+  <view class="tabs">
+    <view class="tab {{currentTab === 'all' ? 'active' : ''}}" bindtap="onTabChange" data-tab="all">
+      <text>全部</text>
+    </view>
+    <view class="tab {{currentTab === 'pending' ? 'active' : ''}}" bindtap="onTabChange" data-tab="pending">
+      <text>待审批</text>
+    </view>
+    <view class="tab {{currentTab === 'approved' ? 'active' : ''}}" bindtap="onTabChange" data-tab="approved">
+      <text>已审批</text>
+    </view>
   </view>
 
   <view class="list" wx:if="{{!loading && approvals.length > 0}}">

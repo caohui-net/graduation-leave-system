@@ -12,6 +12,7 @@ Page({
     error: '',
     userInfo: { name: '', role: '' },
     roleText: '',
+    currentTab: 'pending' as 'all' | 'pending' | 'approved',
   },
 
   onLoad() {
@@ -34,13 +35,22 @@ Page({
 
   onShow() {
     if (checkRoleAndRedirect(app.globalData.userInfo, ['counselor', 'dean'])) return;
+    this.loadApprovals();
+  },
+
+  onTabChange(e: any) {
+    const tab = e.currentTarget.dataset.tab as 'all' | 'pending' | 'approved';
+    this.setData({ currentTab: tab });
+    this.loadApprovals();
   },
 
   async loadApprovals() {
     this.setData({ loading: true, error: '' });
+    const decision = this.data.currentTab === 'all' ? 'all' :
+                     this.data.currentTab === 'pending' ? 'pending' : 'approved';
 
     try {
-      const res = await apiClient.listApprovals('pending', 20, 0);
+      const res = await apiClient.listApprovals(decision, 20, 0);
       this.setData({
         approvals: res.results,
         loading: false,

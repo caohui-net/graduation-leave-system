@@ -9,7 +9,6 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  border-bottom: 2rpx solid #f0f0f0;
 }
 
 .title {
@@ -21,6 +20,39 @@
 .user-info {
   font-size: 24rpx;
   color: #999;
+}
+
+/* Tab切换样式 */
+.tabs {
+  background: white;
+  display: flex;
+  border-bottom: 2rpx solid #f0f0f0;
+}
+
+.tab {
+  flex: 1;
+  text-align: center;
+  padding: 24rpx 0;
+  font-size: 28rpx;
+  color: #666;
+  position: relative;
+}
+
+.tab.active {
+  color: #1890ff;
+  font-weight: 600;
+}
+
+.tab.active::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60rpx;
+  height: 4rpx;
+  background: #1890ff;
+  border-radius: 2rpx;
 }
 
 .list {

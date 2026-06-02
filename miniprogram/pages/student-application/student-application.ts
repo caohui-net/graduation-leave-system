@@ -12,10 +12,19 @@ Page({
     submitting: false,
     error: '',
     today: getShanghaiDateString(),
+    userName: '',
+    userId: '',
   },
 
   onLoad() {
     if (checkRoleAndRedirect(app.globalData.userInfo, ['student'])) return;
+    const userInfo = app.globalData.userInfo;
+    if (userInfo) {
+      this.setData({
+        userName: userInfo.name || '',
+        userId: userInfo.user_id || ''
+      });
+    }
   },
 
   onShow() {

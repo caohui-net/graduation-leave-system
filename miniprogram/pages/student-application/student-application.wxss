@@ -4,10 +4,48 @@
   padding: 20px;
 }
 
-.form {
+/* 用户信息卡片 */
+.user-info-card {
   background-color: #ffffff;
   border-radius: 8px;
   padding: 20px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+.card-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: #1890ff;
+  margin-bottom: 16px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.info-row {
+  display: flex;
+  align-items: center;
+  padding: 10px 0;
+}
+
+.info-label {
+  font-size: 14px;
+  color: #666666;
+  width: 80px;
+}
+
+.info-value {
+  font-size: 14px;
+  color: #333333;
+  flex: 1;
+}
+
+/* 表单卡片 */
+.form-card {
+  background-color: #ffffff;
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
 }
 
 .field {

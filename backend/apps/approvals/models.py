@@ -4,6 +4,7 @@ from apps.applications.models import Application
 
 
 class ApprovalStep(models.TextChoices):
+    DORM_MANAGER = 'dorm_manager', '宿管员'
     COUNSELOR = 'counselor', '辅导员'
     DEAN = 'dean', '学工部'
 

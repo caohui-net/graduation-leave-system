@@ -5,6 +5,7 @@ from apps.users.models import User
 
 class ApplicationStatus(models.TextChoices):
     DRAFT = 'draft', '草稿'
+    PENDING_DORM_MANAGER = 'pending_dorm_manager', '待宿管员审批'
     PENDING_COUNSELOR = 'pending_counselor', '待辅导员审批'
     PENDING_DEAN = 'pending_dean', '待学工部审批'
     APPROVED = 'approved', '已通过'
@@ -34,10 +35,15 @@ class Application(models.Model):
         db_table = 'applications'
 
     def clean(self):
-        if self.status in [ApplicationStatus.PENDING_COUNSELOR, ApplicationStatus.PENDING_DEAN, ApplicationStatus.APPROVED]:
+        active_statuses = [
+            ApplicationStatus.PENDING_DORM_MANAGER,
+            ApplicationStatus.PENDING_COUNSELOR,
+            ApplicationStatus.APPROVED,
+        ]
+        if self.status in active_statuses:
             existing = Application.objects.filter(
                 student=self.student,
-                status__in=[ApplicationStatus.PENDING_COUNSELOR, ApplicationStatus.PENDING_DEAN, ApplicationStatus.APPROVED]
+                status__in=active_statuses
             ).exclude(application_id=self.application_id).exists()
             if existing:
                 raise ValidationError('该学生已有待审批或已通过的申请，不能重复提交')

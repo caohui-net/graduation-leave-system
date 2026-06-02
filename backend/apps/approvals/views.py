@@ -44,19 +44,23 @@ def list_approvals(request):
             status=status.HTTP_403_FORBIDDEN
         )
 
+    # 宿管员: 只看自己的dorm_manager审批
+    if user.role == UserRole.DORM_MANAGER:
+        queryset = Approval.objects.filter(
+            approver=user,
+            step=ApprovalStep.DORM_MANAGER
+        ).select_related('application', 'approver')
+
     # 辅导员: 只看自己的counselor审批
-    if user.role == UserRole.COUNSELOR:
+    elif user.role == UserRole.COUNSELOR:
         queryset = Approval.objects.filter(
             approver=user,
             step=ApprovalStep.COUNSELOR
         ).select_related('application', 'approver')
 
-    # 学工部: 只看自己的dean审批
+    # 学工部: 查看所有审批（存档用）
     elif user.role == UserRole.DEAN:
-        queryset = Approval.objects.filter(
-            approver=user,
-            step=ApprovalStep.DEAN
-        ).select_related('application', 'approver')
+        queryset = Approval.objects.all().select_related('application', 'approver')
 
     else:
         return Response(
@@ -107,10 +111,10 @@ def approve_approval(request, approval_id):
                         status=status.HTTP_404_NOT_FOUND)
 
     user = request.user
-    if approval.step == ApprovalStep.COUNSELOR and user.role != UserRole.COUNSELOR:
+    if approval.step == ApprovalStep.DORM_MANAGER and user.role != UserRole.DORM_MANAGER:
         return Response({'error': {'code': 'FORBIDDEN', 'message': '无权限执行此操作'}},
                         status=status.HTTP_403_FORBIDDEN)
-    if approval.step == ApprovalStep.DEAN and user.role != UserRole.DEAN:
+    if approval.step == ApprovalStep.COUNSELOR and user.role != UserRole.COUNSELOR:
         return Response({'error': {'code': 'FORBIDDEN', 'message': '无权限执行此操作'}},
                         status=status.HTTP_403_FORBIDDEN)
 
@@ -139,28 +143,33 @@ def approve_approval(request, approval_id):
     notify_approval_decided(approval)
 
     application = approval.application
-    if approval.step == ApprovalStep.COUNSELOR:
-        # Check for existing dean approval to prevent duplicates
-        existing_dean_approval = Approval.objects.filter(
+    if approval.step == ApprovalStep.DORM_MANAGER:
+        # Check for existing counselor approval to prevent duplicates
+        existing_counselor_approval = Approval.objects.filter(
             application=application,
-            step=ApprovalStep.DEAN
+            step=ApprovalStep.COUNSELOR
         ).exists()
 
-        if existing_dean_approval:
-            return Response({'error': {'code': 'CONFLICT', 'message': '学工部审批已存在，不能重复创建'}},
+        if existing_counselor_approval:
+            return Response({'error': {'code': 'CONFLICT', 'message': '辅导员审批已存在，不能重复创建'}},
                             status=status.HTTP_409_CONFLICT)
 
-        application.status = ApplicationStatus.PENDING_DEAN
+        application.status = ApplicationStatus.PENDING_COUNSELOR
         application.save()
+
+        # Get counselor from class mapping
+        from apps.users.class_mapping import ClassMapping
+        class_mapping = ClassMapping.objects.get(class_id=application.class_id, active=True)
+
         Approval.objects.create(
             approval_id=f'apv_{uuid.uuid4().hex[:8]}',
             application=application,
-            step=ApprovalStep.DEAN,
-            approver_id='D001',
-            approver_name='赵主任',
+            step=ApprovalStep.COUNSELOR,
+            approver=class_mapping.counselor,
+            approver_name=class_mapping.counselor_name,
             decision=ApprovalDecision.PENDING
         )
-    elif approval.step == ApprovalStep.DEAN:
+    elif approval.step == ApprovalStep.COUNSELOR:
         application.status = ApplicationStatus.APPROVED
         application.save()
 
@@ -192,10 +201,10 @@ def reject_approval(request, approval_id):
                         status=status.HTTP_404_NOT_FOUND)
 
     user = request.user
-    if approval.step == ApprovalStep.COUNSELOR and user.role != UserRole.COUNSELOR:
+    if approval.step == ApprovalStep.DORM_MANAGER and user.role != UserRole.DORM_MANAGER:
         return Response({'error': {'code': 'FORBIDDEN', 'message': '无权限执行此操作'}},
                         status=status.HTTP_403_FORBIDDEN)
-    if approval.step == ApprovalStep.DEAN and user.role != UserRole.DEAN:
+    if approval.step == ApprovalStep.COUNSELOR and user.role != UserRole.COUNSELOR:
         return Response({'error': {'code': 'FORBIDDEN', 'message': '无权限执行此操作'}},
                         status=status.HTTP_403_FORBIDDEN)
 

@@ -2247,3 +2247,32 @@
 - ⏭ 下一步：Step 3只读mapper/provider测试（40-50分钟）
 - ⏭ 后续：Step 4幂等upsert + Step 5 management command
 
+
+**Phase 4C：学工API数据对接 - Step 3完成（2026-06-02）：**
+
+**实施内容：**
+
+*只读mapper函数：*
+- ✓ backend/apps/users/integrations/xg_user_mapper.py
+- map_xg_user_to_internal(xg_user: dict) -> dict
+- 纯转换逻辑，不写数据库，不依赖Provider接口
+- 返回格式包含skip_reason字段
+
+*单元测试（8个）：*
+- ✓ backend/apps/users/tests/test_xg_user_mapper.py
+- test_complete_fields_success（完整字段映射）
+- test_user_identity_student_string（'student'字符串）
+- test_missing_number_skip（number缺失）
+- test_missing_name_skip（name缺失）
+- test_unknown_user_identity_skip（未知user_identity）
+- test_missing_user_identity_skip（缺失user_identity）
+- test_optional_fields_missing（可选字段缺失不阻止）
+- test_multiple_missing_fields_priority（多缺失优先级）
+
+**测试结果：**
+- ✓ 8/8 tests passed (0.011s)
+
+**状态：**
+- ✅ Step 3完成
+- ⏭ 可选：Step 3.5 dry-run演示命令
+- ⏭ 待定：Step 4幂等upsert + Step 5 management command

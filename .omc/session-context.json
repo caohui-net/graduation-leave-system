@@ -1,21 +1,24 @@
 {
-  "last_updated": "2026-06-02T06:20:00Z",
+  "last_updated": "2026-06-02T06:30:00Z",
   "completed": [
     "Step 2B: XG API客户端分页+测试+诊断优化（38/38测试通过）",
-    "Step 2C-lite: 字段映射契约文档（docs/phase4c-xg-field-coverage.md）"
+    "Step 2C-lite: 字段映射契约文档（docs/phase4c-xg-field-coverage.md）",
+    "Step 3: 只读mapper函数+8个单元测试（8/8测试通过）"
   ],
   "pending": [
-    "Step 3: 只读mapper/provider测试",
-    "Step 4: 幂等upsert服务",
-    "Step 5: management command入口"
+    "可选：Step 3.5 dry-run演示命令",
+    "待定：Step 4幂等upsert服务",
+    "待定：Step 5 management command入口"
   ],
   "evidence": [
-    "docker compose exec -T backend python manage.py test apps.users.tests.test_xg_user_client --keepdb --noinput: 38/38 passed",
-    "docs/phase4c-xg-field-coverage.md: 9章节完整字段映射契约"
+    "docker compose exec -T backend python manage.py test apps.users.tests.test_xg_user_client: 38/38 passed",
+    "docker compose exec -T backend python manage.py test apps.users.tests.test_xg_user_mapper: 8/8 passed",
+    "docs/phase4c-xg-field-coverage.md: 字段映射契约完整"
   ],
-  "next_focus": "Step 3: 实现map_xg_user_to_internal()函数和8个单元测试",
+  "next_focus": "讨论下一步：Step 3.5 dry-run命令 vs Step 4/5实现 vs 其他优先级",
   "artifacts": {
     "field_coverage": "docs/phase4c-xg-field-coverage.md",
+    "mapper": "backend/apps/users/integrations/xg_user_mapper.py",
     "discussions": "docs/discussions/phase4c-next-steps/90-93"
   }
 }

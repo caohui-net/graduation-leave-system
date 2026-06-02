@@ -64,27 +64,70 @@
 }
 
 .approval-item {
-  border-left: 4rpx solid #1890ff;
-  padding-left: 16rpx;
-  margin-bottom: 20rpx;
+  position: relative;
+  padding-left: 60rpx;
+  margin-bottom: 40rpx;
+}
+
+.approval-item::before {
+  content: '';
+  position: absolute;
+  left: 20rpx;
+  top: 32rpx;
+  bottom: -40rpx;
+  width: 2rpx;
+  background: #e8e8e8;
+}
+
+.approval-item:last-child::before {
+  display: none;
+}
+
+.approval-item::after {
+  content: '';
+  position: absolute;
+  left: 12rpx;
+  top: 8rpx;
+  width: 20rpx;
+  height: 20rpx;
+  border-radius: 50%;
+  background: white;
+  border: 4rpx solid #1890ff;
+}
+
+.approval-item[data-decision="pending"]::after {
+  border-color: #fa8c16;
+  background: #fff7e6;
+}
+
+.approval-item[data-decision="approved"]::after {
+  border-color: #52c41a;
+  background: #52c41a;
+}
+
+.approval-item[data-decision="rejected"]::after {
+  border-color: #ff4d4f;
+  background: #ff4d4f;
 }
 
 .approval-header {
   display: flex;
   justify-content: space-between;
-  margin-bottom: 8rpx;
+  align-items: center;
+  margin-bottom: 12rpx;
 }
 
 .step {
-  font-size: 28rpx;
-  font-weight: bold;
+  font-size: 30rpx;
+  font-weight: 600;
   color: #333;
 }
 
 .decision {
   font-size: 24rpx;
-  padding: 4rpx 12rpx;
+  padding: 6rpx 16rpx;
   border-radius: 4rpx;
+  font-weight: 500;
 }
 
 .decision-pending {
@@ -105,12 +148,16 @@
 .approval-body {
   display: flex;
   flex-direction: column;
+  gap: 8rpx;
 }
 
 .approver, .comment {
-  font-size: 24rpx;
+  font-size: 26rpx;
   color: #666;
-  margin-bottom: 4rpx;
+}
+
+.approver {
+  font-weight: 500;
 }
 
 .actions {

@@ -244,6 +244,12 @@ class AutoNotificationAPITest(TestCase):
         })
         self.assertEqual(response.status_code, 422)
 
+        # Verify no Application was created (422 is synchronous validation failure)
+        self.assertEqual(Application.objects.filter(student=blocked_student).count(), 0)
+
+        # Verify no notification was created for the blocked student
+        self.assertEqual(Notification.objects.filter(recipient=blocked_student).count(), 0)
+
         # Verify no notification was created for counselor
         self.assertEqual(Notification.objects.filter(
             recipient=self.counselor,

@@ -33,7 +33,6 @@
 | 申请提交 | APPLICATION_SUBMITTED | 学生提交离校申请 | 辅导员 |
 | 审批通过 | APPROVAL_APPROVED | 辅导员/学工部审批通过 | 学生 |
 | 审批驳回 | APPROVAL_REJECTED | 辅导员/学工部驳回申请 | 学生 |
-| 宿舍清退阻断 | DORM_CLEARANCE_BLOCKED | 宿舍清退未完成阻断申请 | 学生 |
 | 审批超时提醒 | APPROVAL_TIMEOUT_WARNING | 审批超过时限未处理 | 辅导员/学工部 |
 
 ### 2.2 事件详细说明
@@ -49,8 +48,8 @@
 - 正文：`学生{student_name}（{student_id}）提交了离校申请，请及时审批。`
 
 **关联实体：**
-- entity_type: `application`
-- entity_id: `{application_id}`
+- entity_type: `approval`
+- entity_id: `{approval_id}`
 
 ---
 
@@ -83,22 +82,6 @@
 **关联实体：**
 - entity_type: `approval`
 - entity_id: `{approval_id}`
-
----
-
-#### DORM_CLEARANCE_BLOCKED（宿舍清退阻断）
-
-**触发条件：** 宿舍管理系统返回清退未完成
-
-**接收者：** 申请学生
-
-**通知内容：**
-- 标题：`宿舍清退未完成`
-- 正文：`您的离校申请因宿舍清退未完成而被阻断，请先完成宿舍清退手续。`
-
-**关联实体：**
-- entity_type: `application`
-- entity_id: `{application_id}`
 
 ---
 

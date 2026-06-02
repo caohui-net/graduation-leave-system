@@ -15,7 +15,6 @@ class NotificationType(models.TextChoices):
     APPLICATION_SUBMITTED = 'application_submitted', '申请已提交'
     APPROVAL_APPROVED = 'approval_approved', '审批通过'
     APPROVAL_REJECTED = 'approval_rejected', '审批驳回'
-    DORM_CLEARANCE_BLOCKED = 'dorm_clearance_blocked', '宿舍清退阻断'
     APPROVAL_TIMEOUT_WARNING = 'approval_timeout_warning', '审批超时提醒'
 
 

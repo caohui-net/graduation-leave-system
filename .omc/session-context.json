@@ -1,5 +1,5 @@
 {
-  "last_updated": "2026-06-02T19:18:00Z",
+  "last_updated": "2026-06-02T02:34:00Z",
   "completed": [
     "Week 3 Closure Gate完成",
     "Phase 4C前端code-complete完成：P1修复 + P0修复 + WXSS + 静态验证",
@@ -37,10 +37,10 @@
     "Option A-prime Step 3完成：P1状态判定为'代码完成，未验收'（6项修复完成，4项验证待环境）",
     "    "Claude-Codex Option A-prime共识：58号共识文档（部分完成，环境验证受阻）",
     "Claude-Codex最终共识：59号Option 2提案 + 60号Codex审查 + 61号D0+A-lite共识",
-    "D0完成：API Schema文档一致性修正（状态改为'代码完成，验收阻塞'，基线验收改为'待环境复验'，v2.2）""
+    "D0完成：API Schema文档一致性修正（状态改为'代码完成，验收阻塞'，基线验收改为'待环境复验'，v2.2）",
+    "A-lite Step 1完成：Phase 2B契约修正（删除DORM_CLEARANCE_BLOCKED + 修正APPLICATION_SUBMITTED实体 + 生成migration + 更新文档）"
   ],
   "pending": [
-    "A-lite Step 1：Phase 2B契约修正（宿舍阻断通知实体/幂等问题，30-60分钟）",
     "A-lite Step 2：Phase 2B实现（契约明确后执行，1-2小时）",
     "Phase 2C：审批超时提醒（单独立项，2B完成后讨论）",
     "API Schema P1验收：在可用环境中验证schema生成无警告、/api/schema/可访问、operation IDs唯一",
@@ -113,9 +113,17 @@
     "    "Option A-prime: P1状态'代码完成，未验收'（6项修复完成，4项验证待环境）",
     "Claude-Codex共识讨论: 59号Option 2提案 + 60号Codex审查（D0+A-lite建议）+ 61号最终共识",
     "D0: api-schema-todo.md v2.2（状态修正为'代码完成，验收阻塞'，基线验收改为'待环境复验'）",
-    "D0: PROJECT-SUMMARY.md更新（D0完成记录）""
+    "D0: PROJECT-SUMMARY.md更新（D0完成记录）",
+    "A-lite Step 1: Claude-Codex协作3轮（65号审查请求 + 66号Codex响应 + 67号Claude响应）",
+    "A-lite Step 1: notification-contract-v0.1.md三处修改（删除DORM_CLEARANCE_BLOCKED枚举 + 修正APPLICATION_SUBMITTED实体 + 删除详细章节）",
+    "A-lite Step 1: models.py删除DORM_CLEARANCE_BLOCKED枚举（NotificationType现4个值）",
+    "A-lite Step 1: test_auto_notifications_api.py强化断言（验证无Application + 无学生通知 + 无辅导员通知）",
+    "A-lite Step 1: 生成migration 0002_alter_notification_type.py（Django检测choices变更）",
+    "A-lite Step 1: makemigrations --check验证通过（无待生成迁移）",
+    "A-lite Step 1: 12个通知测试全部通过（验证修改正确）",
+    "A-lite Step 1: PROJECT-SUMMARY.md更新（改为4种通知类型，添加宿舍阻断说明）"
   ],
-  "next_focus": "D0完成（API Schema文档一致性修正）。下一步：A-lite Step 1（Phase 2B契约修正，30-60分钟）- 决定宿舍阻断是否创建通知，定义实体类型和幂等规则。",
+  "next_focus": "A-lite Step 1完成（Phase 2B契约修正）。下一步：创建共识文档 + commit + push，然后讨论A-lite Step 2（Phase 2B实现）。",
   "suggested_skills": [],
   "artifacts": {
     "track1_import_csv": "backend/apps/users/management/commands/import_csv.py",
@@ -195,7 +203,11 @@
     "claude_codex_d0_a_lite_consensus": "docs/discussions/phase4c-next-steps/61-claude-codex-final-consensus-d0-a-lite.md",
     "api_schema_p1_users_serializers": "backend/apps/users/serializers.py",
     "collaboration_events": ".omc/collaboration/events.jsonl",
-    "collaboration_state": ".omc/collaboration/state.json"
+    "collaboration_state": ".omc/collaboration/state.json",
+    "phase2b_contract_review_request": "docs/discussions/phase4c-next-steps/65-phase2b-option1-execution-review-request.md",
+    "phase2b_codex_response": "docs/discussions/phase4c-next-steps/66-phase2b-option1-execution-codex-response.md",
+    "phase2b_claude_response": "docs/discussions/phase4c-next-steps/67-claude-response-accept-codex-fixes.md",
+    "phase2b_migration": "backend/apps/notifications/migrations/0002_alter_notification_type.py"
   },
   "blocking_issues": [
     "WeChat DevTools安装（Phase 4A外部依赖，小程序验收门控）",

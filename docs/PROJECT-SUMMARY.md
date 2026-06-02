@@ -1492,12 +1492,12 @@
 
 **已完成：**
 - ✓ 创建通知契约v0.1文档（docs/api/notification-contract-v0.1.md）
-- ✓ 定义5种通知事件类型
+- ✓ 定义4种通知事件类型
   - APPLICATION_SUBMITTED（申请提交）
   - APPROVAL_APPROVED（审批通过）
   - APPROVAL_REJECTED（审批驳回）
-  - DORM_CLEARANCE_BLOCKED（宿舍清退阻断）
   - APPROVAL_TIMEOUT_WARNING（审批超时提醒）
+  - 注：宿舍清退阻断保持同步422响应，不进入通知中心（Phase 2B Option 1决策）
 - ✓ 设计Notification数据结构（10个字段）
 - ✓ 定义4个API端点
   - GET /api/notifications/（列表）
@@ -1784,6 +1784,52 @@
 - ✅ Phase 2A稳定化完成
 - ✅ 通知type枚举值契约一致性修复
 - ✅ API路径级测试覆盖完成
+
+---
+
+### Track 3 Phase 2B契约修正（A-lite Step 1，2026-06-02完成）
+
+**目标：** 修正notification-contract-v0.1.md与代码实现的不一致问题
+
+**Claude-Codex协作流程（3轮）：**
+1. ✓ Claude创建65号审查请求（宿舍阻断通知实体/幂等问题）
+2. ✓ Codex审查推荐Option 1（不为宿舍阻断创建通知，保持同步422响应）
+3. ✓ Claude接受并执行，Codex发现2个补充问题（P1: migration，P2: 文档）
+
+**完成内容：**
+
+1. **契约修正（3处修改）**
+   - 删除DORM_CLEARANCE_BLOCKED事件枚举（保持4个事件类型）
+   - 修正APPLICATION_SUBMITTED关联实体（application→approval）
+   - 删除DORM_CLEARANCE_BLOCKED详细说明章节
+
+2. **代码修改**
+   - backend/apps/notifications/models.py：删除DORM_CLEARANCE_BLOCKED枚举
+   - backend/apps/notifications/tests/test_auto_notifications_api.py：强化宿舍阻断测试断言
+
+3. **Django migration**
+   - 生成backend/apps/notifications/migrations/0002_alter_notification_type.py
+   - 更新Notification.type字段choices（4个枚举值）
+   - 验证makemigrations --check通过
+
+4. **文档同步**
+   - docs/PROJECT-SUMMARY.md：改为4种通知类型，添加宿舍阻断说明
+
+**产出物：**
+- docs/api/notification-contract-v0.1.md（契约修正）
+- backend/apps/notifications/models.py（删除枚举）
+- backend/apps/notifications/migrations/0002_alter_notification_type.py（新增）
+- backend/apps/notifications/tests/test_auto_notifications_api.py（强化断言）
+- docs/PROJECT-SUMMARY.md（文档同步）
+
+**测试统计：**
+- 通知自动测试：12/12通过
+- 宿舍阻断测试断言：3个（无Application + 无学生通知 + 无辅导员通知）
+
+**状态：**
+- ✅ Phase 2B契约修正完成（Option 1）
+- ✅ 契约与代码实现一致性验证通过
+- ✅ Django migration生成并验证
 
 ---
 

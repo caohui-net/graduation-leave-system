@@ -1,5 +1,5 @@
 {
-  "last_updated": "2026-06-02T17:50:00Z",
+  "last_updated": "2026-06-02T18:10:00Z",
   "completed": [
     "Step 2B: XG API客户端分页+测试（38/38）",
     "Step 2C-lite: 字段映射契约文档",
@@ -11,7 +11,11 @@
     "Step 4B Phase 2: mapper增加email提取（完成）",
     "UI设计: demo-web附件上传JavaScript实现（文件选择/验证/展示/删除/拖拽）",
     "UI同步: 前端审批标签修正（demo-web+miniprogram，宿管员→辅导员流程）",
-    "学工部备案UI设计+实施（Claude-Codex讨论，选项A轻量变体，demo-web+miniprogram完成）"
+    "学工部备案UI设计+实施（Claude-Codex讨论，选项A轻量变体，demo-web+miniprogram完成）",
+    "操作说明书创建（docs/操作说明书.md v0.1）",
+    "操作说明书Codex审查（3 P0 + 4 P1 + 5 P2问题识别）",
+    "操作说明书修复：P0问题（测试账号/API路径/小程序角色守卫）",
+    "操作说明书修复：P1问题（附件时机/提交前置条件/审批Tab/部署步骤）"
   ],
   "pending": [
     "Step 4B Phase 3: 同步服务apply模式实现（8个验收场景）",
@@ -25,7 +29,10 @@
     "mapper已支持email提取",
     "test_complete_fields_success已包含email测试",
     "学工部备案UI: demo-web角色选择器+动态标题+按钮隐藏",
-    "学工部备案UI: miniprogram动态标题+空状态+按钮条件渲染"
+    "学工部备案UI: miniprogram动态标题+空状态+按钮条件渲染",
+    "操作说明书Codex审查: 完整P0/P1/P2问题列表+行号定位",
+    "操作说明书P0修复: 3个阻塞问题已修复",
+    "操作说明书P1修复: 4个主要问题已修复"
   ],
   "next_focus": "继续Step 4B Phase 3同步服务apply实现，或启动Step 5命令入口",
   "artifacts": {
@@ -36,6 +43,8 @@
     "user_model": "backend/apps/users/models.py",
     "migration_0002": "backend/apps/users/migrations/0002_user_department_user_email_user_phone.py",
     "dean_filing_ui_discussion": "docs/discussions/ui-design-2026-06-02/08-10",
+    "operations_manual": "docs/操作说明书.md",
+    "operations_manual_review": "docs/discussions/ui-design-2026-06-02/11-claude-response-operations-manual-review.md",
     "discussions": "docs/discussions/phase4c-next-steps/94-108",
     "consensus": "docs/discussions/phase4c-next-steps/108-step4b-strategy-final-consensus.md"
   }

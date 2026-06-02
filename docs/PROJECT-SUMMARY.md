@@ -2519,3 +2519,45 @@
 
 **状态：**
 - ✅ 学工部备案UI实现完成（demo-web + miniprogram）
+
+---
+
+## 2026-06-02 (下午) - 操作说明书创建与修复
+
+**工作内容：**
+
+### 1. 操作说明书创建
+- ✓ 创建 docs/操作说明书.md v0.1
+- ✓ 内容覆盖：系统概述、部署指南、用户操作、常见问题、测试账号、API端点、数据库表结构
+
+### 2. Codex审查
+- ✓ 调用 `/oh-my-claudecode:ask codex` 进行文档审查
+- ✓ 识别问题：3个P0（阻塞）+ 4个P1（主要）+ 5个P2（改进）
+
+### 3. P0问题修复（阻塞性错误）
+- ✓ **测试账号错误**：文档写password123，实际学生密码=学号，辅导员=T001/T002，学工部=D001，宿管员未实现
+- ✓ **API路径错误**：文档写/api/v1/，实际是/api/；删除不存在的logout和PUT端点；补充附件接口
+- ✓ **小程序角色守卫冲突**：文档说宿管员可进审批列表，实际小程序只允许counselor/dean；添加警告说明
+
+### 4. P1问题修复（主要问题）
+- ✓ **附件上传时机**：改正为"申请创建后在详情页上传"而非"提交时上传"
+- ✓ **提交前置条件**：补充FAQ说明CONFLICT、DORM_BLOCKED、NOT_FOUND等错误场景
+- ✓ **审批Tab过滤**：明确pending/approved/all三个Tab的过滤规则
+- ✓ **部署步骤**：修正路径为requirements/dev.txt和config/settings/dev.py；补充seed_data和baseUrl配置
+
+**讨论记录：**
+- Codex审查artifact：.omc/artifacts/ask/codex-docs-md-phase-4b-*.md
+- Claude响应：docs/discussions/ui-design-2026-06-02/11-claude-response-operations-manual-review.md
+
+**修复位置：**
+- docs/操作说明书.md:295-301 (测试账号表格)
+- docs/操作说明书.md:355-371 (API端点说明)
+- docs/操作说明书.md:159-164 (宿管员登录警告)
+- docs/操作说明书.md:130-139 (附件上传时机)
+- docs/操作说明书.md:258-270 (提交前置条件FAQ)
+- docs/操作说明书.md:192-200 (审批Tab说明)
+- docs/操作说明书.md:64-81 (部署步骤)
+
+**状态：**
+- ✅ 操作说明书P0+P1问题修复完成
+- ⏸️ P2改进建议延后处理

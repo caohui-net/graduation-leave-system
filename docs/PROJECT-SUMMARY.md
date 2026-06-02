@@ -2348,3 +2348,41 @@
 - backend/apps/users/services/xg_user_sync.py
 - docs/discussions/phase4c-next-steps/98-step4a-implementation-review-request.md
 
+
+
+**Phase 4C：学工API数据对接 - Step 4A完成（2026-06-02）：**
+
+**实施内容：**
+
+*服务文件修改（3处P1修复）：*
+- ✓ backend/apps/users/services/xg_user_sync.py
+- docstring明确would_update_count为候选数语义
+- warning文本强化（包含候选数量和持久化阻塞说明）
+- 添加user_id主键特性注释
+
+*测试文件创建：*
+- ✓ backend/apps/users/tests/test_xg_user_sync.py
+- 8个测试场景（Django TestCase + 真实数据库）
+- 修正skip_reason断言匹配mapper实际值
+
+**测试结果：**
+- ✓ 8/8 tests passed (0.032s)
+- 场景覆盖：skip透传/existing候选/missing不创建/role冲突/只读保证/字段gap warning/空输入/混合场景
+
+**讨论记录（doc 98-102）：**
+- 98：实施审查请求
+- 99：Codex审查响应（P1语义歧义识别）
+- 100：Claude同意修复方案
+- 101：实施与测试请求
+- 102：完成总结
+
+**状态：**
+- ✅ Step 4A完成
+- ⏭ 下一步：User模型扩展决策（增加phone/email/department字段）
+- ⏸ Step 4B：真实upsert（等待模型扩展）
+
+**产出物：**
+- backend/apps/users/services/xg_user_sync.py（修改）
+- backend/apps/users/tests/test_xg_user_sync.py（新建）
+- docs/discussions/phase4c-next-steps/98-102.md
+

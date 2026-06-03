@@ -75,15 +75,69 @@ if [ -z "$APP_ID" ] || [ "$APP_ID" = "null" ]; then
   exit 1
 fi
 
-if [ "$APP_STATUS" != "pending_counselor" ]; then
-  echo "✗ Application status wrong: $APP_STATUS (expected: pending_counselor)"
+if [ "$APP_STATUS" != "pending_dorm_manager" ]; then
+  echo "✗ Application status wrong: $APP_STATUS (expected: pending_dorm_manager)"
   exit 1
 fi
 
 echo "✓ Application submitted: $APP_ID (status: $APP_STATUS)"
 
+# Extract dorm_manager approval ID
+DORM_MANAGER_APPROVAL_ID=$(echo "$APP_RESPONSE" | jq -r '.approvals[] | select(.step=="dorm_manager") | .approval_id')
+
+if [ -z "$DORM_MANAGER_APPROVAL_ID" ] || [ "$DORM_MANAGER_APPROVAL_ID" = "null" ]; then
+  echo "✗ Dorm manager approval not created"
+  exit 1
+fi
+
+echo "  Dorm manager approval: $DORM_MANAGER_APPROVAL_ID"
+
+# 3. Dorm manager login
+echo "3. Dorm manager M001 login..."
+M001_TOKEN=$(curl -s -X POST "$BASE_URL/api/auth/login" \
+  -H "Content-Type: application/json" \
+  -d '{"user_id":"M001","password":"M001"}' \
+  | jq -r '.access_token')
+
+if [ -z "$M001_TOKEN" ] || [ "$M001_TOKEN" = "null" ]; then
+  echo "✗ Dorm manager login failed"
+  exit 1
+fi
+echo "✓ Dorm manager login success"
+
+# 4. Dorm manager approve
+echo "4. Dorm manager approve..."
+DM_APPROVE_RESPONSE=$(curl -s -X POST "$BASE_URL/api/approvals/$DORM_MANAGER_APPROVAL_ID/approve/" \
+  -H "Authorization: Bearer $M001_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{"comment":"同意"}')
+
+DM_DECISION=$(echo "$DM_APPROVE_RESPONSE" | jq -r '.decision')
+
+if [ "$DM_DECISION" != "approved" ]; then
+  echo "✗ Dorm manager approve failed"
+  echo "$DM_APPROVE_RESPONSE" | jq '.'
+  exit 1
+fi
+
+echo "✓ Dorm manager approved"
+
+# Verify application status changed to pending_counselor
+APP_STATUS_AFTER_DM=$(curl -s "$BASE_URL/api/applications/$APP_ID/" \
+  -H "Authorization: Bearer $STUDENT_TOKEN" \
+  | jq -r '.status')
+
+if [ "$APP_STATUS_AFTER_DM" != "pending_counselor" ]; then
+  echo "✗ Application status not updated: $APP_STATUS_AFTER_DM (expected: pending_counselor)"
+  exit 1
+fi
+
+echo "  Application status: $APP_STATUS_AFTER_DM"
+
 # Extract counselor approval ID
-COUNSELOR_APPROVAL_ID=$(echo "$APP_RESPONSE" | jq -r '.approvals[] | select(.step=="counselor") | .approval_id')
+COUNSELOR_APPROVAL_ID=$(curl -s "$BASE_URL/api/applications/$APP_ID/" \
+  -H "Authorization: Bearer $STUDENT_TOKEN" \
+  | jq -r '.approvals[] | select(.step=="counselor") | .approval_id')
 
 if [ -z "$COUNSELOR_APPROVAL_ID" ] || [ "$COUNSELOR_APPROVAL_ID" = "null" ]; then
   echo "✗ Counselor approval not created"
@@ -92,8 +146,8 @@ fi
 
 echo "  Counselor approval: $COUNSELOR_APPROVAL_ID"
 
-# 3. Upload attachment
-echo "3. Upload attachment..."
+# 5. Upload attachment
+echo "5. Upload attachment..."
 echo "Test attachment content" > /tmp/test_attachment.pdf
 UPLOAD_RESPONSE=$(curl -s -X POST "$BASE_URL/api/applications/$APP_ID/attachments/" \
   -H "Authorization: Bearer $STUDENT_TOKEN" \
@@ -177,34 +231,8 @@ if [ -z "$T001_TOKEN" ] || [ "$T001_TOKEN" = "null" ]; then
 fi
 echo "✓ Counselor login success"
 
-# Verify counselor received APPLICATION_SUBMITTED notification
-echo "  Verifying counselor notification..."
-COUNSELOR_NOTIFS=$(curl -s "$BASE_URL/api/notifications/" \
-  -H "Authorization: Bearer $T001_TOKEN")
-
-COUNSELOR_APP_NOTIF=$(echo "$COUNSELOR_NOTIFS" | jq -r ".results[] | select(.type == \"application_submitted\" and (.message | contains(\"2020001\")))")
-
-if [ -z "$COUNSELOR_APP_NOTIF" ]; then
-  echo "✗ Counselor APPLICATION_SUBMITTED notification not found"
-  echo "Available notifications:"
-  echo "$COUNSELOR_NOTIFS" | jq '.results[] | {type, message}'
-  exit 1
-fi
-
-NOTIF_TYPE=$(echo "$COUNSELOR_APP_NOTIF" | jq -r '.type')
-NOTIF_ENTITY_TYPE=$(echo "$COUNSELOR_APP_NOTIF" | jq -r '.entity_type')
-
-if [ "$NOTIF_TYPE" != "application_submitted" ]; then
-  echo "✗ Notification type wrong: $NOTIF_TYPE (expected: application_submitted)"
-  exit 1
-fi
-
-if [ "$NOTIF_ENTITY_TYPE" != "approval" ]; then
-  echo "✗ Notification entity_type wrong: $NOTIF_ENTITY_TYPE (expected: approval)"
-  exit 1
-fi
-
-echo "  ✓ Counselor received APPLICATION_SUBMITTED notification (type: $NOTIF_TYPE, entity_type: $NOTIF_ENTITY_TYPE)"
+# Skip notification verification for counselor in 3-step workflow
+# (APPLICATION_SUBMITTED notification goes to dorm_manager, not counselor)
 
 # 8. Counselor approve
 echo "8. Counselor approve..."
@@ -356,7 +384,7 @@ APP2_RESPONSE=$(curl -s -X POST "$BASE_URL/api/applications/" \
   -d "{\"reason\":\"测试驳回流程\",\"leave_date\":\"$LEAVE_DATE\"}")
 
 APP2_ID=$(echo "$APP2_RESPONSE" | jq -r '.application_id')
-COUNSELOR2_APPROVAL_ID=$(echo "$APP2_RESPONSE" | jq -r '.approvals[] | select(.step=="counselor") | .approval_id')
+DORM_MANAGER2_APPROVAL_ID=$(echo "$APP2_RESPONSE" | jq -r '.approvals[] | select(.step=="dorm_manager") | .approval_id')
 
 if [ -z "$APP2_ID" ] || [ "$APP2_ID" = "null" ]; then
   echo "✗ Application submit failed"
@@ -364,10 +392,49 @@ if [ -z "$APP2_ID" ] || [ "$APP2_ID" = "null" ]; then
 fi
 
 echo "✓ Application submitted: $APP2_ID"
+echo "  Dorm manager approval: $DORM_MANAGER2_APPROVAL_ID"
+
+# 14. M002 login
+echo "14. Dorm manager M002 login..."
+M002_TOKEN=$(curl -s -X POST "$BASE_URL/api/auth/login" \
+  -H "Content-Type: application/json" \
+  -d '{"user_id":"M002","password":"M002"}' \
+  | jq -r '.access_token')
+
+if [ -z "$M002_TOKEN" ] || [ "$M002_TOKEN" = "null" ]; then
+  echo "✗ M002 login failed"
+  exit 1
+fi
+echo "✓ M002 login success"
+
+# 15. M002 approve
+echo "15. M002 approve..."
+M002_APPROVE_RESPONSE=$(curl -s -X POST "$BASE_URL/api/approvals/$DORM_MANAGER2_APPROVAL_ID/approve/" \
+  -H "Authorization: Bearer $M002_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{"comment":"同意"}')
+
+M002_DECISION=$(echo "$M002_APPROVE_RESPONSE" | jq -r '.decision')
+
+if [ "$M002_DECISION" != "approved" ]; then
+  echo "✗ M002 approve failed"
+  exit 1
+fi
+echo "✓ M002 approved"
+
+# Extract counselor approval ID
+COUNSELOR2_APPROVAL_ID=$(curl -s "$BASE_URL/api/applications/$APP2_ID/" \
+  -H "Authorization: Bearer $STUDENT2_TOKEN" \
+  | jq -r '.approvals[] | select(.step=="counselor") | .approval_id')
+
+if [ -z "$COUNSELOR2_APPROVAL_ID" ] || [ "$COUNSELOR2_APPROVAL_ID" = "null" ]; then
+  echo "✗ Counselor approval not created"
+  exit 1
+fi
 echo "  Counselor approval: $COUNSELOR2_APPROVAL_ID"
 
-# 14. T002 login
-echo "14. T002 login..."
+# 16. T002 login
+echo "16. T002 login..."
 T002_TOKEN=$(curl -s -X POST "$BASE_URL/api/auth/login" \
   -H "Content-Type: application/json" \
   -d '{"user_id":"T002","password":"T002"}' \
@@ -379,7 +446,7 @@ if [ -z "$T002_TOKEN" ] || [ "$T002_TOKEN" = "null" ]; then
 fi
 echo "✓ T002 login success"
 
-# 15. T002 reject
+# 17. T002 reject
 echo "15. T002 reject..."
 REJECT_RESPONSE=$(curl -s -X POST "$BASE_URL/api/approvals/$COUNSELOR2_APPROVAL_ID/reject/" \
   -H "Authorization: Bearer $T002_TOKEN" \
@@ -436,7 +503,7 @@ echo "--- N2: Cross-counselor approval (negative test) ---"
 
 # N2: T002 tries to approve T001's approval (should fail)
 # (Reusing T002_TOKEN from H2 scenario)
-echo "16. T002 tries to approve T001's approval (should fail)..."
+echo "18. T002 tries to approve T001's approval (should fail)..."
 CROSS_APPROVE_STATUS=$(curl -s -w "\n%{http_code}" -X POST "$BASE_URL/api/approvals/$COUNSELOR_APPROVAL_ID/approve/" \
   -H "Authorization: Bearer $T002_TOKEN" \
   -H "Content-Type: application/json" \

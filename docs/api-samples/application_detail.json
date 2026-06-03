@@ -1,0 +1,44 @@
+{
+  "application_id": "app_6411e95f",
+  "student_id": "2020001",
+  "student_name": "张三",
+  "class_id": "CS2020-01",
+  "reason": "毕业离校",
+  "leave_date": "2026-06-04",
+  "status": "approved",
+  "dorm_checkout_status": "completed",
+  "approvals": [
+    {
+      "approval_id": "apv_5f59ad12",
+      "application_id": "app_6411e95f",
+      "step": "dorm_manager",
+      "approver_id": "M001",
+      "approver_name": "宿管员1",
+      "decision": "approved",
+      "comment": "同意",
+      "decided_at": "2026-06-03T10:26:37.952794+08:00"
+    },
+    {
+      "approval_id": "apv_8a950f62",
+      "application_id": "app_6411e95f",
+      "step": "counselor",
+      "approver_id": "T001",
+      "approver_name": "李老师",
+      "decision": "approved",
+      "comment": "同意",
+      "decided_at": "2026-06-03T10:26:38.295121+08:00"
+    },
+    {
+      "approval_id": "apv_8d902c56",
+      "application_id": "app_6411e95f",
+      "step": "dean",
+      "approver_id": "D001",
+      "approver_name": "赵主任",
+      "decision": "approved",
+      "comment": "批准",
+      "decided_at": "2026-06-03T10:26:38.517282+08:00"
+    }
+  ],
+  "created_at": "2026-06-03T10:26:37.814150+08:00",
+  "updated_at": "2026-06-03T10:26:38.522177+08:00"
+}

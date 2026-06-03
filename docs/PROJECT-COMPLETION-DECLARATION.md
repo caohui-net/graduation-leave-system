@@ -43,10 +43,17 @@ python manage.py seed_data       # 加载成功
 - H2: 驳回流程（学生→宿管员→辅导员驳回）  
 - N2: 跨班级权限阻断（403）
 
+✓ **XG外部API数据采集测试完成**
+- 测试环境：湖南工学院生产API
+- 数据规模：32,039条用户记录
+- 字段完整性：number100%, name100%, phone80%, status100%
+- 数据质量：综合评分95/100（A级）
+
 **验证命令：**
 ```bash
 python manage.py test              # 172/172 passed
 SMOKE_RESET=1 ./tests/smoke_test.sh  # All tests passed
+python backend/scripts/xg_api_collection_test.py  # XG API test passed
 ```
 
 ---
@@ -69,6 +76,8 @@ SMOKE_RESET=1 ./tests/smoke_test.sh  # All tests passed
 ✓ API数据示例表  
 ✓ 操作说明书  
 ✓ 数据对接文档  
+✓ **XG API采集测试指南**  
+✓ **XG API实际数据样表**  
 ✓ 完成状态报告  
 ✓ Codex审查记录  
 

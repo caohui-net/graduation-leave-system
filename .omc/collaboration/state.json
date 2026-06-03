@@ -1,8 +1,8 @@
 {
   "workflow_id": "xg-data-analysis",
-  "current_task": "TASK-20260603-01",
-  "active_agent": "claude",
+  "current_task": "TASK-20260603-02",
+  "active_agent": "none",
   "status": "completed",
-  "last_event_id": 1,
-  "updated_at": "2026-06-03T15:05:37.864Z"
+  "last_event_id": 114,
+  "updated_at": "2026-06-03T16:08:31.821882Z"
 }

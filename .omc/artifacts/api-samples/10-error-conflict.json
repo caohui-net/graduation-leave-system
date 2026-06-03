@@ -1,0 +1,1 @@
+{"error":{"code":"CONFLICT","message":"申请已存在，不能重复提交","details":{"student_id":"2020001","existing_application_id":"app_eb41d2f5"}}}

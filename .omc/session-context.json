@@ -1,5 +1,5 @@
 {
-  "last_updated": "2026-06-02T18:10:00Z",
+  "last_updated": "2026-06-03T02:29:00Z",
   "completed": [
     "Step 2B: XG API客户端分页+测试（38/38）",
     "Step 2C-lite: 字段映射契约文档",
@@ -17,38 +17,31 @@
     "操作说明书创建（docs/操作说明书.md v0.1）",
     "操作说明书Codex审查（3 P0 + 4 P1 + 5 P2问题识别）",
     "操作说明书修复：P0问题（测试账号/API路径/小程序角色守卫）",
-    "操作说明书修复：P1问题（附件时机/提交前置条件/审批Tab/部署步骤）"
+    "操作说明书修复：P1问题（附件时机/提交前置条件/审批Tab/部署步骤）",
+    "Phase 4 Codex协作: 测试完成策略讨论（3步workflow确认）",
+    "Phase 4 实现: 3步审批流程完整实现（dorm_manager→counselor→dean）",
+    "Phase 4 测试修复: 100%通过率达成（172/172 tests passing）",
+    "Smoke test更新: 适配3步审批流程（移除counselor通知检查，添加M002审批步骤）",
+    "Smoke test验证: 全场景通过（H1 happy path, H2 rejection, N2 cross-counselor blocking）",
+    "项目完成度评估: MVP 95%, 生产就绪 70%（Codex审查对照）"
   ],
   "pending": [
-    "Step 4B Phase 4: 回归验证（需Django环境）"
+    "CI/CD配置（可选，毕业项目非必需）",
+    "生产安全警告修复（7项check --deploy警告）",
+    "外部系统验证（WeChat DevTools真机测试，宿舍系统真实对接）"
   ],
   "evidence": [
-    "mapper测试: 8/8 passed",
-    "同步计划服务测试: 8/8 passed",
-    "Migration 0002成功应用（phone/email/department字段）",
-    "mapper已支持email提取",
-    "test_complete_fields_success已包含email测试",
-    "Step 4B Phase 3: apply_xg_user_sync()函数实现完成",
-    "Step 4B Phase 3: 8个验收场景测试用例已编写",
-    "Step 5: sync_xg_users管理命令已创建（--apply/--limit支持）",
-    "学工部备案UI: demo-web角色选择器+动态标题+按钮隐藏",
-    "学工部备案UI: miniprogram动态标题+空状态+按钮条件渲染",
-    "操作说明书Codex审查: 完整P0/P1/P2问题列表+行号定位",
-    "操作说明书P0修复: 3个阻塞问题已修复",
-    "操作说明书P1修复: 4个主要问题已修复"
+    "Smoke test: All tests passed (H1+H2+N2)",
+    "Backend tests: 172/172 passing",
+    "Migrations: All applied and verified",
+    "Docker: backend+db healthy",
+    "Production check: 7 warnings documented in COMPLETION-STATUS.md"
   ],
-  "next_focus": "继续Step 4B Phase 3同步服务apply实现，或启动Step 5命令入口",
+  "next_focus": "项目演示环境完成。可选：CI/CD配置，生产安全加固",
   "artifacts": {
-    "field_coverage": "docs/phase4c-xg-field-coverage.md",
-    "mapper": "backend/apps/users/integrations/xg_user_mapper.py",
-    "sync_service": "backend/apps/users/services/xg_user_sync.py",
-    "sync_tests": "backend/apps/users/tests/test_xg_user_sync.py",
-    "user_model": "backend/apps/users/models.py",
-    "migration_0002": "backend/apps/users/migrations/0002_user_department_user_email_user_phone.py",
-    "dean_filing_ui_discussion": "docs/discussions/ui-design-2026-06-02/08-10",
-    "operations_manual": "docs/操作说明书.md",
-    "operations_manual_review": "docs/discussions/ui-design-2026-06-02/11-claude-response-operations-manual-review.md",
-    "discussions": "docs/discussions/phase4c-next-steps/94-108",
-    "consensus": "docs/discussions/phase4c-next-steps/108-step4b-strategy-final-consensus.md"
+    "completion_report": "docs/COMPLETION-STATUS.md",
+    "project_summary": "docs/PROJECT-SUMMARY.md",
+    "smoke_test": "tests/smoke_test.sh",
+    "codex_audit": ".omc/artifacts/ask/codex-1-docker-postgresql-2-172-172-100-3-3-dorm-manager-counselor-2026-06-02T20-48-37-673Z.md"
   }
 }

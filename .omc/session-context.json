@@ -1,5 +1,5 @@
 {
-  "last_updated": "2026-06-04T06:40:00Z",
+  "last_updated": "2026-06-04T08:40:00Z",
   "completed": [
     "Step 2B: XG API客户端分页+测试（38/38）",
     "Step 2C-lite: 字段映射契约文档",
@@ -29,12 +29,12 @@
     "Claude-Codex最终项目完成确认（2026-06-03）: 演示版完成，包括环境部署与测试",
     "XG API数据覆盖度Claude-Codex协作分析: 独立分析→共识综合，确认CSV主导+API补充策略，识别P1 mapper实现问题",
     "XG API数据对接分析文档完成（3份）: 全面分析报告、表对比分析、解决方案讨论",
-    "解决方案决策: 推荐方案A（CSV主导+XG API补充，85/100评分）"
+    "解决方案决策: 推荐方案A（CSV主导+XG API补充，85/100评分）",
+    "Mapper实现修复完成（2026-06-04）: user_identity对象、department数组、phone空串处理，12/12测试通过",
+    "phase4c文档升级为v1.0正式版（2026-06-04）: 基于live样本，明确API无法替代CSV结论"
   ],
   "pending": [
-    "修复mapper实现问题（P1，本周内）: user_identity对象结构、department数组处理、phone空串、user对象缺失容错",
-    "更新phase4c-xg-field-coverage.md为live样本正式版",
-    "向外部系统确认缺失接口（本月内）: XG/教务系统毕业批次字段、人事系统班级辅导员关系、宿舍系统清退状态API"
+    "向外部系统确认缺失接口（本月内，需业务方推进）: XG/教务系统毕业批次字段、人事系统班级辅导员关系、宿舍系统清退状态API"
   ],
   "evidence": [
     "Smoke test: All tests passed (H1+H2+N2)",
@@ -45,9 +45,11 @@
     "XG API data quality: 95/100 (A grade)",
     "Field coverage: 3/11 complete, 7/11 missing, 3/7 critical fields absent",
     "Claude-Codex consensus: Phase 1 strategy approved (CSV主导+API补充), API-led mode blocked",
-    "Solution evaluation: 方案A scored 85/100, 4-week implementation roadmap defined"
+    "Solution evaluation: 方案A scored 85/100, 4-week implementation roadmap defined",
+    "Mapper fixes: 12/12 tests passed in Docker environment",
+    "phase4c document: upgraded to v1.0 based on live samples"
   ],
-  "next_focus": "XG API数据对接分析完成。核心结论：API不能替代CSV（缺class_id/is_graduating/graduation_year），推荐CSV主导+API补充（方案A，85/100）。Codex识别P1 mapper实现问题（user_identity对象、department数组）需修复。下一步：修复mapper适配实际数据结构。",
+  "next_focus": "XG API数据对接待办任务完成。任务1（mapper修复）和任务2（phase4c文档升级）已完成并推送。任务3（向外部系统确认）需业务方协调，技术层面准备就绪。下一步：等待用户指示或处理其他项目需求。",
   "artifacts": {
     "completion_report": "docs/COMPLETION-STATUS.md",
     "project_summary": "docs/PROJECT-SUMMARY.md",
@@ -57,6 +59,9 @@
     "xg_solution_discussion": "docs/XG-API数据不足解决方案讨论.md",
     "claude_analysis": ".omc/collaboration/artifacts/20260603-1502-claude-xg-data-gap-analysis.md",
     "codex_review": ".omc/collaboration/artifacts/20260603-1605-codex-xg-data-coverage-review.md",
-    "consensus_doc": ".omc/collaboration/artifacts/20260603-1610-consensus-xg-data-coverage.md"
+    "consensus_doc": ".omc/collaboration/artifacts/20260603-1610-consensus-xg-data-coverage.md",
+    "mapper_code": "backend/apps/users/integrations/xg_user_mapper.py",
+    "mapper_tests": "backend/apps/users/tests/test_xg_user_mapper.py",
+    "phase4c_doc": "docs/phase4c-xg-field-coverage.md"
   }
 }

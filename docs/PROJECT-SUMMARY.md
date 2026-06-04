@@ -2560,4 +2560,76 @@
 
 **状态：**
 - ✅ 操作说明书P0+P1问题修复完成
+
+---
+
+## 2026-06-03/06-04 - XG API数据对接分析
+
+**工作内容：**
+
+### Claude-Codex协作分析XG API数据覆盖度
+
+**协作流程（Claude-Codex独立分析→综合共识）：**
+- ✓ 创建审查请求文档（TASK-20260603-02-xg-data-review-request.md）
+- ✓ Claude独立分析（数据质量视角）
+- ✓ Codex独立审查（业务流程+实现视角）
+- ✓ 综合形成共识文档（20260603-1610-consensus-xg-data-coverage.md）
+
+**核心结论：**
+- ❌ XG API无法独立支持项目需求，只能作为补充信息源
+- **字段覆盖度：** 27% (3/11完全覆盖), 64% (7/11缺失)
+- **必填字段覆盖：** 57% (4/7), 关键业务字段0% (0/3)
+- **数据质量评分：** 95/100 (A级) - 提供的字段质量优秀但业务覆盖不足
+
+**关键缺失（P0阻断）：**
+- class_id（班级ID）→ 审批人分配失败
+- is_graduating（毕业生标识）→ 申请资格判定失败
+- graduation_year（毕业年份）→ 数据归档失败
+- ClassMapping表（班级-辅导员映射）→ 审批链路中断
+- 宿舍清退状态 → 提交前置条件验证失败
+
+**Codex发现的P1实现问题：**
+- user_identity实际为对象 `{"id": 4, "name": "学生"}` 而非字符串
+- department实际为数组 `[{"name": "计算机学院"}]` 而非字符串
+- mapper未适配实际结构（backend/apps/users/integrations/xg_user_mapper.py:41, 59-67, 44, 81）
+
+**解决方案讨论与决策：**
+- ✓ 评估5个解决方案（A-E）
+- ✓ **推荐方案A：CSV主导 + XG API补充** (85/100)
+  - 数据流：CSV创建用户+核心字段 → XG API更新phone/department/active
+  - 实施周期：4周（CSV模板→导入测试→全量导入→API集成）
+  - 优点：业务完整性100%, 风险可控, 实施快速
+  - 缺点：每学期需手工维护CSV
+- ✓ 定义Phase 2切换条件（6项全部满足才可切换到API主导模式）
+
+**协作文档：**
+- .omc/collaboration/tasks/TASK-20260603-02-xg-data-review-request.md
+- .omc/collaboration/artifacts/20260603-1502-claude-xg-data-gap-analysis.md
+- .omc/collaboration/artifacts/20260603-1605-codex-xg-data-coverage-review.md
+- .omc/collaboration/artifacts/20260603-1610-consensus-xg-data-coverage.md
+
+**分析报告（3份）：**
+- docs/XG-API-数据源全面分析报告.md (19.0K, 639行)
+  - 13个不满足项详细分析（P0/P1/P2分类）
+  - 数据质量评估（完整性/准确性/一致性/可用性）
+  - Phase 1/Phase 2对接策略
+- docs/XG-API与项目数据表对比分析.md (12.0K, 372行)
+  - 项目表结构 vs XG API实际结构逐字段对比
+  - 真实JSON示例
+  - 数据需求规格说明
+- docs/XG-API数据不足解决方案讨论.md (11.2K, 411行)
+  - 5个解决方案对比（A-E）
+  - 决策矩阵（6个评估维度）
+  - 4周实施路线图
+  - 风险分析与应对
+
+**待办事项：**
+- [ ] 修复mapper实现问题（P1，本周内）
+- [ ] 更新phase4c-xg-field-coverage.md为live样本正式版
+- [ ] 向外部系统确认缺失接口（本月内）
+
+**状态：**
+- ✅ XG API数据覆盖度分析完成
+- ✅ 解决方案讨论完成，推荐方案A（CSV主导+API补充）
+- ⏳ Mapper实现修复待执行
 - ⏸️ P2改进建议延后处理

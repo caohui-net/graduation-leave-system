@@ -1,5 +1,5 @@
 {
-  "last_updated": "2026-06-03T16:12:00Z",
+  "last_updated": "2026-06-04T06:40:00Z",
   "completed": [
     "Step 2B: XG API客户端分页+测试（38/38）",
     "Step 2C-lite: 字段映射契约文档",
@@ -27,12 +27,14 @@
     "XG API全面数据采集测试: 湖南工学院生产环境32,039用户（95/100质量评分）",
     "XG API测试文档创建: 测试指南+实际数据样表",
     "Claude-Codex最终项目完成确认（2026-06-03）: 演示版完成，包括环境部署与测试",
-    "XG API数据覆盖度Claude-Codex协作分析: 独立分析→共识综合，确认CSV主导+API补充策略，识别P1 mapper实现问题"
+    "XG API数据覆盖度Claude-Codex协作分析: 独立分析→共识综合，确认CSV主导+API补充策略，识别P1 mapper实现问题",
+    "XG API数据对接分析文档完成（3份）: 全面分析报告、表对比分析、解决方案讨论",
+    "解决方案决策: 推荐方案A（CSV主导+XG API补充，85/100评分）"
   ],
   "pending": [
-    "修复mapper实现问题（P1）: user_identity对象结构、department数组处理",
+    "修复mapper实现问题（P1，本周内）: user_identity对象结构、department数组处理、phone空串、user对象缺失容错",
     "更新phase4c-xg-field-coverage.md为live样本正式版",
-    "向外部系统确认缺失接口（毕业批次、班级编码、辅导员关系、宿舍清退）"
+    "向外部系统确认缺失接口（本月内）: XG/教务系统毕业批次字段、人事系统班级辅导员关系、宿舍系统清退状态API"
   ],
   "evidence": [
     "Smoke test: All tests passed (H1+H2+N2)",
@@ -41,14 +43,18 @@
     "Docker: backend+db healthy",
     "Production check: 7 warnings documented in COMPLETION-STATUS.md",
     "XG API data quality: 95/100 (A grade)",
-    "Field coverage: 3/11 complete, 3/7 critical fields missing",
-    "Claude-Codex consensus: Phase 1 strategy approved, API-led mode blocked"
+    "Field coverage: 3/11 complete, 7/11 missing, 3/7 critical fields absent",
+    "Claude-Codex consensus: Phase 1 strategy approved (CSV主导+API补充), API-led mode blocked",
+    "Solution evaluation: 方案A scored 85/100, 4-week implementation roadmap defined"
   ],
-  "next_focus": "XG API数据覆盖度协作分析完成。核心结论：API不能替代CSV（缺class_id/is_graduating/graduation_year），推荐CSV主导+API补充。Codex识别P1 mapper实现问题需修复。",
+  "next_focus": "XG API数据对接分析完成。核心结论：API不能替代CSV（缺class_id/is_graduating/graduation_year），推荐CSV主导+API补充（方案A，85/100）。Codex识别P1 mapper实现问题（user_identity对象、department数组）需修复。下一步：修复mapper适配实际数据结构。",
   "artifacts": {
     "completion_report": "docs/COMPLETION-STATUS.md",
     "project_summary": "docs/PROJECT-SUMMARY.md",
     "smoke_test": "tests/smoke_test.sh",
+    "xg_data_analysis": "docs/XG-API-数据源全面分析报告.md",
+    "xg_table_comparison": "docs/XG-API与项目数据表对比分析.md",
+    "xg_solution_discussion": "docs/XG-API数据不足解决方案讨论.md",
     "claude_analysis": ".omc/collaboration/artifacts/20260603-1502-claude-xg-data-gap-analysis.md",
     "codex_review": ".omc/collaboration/artifacts/20260603-1605-codex-xg-data-coverage-review.md",
     "consensus_doc": ".omc/collaboration/artifacts/20260603-1610-consensus-xg-data-coverage.md"

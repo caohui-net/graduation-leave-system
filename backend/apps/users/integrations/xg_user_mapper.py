@@ -14,6 +14,7 @@ def map_xg_user_to_internal(xg_user: dict) -> dict:
             'name': str | None,
             'role': str | None,
             'phone': str | None,
+            'email': str | None,
             'department': str | None,
             'class_id': None,  # API不提供
             'is_graduating': None,  # API不提供
@@ -26,6 +27,7 @@ def map_xg_user_to_internal(xg_user: dict) -> dict:
         'name': None,
         'role': None,
         'phone': None,
+        'email': None,
         'department': None,
         'class_id': None,
         'is_graduating': None,
@@ -38,7 +40,21 @@ def map_xg_user_to_internal(xg_user: dict) -> dict:
     name = xg_user.get('name')
     user_identity = xg_user.get('user_identity')
     phone = xg_user.get('phone')
-    department = xg_user.get('department')
+    email = xg_user.get('email')
+    department_raw = xg_user.get('department')
+
+    # 处理department数组: [{"name": "计算机学院", "level": 2}]
+    department = None
+    if isinstance(department_raw, list) and len(department_raw) > 0:
+        if isinstance(department_raw[0], dict):
+            department = department_raw[0].get('name')
+    elif isinstance(department_raw, str):
+        # 向后兼容：支持字符串格式
+        department = department_raw
+
+    # 处理phone空字符串：归一化为None
+    if phone == '':
+        phone = None
 
     # 必填字段检查
     if not number:
@@ -53,16 +69,27 @@ def map_xg_user_to_internal(xg_user: dict) -> dict:
     # 角色映射（只接受明确的学生值）
     role = None
     if user_identity is not None:
-        user_identity_str = str(user_identity)
-        if user_identity_str == '1':
-            role = 'student'
-        elif user_identity_str.lower() == 'student':
-            role = 'student'
+        # XG API实际返回对象: {"id": 4, "name": "学生"}
+        if isinstance(user_identity, dict):
+            identity_name = user_identity.get('name', '')
+            identity_id = user_identity.get('id')
+            if identity_name == '学生' or identity_id == 4:
+                role = 'student'
+            else:
+                result['user_id'] = number
+                result['name'] = name
+                result['skip_reason'] = f'unknown_user_identity: name={identity_name}, id={identity_id}'
+                return result
+        # 向后兼容：支持字符串格式
         else:
-            result['user_id'] = number
-            result['name'] = name
-            result['skip_reason'] = f'unknown_user_identity: {user_identity_str}'
-            return result
+            user_identity_str = str(user_identity)
+            if user_identity_str == '1' or user_identity_str.lower() == 'student':
+                role = 'student'
+            else:
+                result['user_id'] = number
+                result['name'] = name
+                result['skip_reason'] = f'unknown_user_identity: {user_identity_str}'
+                return result
     else:
         result['user_id'] = number
         result['name'] = name
@@ -74,6 +101,7 @@ def map_xg_user_to_internal(xg_user: dict) -> dict:
     result['name'] = name
     result['role'] = role
     result['phone'] = phone
+    result['email'] = email
     result['department'] = department
 
     return result

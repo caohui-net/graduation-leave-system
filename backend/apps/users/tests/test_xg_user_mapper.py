@@ -12,6 +12,7 @@ class XGUserMapperTests(TestCase):
             'number': '2022001',
             'name': '张三',
             'phone': '13800138000',
+            'email': 'zhangsan@example.com',
             'department': '计算机学院',
             'user_identity': '1'
         }
@@ -22,6 +23,7 @@ class XGUserMapperTests(TestCase):
         self.assertEqual(result['name'], '张三')
         self.assertEqual(result['role'], 'student')
         self.assertEqual(result['phone'], '13800138000')
+        self.assertEqual(result['email'], 'zhangsan@example.com')
         self.assertEqual(result['department'], '计算机学院')
         self.assertIsNone(result['class_id'])
         self.assertIsNone(result['is_graduating'])
@@ -121,3 +123,69 @@ class XGUserMapperTests(TestCase):
 
         # number缺失优先级最高
         self.assertEqual(result['skip_reason'], 'missing_user_id')
+
+    def test_user_identity_object_format(self):
+        """测试user_identity对象格式（XG API实际返回格式）"""
+        xg_user = {
+            'number': '2025110140314',
+            'name': '乐绍钧',
+            'user_identity': {'id': 4, 'name': '学生'},
+            'phone': '15334282752',
+            'department': [{'name': '计算机学院', 'level': 2}]
+        }
+
+        result = map_xg_user_to_internal(xg_user)
+
+        self.assertEqual(result['user_id'], '2025110140314')
+        self.assertEqual(result['name'], '乐绍钧')
+        self.assertEqual(result['role'], 'student')
+        self.assertEqual(result['phone'], '15334282752')
+        self.assertEqual(result['department'], '计算机学院')
+        self.assertIsNone(result['skip_reason'])
+
+    def test_department_array_format(self):
+        """测试department数组格式"""
+        xg_user = {
+            'number': '2022001',
+            'name': '张三',
+            'user_identity': {'id': 4, 'name': '学生'},
+            'department': [
+                {'name': '计算机学院', 'level': 2},
+                {'name': '黄冈师范学院', 'level': 1}
+            ]
+        }
+
+        result = map_xg_user_to_internal(xg_user)
+
+        # 应该提取第一个元素的name
+        self.assertEqual(result['department'], '计算机学院')
+        self.assertIsNone(result['skip_reason'])
+
+    def test_phone_empty_string_normalized(self):
+        """测试phone空字符串归一化为None"""
+        xg_user = {
+            'number': '2022001',
+            'name': '张三',
+            'user_identity': {'id': 4, 'name': '学生'},
+            'phone': ''
+        }
+
+        result = map_xg_user_to_internal(xg_user)
+
+        self.assertIsNone(result['phone'])
+        self.assertIsNone(result['skip_reason'])
+
+    def test_department_empty_array(self):
+        """测试department空数组"""
+        xg_user = {
+            'number': '2022001',
+            'name': '张三',
+            'user_identity': {'id': 4, 'name': '学生'},
+            'department': []
+        }
+
+        result = map_xg_user_to_internal(xg_user)
+
+        self.assertIsNone(result['department'])
+        self.assertIsNone(result['skip_reason'])
+

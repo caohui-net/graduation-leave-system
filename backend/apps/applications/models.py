@@ -7,7 +7,6 @@ class ApplicationStatus(models.TextChoices):
     DRAFT = 'draft', '草稿'
     PENDING_DORM_MANAGER = 'pending_dorm_manager', '待宿管员审批'
     PENDING_COUNSELOR = 'pending_counselor', '待辅导员审批'
-    PENDING_DEAN = 'pending_dean', '待学工部审批'
     APPROVED = 'approved', '已通过'
     REJECTED = 'rejected', '已驳回'
 
@@ -38,7 +37,6 @@ class Application(models.Model):
         active_statuses = [
             ApplicationStatus.PENDING_DORM_MANAGER,
             ApplicationStatus.PENDING_COUNSELOR,
-            ApplicationStatus.PENDING_DEAN,
             ApplicationStatus.APPROVED,
         ]
         if self.status in active_statuses:

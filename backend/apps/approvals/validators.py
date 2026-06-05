@@ -4,7 +4,6 @@ from apps.applications.models import ApplicationStatus
 EXPECTED_STATUS_BY_STEP = {
     'dorm_manager': ApplicationStatus.PENDING_DORM_MANAGER,
     'counselor': ApplicationStatus.PENDING_COUNSELOR,
-    'dean': ApplicationStatus.PENDING_DEAN,
 }
 
 

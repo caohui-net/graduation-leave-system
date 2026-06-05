@@ -114,40 +114,13 @@ class ApplicationFlowTestCase(TestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data['decision'], ApprovalDecision.APPROVED)
 
-        # Step 7: 查询申请状态 - 应该是待学工部审批
-        application.refresh_from_db()
-        self.assertEqual(application.status, ApplicationStatus.PENDING_DEAN)
-
-        # Step 8: 学工部登录并审批
-        response = self.client.post('/api/auth/login', {
-            'user_id': 'D001',
-            'password': 'D001'
-        }, format='json')
-        dean_token = response.data['access_token']
-
-        # Step 9: 学工部审批通过
-        dean_approval = application.approvals.get(step=ApprovalStep.DEAN)
-
-        self.client.credentials(HTTP_AUTHORIZATION=f'Bearer {dean_token}')
-        response = self.client.post(f'/api/approvals/{dean_approval.approval_id}/approve/', {
-            'comment': '学工部备案通过'
-        }, format='json')
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data['decision'], ApprovalDecision.APPROVED)
-
-        # Step 10: 最终状态查询
+        # Step 7: 查询申请状态 - 辅导员审批后直接完成（2级审批）
         application.refresh_from_db()
         self.assertEqual(application.status, ApplicationStatus.APPROVED)
 
+        # Step 8: 最终状态查询
         self.client.credentials(HTTP_AUTHORIZATION=f'Bearer {student_token}')
         response = self.client.get(f'/api/applications/{application_id}/')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data['status'], ApplicationStatus.APPROVED)
-        self.assertEqual(len(response.data['approvals']), 3)
-
-        # Step 11: 学工部归档查询已通过申请
-        self.client.credentials(HTTP_AUTHORIZATION=f'Bearer {dean_token}')
-        response = self.client.get('/api/applications/')
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data['count'], 1)
-        self.assertEqual(response.data['results'][0]['application_id'], application_id)
+        self.assertEqual(len(response.data['approvals']), 2)  # 2-level approval

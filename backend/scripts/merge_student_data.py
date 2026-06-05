@@ -49,6 +49,7 @@ def merge_files(file1_path: str, file2_path: str, output_path: str) -> dict:
         'total_file1_rows': 0,
         'matched_count': 0,
         'file1_only_count': 0,
+        'file2_only_count': 0,
         'grad_generated_ids': 0,
         'tmp_generated_ids': 0,
         'normalization_failures': 0,
@@ -56,6 +57,7 @@ def merge_files(file1_path: str, file2_path: str, output_path: str) -> dict:
     }
 
     output_rows = []
+    matched_file2_keys = set()  # Track matched File2 rows
 
     with open(file1_path, 'r', encoding='utf-8') as f:
         reader = csv.DictReader(f)
@@ -89,6 +91,10 @@ def merge_files(file1_path: str, file2_path: str, output_path: str) -> dict:
             # Try to match with File2
             match_key = f"{name}|{college_norm}|{class_name}"
             file2_row = file2_index.get(match_key)
+
+            # Track matched File2 keys
+            if file2_row:
+                matched_file2_keys.add(match_key)
 
             # Determine if graduate student
             is_graduate = level in ['硕士', '博士']
@@ -135,6 +141,37 @@ def merge_files(file1_path: str, file2_path: str, output_path: str) -> dict:
 
             output_rows.append(output_row)
 
+    # Process File2-only rows (user decision: import them)
+    for match_key, file2_row in file2_index.items():
+        if match_key not in matched_file2_keys:
+            stats['file2_only_count'] += 1
+
+            # Parse match_key to get name, college, class
+            name, college_norm, class_name = match_key.split('|')
+
+            # Extract File2 data
+            student_no = file2_row['XH'].strip()
+
+            # File2-only row output
+            output_row = {
+                'source_row_id': f'FILE2_{stats["file2_only_count"]}',
+                'user_id': student_no,
+                'user_id_source': 'file2_only',
+                'student_no': student_no,
+                'name': name,
+                'department': college_norm,
+                'major': '',  # Not in File2
+                'grade': '',  # Not in File2
+                'class_id': class_name,
+                'level': '',  # Not in File2
+                'building_name': '',  # Not in File2
+                'room_number': '',  # Not in File2
+                'phone': file2_row.get('SJHM', '').strip(),
+                'email': file2_row.get('email', '').strip(),
+            }
+
+            output_rows.append(output_row)
+
     # Write File5
     if output_rows:
         fieldnames = list(output_rows[0].keys())
@@ -167,8 +204,9 @@ if __name__ == "__main__":
     print(f"File1 only: {stats['file1_only_count']}")
     print(f"  - Graduate IDs generated: {stats['grad_generated_ids']}")
     print(f"  - Temp IDs generated: {stats['tmp_generated_ids']}")
+    print(f"File2 only: {stats['file2_only_count']}")
     print(f"Normalization failures: {stats['normalization_failures']}")
-    print(f"Output rows: {stats['total_file1_rows'] - stats['normalization_failures']}")
+    print(f"Output rows: {stats['total_file1_rows'] + stats['file2_only_count'] - stats['normalization_failures']}")
 
     if stats['skipped_rows']:
         print(f"\n⚠️  Skipped {len(stats['skipped_rows'])} rows (see report)")

@@ -2860,3 +2860,45 @@
 - docs/用户需求最终确认与实施方案.md（完整需求文档）
 
 **状态：** ✅ 所有P0阻塞已解除，实施方案就绪，等待用户确认开始
+
+### Codex实施方案审查与Phase 0修正
+
+**Codex审查结果：** 22/40分，发现3个新P0技术阻塞
+
+**3个P0技术阻塞：**
+
+1. **P0-1: 空学号无法导入** - User.user_id是必填主键，但271研究生+File2未匹配学生缺学号
+2. **P0-2: 多宿管员冲突** - Approval.approver是单FK，无法支持"任一宿管员审批"
+3. **P0-3: ClassMapping移除被低估** - 深度嵌入10+文件（提交、流转、权限、测试）
+
+**Phase 0数据门禁脚本（已实现）：**
+
+| 脚本 | 功能 | 状态 |
+|------|------|------|
+| generate_temp_user_ids.py | 3层ID生成：真实XH > GRAD2026_{hash} > TMP2026_{row} | ✅ 完成+测试 |
+| merge_student_data.py | File1+File2合并，输出user_id/student_no/source | ✅ 完成 |
+| validate_routing_coverage.py | 100%路由覆盖验证（楼栋→宿管，学院→辅导） | ✅ 完成 |
+| normalize_colleges.py | 18学院规范化映射 | ✅ 完成 |
+
+**Phase 0解决方案：**
+- 临时ID策略：GRAD用SHA256稳定hash，TMP用行号溯源
+- 多宿管员MVP简化：每楼栋指定唯一primary manager
+- 路由门禁：exit 0当100%覆盖，否则exit 1阻断实施
+
+**修正后实施方案：**
+- Phase 0: 数据验证门禁（1-1.5天，新增）
+- Phase 1: 数据准备（0.5天）
+- Phase 2: 系统调整（1-1.5天，扩展为10子任务）
+- Phase 3-5: 导入+前端+测试（1.5天）
+
+**总时间：** 4-6天（原2.5-3天）
+
+**产出物：**
+- .omc/collaboration/artifacts/20260605-codex-implementation-plan-review.md
+- .omc/collaboration/artifacts/20260605-claude-response-implementation-plan-review.md
+- .omc/collaboration/artifacts/20260605-consensus-implementation-plan.md
+- backend/scripts/{generate_temp_user_ids,merge_student_data,validate_routing_coverage}.py
+
+**Commit:** a142ad8 "feat: Phase 0数据门禁脚本实现" (+547 lines)
+
+**状态：** ✅ P0技术阻塞已修正，Phase 0脚本就绪，等待真实数据文件执行验证

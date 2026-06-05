@@ -1,8 +1,8 @@
 {
-  "workflow_id": "xg-data-analysis",
-  "current_task": "TASK-20260603-02",
+  "workflow_id": "implementation-plan-review",
+  "current_task": "TASK-20260605-04",
   "active_agent": "none",
-  "status": "completed",
-  "last_event_id": 114,
-  "updated_at": "2026-06-03T16:08:31.821882Z"
+  "status": "task_open",
+  "last_event_id": 7,
+  "updated_at": "2026-06-05T19:55:07.600892+00:00"
 }

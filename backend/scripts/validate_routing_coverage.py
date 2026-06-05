@@ -5,8 +5,14 @@ Ensures every student can be routed to dorm manager and counselor.
 """
 import csv
 import json
+import sys
+from pathlib import Path
 from collections import defaultdict
 from typing import Dict, List, Set
+
+# Add scripts dir to path
+sys.path.insert(0, str(Path(__file__).parent))
+from normalize_colleges import normalize_college_name
 
 
 def load_students(file5_path: str) -> List[dict]:
@@ -26,6 +32,7 @@ def load_dorm_managers(file3_path: str) -> Dict[str, List[str]]:
     building_managers = defaultdict(list)
 
     with open(file3_path, 'r', encoding='utf-8') as f:
+        next(f)  # Skip title row
         reader = csv.DictReader(f)
         for row in reader:
             building = row['楼栋号'].strip()
@@ -45,13 +52,20 @@ def load_counselors(file4_path: str) -> Dict[str, str]:
     dept_counselors = {}
 
     with open(file4_path, 'r', encoding='utf-8') as f:
+        next(f)  # Skip title row
         reader = csv.DictReader(f)
         for row in reader:
-            department = row['学院'].strip()
+            department_raw = row['学院'].strip()
             counselor_id = row['职工号'].strip()
 
             if counselor_id:
-                dept_counselors[department] = counselor_id
+                try:
+                    # Normalize department name to match File5
+                    department_norm = normalize_college_name(department_raw)
+                    dept_counselors[department_norm] = counselor_id
+                except ValueError:
+                    # Skip departments that can't be normalized
+                    continue
 
     return dept_counselors
 

@@ -1,5 +1,5 @@
 {
-  "last_updated": "2026-06-05T19:05:00Z",
+  "last_updated": "2026-06-05T20:01:00Z",
   "completed": [
     "Excel数据源关联策略协作（2026-06-05）",
     "用户需求最终确认（2026-06-05）: 5项关键业务决策",
@@ -7,22 +7,28 @@
     "Phase 0数据门禁脚本（2026-06-05）: 4个脚本+测试",
     "Claude响应+共识文档（2026-06-05）",
     "用户4项业务决策（2026-06-05）: 寝室号、楼栋匹配、File2独有116行导入、学工管理员数据",
-    "merge脚本修改（2026-06-05）: 支持File2独有行，输出5946行"
+    "merge脚本修改（2026-06-05）: 支持File2独有行，输出5946行",
+    "Phase 0 Task 0.2执行（2026-06-05）: 合并File1+File2，输出5946行，0失败",
+    "Phase 0 Task 0.5执行（2026-06-05）: 路由覆盖验证，辅导员100%，宿管员98%",
+    "P0阻塞分析（2026-06-05）: 116名File2独有学生缺楼栋数据，创建分析文档+数据请求",
+    "协作任务创建（2026-06-05）: TASK-20260605-04，请求Codex审查",
+    "用户数据请求文档（2026-06-05）: 116人楼栋信息补充模板CSV"
   ],
   "pending": [
-    "Phase 0执行（等待真实数据文件File1-4）",
+    "用户补充116名学生楼栋数据（CSV模板已提供）",
+    "Phase 0决策：接受98%覆盖率或等待数据补充",
+    "Phase 1-5实施（Phase 0决策确认后）",
     "学工管理员数据提供（Excel/CSV，格式待定）",
-    "File3寝室号补充（Phase 2升级用）",
-    "Phase 1-5实施（Phase 0验证通过后）"
+    "File3寝室号补充（Phase 2升级用）"
   ],
   "evidence": [
-    "Codex review: 22/40, 3 P0 + 8 P1",
-    "Phase 0脚本: generate_temp_user_ids测试通过，所有脚本语法正确",
-    "用户决策3: File2独有116行导入，merge脚本已实现",
-    "文档更新: 5830→5946行（8处同步）",
-    "提交: 5次commit（Phase 0脚本+文档+状态修正+merge修改+5946更新）"
+    "Phase 0 Task 0.2: 5946行输出，0规范化失败，271临时ID生成，116 File2独有行导入",
+    "Phase 0 Task 0.5: 辅导员100% (5946/5946)，宿管员98% (5830/5946)，116人缺楼栋数据",
+    "数据请求CSV: backend/data/missing_building_data_request.csv (116行)",
+    "P0分析文档: .omc/collaboration/artifacts/20260605-phase0-routing-coverage-blocker.md",
+    "路由验证报告: backend/data/routing_coverage_report.json"
   ],
-  "next_focus": "所有Phase 0准备工作完成。用户4项业务决策已实现：1)寝室号字段merge脚本已包含 2)楼栋按名称匹配 3)File2独有116行merge脚本支持导入(total 5946行) 4)学工管理员数据单独提供。merge_student_data.py已修改支持file2_only rows。文档全面更新反映5946行总数。等待用户提供真实数据文件（File1-4 Excel）执行Phase 0验证。",
+  "next_focus": "Phase 0路由验证完成，发现116名File2独有学生缺楼栋数据（98% vs 100%门禁）。已创建数据补充请求文档和CSV模板供用户填写。推荐方案：接受98%覆盖率，主流程5830人可正常进行，116人数据补充后导入。等待用户决策：1)接受98%并继续Phase 1-5 2)立即提供116人楼栋数据。",
   "artifacts": {
     "user_requirements": "docs/用户需求最终确认与实施方案.md",
     "codex_review": ".omc/collaboration/artifacts/20260605-codex-implementation-plan-review.md",
@@ -30,6 +36,10 @@
     "consensus": ".omc/collaboration/artifacts/20260605-consensus-implementation-plan.md",
     "user_decisions": ".omc/collaboration/artifacts/20260605-user-business-decisions.md",
     "phase0_scripts": "backend/scripts/{generate_temp_user_ids,merge_student_data,validate_routing_coverage,normalize_colleges}.py",
+    "phase0_data": "backend/data/{file5_students_merged.csv,routing_coverage_report.json,merge_report.json}",
+    "p0_blocker_analysis": ".omc/collaboration/artifacts/20260605-phase0-routing-coverage-blocker.md",
+    "data_request": "docs/数据补充请求-116名学生楼栋信息.md",
+    "data_request_csv": "backend/data/missing_building_data_request.csv",
     "project_summary": "docs/PROJECT-SUMMARY.md"
   },
   "suggested_skills": []

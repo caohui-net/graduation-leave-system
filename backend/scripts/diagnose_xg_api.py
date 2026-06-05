@@ -88,8 +88,12 @@ def live_probe(config, timeout):
                 'sample': sample
             }
 
+        elif 'tenant' in result.get('msg', '').lower() or '租户' in result.get('msg', ''):
+            return {'status': 'ERROR', 'error': 'tenant_invalid', 'code': result['code'], 'message': result.get('msg')}
         elif result['code'] in (401, 403):
             return {'status': 'ERROR', 'error': 'auth_failed', 'code': result['code'], 'message': result.get('msg')}
+        elif result['code'] in (404, 40001, 40002):
+            return {'status': 'ERROR', 'error': 'tenant_invalid', 'code': result['code'], 'message': result.get('msg')}
         else:
             return {'status': 'ERROR', 'error': 'business_error', 'code': result['code'], 'message': result.get('msg')}
 

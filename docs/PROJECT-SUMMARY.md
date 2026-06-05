@@ -2902,3 +2902,40 @@
 **Commit:** a142ad8 "feat: Phase 0数据门禁脚本实现" (+547 lines)
 
 **状态：** ✅ P0技术阻塞已修正，Phase 0脚本就绪，等待真实数据文件执行验证
+
+### 用户业务决策（2026-06-05）
+
+用户回答Phase 0开放问题，提供4项业务决策：
+
+**决策1：寝室号字段确认**
+- File5包含room_number字段 ✓（merge脚本已实现）
+- File3后续补充room_number实现一对一精确路由
+- 路径：Phase 1楼栋级 → Phase 2寝室级
+
+**决策2：楼栋匹配规则**
+- 按楼栋名称吻合匹配（exact或normalized）
+- 需File3到达后验证是否需building_normalization_map
+
+**决策3：File2独有116行处理**
+- 导入为额外学生（非归档）
+- 总学生数：5830（File1）+ 116（File2独有）= 5946行
+- merge脚本已支持file2_only rows ✓
+
+**决策4：学工管理员数据**
+- 单独Excel/CSV提供（格式待定）
+- 角色：只读，查看全部申请，无审批权限
+- 导入命令需支持admin role
+
+**代码修改（已完成）：**
+- merge_student_data.py：增加File2独有行处理逻辑
+  - 新增file2_only_count统计
+  - 追加未匹配File2行到输出
+  - user_id_source: 'file2_only'
+- 文档更新：5830→5946行（8处同步修改）
+
+**产出物：**
+- .omc/collaboration/artifacts/20260605-user-business-decisions.md
+- backend/scripts/merge_student_data.py（修改）
+- docs/用户需求最终确认与实施方案.md（更新）
+
+**状态：** ✅ 用户决策已实现，merge脚本支持5946行输出，等待真实数据文件验证

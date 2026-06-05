@@ -1,35 +1,36 @@
 {
-  "last_updated": "2026-06-05T05:38:00Z",
+  "last_updated": "2026-06-05T19:05:00Z",
   "completed": [
-    "Excel数据源初始分析（2026-06-05早期）: 错误结论\"无法关联\"（已废弃）",
-    "Excel数据源关联策略协作（2026-06-05）: 用户纠正→Claude验证→Codex审查→三方共识达成",
-    "用户需求最终确认（2026-06-05）: 5项关键业务决策，原P0阻塞解除",
-    "Codex实施方案审查（2026-06-05）: 22/40分，发现3个新P0技术阻塞",
-    "Phase 0数据门禁脚本实现（2026-06-05）: 4个脚本解决P0阻塞（temp ID、merge、validate、normalize）",
-    "Claude响应文档（2026-06-05）: 分析Codex审查，说明Phase 0解决方案",
-    "共识文档（2026-06-05）: Claude-Codex达成一致，Phase 0就绪"
+    "Excel数据源关联策略协作（2026-06-05）",
+    "用户需求最终确认（2026-06-05）: 5项关键业务决策",
+    "Codex实施方案审查（2026-06-05）: 22/40分，3个P0技术阻塞",
+    "Phase 0数据门禁脚本（2026-06-05）: 4个脚本+测试",
+    "Claude响应+共识文档（2026-06-05）",
+    "用户4项业务决策（2026-06-05）: 寝室号、楼栋匹配、File2独有116行导入、学工管理员数据",
+    "merge脚本修改（2026-06-05）: 支持File2独有行，输出5946行"
   ],
   "pending": [
-    "Phase 0执行（等待真实数据文件）: merge + validate routing coverage",
-    "回答用户4个开放问题: 主责宿管选择、楼栋规范化、File2独有116行处理、admin角色实现",
-    "Phase 1-5实施（Phase 0通过后）: 预计3.5-4.5天"
+    "Phase 0执行（等待真实数据文件File1-4）",
+    "学工管理员数据提供（Excel/CSV，格式待定）",
+    "File3寝室号补充（Phase 2升级用）",
+    "Phase 1-5实施（Phase 0验证通过后）"
   ],
   "evidence": [
-    "Codex review: 22/40 score, 3 P0 + 8 P1 findings",
-    "P0-1 solution: 3-tier temp ID (GRAD2026_{hash}, TMP2026_{row}, tests pass)",
-    "P0-2 solution: MVP primary manager per building (defer multi-manager to Phase 2)",
-    "P0-3 solution: Phase 2 expanded to 10 explicit subtasks + 100% routing gate",
-    "Scripts committed: a142ad8 (+547 lines, 4 Python files)",
-    "User room_number requirement: documented in Section 2, merge script includes field"
+    "Codex review: 22/40, 3 P0 + 8 P1",
+    "Phase 0脚本: generate_temp_user_ids测试通过，所有脚本语法正确",
+    "用户决策3: File2独有116行导入，merge脚本已实现",
+    "文档更新: 5830→5946行（8处同步）",
+    "提交: 5次commit（Phase 0脚本+文档+状态修正+merge修改+5946更新）"
   ],
-  "next_focus": "Codex实施方案审查完成，3个P0技术阻塞已通过Phase 0脚本修正。Phase 0就绪（temp ID生成、File1+File2合并、路由覆盖验证、学院规范化），等待用户提供真实数据文件执行验证。用户需回答4个开放问题（主责宿管选择方式、楼栋名称是否需规范化、File2独有116行处理方式、admin角色实现方式）以解锁Phase 1-2实施。总时间修正为4-6天（原2.5-3天）。",
+  "next_focus": "所有Phase 0准备工作完成。用户4项业务决策已实现：1)寝室号字段merge脚本已包含 2)楼栋按名称匹配 3)File2独有116行merge脚本支持导入(total 5946行) 4)学工管理员数据单独提供。merge_student_data.py已修改支持file2_only rows。文档全面更新反映5946行总数。等待用户提供真实数据文件（File1-4 Excel）执行Phase 0验证。",
   "artifacts": {
-    "project_summary": "docs/PROJECT-SUMMARY.md",
     "user_requirements": "docs/用户需求最终确认与实施方案.md",
     "codex_review": ".omc/collaboration/artifacts/20260605-codex-implementation-plan-review.md",
     "claude_response": ".omc/collaboration/artifacts/20260605-claude-response-implementation-plan-review.md",
     "consensus": ".omc/collaboration/artifacts/20260605-consensus-implementation-plan.md",
-    "phase0_scripts": "backend/scripts/{generate_temp_user_ids,merge_student_data,validate_routing_coverage,normalize_colleges}.py"
+    "user_decisions": ".omc/collaboration/artifacts/20260605-user-business-decisions.md",
+    "phase0_scripts": "backend/scripts/{generate_temp_user_ids,merge_student_data,validate_routing_coverage,normalize_colleges}.py",
+    "project_summary": "docs/PROJECT-SUMMARY.md"
   },
   "suggested_skills": []
 }

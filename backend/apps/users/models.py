@@ -7,6 +7,7 @@ class UserRole(models.TextChoices):
     DORM_MANAGER = 'dorm_manager', '宿管员'
     COUNSELOR = 'counselor', '辅导员'
     DEAN = 'dean', '学工部'
+    ADMIN = 'admin', '学工管理员'
 
 
 class UserManager(BaseUserManager):

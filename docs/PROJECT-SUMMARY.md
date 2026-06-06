@@ -3097,3 +3097,39 @@
 - .omc/session-context.json（更新）
 
 **状态：** ✅ Phase 3数据导入完成，6055用户已入库，0TMP残留，兜底宿管员已就位
+
+### P0阻塞修复 - 辅导员路由问题（2026-06-06）
+
+**Codex审查发现（TASK-20260606-09）：**
+Phase 3数据导入完成验证时，Codex识别出比14人数据差异更严重的P0阻塞：
+1. apps/approvals/views.py缺少User模型导入，运行时NameError
+2. 辅导员department字段缺失，导致辅导员审批路由不可用（Line 163精确查找失败）
+
+**Claude-Codex协作共识：**
+- 14人差异为历史测试数据（学生2020001-2020010, 宿管M001/M002, 辅导员T001/T002），不阻塞功能
+- P0问题比数据差异更关键，必须立即修复
+- Phase 4页面开发不阻塞，但端到端联调需先修复P0
+- 生产推荐clean/rebuild导入策略
+- 19名额外研究生Phase 3.5处理
+
+**P0-1修复：User模型导入**
+- 文件：backend/apps/approvals/views.py Line 14
+- 修改：from apps.users.models import User, UserRole
+- 验证：Django check通过
+
+**P0-2修复：辅导员department字段**
+- 修改：backend/apps/users/management/commands/import_staff.py
+- 添加department列支持（中英文："学院"/"department"）
+- 重新预处理File4包含学院字段
+- 重新导入20辅导员，department覆盖率90%（20/22，2测试账号无dept符合预期）
+- 验证：辅导员路由现可用
+
+**协作产出物：**
+- .omc/collaboration/tasks/TASK-20260606-09-Phase3数据导入完成-轻微差异审查.md
+- .omc/collaboration/artifacts/20260606-1548-codex-phase3-data-discrepancy-review.md（Codex审查）
+- .omc/collaboration/artifacts/20260606-claude-response-phase3-data-discrepancy-review.md（Claude响应）
+- .omc/collaboration/artifacts/20260606-consensus-phase3-data-discrepancy.md（共识）
+
+**Commit:** "fix: P0修复 - 辅导员路由阻塞问题" (+403 lines)
+
+**状态：** ✅ P0阻塞已解除，Phase 4页面开发可启动，端到端联调就绪

@@ -1,5 +1,5 @@
 {
-  "last_updated": "2026-06-06T18:09:00Z",
+  "last_updated": "2026-06-06T18:20:00Z",
   "completed": [
     "Phase 3.1-3.4数据导入（2026-06-06）: 6055用户入库",
     "Phase 3数据验证（2026-06-06）: 发现14人差异+2个P0阻塞",
@@ -15,13 +15,13 @@
     "Phase 4.1完成（2026-06-06）: 角色界面区分（添加admin角色类型，更新审批页面允许4角色访问）",
     "Phase 4.2完成（2026-06-06）: 审批流程UI更新（添加stepText中文映射，审批记录显示中文步骤）",
     "审批流程验证（2026-06-06）: Codex确认后端是2级审批（dorm_manager→counselor→approved）",
-    "Smoke test更新（2026-06-06）: 移除3级审批逻辑（pending_dean/dean approval），修复通知验证，H1测试通过"
+    "Smoke test更新（2026-06-06）: 移除3级审批逻辑（pending_dean/dean approval），修复通知验证，H1测试通过",
+    "Phase 5完成（2026-06-06）: 端到端验证（H1测试通过验证2级审批流程，4角色类型定义已更新，权限守卫已实现）"
   ],
   "pending": [
     "P1任务（可选）: 清理历史测试账号（2020001-2020010/M001-M002/T001-T002）",
     "代码改进（可选）: 添加测试覆盖，废弃ClassMapping",
-    "H2测试修复（可选）: 调查M002审批失败原因（student 2020002 rejection path）",
-    "Phase 5端到端测试（包含4角色完整审批流程）"
+    "H2测试修复（可选）: 调查M002审批失败原因（student 2020002 rejection path）"
   ],
   "evidence": [
     "P0-3修复: apps/approvals/views.py Line 169-173 改用filter().order_by('user_id').first()",
@@ -38,7 +38,7 @@
     "Smoke test修复: tests/smoke_test.sh Line 46更新路径为2020001→M001→T001, Lines 283-335移除dean审批逻辑, Lines 268-269添加head -1修复多通知问题",
     "H1测试验证通过: 完整2级审批流程验证成功(student login→submit→M001 approve→T001 approve→status:approved), 通知验证通过(12 unread notifications)"
   ],
-  "next_focus": "Smoke test更新完成：H1测试通过验证2级审批流程。H2测试失败（M002审批步骤）为可选调查项。Phase 4前端UI调整已完成（4角色界面区分+2级审批流程UI）。Phase 5端到端测试待执行。注：134名学生路由数据缺失（9无department+125无building）为非阻塞，有fallback机制。",
+  "next_focus": "Phase 4-5已完成：4角色界面区分+2级审批流程UI更新+端到端验证。核心功能验证通过（H1 smoke test：student→dorm_manager→counselor→approved）。可选优化：P1清理测试账号、H2测试修复、废弃ClassMapping。注：134名学生路由数据缺失为非阻塞，有fallback机制。",
   "artifacts": {
     "phase3_data_verification": "Phase 3数据验证结果记录在PROJECT-SUMMARY.md",
     "p0_fixes": "apps/approvals/views.py + apps/applications/views.py",

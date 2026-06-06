@@ -160,16 +160,20 @@ def approve_approval(request, approval_id):
         application.status = ApplicationStatus.PENDING_COUNSELOR
         application.save()
 
-        # Get counselor from class mapping
-        from apps.users.class_mapping import ClassMapping
-        class_mapping = ClassMapping.objects.get(class_id=application.class_id, active=True)
+        # Get counselor by department
+        try:
+            counselor = User.objects.get(role=UserRole.COUNSELOR, department=application.student.department, active=True)
+        except User.DoesNotExist:
+            return Response({'error': {'code': 'NOT_FOUND', 'message': '该学院辅导员不存在',
+                                        'details': {'department': application.student.department}}},
+                            status=status.HTTP_404_NOT_FOUND)
 
         Approval.objects.create(
             approval_id=f'apv_{uuid.uuid4().hex[:8]}',
             application=application,
             step=ApprovalStep.COUNSELOR,
-            approver=class_mapping.counselor,
-            approver_name=class_mapping.counselor_name,
+            approver=counselor,
+            approver_name=counselor.name,
             decision=ApprovalDecision.PENDING
         )
     elif approval.step == ApprovalStep.COUNSELOR:

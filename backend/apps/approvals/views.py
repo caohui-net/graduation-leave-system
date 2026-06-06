@@ -11,7 +11,7 @@ from .serializers import ApprovalSerializer, ApprovalActionSerializer, ApprovalL
 from .pagination import ApprovalLimitOffsetPagination
 from .validators import approval_step_matches_application_status
 from apps.applications.models import Application, ApplicationStatus
-from apps.users.models import UserRole
+from apps.users.models import User, UserRole
 from apps.notifications.services import notify_approval_decided
 from schema import ErrorResponseSerializer
 import uuid

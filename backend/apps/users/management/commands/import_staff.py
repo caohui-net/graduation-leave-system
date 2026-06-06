@@ -64,6 +64,7 @@ class Command(BaseCommand):
         role_str = (row.get('角色') or row.get('role') or '').strip()
         phone = (row.get('手机') or row.get('phone') or '').strip()
         building = (row.get('楼栋') or row.get('building') or '').strip()
+        department = (row.get('学院') or row.get('department') or '').strip()
 
         if not user_id or not name or not role_str:
             stats['skipped'] += 1
@@ -113,6 +114,7 @@ class Command(BaseCommand):
                     'role': role,
                     'phone': phone if phone else None,
                     'building': building if building else None,
+                    'department': department if department else None,
                     'active': True,
                 }
             )

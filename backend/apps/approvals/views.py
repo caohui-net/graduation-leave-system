@@ -4,6 +4,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from django.utils import timezone
 from django.db import transaction
+import logging
 from drf_spectacular.utils import extend_schema, OpenApiParameter, OpenApiTypes
 from drf_spectacular.types import OpenApiTypes as Types
 from .models import Approval, ApprovalDecision, ApprovalStep
@@ -160,12 +161,24 @@ def approve_approval(request, approval_id):
         application.status = ApplicationStatus.PENDING_COUNSELOR
         application.save()
 
-        # Get counselor by department (use filter().first() to handle multiple matches)
-        counselor = User.objects.filter(
+        # Get counselor by department (Phase 3 design: department-based routing)
+        # Note: Original design used ClassMapping (class_id), but Phase 3 user requirements
+        # changed to "按学院向辅导员审批" (approval by department/college).
+        # Multiple counselors per department are allowed (different classes within department).
+        # Selection: order_by('user_id') picks lowest ID for deterministic routing.
+        counselors = User.objects.filter(
             role=UserRole.COUNSELOR,
             department=application.student.department,
             active=True
-        ).order_by('user_id').first()
+        ).order_by('user_id')
+
+        if counselors.count() > 1:
+            logging.warning(
+                f"Multiple counselors found for department {application.student.department}: "
+                f"{counselors.count()} matches. Selected {counselors.first().user_id} via order_by('user_id')"
+            )
+
+        counselor = counselors.first()
 
         if not counselor:
             return Response({'error': {'code': 'NOT_FOUND', 'message': '该学院辅导员不存在',

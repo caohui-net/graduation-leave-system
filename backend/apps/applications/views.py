@@ -15,6 +15,7 @@ from apps.users.models import UserRole, User
 from apps.notifications.services import notify_application_submitted
 from schema import ErrorResponseSerializer
 import uuid
+import logging
 
 
 @extend_schema(
@@ -149,12 +150,19 @@ def create_application(request):
 
     # Try to find dorm manager by building
     if building and building.strip():
-        try:
-            dorm_manager = User.objects.get(role=UserRole.DORM_MANAGER, building=building, active=True)
-        except User.DoesNotExist:
-            pass  # Will try fallback
-        except User.MultipleObjectsReturned:
-            dorm_manager = User.objects.filter(role=UserRole.DORM_MANAGER, building=building, active=True).first()
+        dorm_managers = User.objects.filter(
+            role=UserRole.DORM_MANAGER,
+            building=building,
+            active=True
+        ).order_by('user_id')
+
+        if dorm_managers.exists():
+            if dorm_managers.count() > 1:
+                logging.warning(
+                    f"Multiple dorm managers found for building {building}: "
+                    f"{dorm_managers.count()} matches. Selected {dorm_managers.first().user_id} via order_by('user_id')"
+                )
+            dorm_manager = dorm_managers.first()
 
     # Fallback: use default dorm manager for students without building
     if not dorm_manager:

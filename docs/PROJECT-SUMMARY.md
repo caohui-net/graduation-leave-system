@@ -3235,3 +3235,50 @@ Phase 3数据导入完成验证时，Codex识别出比14人数据差异更严重
 **Commit:** "feat: Phase 4前端UI调整 - 4角色界面区分+2级审批流程UI"
 
 **状态：** ✅ Phase 4前端UI调整完成，Phase 5端到端测试待执行
+
+### 2026-06-06 (下午) - Smoke Test更新：2级审批流程验证
+
+**问题发现：**
+- smoke_test.sh测试3级审批流程（dorm_manager→counselor→dean）
+- 但Phase 4前端类型定义和后端实际实现都是2级审批（dorm_manager→counselor）
+- 测试脚本与实际实现不一致
+
+**Codex协作讨论（DISCUSS-审批流程验证-SMOKE_TEST-SH测试3级审批）：**
+- **共识结论：** 后端当前实际审批流程是2级（dorm_manager → counselor → approved）
+- **推荐方案：** 更新smoke_test.sh移除pending_dean/dean approval相关断言
+- **理由：** ApplicationStatus无pending_dean状态，approvals/validators.py只映射dorm_manager和counselor，approvals/views.py在counselor approve分支直接设置status为approved
+- **Phase 4前端类型：** 当前与运行时主流程一致，不应扩展pending_dean/dean
+
+**修改内容：**
+
+1. **tests/smoke_test.sh Line 46** - 更新测试路径描述
+   - 旧：`--- H1: Happy Path (2020001 → T001 → D001) ---`
+   - 新：`--- H1: Happy Path (2020001 → M001 → T001) ---`
+
+2. **tests/smoke_test.sh Lines 283-335** - 移除3级审批逻辑
+   - 删除pending_dean状态检查
+   - 删除dean approval ID提取
+   - 删除dean登录和审批步骤（steps 9-10）
+   - 更新为counselor审批后直接验证approved状态
+
+3. **tests/smoke_test.sh Lines 268-269** - 修复通知验证
+   - 添加`| head -1`确保只取第一条匹配通知
+   - 解决多通知导致的类型检查失败
+
+4. **tests/smoke_test.sh Line 309** - 更新步骤编号
+   - 旧步骤11改为步骤9（移除了步骤9-10 dean审批）
+
+**验证结果：**
+- ✓ H1测试完全通过（student 2020001→M001 approve→T001 approve→status:approved）
+- ✓ 2级审批流程验证成功
+- ✓ 通知验证通过（12 unread notifications）
+- ✓ 最终状态正确（approved）
+- ⚠️ H2测试失败（M002审批步骤，待调查，不阻塞Phase 5）
+
+**产出物：**
+- tests/smoke_test.sh（修改：移除3级审批逻辑，修复通知验证）
+- .omc/collaboration/artifacts/DISCUSS-审批流程验证-*.md（2轮Codex讨论）
+
+**Commit:** "test: 更新smoke_test.sh适配2级审批流程 - 移除dean审批逻辑"
+
+**状态：** ✅ Smoke test H1通过，2级审批流程验证成功。Phase 5端到端测试待执行。

@@ -43,7 +43,7 @@ echo "Base URL: $BASE_URL"
 echo ""
 
 # H1: Happy path (Class A)
-echo "--- H1: Happy Path (2020001 → T001 → D001) ---"
+echo "--- H1: Happy Path (2020001 → M001 → T001) ---"
 
 # 1. Student login
 echo "1. Student 2020001 login..."
@@ -265,8 +265,8 @@ if [ -z "$STUDENT_APPROVE_NOTIF" ]; then
   exit 1
 fi
 
-NOTIF_TYPE=$(echo "$STUDENT_APPROVE_NOTIF" | jq -r '.type')
-NOTIF_ENTITY_TYPE=$(echo "$STUDENT_APPROVE_NOTIF" | jq -r '.entity_type')
+NOTIF_TYPE=$(echo "$STUDENT_APPROVE_NOTIF" | jq -r '.type' | head -1)
+NOTIF_ENTITY_TYPE=$(echo "$STUDENT_APPROVE_NOTIF" | jq -r '.entity_type' | head -1)
 
 if [ "$NOTIF_TYPE" != "approval_approved" ]; then
   echo "✗ Notification type wrong: $NOTIF_TYPE (expected: approval_approved)"
@@ -280,75 +280,33 @@ fi
 
 echo "  ✓ Student received APPROVAL_APPROVED notification (type: $NOTIF_TYPE, entity_type: $NOTIF_ENTITY_TYPE)"
 
-# Verify application status changed
+# Verify application status changed to approved (2-level approval: dorm_manager -> counselor)
 APP_STATUS_AFTER=$(curl -s "$BASE_URL/api/applications/$APP_ID/" \
   -H "Authorization: Bearer $STUDENT_TOKEN" \
   | jq -r '.status')
 
-if [ "$APP_STATUS_AFTER" != "pending_dean" ]; then
-  echo "✗ Application status not updated: $APP_STATUS_AFTER (expected: pending_dean)"
+if [ "$APP_STATUS_AFTER" != "approved" ]; then
+  echo "✗ Application status not updated: $APP_STATUS_AFTER (expected: approved)"
   exit 1
 fi
 
 echo "  Application status: $APP_STATUS_AFTER"
 
-# Extract dean approval ID
-DEAN_APPROVAL_ID=$(curl -s "$BASE_URL/api/applications/$APP_ID/" \
-  -H "Authorization: Bearer $STUDENT_TOKEN" \
-  | jq -r '.approvals[] | select(.step=="dean") | .approval_id')
-
-if [ -z "$DEAN_APPROVAL_ID" ] || [ "$DEAN_APPROVAL_ID" = "null" ]; then
-  echo "✗ Dean approval not created"
-  exit 1
-fi
-
-echo "  Dean approval: $DEAN_APPROVAL_ID"
-
-# 9. Dean login
-echo "9. Dean D001 login..."
-DEAN_TOKEN=$(curl -s -X POST "$BASE_URL/api/auth/login" \
-  -H "Content-Type: application/json" \
-  -d '{"user_id":"D001","password":"D001"}' \
-  | jq -r '.access_token')
-
-if [ -z "$DEAN_TOKEN" ] || [ "$DEAN_TOKEN" = "null" ]; then
-  echo "✗ Dean login failed"
-  exit 1
-fi
-echo "✓ Dean login success"
-
-# 10. Dean approve
-echo "10. Dean approve..."
-DEAN_APPROVE_RESPONSE=$(curl -s -X POST "$BASE_URL/api/approvals/$DEAN_APPROVAL_ID/approve/" \
-  -H "Authorization: Bearer $DEAN_TOKEN" \
-  -H "Content-Type: application/json" \
-  -d '{"comment":"批准"}')
-
-DEAN_DECISION=$(echo "$DEAN_APPROVE_RESPONSE" | jq -r '.decision')
-
-if [ "$DEAN_DECISION" != "approved" ]; then
-  echo "✗ Dean approve failed"
-  echo "$DEAN_APPROVE_RESPONSE" | jq '.'
-  exit 1
-fi
-
-echo "✓ Dean approved"
-
-# Verify student received second APPROVAL_APPROVED notification
+# Verify student received APPROVAL_APPROVED notification
 echo "  Verifying student notification..."
 STUDENT_NOTIF_COUNT_FINAL=$(curl -s "$BASE_URL/api/notifications/unread_count/" \
   -H "Authorization: Bearer $STUDENT_TOKEN" \
   | jq -r '.unread_count')
 
-if [ "$STUDENT_NOTIF_COUNT_FINAL" -lt "2" ]; then
-  echo "✗ Student notification count wrong: expected ≥2, got $STUDENT_NOTIF_COUNT_FINAL"
+if [ "$STUDENT_NOTIF_COUNT_FINAL" -lt "1" ]; then
+  echo "✗ Student notification count wrong: expected ≥1, got $STUDENT_NOTIF_COUNT_FINAL"
   exit 1
 fi
 
 echo "  ✓ Student has $STUDENT_NOTIF_COUNT_FINAL unread notification(s)"
 
-# 11. Verify final status
-echo "11. Verify final status..."
+# 9. Verify final status
+echo "9. Verify final status..."
 FINAL_STATUS=$(curl -s "$BASE_URL/api/applications/$APP_ID/" \
   -H "Authorization: Bearer $STUDENT_TOKEN" \
   | jq -r '.status')

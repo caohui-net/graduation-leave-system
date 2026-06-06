@@ -1,6 +1,5 @@
 from django.core.management.base import BaseCommand
 from apps.users.models import User, UserRole
-from apps.users.class_mapping import ClassMapping
 
 
 class Command(BaseCommand):
@@ -112,27 +111,5 @@ class Command(BaseCommand):
             user.set_password('D001')
             user.save()
             self.stdout.write(f'Created dean: {user.user_id}')
-
-        # Class mappings
-        mappings = [
-            {'class_id': 'CS2020-01', 'dorm_manager_id': 'M001', 'counselor_id': 'T001'},
-            {'class_id': 'CS2020-02', 'dorm_manager_id': 'M002', 'counselor_id': 'T002'},
-        ]
-
-        for mapping_data in mappings:
-            dorm_manager = User.objects.get(user_id=mapping_data['dorm_manager_id'])
-            counselor = User.objects.get(user_id=mapping_data['counselor_id'])
-            mapping, created = ClassMapping.objects.get_or_create(
-                class_id=mapping_data['class_id'],
-                defaults={
-                    'dorm_manager': dorm_manager,
-                    'dorm_manager_name': dorm_manager.name,
-                    'counselor': counselor,
-                    'counselor_name': counselor.name,
-                    'active': True,
-                }
-            )
-            if created:
-                self.stdout.write(f'Created mapping: {mapping.class_id} -> M:{dorm_manager.user_id}/C:{counselor.user_id}')
 
         self.stdout.write(self.style.SUCCESS('Seed data loaded successfully'))

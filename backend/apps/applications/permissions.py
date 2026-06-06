@@ -1,5 +1,4 @@
-from apps.users.models import UserRole
-from apps.users.class_mapping import ClassMapping
+from apps.users.models import UserRole, User
 from apps.approvals.models import Approval, ApprovalStep, ApprovalDecision
 
 
@@ -8,19 +7,20 @@ def can_view_application(user, application):
     if user.role == UserRole.STUDENT:
         return application.student_id == user.user_id
 
+    if user.role == UserRole.DORM_MANAGER:
+        student = User.objects.filter(user_id=application.student_id).first()
+        if not student or not student.building:
+            return False
+        return user.building == student.building
+
     if user.role == UserRole.COUNSELOR:
-        return ClassMapping.objects.filter(
-            counselor=user,
-            class_id=application.class_id,
-            active=True
-        ).exists()
+        student = User.objects.filter(user_id=application.student_id).first()
+        if not student or not student.department:
+            return False
+        return user.department == student.department
 
     if user.role == UserRole.DEAN:
-        return Approval.objects.filter(
-            application=application,
-            approver=user,
-            step=ApprovalStep.DEAN,
-            decision=ApprovalDecision.PENDING
-        ).exists()
+        # Dean archives completed applications and does not participate in approval.
+        return application.status == 'approved'
 
     return False

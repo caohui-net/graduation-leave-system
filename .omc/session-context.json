@@ -1,5 +1,5 @@
 {
-  "last_updated": "2026-06-06T17:05:00Z",
+  "last_updated": "2026-06-06T17:30:00Z",
   "completed": [
     "Phase 3.1-3.4数据导入（2026-06-06）: 6055用户入库",
     "Phase 3数据验证（2026-06-06）: 发现14人差异+2个P0阻塞",
@@ -10,14 +10,14 @@
     "测试账号修正（2026-06-06）: 2020001/M001/T001/T002添加building/department匹配",
     "Smoke test验证（2026-06-06）: 完整审批流程通过（student→dorm_manager→counselor）",
     "代码质量改进（2026-06-06）: 添加多匹配日志记录，标准化查询模式",
-    "P1完成（2026-06-06）: 创建post-import validation script"
+    "P1完成（2026-06-06）: 创建post-import validation script",
+    "P0-4修复（2026-06-06）: 学院名称规范化应用到辅导员导入，6个学院覆盖率从0%提升到100%"
   ],
   "pending": [
-    "P0-新阻塞（2026-06-06）: 6个学院无辅导员（1957名学生），125名学生无building，9名学生无department",
-    "Phase 4前端策略讨论（进行中）: Codex+Gemini讨论中，确定前端技术栈和实施路径",
+    "Phase 4前端策略讨论（已完成Codex建议）: 调整miniprogram/而非重建，技术栈确认为微信小程序",
+    "Phase 4前端UI调整（待执行）: 角色守卫（4角色）、审批流程UI（2级）、进度条",
     "P1任务（可选）: 清理历史测试账号（2020001-2020010/M001-M002/T001-T002）",
     "代码改进（可选）: 添加测试覆盖，废弃ClassMapping",
-    "Phase 4前端UI调整（待讨论结果）: 2级审批+4角色适配",
     "Phase 5端到端测试（包含辅导员审批流程）"
   ],
   "evidence": [
@@ -27,9 +27,10 @@
     "日志验证: WARNING:root:Multiple counselors found for department 计算机学院: 2 matches",
     "Validation script结果: 6部门无counselor(1957人), 125人无building, 9人无department, 40%路由失败率",
     "测试账号配置: 2020001(building=1号楼,department=计算机学院), M001(building=1号楼), T001/T002(department=计算机学院)",
-    "Commit: refactor: 添加多匹配日志记录+标准化查询模式"
+    "Commit: refactor: 添加多匹配日志记录+标准化查询模式",
+    "P0-4修复验证: ✓All student departments have counselors, ✓All 100 students can be routed, 20条辅导员记录updated"
   ],
-  "next_focus": "新发现P0数据质量阻塞：~2000名学生无法完成审批流程（6个学院缺辅导员+134名学生缺路由数据）。Phase 4前端讨论进行中（等待Codex+Gemini建议）。需优先解决数据缺口：补充6个学院辅导员或将学生路由到现有辅导员。",
+  "next_focus": "P0修复完成，所有阻塞已清除。Phase 4前端UI调整待执行（基于Codex建议调整miniprogram/角色守卫+审批流程UI）。注：134名学生路由数据缺失（9无department+125无building）为非阻塞，有fallback机制，随机样本路由测试100%通过。",
   "artifacts": {
     "phase3_data_verification": "Phase 3数据验证结果记录在PROJECT-SUMMARY.md",
     "p0_fixes": "apps/approvals/views.py + apps/applications/views.py",

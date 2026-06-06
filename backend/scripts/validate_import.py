@@ -14,6 +14,7 @@ os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'config.settings.dev')
 django.setup()
 
 from apps.users.models import User, UserRole
+from django.db.models import Count
 from collections import defaultdict
 
 

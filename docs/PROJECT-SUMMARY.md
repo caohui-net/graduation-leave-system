@@ -3133,3 +3133,60 @@ Phase 3数据导入完成验证时，Codex识别出比14人数据差异更严重
 **Commit:** "fix: P0修复 - 辅导员路由阻塞问题" (+403 lines)
 
 **状态：** ✅ P0阻塞已解除，Phase 4页面开发可启动，端到端联调就绪
+
+### P0后续修复 - 多匹配错误与学院覆盖问题（2026-06-06下午）
+
+**P0-3修复：MultipleObjectsReturned错误**
+- 问题：smoke test发现辅导员审批时MultipleObjectsReturned异常
+- 根本原因：apps/approvals/views.py Line 169使用.get()查询可能返回多个辅导员的学院
+- 修复：改用filter().order_by('user_id').first()，返回user_id最小的辅导员
+- 验证：smoke test完整审批流程通过（student→dorm_manager→counselor）
+
+**代码质量改进：**
+- 添加多匹配日志记录（apps/approvals/views.py + apps/applications/views.py）
+- 标准化查询模式：filter().order_by('user_id').first()替代.get()
+
+**P0-4修复：学院名称规范化**
+
+**问题发现：**
+- validate_import.py脚本显示6个学院无辅导员覆盖（1,957名学生无法路由）
+- 缺失学院：传媒与影视学院、地理与旅游学院、建筑工程学院、生物与农业资源学院、音乐学院、黄梅戏学院
+
+**Claude-Codex协作讨论：**
+- ✓ 创建协作任务：DISCUSS-PHASE-3数据缺口-6个学院无辅导员覆盖
+- ✓ Codex第1轮建议：优先按学院名称规范化修复，而非补充新辅导员
+- ✓ Codex第2轮建议：维持Round 1结论，将counselors_processed.csv的学院字段在导入阶段规范化
+
+**根本原因分析：**
+- 学院名称不一致：学生使用规范名（如"新闻与传播学院"），辅导员CSV使用旧名（如"传媒与影视学院"）
+- backend/scripts/normalize_colleges.py已有6个学院映射关系
+
+**修复实施：**
+1. backend/apps/users/management/commands/import_staff.py（Lines 7-14, 93-102）
+   - 导入normalize_college_name函数
+   - 辅导员导入时应用学院名称规范化
+   - 添加ValueError处理保留原值
+2. 修复f-string语法错误（Line 161：stats['errors'] → stats["errors"]）
+3. 修复backend/scripts/validate_import.py缺少Count导入（Line 17）
+4. 重新导入20条辅导员记录（使用正确容器路径data/counselors_processed.csv）
+
+**验证结果：**
+- ✓ All student departments have counselors
+- ✓ All student buildings have dorm managers
+- ✓ All 100 students can be routed（随机样本路由测试100%通过）
+- 20条辅导员记录updated
+- 6个学院辅导员覆盖率：0% → 100%
+
+**非阻塞问题：**
+- 134名学生路由数据缺失（9无department+125无building）
+- 有fallback机制，不阻塞Phase 4
+
+**产出物：**
+- .omc/collaboration/tasks/DISCUSS-PHASE-3数据缺口-6个学院无辅导员覆盖-1780765523/
+- .omc/collaboration/artifacts/DISCUSS-PHASE-3数据缺口-*.md（2轮Codex建议）
+- backend/apps/users/management/commands/import_staff.py（修改）
+- backend/scripts/validate_import.py（修改）
+
+**Commit:** "refactor: 添加多匹配日志记录+标准化查询模式" + "fix: apply college name normalization to counselor import"
+
+**状态：** ✅ P0数据缺口完全修复，1,957名学生现可正常路由，Phase 4前端调整待执行

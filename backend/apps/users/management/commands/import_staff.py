@@ -9,6 +9,9 @@ from django.db import transaction
 from apps.users.models import User, UserRole
 import csv
 from pathlib import Path
+import sys
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent.parent.parent.parent / 'scripts'))
+from normalize_colleges import normalize_college_name
 
 
 class Command(BaseCommand):
@@ -87,6 +90,17 @@ class Command(BaseCommand):
             stats['errors'].append(f'{user_id}: Unknown role "{role_str}"')
             return
 
+        # Normalize department for counselors
+        if role == UserRole.COUNSELOR and department:
+            try:
+                department = normalize_college_name(department)
+            except ValueError as e:
+                self.stdout.write(
+                    self.style.WARNING(
+                        f'{user_id} ({name}): {e} - keeping original value'
+                    )
+                )
+
         # Validate building requirement
         if role == UserRole.DORM_MANAGER and not building:
             # Allow empty building for fallback dorm manager
@@ -144,7 +158,7 @@ class Command(BaseCommand):
             for err in stats['errors'][:10]:
                 self.stdout.write(f'  - {err}')
             if len(stats['errors']) > 10:
-                self.stdout.write(f'  ... and {len(stats['errors']) - 10} more')
+                self.stdout.write(f'  ... and {len(stats["errors"]) - 10} more')
 
         if not dry_run and len(stats['errors']) == 0:
             self.stdout.write(self.style.SUCCESS(f'\n✓ Import successful'))

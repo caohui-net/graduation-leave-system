@@ -27,13 +27,21 @@ class ApplicationListPermissionTest(TestCase):
         self.counselor2.set_password('T002')
         self.counselor2.save()
 
+        self.dorm_manager1 = User.objects.create(user_id='M001', name='宿管员1', role=UserRole.DORM_MANAGER)
+        self.dorm_manager1.set_password('M001')
+        self.dorm_manager1.save()
+
+        self.dorm_manager2 = User.objects.create(user_id='M002', name='宿管员2', role=UserRole.DORM_MANAGER)
+        self.dorm_manager2.set_password('M002')
+        self.dorm_manager2.save()
+
         self.dean = User.objects.create(user_id='D001', name='学工部', role=UserRole.DEAN)
         self.dean.set_password('D001')
         self.dean.save()
 
         # Create class mappings
-        ClassMapping.objects.create(class_id='CS2020-01', counselor=self.counselor1, counselor_name='辅导员1', active=True)
-        ClassMapping.objects.create(class_id='CS2020-02', counselor=self.counselor2, counselor_name='辅导员2', active=True)
+        ClassMapping.objects.create(class_id='CS2020-01', dorm_manager=self.dorm_manager1, dorm_manager_name='宿管员1', counselor=self.counselor1, counselor_name='辅导员1', active=True)
+        ClassMapping.objects.create(class_id='CS2020-02', dorm_manager=self.dorm_manager2, dorm_manager_name='宿管员2', counselor=self.counselor2, counselor_name='辅导员2', active=True)
 
         # Create applications
         self.app1 = Application.objects.create(
@@ -53,7 +61,7 @@ class ApplicationListPermissionTest(TestCase):
             class_id='CS2020-02',
             reason='测试',
             leave_date='2024-07-01',
-            status=ApplicationStatus.PENDING_DEAN
+            status=ApplicationStatus.APPROVED
         )
 
         # Create approvals
@@ -63,15 +71,6 @@ class ApplicationListPermissionTest(TestCase):
             step=ApprovalStep.COUNSELOR,
             approver=self.counselor1,
             approver_name='辅导员1',
-            decision=ApprovalDecision.PENDING
-        )
-
-        Approval.objects.create(
-            approval_id='apv_002',
-            application=self.app2,
-            step=ApprovalStep.DEAN,
-            approver=self.dean,
-            approver_name='学工部',
             decision=ApprovalDecision.PENDING
         )
 
@@ -100,7 +99,7 @@ class ApplicationListPermissionTest(TestCase):
         response = self.client.get('/api/applications/')
         self.assertEqual(response.data['count'], 0)
 
-    def test_dean_sees_only_pending_dean_approvals(self):
+    def test_dean_sees_only_approved_applications_for_archive(self):
         self.client.force_authenticate(user=self.dean)
         response = self.client.get('/api/applications/')
         self.assertEqual(response.status_code, 200)

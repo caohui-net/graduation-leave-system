@@ -1,6 +1,8 @@
 from django.test import TestCase
 from rest_framework.test import APIClient
 from rest_framework import status
+from django.utils import timezone
+from datetime import timedelta
 from apps.users.models import User, UserRole
 from apps.users.class_mapping import ClassMapping
 from apps.applications.models import Application, ApplicationStatus
@@ -17,6 +19,8 @@ class ErrorCasesTestCase(TestCase):
             name='张三',
             role=UserRole.STUDENT,
             class_id='CS2020-01',
+            building='1号楼',
+            department='计算机学院',
             is_graduating=True,
             graduation_year=2024
         )
@@ -27,6 +31,8 @@ class ErrorCasesTestCase(TestCase):
             name='李四',
             role=UserRole.STUDENT,
             class_id='CS2020-01',
+            building='1号楼',
+            department='计算机学院',
             is_graduating=True,
             graduation_year=2024
         )
@@ -37,6 +43,8 @@ class ErrorCasesTestCase(TestCase):
             name='王五',
             role=UserRole.STUDENT,
             class_id='CS2020-01',
+            building='1号楼',
+            department='计算机学院',
             is_graduating=True,
             graduation_year=2024
         )
@@ -45,12 +53,29 @@ class ErrorCasesTestCase(TestCase):
             user_id='T001',
             password='T001',
             name='李老师',
-            role=UserRole.COUNSELOR
+            role=UserRole.COUNSELOR,
+            department='计算机学院'
+        )
+        self.dorm_manager = User.objects.create_user(
+            user_id='M001',
+            password='M001',
+            name='宿管员',
+            role=UserRole.DORM_MANAGER,
+            building='1号楼'
+        )
+
+        self.dean = User.objects.create_user(
+            user_id='D001',
+            password='D001',
+            name='学工部',
+            role=UserRole.DEAN
         )
 
         # Create class mapping
         ClassMapping.objects.create(
             class_id='CS2020-01',
+            dorm_manager=self.dorm_manager,
+            dorm_manager_name='宿管员',
             counselor=self.counselor,
             counselor_name='李老师',
             active=True
@@ -67,7 +92,7 @@ class ErrorCasesTestCase(TestCase):
         self.client.credentials(HTTP_AUTHORIZATION=f'Bearer {token}')
         response = self.client.post('/api/applications/', {
             'reason': '毕业离校',
-            'leave_date': '2024-06-30'
+            'leave_date': (timezone.now().date() + timedelta(days=1)).isoformat()
         }, format='json')
         self.assertEqual(response.status_code, status.HTTP_422_UNPROCESSABLE_ENTITY)
         self.assertEqual(response.data['error']['code'], 'DORM_BLOCKED')
@@ -85,14 +110,14 @@ class ErrorCasesTestCase(TestCase):
         # First submission
         response = self.client.post('/api/applications/', {
             'reason': '毕业离校',
-            'leave_date': '2024-06-30'
+            'leave_date': (timezone.now().date() + timedelta(days=1)).isoformat()
         })
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
         # Second submission (should fail)
         response = self.client.post('/api/applications/', {
             'reason': '毕业离校',
-            'leave_date': '2024-06-30'
+            'leave_date': (timezone.now().date() + timedelta(days=1)).isoformat()
         })
         self.assertEqual(response.status_code, status.HTTP_409_CONFLICT)
         self.assertEqual(response.data['error']['code'], 'CONFLICT')
@@ -109,8 +134,9 @@ class ErrorCasesTestCase(TestCase):
         self.client.credentials(HTTP_AUTHORIZATION=f'Bearer {token1}')
         response = self.client.post('/api/applications/', {
             'reason': '毕业离校',
-            'leave_date': '2024-06-30'
+            'leave_date': (timezone.now().date() + timedelta(days=1)).isoformat()
         })
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         application_id = response.data['application_id']
 
         # Student2 tries to access Student1's application

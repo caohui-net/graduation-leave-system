@@ -27,17 +27,21 @@ class AutoNotificationAPITest(TestCase):
             user_id='2020001',
             name='测试学生',
             role='student',
-            class_id='CS2021-1'
+            class_id='CS2021-1',
+            building='1号楼',
+            department='计算机学院'
         )
         self.counselor = User.objects.create_user(
             user_id='T001',
             name='张老师',
-            role='counselor'
+            role='counselor',
+            department='计算机学院'
         )
         self.dorm_manager = User.objects.create_user(
             user_id='M001',
             name='宿管员',
-            role='dorm_manager'
+            role='dorm_manager',
+            building='1号楼'
         )
         self.dean = User.objects.create_user(
             user_id='D001',
@@ -162,7 +166,9 @@ class AutoNotificationAPITest(TestCase):
             user_id='2021002',
             name='其他学生',
             role='student',
-            class_id='CS2021-2'
+            class_id='CS2021-2',
+            building='2号楼',
+            department='软件学院'
         )
 
         application = Application.objects.create(
@@ -240,7 +246,9 @@ class AutoNotificationAPITest(TestCase):
             user_id='2021999',
             name='被阻断学生',
             role='student',
-            class_id='CS2021-1'
+            class_id='CS2021-1',
+            building='1号楼',
+            department='计算机学院'
         )
 
         # Student tries to submit application (should fail with 422 dorm blocked)

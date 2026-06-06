@@ -20,7 +20,9 @@ class AttachmentDeleteTestCase(TestCase):
             role=UserRole.STUDENT,
             class_id='CS2020-01',
             is_graduating=True,
-            graduation_year=2024
+            graduation_year=2024,
+            building='1号楼',
+            department='计算机学院'
         )
 
         self.other_student = User.objects.create_user(
@@ -30,7 +32,9 @@ class AttachmentDeleteTestCase(TestCase):
             role=UserRole.STUDENT,
             class_id='CS2020-02',
             is_graduating=True,
-            graduation_year=2024
+            graduation_year=2024,
+            building='2号楼',
+            department='软件学院'
         )
 
         # Create counselor
@@ -38,7 +42,8 @@ class AttachmentDeleteTestCase(TestCase):
             user_id='T001',
             password='T001',
             name='李老师',
-            role=UserRole.COUNSELOR
+            role=UserRole.COUNSELOR,
+            department='计算机学院'
         )
 
         # Create class mapping

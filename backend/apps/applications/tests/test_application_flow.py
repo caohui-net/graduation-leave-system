@@ -21,21 +21,25 @@ class ApplicationFlowTestCase(TestCase):
             role=UserRole.STUDENT,
             class_id='CS2020-01',
             is_graduating=True,
-            graduation_year=2024
+            graduation_year=2024,
+            building='1号楼',
+            department='计算机学院'
         )
 
         self.counselor = User.objects.create_user(
             user_id='T001',
             password='T001',
             name='李老师',
-            role=UserRole.COUNSELOR
+            role=UserRole.COUNSELOR,
+            department='计算机学院'
         )
 
         self.dorm_manager = User.objects.create_user(
             user_id='M001',
             password='M001',
             name='宿管员',
-            role=UserRole.DORM_MANAGER
+            role=UserRole.DORM_MANAGER,
+            building='1号楼'
         )
 
         self.dean = User.objects.create_user(

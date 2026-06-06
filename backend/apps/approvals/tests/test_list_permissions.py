@@ -22,6 +22,14 @@ class ApprovalListPermissionTest(TestCase):
         self.counselor2.set_password('T002')
         self.counselor2.save()
 
+        self.dorm_manager1 = User.objects.create(user_id='M001', name='宿管员1', role=UserRole.DORM_MANAGER)
+        self.dorm_manager1.set_password('M001')
+        self.dorm_manager1.save()
+
+        self.dorm_manager2 = User.objects.create(user_id='M002', name='宿管员2', role=UserRole.DORM_MANAGER)
+        self.dorm_manager2.set_password('M002')
+        self.dorm_manager2.save()
+
         self.dean1 = User.objects.create(user_id='D001', name='学工部1', role=UserRole.DEAN)
         self.dean1.set_password('D001')
         self.dean1.save()
@@ -51,12 +59,12 @@ class ApprovalListPermissionTest(TestCase):
             decision=ApprovalDecision.PENDING
         )
 
-        self.approval_d1 = Approval.objects.create(
-            approval_id='apv_d1',
+        self.approval_m1 = Approval.objects.create(
+            approval_id='apv_m1',
             application=self.app,
-            step=ApprovalStep.DEAN,
-            approver=self.dean1,
-            approver_name='学工部1',
+            step=ApprovalStep.DORM_MANAGER,
+            approver=self.dorm_manager1,
+            approver_name='宿管员1',
             decision=ApprovalDecision.PENDING
         )
 
@@ -78,17 +86,23 @@ class ApprovalListPermissionTest(TestCase):
         response = self.client.get('/api/approvals/')
         self.assertEqual(response.data['count'], 0)
 
-    def test_dean_sees_only_own_pending_approvals(self):
-        self.client.force_authenticate(user=self.dean1)
+    def test_dorm_manager_sees_only_own_pending_approvals(self):
+        self.client.force_authenticate(user=self.dorm_manager1)
         response = self.client.get('/api/approvals/')
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.data['count'], 1)
-        self.assertEqual(response.data['results'][0]['approval_id'], 'apv_d1')
+        self.assertEqual(response.data['results'][0]['approval_id'], 'apv_m1')
 
-    def test_dean_cannot_see_other_dean_approvals(self):
-        self.client.force_authenticate(user=self.dean2)
+    def test_dorm_manager_cannot_see_other_dorm_manager_approvals(self):
+        self.client.force_authenticate(user=self.dorm_manager2)
         response = self.client.get('/api/approvals/')
         self.assertEqual(response.data['count'], 0)
+
+    def test_dean_sees_all_approvals_for_archive(self):
+        self.client.force_authenticate(user=self.dean1)
+        response = self.client.get('/api/approvals/')
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data['count'], 2)
 
     def test_response_format_count_and_results(self):
         self.client.force_authenticate(user=self.counselor1)

@@ -15,7 +15,9 @@ class ApprovalStateMachineTestCase(TestCase):
             name='张三',
             role=UserRole.STUDENT,
             class_id='CS2020-01',
-            password='2020001'
+            password='2020001',
+            building='1号楼',
+            department='计算机学院'
         )
 
         # Create counselor
@@ -23,7 +25,8 @@ class ApprovalStateMachineTestCase(TestCase):
             user_id='T001',
             name='李老师',
             role=UserRole.COUNSELOR,
-            password='T001'
+            password='T001',
+            department='计算机学院'
         )
 
         # Create dorm manager
@@ -31,7 +34,8 @@ class ApprovalStateMachineTestCase(TestCase):
             user_id='M001',
             name='宿管员',
             role=UserRole.DORM_MANAGER,
-            password='M001'
+            password='M001',
+            building='1号楼'
         )
 
         # Create dean

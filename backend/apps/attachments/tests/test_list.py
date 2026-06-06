@@ -5,7 +5,6 @@ from rest_framework import status
 from apps.users.models import User, UserRole
 from apps.users.class_mapping import ClassMapping
 from apps.applications.models import Application, ApplicationStatus
-from apps.approvals.models import Approval, ApprovalStep, ApprovalDecision
 from apps.attachments.models import Attachment, AttachmentType
 
 
@@ -21,7 +20,9 @@ class AttachmentListTestCase(TestCase):
             role=UserRole.STUDENT,
             class_id='CS2020-01',
             is_graduating=True,
-            graduation_year=2024
+            graduation_year=2024,
+            building='1号楼',
+            department='计算机学院'
         )
 
         self.other_student = User.objects.create_user(
@@ -31,7 +32,9 @@ class AttachmentListTestCase(TestCase):
             role=UserRole.STUDENT,
             class_id='CS2020-02',
             is_graduating=True,
-            graduation_year=2024
+            graduation_year=2024,
+            building='2号楼',
+            department='软件学院'
         )
 
         # Create counselors
@@ -39,14 +42,16 @@ class AttachmentListTestCase(TestCase):
             user_id='T001',
             password='T001',
             name='李老师',
-            role=UserRole.COUNSELOR
+            role=UserRole.COUNSELOR,
+            department='计算机学院'
         )
 
         self.other_counselor = User.objects.create_user(
             user_id='T002',
             password='T002',
             name='王老师',
-            role=UserRole.COUNSELOR
+            role=UserRole.COUNSELOR,
+            department='软件学院'
         )
 
         # Create dean
@@ -80,7 +85,7 @@ class AttachmentListTestCase(TestCase):
             class_id='CS2020-01',
             reason='毕业离校',
             leave_date='2024-07-01',
-            status=ApplicationStatus.PENDING_COUNSELOR
+            status=ApplicationStatus.APPROVED
         )
 
         # Create attachment
@@ -93,16 +98,6 @@ class AttachmentListTestCase(TestCase):
             file_name='test.pdf',
             file_size=1024,
             content_type='application/pdf'
-        )
-
-        # Create pending dean approval
-        self.dean_approval = Approval.objects.create(
-            approval_id='apv_test001',
-            application=self.application,
-            step=ApprovalStep.DEAN,
-            approver=self.dean,
-            approver_name='赵主任',
-            decision=ApprovalDecision.PENDING
         )
 
     def test_list_student_own_positive(self):
@@ -150,8 +145,8 @@ class AttachmentListTestCase(TestCase):
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
         self.assertEqual(response.data['error']['code'], 'FORBIDDEN')
 
-    def test_list_dean_pending_approval_positive(self):
-        """Dean with pending approval can list attachments"""
+    def test_list_dean_archive_positive(self):
+        """Dean can list approved application attachments for archiving"""
         self.client.force_authenticate(user=self.dean)
 
         response = self.client.get(

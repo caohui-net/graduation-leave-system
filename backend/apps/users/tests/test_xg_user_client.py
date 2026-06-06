@@ -224,7 +224,8 @@ class XGUserAPIClientTests(TestCase):
         mock_response = Mock()
         mock_response.json.return_value = {
             'code': 401,
-            'msg': 'unauthorized'
+            'msg': 'unauthorized',
+            'data': {'data': []}
         }
         mock_session.post.return_value = mock_response
 
@@ -232,3 +233,289 @@ class XGUserAPIClientTests(TestCase):
 
         self.assertEqual(result['code'], 401)
         self.assertEqual(result['msg'], 'unauthorized')
+
+    def test_fetch_all_users_single_page(self):
+        """测试单页成功"""
+        mock_session = Mock()
+        mock_response = Mock()
+        mock_response.json.return_value = {
+            'code': 200,
+            'msg': 'success',
+            'data': {
+                'current_page': 1,
+                'per_page': 10,
+                'total': 5,
+                'data': [{'name': f'User{i}', 'number': f'202100{i}'} for i in range(1, 6)]
+            }
+        }
+        mock_session.post.return_value = mock_response
+
+        result = self.client.fetch_all_users(page_size=10, session=mock_session)
+
+        self.assertEqual(len(result['users']), 5)
+        self.assertEqual(result['total'], 5)
+        self.assertEqual(result['pages_fetched'], 1)
+        self.assertEqual(result['stopped_reason'], 'complete')
+
+    def test_fetch_all_users_multi_page(self):
+        """测试多页成功"""
+        mock_session = Mock()
+        responses = [
+            {'code': 200, 'msg': 'success', 'data': {
+                'current_page': 1, 'per_page': 10, 'total': 25,
+                'data': [{'name': f'U{i}', 'number': f'{i}'} for i in range(1, 11)]
+            }},
+            {'code': 200, 'msg': 'success', 'data': {
+                'current_page': 2, 'per_page': 10, 'total': 25,
+                'data': [{'name': f'U{i}', 'number': f'{i}'} for i in range(11, 21)]
+            }},
+            {'code': 200, 'msg': 'success', 'data': {
+                'current_page': 3, 'per_page': 10, 'total': 25,
+                'data': [{'name': f'U{i}', 'number': f'{i}'} for i in range(21, 26)]
+            }}
+        ]
+        mock_session.post.return_value.json.side_effect = responses
+
+        result = self.client.fetch_all_users(page_size=10, session=mock_session)
+
+        self.assertEqual(len(result['users']), 25)
+        self.assertEqual(result['total'], 25)
+        self.assertEqual(result['pages_fetched'], 3)
+        self.assertEqual(result['stopped_reason'], 'complete')
+
+    def test_fetch_all_users_empty(self):
+        """测试空数据"""
+        mock_session = Mock()
+        mock_response = Mock()
+        mock_response.json.return_value = {
+            'code': 200,
+            'msg': 'success',
+            'data': {'current_page': 1, 'per_page': 10, 'total': 0, 'data': []}
+        }
+        mock_session.post.return_value = mock_response
+
+        result = self.client.fetch_all_users(page_size=10, session=mock_session)
+
+        self.assertEqual(len(result['users']), 0)
+        self.assertEqual(result['total'], 0)
+        self.assertEqual(result['pages_fetched'], 1)
+        self.assertEqual(result['stopped_reason'], 'empty')
+
+    def test_fetch_all_users_last_page_partial(self):
+        """测试最后一页不足page_size"""
+        mock_session = Mock()
+        responses = [
+            {'code': 200, 'msg': 'success', 'data': {
+                'current_page': 1, 'per_page': 10, 'total': 25,
+                'data': [{'name': f'U{i}', 'number': f'{i}'} for i in range(1, 11)]
+            }},
+            {'code': 200, 'msg': 'success', 'data': {
+                'current_page': 2, 'per_page': 10, 'total': 25,
+                'data': [{'name': f'U{i}', 'number': f'{i}'} for i in range(11, 21)]
+            }},
+            {'code': 200, 'msg': 'success', 'data': {
+                'current_page': 3, 'per_page': 10, 'total': 25,
+                'data': [{'name': f'U{i}', 'number': f'{i}'} for i in range(21, 26)]
+            }}
+        ]
+        mock_session.post.return_value.json.side_effect = responses
+
+        result = self.client.fetch_all_users(page_size=10, session=mock_session)
+
+        self.assertEqual(len(result['users']), 25)
+        self.assertEqual(result['pages_fetched'], 3)
+
+    def test_fetch_all_users_per_page_string(self):
+        """测试per_page字符串兼容"""
+        mock_session = Mock()
+        mock_response = Mock()
+        mock_response.json.return_value = {
+            'code': 200,
+            'msg': 'success',
+            'data': {
+                'current_page': 1,
+                'per_page': "10",
+                'total': 5,
+                'data': [{'name': f'U{i}', 'number': f'{i}'} for i in range(1, 6)]
+            }
+        }
+        mock_session.post.return_value = mock_response
+
+        result = self.client.fetch_all_users(page_size=10, session=mock_session)
+
+        self.assertEqual(len(result['users']), 5)
+        self.assertEqual(result['stopped_reason'], 'complete')
+
+    def test_fetch_all_users_http_error_middle_page(self):
+        """测试中间页HTTP错误"""
+        mock_session = Mock()
+        responses = [
+            Mock(json=lambda: {'code': 200, 'msg': 'success', 'data': {
+                'current_page': 1, 'per_page': 10, 'total': 30,
+                'data': [{'name': f'U{i}', 'number': f'{i}'} for i in range(1, 11)]
+            }}),
+            Mock(raise_for_status=Mock(side_effect=Exception('HTTP 500')))
+        ]
+        mock_session.post.side_effect = responses
+
+        with self.assertRaises(Exception):
+            self.client.fetch_all_users(page_size=10, session=mock_session)
+
+    def test_fetch_all_users_business_error_middle_page(self):
+        """测试中间页业务错误"""
+        mock_session = Mock()
+        responses = [
+            {'code': 200, 'msg': 'success', 'data': {
+                'current_page': 1, 'per_page': 10, 'total': 30,
+                'data': [{'name': f'U{i}', 'number': f'{i}'} for i in range(1, 11)]
+            }},
+            {'code': 500, 'msg': 'internal error', 'data': {'data': []}}
+        ]
+        mock_session.post.return_value.json.side_effect = responses
+
+        with self.assertRaises(ValueError) as cm:
+            self.client.fetch_all_users(page_size=10, session=mock_session)
+        self.assertIn('Business error', str(cm.exception))
+
+    def test_fetch_all_users_max_pages(self):
+        """测试max_pages限制"""
+        mock_session = Mock()
+        responses = [
+            {'code': 200, 'msg': 'success', 'data': {
+                'current_page': i, 'per_page': 10, 'total': 100,
+                'data': [{'name': f'U{j}', 'number': f'{j}'} for j in range((i-1)*10+1, i*10+1)]
+            }} for i in range(1, 11)
+        ]
+        mock_session.post.return_value.json.side_effect = responses
+
+        result = self.client.fetch_all_users(page_size=10, max_pages=3, session=mock_session)
+
+        self.assertEqual(len(result['users']), 30)
+        self.assertEqual(result['pages_fetched'], 3)
+        self.assertEqual(result['stopped_reason'], 'max_pages')
+
+    def test_fetch_users_page_missing_data_field(self):
+        """测试响应缺失data字段"""
+        mock_session = Mock()
+        mock_response = Mock()
+        mock_response.json.return_value = {'code': 200, 'msg': 'success'}
+        mock_session.post.return_value = mock_response
+
+        with self.assertRaises(ValueError) as cm:
+            self.client.fetch_users_page(session=mock_session)
+        self.assertIn("missing 'data' field", str(cm.exception))
+
+    def test_fetch_users_page_missing_data_data_field(self):
+        """测试响应data对象缺失data字段"""
+        mock_session = Mock()
+        mock_response = Mock()
+        mock_response.json.return_value = {
+            'code': 200,
+            'msg': 'success',
+            'data': {'current_page': 1, 'per_page': 10, 'total': 0}
+        }
+        mock_session.post.return_value = mock_response
+
+        with self.assertRaises(ValueError) as cm:
+            self.client.fetch_users_page(session=mock_session)
+        self.assertIn("missing 'data' (user list) field", str(cm.exception))
+
+    def test_fetch_users_page_users_not_list(self):
+        """测试响应data.data不是列表"""
+        mock_session = Mock()
+        mock_response = Mock()
+        mock_response.json.return_value = {
+            'code': 200,
+            'msg': 'success',
+            'data': {'current_page': 1, 'per_page': 10, 'total': 0, 'data': 'not a list'}
+        }
+        mock_session.post.return_value = mock_response
+
+        with self.assertRaises(ValueError) as cm:
+            self.client.fetch_users_page(session=mock_session)
+        self.assertIn("must be list", str(cm.exception))
+
+    def test_fetch_all_users_current_page_not_advancing(self):
+        """测试current_page不前进"""
+        mock_session = Mock()
+        responses = [
+            {'code': 200, 'msg': 'success', 'data': {
+                'current_page': 1, 'per_page': 10, 'total': 30,
+                'data': [{'name': f'U{i}', 'number': f'{i}'} for i in range(1, 11)]
+            }},
+            {'code': 200, 'msg': 'success', 'data': {
+                'current_page': 1, 'per_page': 10, 'total': 30,
+                'data': [{'name': f'U{i}', 'number': f'{i}'} for i in range(1, 11)]
+            }}
+        ]
+        mock_session.post.return_value.json.side_effect = responses
+
+        with self.assertRaises(ValueError) as cm:
+            self.client.fetch_all_users(page_size=10, session=mock_session)
+        self.assertIn("not advancing", str(cm.exception))
+
+    def test_fetch_all_users_per_page_zero(self):
+        """测试per_page为0"""
+        mock_session = Mock()
+        mock_response = Mock()
+        mock_response.json.return_value = {
+            'code': 200,
+            'msg': 'success',
+            'data': {'current_page': 1, 'per_page': 0, 'total': 10, 'data': []}
+        }
+        mock_session.post.return_value = mock_response
+
+        with self.assertRaises(ValueError) as cm:
+            self.client.fetch_all_users(page_size=10, session=mock_session)
+        self.assertIn("Invalid per_page", str(cm.exception))
+
+    def test_fetch_all_users_per_page_invalid_string(self):
+        """测试per_page为非数字字符串"""
+        mock_session = Mock()
+        mock_response = Mock()
+        mock_response.json.return_value = {
+            'code': 200,
+            'msg': 'success',
+            'data': {'current_page': 1, 'per_page': 'invalid', 'total': 10, 'data': []}
+        }
+        mock_session.post.return_value = mock_response
+
+        with self.assertRaises(ValueError):
+            self.client.fetch_all_users(page_size=10, session=mock_session)
+
+    def test_fetch_all_users_max_pages_zero(self):
+        """测试max_pages为0"""
+        with self.assertRaises(ValueError) as cm:
+            self.client.fetch_all_users(page_size=10, max_pages=0)
+        self.assertIn("max_pages must be positive", str(cm.exception))
+
+    def test_fetch_all_users_max_pages_negative(self):
+        """测试max_pages为负数"""
+        with self.assertRaises(ValueError) as cm:
+            self.client.fetch_all_users(page_size=10, max_pages=-1)
+        self.assertIn("max_pages must be positive", str(cm.exception))
+
+    def test_fetch_all_users_page_size_one(self):
+        """测试page_size=1场景"""
+        mock_session = Mock()
+        responses = [
+            {'code': 200, 'msg': 'success', 'data': {
+                'current_page': 1, 'per_page': 1, 'total': 3,
+                'data': [{'name': 'U1', 'number': '1'}]
+            }},
+            {'code': 200, 'msg': 'success', 'data': {
+                'current_page': 2, 'per_page': 1, 'total': 3,
+                'data': [{'name': 'U2', 'number': '2'}]
+            }},
+            {'code': 200, 'msg': 'success', 'data': {
+                'current_page': 3, 'per_page': 1, 'total': 3,
+                'data': [{'name': 'U3', 'number': '3'}]
+            }}
+        ]
+        mock_session.post.return_value.json.side_effect = responses
+
+        result = self.client.fetch_all_users(page_size=1, session=mock_session)
+
+        self.assertEqual(len(result['users']), 3)
+        self.assertEqual(result['pages_fetched'], 3)
+        self.assertEqual(result['stopped_reason'], 'complete')

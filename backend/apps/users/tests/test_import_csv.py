@@ -11,8 +11,8 @@ from apps.users.class_mapping import ClassMapping
 class ImportCSVCommandTest(TestCase):
     def setUp(self):
         """Create test counselors for mapping validation"""
-        User.objects.create_user(user_id='T001', name='李老师', role=UserRole.COUNSELOR, password='T001')
-        User.objects.create_user(user_id='T002', name='王老师', role=UserRole.COUNSELOR, password='T002')
+        User.objects.create_user(user_id='T001', name='李老师', role=UserRole.COUNSELOR, password='T001', department='计算机学院')
+        User.objects.create_user(user_id='T002', name='王老师', role=UserRole.COUNSELOR, password='T002', department='软件学院')
 
     def create_temp_csv(self, content):
         """Helper to create temporary CSV file"""

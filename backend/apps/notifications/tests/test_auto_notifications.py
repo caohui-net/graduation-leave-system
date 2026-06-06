@@ -28,17 +28,21 @@ class AutoNotificationTest(TestCase):
             user_id='2021001',
             name='测试学生',
             role='student',
-            class_id='CS2021-1'
+            class_id='CS2021-1',
+            building='1号楼',
+            department='计算机学院'
         )
         self.counselor = User.objects.create_user(
             user_id='T001',
             name='张老师',
-            role='counselor'
+            role='counselor',
+            department='计算机学院'
         )
-        self.dean = User.objects.create_user(
-            user_id='D001',
-            name='赵主任',
-            role='dean'
+        self.dorm_manager = User.objects.create_user(
+            user_id='M001',
+            name='宿管员',
+            role='dorm_manager',
+            building='1号楼'
         )
 
     def test_application_submitted_notification(self):
@@ -104,8 +108,8 @@ class AutoNotificationTest(TestCase):
         self.assertEqual(notification.entity_id, approval.pk)
         self.assertIn('辅导员', notification.message)
 
-    def test_approval_approved_notification_dean(self):
-        """Test APPROVAL_APPROVED notification for dean approval."""
+    def test_approval_approved_notification_dorm_manager(self):
+        """Test APPROVAL_APPROVED notification for dorm manager approval."""
         application = Application.objects.create(
             application_id='app_test003',
             student=self.student,
@@ -113,15 +117,15 @@ class AutoNotificationTest(TestCase):
             class_id=self.student.class_id,
             reason='毕业离校',
             leave_date='2024-06-30',
-            status=ApplicationStatus.PENDING_DEAN
+            status=ApplicationStatus.PENDING_DORM_MANAGER
         )
 
         approval = Approval.objects.create(
             approval_id='apv_test003',
             application=application,
-            step=ApprovalStep.DEAN,
-            approver=self.dean,
-            approver_name=self.dean.name,
+            step=ApprovalStep.DORM_MANAGER,
+            approver=self.dorm_manager,
+            approver_name=self.dorm_manager.name,
             decision=ApprovalDecision.APPROVED
         )
 
@@ -129,9 +133,9 @@ class AutoNotificationTest(TestCase):
 
         self.assertTrue(created)
         self.assertEqual(notification.recipient, self.student)
-        self.assertEqual(notification.actor, self.dean)
+        self.assertEqual(notification.actor, self.dorm_manager)
         self.assertEqual(notification.type, 'approval_approved')
-        self.assertIn('学工部', notification.message)
+        self.assertIn('宿管员', notification.message)
 
     def test_approval_rejected_notification(self):
         """Test APPROVAL_REJECTED notification creation."""

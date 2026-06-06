@@ -1,10 +1,12 @@
 from django.test import TestCase
 from rest_framework.test import APIClient
 from rest_framework import status
+from django.utils import timezone
+from datetime import timedelta
 from apps.users.models import User, UserRole
 from apps.users.class_mapping import ClassMapping
 from apps.applications.models import Application, ApplicationStatus
-from apps.approvals.models import ApprovalDecision
+from apps.approvals.models import ApprovalDecision, ApprovalStep
 
 
 class RejectionFlowTestCase(TestCase):
@@ -18,33 +20,38 @@ class RejectionFlowTestCase(TestCase):
             role=UserRole.STUDENT,
             class_id='CS2020-01',
             is_graduating=True,
-            graduation_year=2024
+            graduation_year=2024,
+            building='1号楼',
+            department='计算机学院'
         )
 
         self.counselor = User.objects.create_user(
             user_id='T001',
             password='T001',
             name='李老师',
-            role=UserRole.COUNSELOR
+            role=UserRole.COUNSELOR,
+            department='计算机学院'
         )
 
-        self.dean = User.objects.create_user(
-            user_id='D001',
-            password='D001',
-            name='赵主任',
-            role=UserRole.DEAN
+        self.dorm_manager = User.objects.create_user(
+            user_id='M001',
+            password='M001',
+            name='宿管员',
+            role=UserRole.DORM_MANAGER,
+            building='1号楼'
         )
 
         # Create class mapping
         ClassMapping.objects.create(
             class_id='CS2020-01',
+            dorm_manager=self.dorm_manager,
+            dorm_manager_name='宿管员',
             counselor=self.counselor,
             counselor_name='李老师',
             active=True
         )
 
-    def test_counselor_rejection(self):
-        """测试辅导员驳回申请"""
+    def _submit_application(self):
         # Student login and submit
         response = self.client.post('/api/auth/login', {
             'user_id': '2020001',
@@ -55,9 +62,54 @@ class RejectionFlowTestCase(TestCase):
         self.client.credentials(HTTP_AUTHORIZATION=f'Bearer {student_token}')
         response = self.client.post('/api/applications/', {
             'reason': '毕业离校',
-            'leave_date': '2024-06-30'
+            'leave_date': (timezone.now().date() + timedelta(days=1)).isoformat()
         })
-        application_id = response.data['application_id']
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        return response.data['application_id']
+
+    def _approve_dorm_manager_step(self, application):
+        response = self.client.post('/api/auth/login', {
+            'user_id': 'M001',
+            'password': 'M001'
+        })
+        dorm_manager_token = response.data['access_token']
+
+        dorm_manager_approval = application.approvals.get(step=ApprovalStep.DORM_MANAGER)
+
+        self.client.credentials(HTTP_AUTHORIZATION=f'Bearer {dorm_manager_token}')
+        response = self.client.post(f'/api/approvals/{dorm_manager_approval.approval_id}/approve/', {
+            'comment': '宿舍清退通过'
+        })
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_dorm_manager_rejection(self):
+        """测试宿管员驳回申请"""
+        application_id = self._submit_application()
+
+        response = self.client.post('/api/auth/login', {
+            'user_id': 'M001',
+            'password': 'M001'
+        })
+        dorm_manager_token = response.data['access_token']
+
+        application = Application.objects.get(application_id=application_id)
+        dorm_manager_approval = application.approvals.get(step=ApprovalStep.DORM_MANAGER)
+
+        self.client.credentials(HTTP_AUTHORIZATION=f'Bearer {dorm_manager_token}')
+        response = self.client.post(f'/api/approvals/{dorm_manager_approval.approval_id}/reject/', {
+            'comment': '宿舍清退未完成'
+        })
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data['decision'], ApprovalDecision.REJECTED)
+
+        application.refresh_from_db()
+        self.assertEqual(application.status, ApplicationStatus.REJECTED)
+
+    def test_counselor_rejection(self):
+        """测试辅导员驳回申请"""
+        application_id = self._submit_application()
+        application = Application.objects.get(application_id=application_id)
+        self._approve_dorm_manager_step(application)
 
         # Counselor login and reject
         response = self.client.post('/api/auth/login', {
@@ -66,65 +118,12 @@ class RejectionFlowTestCase(TestCase):
         })
         counselor_token = response.data['access_token']
 
-        application = Application.objects.get(application_id=application_id)
-        counselor_approval = application.approvals.filter(step='counselor').first()
+        application.refresh_from_db()
+        counselor_approval = application.approvals.get(step=ApprovalStep.COUNSELOR)
 
         self.client.credentials(HTTP_AUTHORIZATION=f'Bearer {counselor_token}')
         response = self.client.post(f'/api/approvals/{counselor_approval.approval_id}/reject/', {
             'comment': '材料不齐全'
-        })
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data['decision'], ApprovalDecision.REJECTED)
-
-        # Verify application status
-        application.refresh_from_db()
-        self.assertEqual(application.status, ApplicationStatus.REJECTED)
-
-    def test_dean_rejection(self):
-        """测试学工部驳回申请"""
-        # Student login and submit
-        response = self.client.post('/api/auth/login', {
-            'user_id': '2020001',
-            'password': '2020001'
-        })
-        student_token = response.data['access_token']
-
-        self.client.credentials(HTTP_AUTHORIZATION=f'Bearer {student_token}')
-        response = self.client.post('/api/applications/', {
-            'reason': '毕业离校',
-            'leave_date': '2024-06-30'
-        })
-        application_id = response.data['application_id']
-
-        # Counselor approve
-        response = self.client.post('/api/auth/login', {
-            'user_id': 'T001',
-            'password': 'T001'
-        })
-        counselor_token = response.data['access_token']
-
-        application = Application.objects.get(application_id=application_id)
-        counselor_approval = application.approvals.filter(step='counselor').first()
-
-        self.client.credentials(HTTP_AUTHORIZATION=f'Bearer {counselor_token}')
-        response = self.client.post(f'/api/approvals/{counselor_approval.approval_id}/approve/', {
-            'comment': '同意'
-        })
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-
-        # Dean login and reject
-        response = self.client.post('/api/auth/login', {
-            'user_id': 'D001',
-            'password': 'D001'
-        })
-        dean_token = response.data['access_token']
-
-        application.refresh_from_db()
-        dean_approval = application.approvals.filter(step='dean').first()
-
-        self.client.credentials(HTTP_AUTHORIZATION=f'Bearer {dean_token}')
-        response = self.client.post(f'/api/approvals/{dean_approval.approval_id}/reject/', {
-            'comment': '不符合离校条件'
         })
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data['decision'], ApprovalDecision.REJECTED)

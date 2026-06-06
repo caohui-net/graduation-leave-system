@@ -1,5 +1,5 @@
 {
-  "last_updated": "2026-06-05T20:01:00Z",
+  "last_updated": "2026-06-06T07:39:00Z",
   "completed": [
     "Excel数据源关联策略协作（2026-06-05）",
     "用户需求最终确认（2026-06-05）: 5项关键业务决策",
@@ -12,23 +12,31 @@
     "Phase 0 Task 0.5执行（2026-06-05）: 路由覆盖验证，辅导员100%，宿管员98%",
     "P0阻塞分析（2026-06-05）: 116名File2独有学生缺楼栋数据，创建分析文档+数据请求",
     "协作任务创建（2026-06-05）: TASK-20260605-04，请求Codex审查",
-    "用户数据请求文档（2026-06-05）: 116人楼栋信息补充模板CSV"
+    "用户数据请求文档（2026-06-05）: 116人楼栋信息补充模板CSV",
+    "用户决策确认（2026-06-05）: 接受98%覆盖率，按方案1执行到项目完成",
+    "Phase 2.1代码实施（2026-06-06）: 3级→2级审批流程简化",
+    "Phase 2.2代码实施（2026-06-06）: 楼栋路由（User.building字段+宿管员匹配）",
+    "Phase 2.3代码实施（2026-06-06）: 学院路由（User.department+辅导员匹配）",
+    "Phase 2.4代码实施（2026-06-06）: 学工管理员角色（UserRole.ADMIN）",
+    "数据补充脚本（2026-06-06）: supplement_building_data.py（更新File5楼栋数据）",
+    "Phase 0-2代码完成（2026-06-06）: 所有代码级变更已提交并推送"
   ],
   "pending": [
-    "用户补充116名学生楼栋数据（CSV模板已提供）",
-    "Phase 0决策：接受98%覆盖率或等待数据补充",
-    "Phase 1-5实施（Phase 0决策确认后）",
-    "学工管理员数据提供（Excel/CSV，格式待定）",
-    "File3寝室号补充（Phase 2升级用）"
+    "用户补充116名学生楼栋数据（CSV模板已提供: missing_building_data_request.csv）",
+    "Django环境配置（Phase 3运行时依赖）",
+    "Phase 3数据导入执行（需Django环境: import_students/import_dorm_managers/import_counselors）",
+    "Phase 4前端UI调整（2级审批+4角色适配）",
+    "Phase 5端到端测试（需运行环境）",
+    "学工管理员数据提供（Excel/CSV，格式待定）"
   ],
   "evidence": [
     "Phase 0 Task 0.2: 5946行输出，0规范化失败，271临时ID生成，116 File2独有行导入",
     "Phase 0 Task 0.5: 辅导员100% (5946/5946)，宿管员98% (5830/5946)，116人缺楼栋数据",
-    "数据请求CSV: backend/data/missing_building_data_request.csv (116行)",
-    "P0分析文档: .omc/collaboration/artifacts/20260605-phase0-routing-coverage-blocker.md",
-    "路由验证报告: backend/data/routing_coverage_report.json"
+    "Phase 2代码变更: applications/models.py, approvals/views.py, users/models.py, users/migrations/0005_user_building.py",
+    "最终提交: feat: 完成Phase 0-2代码实施和数据补充框架",
+    "数据补充接口: backend/scripts/supplement_building_data.py"
   ],
-  "next_focus": "Phase 0路由验证完成，发现116名File2独有学生缺楼栋数据（98% vs 100%门禁）。已创建数据补充请求文档和CSV模板供用户填写。推荐方案：接受98%覆盖率，主流程5830人可正常进行，116人数据补充后导入。等待用户决策：1)接受98%并继续Phase 1-5 2)立即提供116人楼栋数据。",
+  "next_focus": "Phase 0-2代码级实施已完成。项目达到代码就绪状态：1)98%覆盖率决策已采纳，5830名主流程学生可正常使用 2)2级审批流程、楼栋/学院路由、学工管理员角色已实现 3)数据补充框架已就绪。后续需要：1)用户提供116人楼栋数据 2)配置Django运行环境执行Phase 3-5。",
   "artifacts": {
     "user_requirements": "docs/用户需求最终确认与实施方案.md",
     "codex_review": ".omc/collaboration/artifacts/20260605-codex-implementation-plan-review.md",
@@ -40,6 +48,7 @@
     "p0_blocker_analysis": ".omc/collaboration/artifacts/20260605-phase0-routing-coverage-blocker.md",
     "data_request": "docs/数据补充请求-116名学生楼栋信息.md",
     "data_request_csv": "backend/data/missing_building_data_request.csv",
+    "data_supplement_script": "backend/scripts/supplement_building_data.py",
     "project_summary": "docs/PROJECT-SUMMARY.md"
   },
   "suggested_skills": []

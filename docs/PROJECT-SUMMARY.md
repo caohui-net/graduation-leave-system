@@ -3282,3 +3282,41 @@ Phase 3数据导入完成验证时，Codex识别出比14人数据差异更严重
 **Commit:** "test: 更新smoke_test.sh适配2级审批流程 - 移除dean审批逻辑"
 
 **状态：** ✅ Smoke test H1通过，2级审批流程验证成功。Phase 5端到端测试待执行。
+
+### 2026-06-06 (晚上) - 多宿管员协同审批功能
+
+**需求变更：**
+- 原流程：学生提交申请 → 匹配1个宿管员 → 该宿管员审批
+- 新需求：学生提交申请 → 匹配所有符合building的宿管员 → 任意1个审批即可 → 其他宿管员看到"已审批"提示
+
+**实现方案：**
+1. **applications/views.py (Lines 147-199)** - 创建多个审批记录
+   - 修改为查询所有符合building的宿管员（filter instead of first）
+   - 为每个宿管员创建独立的审批记录（for loop）
+2. **approvals/views.py (Lines 153-168)** - 自动完成其他审批
+   - 首个宿管员审批后，自动完成其他pending审批
+   - 设置comment为"已由XX完成审批，无需重复操作"
+3. **approvals/views.py (Lines 90-117) + urls.py (Line 6)** - 添加GET端点
+   - 添加`GET /api/approvals/{approval_id}/`端点
+   - 支持宿管员查询审批状态
+4. **seed_data.py (Lines 81-85)** - 添加M003测试用户
+   - 添加第3个宿管员（宿管员3, 1号楼）用于测试
+5. **tests/test_multi_dorm_manager.sh** - 端到端测试
+   - 验证2个审批创建 → M001审批 → M003自动完成
+
+**验证结果：**
+- ✓ Student 2020001提交申请 → 2个审批创建(M001, M003)
+- ✓ M001审批通过
+- ✓ M003审批自动完成，comment显示"已由宿管员1完成审批，无需重复操作"
+- ✓ 测试脚本test_multi_dorm_manager.sh全部通过
+
+**产出物：**
+- backend/apps/applications/views.py（修改：多宿管员审批创建）
+- backend/apps/approvals/views.py（修改：自动完成逻辑 + GET端点）
+- backend/apps/approvals/urls.py（修改：添加GET路由）
+- backend/apps/users/management/commands/seed_data.py（修改：添加M003）
+- tests/test_multi_dorm_manager.sh（新增：多宿管员测试脚本）
+
+**Commit:** "feat: 多宿管员协同审批 - 任意宿管员可审批+自动完成其他审批"
+
+**状态：** ✅ 多宿管员协同审批功能完成并验证通过

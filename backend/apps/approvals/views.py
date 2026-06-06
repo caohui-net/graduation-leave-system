@@ -88,6 +88,36 @@ def list_approvals(request):
 
 
 @extend_schema(
+    operation_id='approvals_get',
+    summary='获取审批详情',
+    description='获取指定审批的详细信息',
+    responses={
+        200: ApprovalSerializer,
+        403: ErrorResponseSerializer,
+        404: ErrorResponseSerializer,
+    },
+    tags=['审批']
+)
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def get_approval(request, approval_id):
+    try:
+        approval = Approval.objects.select_related('application', 'approver').get(approval_id=approval_id)
+    except Approval.DoesNotExist:
+        return Response({'error': {'code': 'NOT_FOUND', 'message': '审批记录不存在'}},
+                        status=status.HTTP_404_NOT_FOUND)
+
+    user = request.user
+
+    # Permission check: only the approver or dean can view this approval
+    if user.role == UserRole.DEAN or approval.approver_id == user.user_id:
+        return Response(ApprovalSerializer(approval).data)
+
+    return Response({'error': {'code': 'FORBIDDEN', 'message': '无权限访问此资源'}},
+                    status=status.HTTP_403_FORBIDDEN)
+
+
+@extend_schema(
     operation_id='approvals_approve',
     summary='通过审批',
     description='审批人通过指定的审批申请',

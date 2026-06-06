@@ -77,10 +77,11 @@ class Command(BaseCommand):
                 user.save()
                 self.stdout.write(f'Created counselor: {user.user_id}')
 
-        # Dorm managers (2)
+        # Dorm managers (3)
         dorm_managers = [
             {'user_id': 'M001', 'name': '宿管员1', 'building': '1号楼'},
             {'user_id': 'M002', 'name': '宿管员2', 'building': '2号楼'},
+            {'user_id': 'M003', 'name': '宿管员3', 'building': '1号楼'},
         ]
 
         for dm_data in dorm_managers:

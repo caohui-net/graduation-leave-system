@@ -20,7 +20,8 @@
     "H2测试修复（2026-06-06）: 配置M002/2020002/T002测试数据（building+department对齐），修复H2通知验证，H1+H2+N2全部通过",
     "测试数据持久化（2026-06-06）: seed_data.py添加building/department字段（students/counselors/dorm_managers），测试配置可跨数据库重置复用",
     "单元测试修复（2026-06-06）: 14个测试文件添加必需字段（building/department），修复路由依赖导致的404错误，101个单元测试全部通过",
-    "P1完成（2026-06-06）: ClassMapping废弃（permissions.py/seed_data.py/admin.py改用字段匹配），smoke test+单元测试全部通过"
+    "P1完成（2026-06-06）: ClassMapping废弃（permissions.py/seed_data.py/admin.py改用字段匹配），smoke test+单元测试全部通过",
+    "多宿管员协同审批（2026-06-06）: applications/views.py创建多个审批（Line 147-199），approvals/views.py自动完成其他审批（Line 153-168），添加GET /api/approvals/{id}/端点，M003测试用户，test_multi_dorm_manager.sh验证通过"
   ],
   "pending": [],
   "evidence": [
@@ -39,9 +40,10 @@
     "H1测试验证通过: 完整2级审批流程验证成功(student login→submit→M001 approve→T001 approve→status:approved), 通知验证通过(12 unread notifications)",
     "seed_data.py持久化: Lines 28-38添加building/department字段到students, Lines 62-64添加department字段到counselors, Lines 83-84添加building字段到dorm_managers, 使用update_or_create确保可重复执行",
     "单元测试修复: 14个测试文件添加必需字段, test_application_flow等修复后返回201而非404, 运行101个单元测试全部通过(OK in 26.104s)",
-    "P1-ClassMapping废弃: permissions.py改用building/department匹配, seed_data.py移除ClassMapping创建, admin.py移除ClassMapping注册, SMOKE_RESET=1测试全部通过"
+    "P1-ClassMapping废弃: permissions.py改用building/department匹配, seed_data.py移除ClassMapping创建, admin.py移除ClassMapping注册, SMOKE_RESET=1测试全部通过",
+    "多宿管员审批实现: applications/views.py Line 147-199创建所有匹配宿管员审批（for loop），approvals/views.py Line 153-168首个审批后自动完成其他（update comment='已由XX完成审批'），添加GET endpoint（views.py Line 90-117 + urls.py Line 6），test_multi_dorm_manager.sh验证2审批创建→M001审批→M003自动完成"
   ],
-  "next_focus": "Phase 4-5完成，smoke test全部通过（H1+H2+N2），单元测试全部通过（101 tests OK）。P1完成：ClassMapping废弃（改用字段匹配），测试数据持久化。核心功能全部就绪。",
+  "next_focus": "多宿管员协同审批功能完成。Phase 4-5完成，smoke test全部通过（H1+H2+N2），单元测试全部通过（101 tests OK），多宿管员测试通过。核心功能全部就绪。",
   "artifacts": {
     "phase3_data_verification": "Phase 3数据验证结果记录在PROJECT-SUMMARY.md",
     "p0_fixes": "apps/approvals/views.py + apps/applications/views.py",

@@ -16,7 +16,7 @@ Page({
   },
 
   onLoad() {
-    if (checkRoleAndRedirect(app.globalData.userInfo, ['counselor', 'dean'])) return;
+    if (checkRoleAndRedirect(app.globalData.userInfo, ['dorm_manager', 'counselor', 'dean', 'admin'])) return;
 
     const userInfo = app.globalData.userInfo!;
     const roleMap: Record<string, string> = {
@@ -24,6 +24,7 @@ Page({
       dorm_manager: '宿管员',
       counselor: '辅导员',
       dean: '学工部',
+      admin: '学工管理员',
     };
 
     this.setData({
@@ -35,7 +36,7 @@ Page({
   },
 
   onShow() {
-    if (checkRoleAndRedirect(app.globalData.userInfo, ['counselor', 'dean'])) return;
+    if (checkRoleAndRedirect(app.globalData.userInfo, ['dorm_manager', 'counselor', 'dean', 'admin'])) return;
     this.loadApprovals();
   },
 

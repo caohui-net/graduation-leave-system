@@ -3190,3 +3190,48 @@ Phase 3数据导入完成验证时，Codex识别出比14人数据差异更严重
 **Commit:** "refactor: 添加多匹配日志记录+标准化查询模式" + "fix: apply college name normalization to counselor import"
 
 **状态：** ✅ P0数据缺口完全修复，1,957名学生现可正常路由，Phase 4前端调整待执行
+
+### Phase 4前端UI调整（2026-06-06下午）
+
+**Codex协作讨论（3轮达成共识）：**
+- ✓ 问题：frontend/目录只有API类型和mock，无UI组件，需确定Phase 4实施策略
+- ✓ Codex分析：实际UI在miniprogram/，已有微信小程序工程和4个页面
+- ✓ 最终共识：Phase 4定位为定向调整miniprogram/（非从零构建），技术栈继续使用原生微信小程序
+
+**Phase 4.1 - 角色界面区分：**
+
+**问题发现：**
+- 前端类型缺少admin角色（后端有5角色：student/dorm_manager/counselor/dean/admin）
+- 审批页面角色守卫只允许counselor/dean访问（缺少dorm_manager/admin）
+- frontend/types/api.ts状态为旧版本（pending_counselor/pending_dean）
+
+**修复实施：**
+1. miniprogram/types/api.ts - 添加admin角色类型
+2. frontend/types/api.ts - 同步更新为5角色+2级审批状态（pending_dorm_manager/pending_counselor）
+3. miniprogram/pages/approvals/approvals.ts - 更新角色守卫允许4角色访问（dorm_manager/counselor/dean/admin）
+4. miniprogram/pages/approvals/approvals.ts - 添加admin角色roleMap映射
+
+**Phase 4.2 - 审批流程UI更新：**
+
+**修复实施：**
+1. miniprogram/pages/detail/detail.ts - 添加stepText中文映射（dorm_manager→宿管员, counselor→辅导员）
+2. miniprogram/pages/detail/detail.wxml - 使用stepText显示中文审批步骤（替换英文step值）
+
+**验证结果：**
+- ✓ 前端类型定义已统一（miniprogram和frontend）
+- ✓ 审批页面支持4角色访问
+- ✓ 审批记录显示中文步骤名称
+- ✓ 审批流程已是2级（dorm_manager→counselor）
+- ✓ 学工部角色守卫正确（不显示审批按钮）
+
+**产出物：**
+- .omc/collaboration/artifacts/DISCUSS-PHASE-4前端实施策略-*.md（3轮Codex讨论）
+- miniprogram/types/api.ts（修改）
+- frontend/types/api.ts（修改）
+- miniprogram/pages/approvals/approvals.ts（修改）
+- miniprogram/pages/detail/detail.ts（修改）
+- miniprogram/pages/detail/detail.wxml（修改）
+
+**Commit:** "feat: Phase 4前端UI调整 - 4角色界面区分+2级审批流程UI"
+
+**状态：** ✅ Phase 4前端UI调整完成，Phase 5端到端测试待执行

@@ -16,6 +16,10 @@ Page({
       approved: '已通过',
       rejected: '已拒绝',
     },
+    stepText: {
+      dorm_manager: '宿管员',
+      counselor: '辅导员',
+    },
     applicationId: '',
     pendingApprovalId: '',
     attachments: [] as Attachment[],

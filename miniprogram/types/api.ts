@@ -1,7 +1,7 @@
 // API Types based on v0.2 Contract
 // Generated: 2026-05-31
 
-export type UserRole = 'student' | 'dorm_manager' | 'counselor' | 'dean';
+export type UserRole = 'student' | 'dorm_manager' | 'counselor' | 'dean' | 'admin';
 
 export type ApplicationStatus =
   | 'draft'

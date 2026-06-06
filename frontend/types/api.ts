@@ -1,18 +1,18 @@
 // API Types based on v0.2 Contract
 // Generated: 2026-05-31
 
-export type UserRole = 'student' | 'counselor' | 'dean';
+export type UserRole = 'student' | 'dorm_manager' | 'counselor' | 'dean' | 'admin';
 
 export type ApplicationStatus =
   | 'draft'
+  | 'pending_dorm_manager'
   | 'pending_counselor'
-  | 'pending_dean'
   | 'approved'
   | 'rejected';
 
 export type ApprovalDecision = 'pending' | 'approved' | 'rejected';
 
-export type ApprovalStep = 'counselor' | 'dean';
+export type ApprovalStep = 'dorm_manager' | 'counselor';
 
 // Auth
 export interface LoginRequest {
@@ -24,10 +24,12 @@ export interface User {
   user_id: string;
   name: string;
   role: UserRole;
+  class_id?: string | null;
 }
 
 export interface LoginResponse {
   access_token: string;
+  token_type: 'Bearer';
   user: User;
 }
 
@@ -40,6 +42,8 @@ export interface ApplicationCreateRequest {
 export interface Application {
   application_id: string;
   student_id: string;
+  student_name: string;
+  class_id: string;
   reason: string;
   leave_date: string;
   status: ApplicationStatus;
@@ -48,8 +52,6 @@ export interface Application {
 }
 
 export interface ApplicationDetail extends Application {
-  student_name: string;
-  class_id: string;
   dorm_checkout_status: string;
   approvals: ApprovalDetail[];
 }
@@ -90,8 +92,6 @@ export interface ApprovalActionResponse {
 // Pagination
 export interface PaginatedResponse<T> {
   count: number;
-  next: string | null;
-  previous: string | null;
   results: T[];
 }
 

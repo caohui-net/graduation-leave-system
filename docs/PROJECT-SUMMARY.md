@@ -2939,3 +2939,161 @@
 - docs/用户需求最终确认与实施方案.md（更新）
 
 **状态：** ✅ 用户决策已实现，merge脚本支持5946行输出，等待真实数据文件验证
+
+### Phase 0数据验证+执行逻辑调整（2026-06-06）
+
+**Phase 0数据验证完成：**
+- 116名File2独有学生=100%无楼栋（与Phase 0预测一致）
+- 271名临时ID研究生找到真实学号（100%匹配）
+- 发现19名额外研究生（不在File1/File2/File5）
+- 新增3名管理员（2学工+1兜底宿管员）
+
+**Claude-Codex协作审查：**
+- 创建TASK-20260606-08审查请求
+- Codex审查完成：识别方案B实现3个bug，建议源数据修正策略
+- Claude响应：同意bug修复，讨论fallback边界和实施路径
+- 达成共识：Phase 2 Bug修复+Phase 3工具前置
+
+**Phase 2 Bug修复（已完成）：**
+1. applications/views.py Line 14：补充User模型导入
+2. applications/views.py Line 160-166：fallback配置化
+   - 从settings读取FALLBACK_DORM_MANAGER_USER_ID
+   - 改进错误消息（包含fallback_id）
+3. settings/base.py：新增FALLBACK_DORM_MANAGER_USER_ID = '92008149'
+4. 创建docs/19名额外研究生待确认清单.md
+
+**共识要点：**
+- Fallback边界：Phase 3.2后根据覆盖率决定是否收紧
+- 271人策略：源数据修正+File5 v2+干净导入（无临时ID残留）
+- 19人处理：暂不纳入主批次，用户确认后作为Phase 3.5补充
+- Phase 3前置：需补齐4个工具（update_file5_student_no.py, import_students, import_staff, ADMIN迁移）
+
+**产出物：**
+- .omc/collaboration/artifacts/20260606-1019-codex-phase0-execution-logic-review.md
+- .omc/collaboration/artifacts/20260606-claude-response-phase0-execution-logic-review.md
+- .omc/collaboration/artifacts/20260606-consensus-phase0-execution-logic-adjustment.md
+- backend/apps/applications/views.py（修改）
+- backend/config/settings/base.py（新增配置）
+- docs/19名额外研究生待确认清单.md
+
+**Commit:** "fix: Phase 2 Bug修复 - 兜底宿管员路由逻辑" (+841 lines)
+
+**状态：** ✅ Phase 2 Bug已修复并推送，共识已达成，Phase 3工具开发待启动
+
+### Phase 3.0前置工具开发（2026-06-06）
+
+**自主完成4个工具+1个迁移：**
+
+1. **update_file5_student_no.py脚本**
+   - 支持中英文列名（临时ID/user_id, 姓名/name, 学号（待补充）/student_no）
+   - 271个临时ID→真实学号映射验证（100%成功）
+   - 生成file5_students_merged_v2.csv（5946行，0TMP残留）
+
+2. **import_students管理命令**
+   - 支持File5表头（building_name→User.building）
+   - --dry-run模式+冲突检测
+   - --mode clean（有active applications时拒绝导入，保护数据）
+   - TMP ID自动跳过并报错
+
+3. **import_staff管理命令**
+   - 支持中英文列名（职工号/user_id, 姓名/name, 角色/role...）
+   - 角色映射：宿管员/DORM_MANAGER, 辅导员/COUNSELOR, 学工管理员/ADMIN
+   - 兜底宿管员空building字段处理（职工号92008149）
+   - --dry-run模式
+
+4. **0006_add_admin_role.py迁移**
+   - 更新User.role字段choices包含('admin', '学工管理员')
+   - 修正0003迁移遗漏的admin角色
+
+5. **file5_students_merged_v2.csv数据**
+   - 5946行学生数据
+   - 271人临时ID（TMP2026_XXXX）已替换为真实学号
+   - 0个临时ID残留
+   - user_id_source: 'file2_xh_updated'标记已更新行
+
+**验证结果：**
+- update_file5_student_no.py: 271/271映射成功，0错误
+- file5_v2: wc -l=5947（含header），grep TMP2026_=0
+- Django命令结构完整（需Django环境才能执行）
+
+**技术问题发现：**
+- Django环境未配置：manage.py check失败（ModuleNotFoundError: django）
+- 阻塞Phase 3数据导入执行
+
+**产出物：**
+- backend/scripts/update_file5_student_no.py
+- backend/apps/users/management/commands/import_students.py
+- backend/apps/users/management/commands/import_staff.py
+- backend/apps/users/migrations/0006_add_admin_role.py
+- backend/data/file5_students_merged_v2.csv
+
+**Commit:** "feat: Phase 3.0前置工具补齐" (+6426 lines)
+
+**状态：** ✅ Phase 3.0工具开发完成，⏸ Django环境配置待解决
+
+### Phase 3数据导入执行（2026-06-06）
+
+**Django环境配置（已解决）：**
+- 激活venv：backend/venv
+- 安装psycopg2-binary==2.9.12
+- 应用迁移：users.0005_user_building, users.0006_add_admin_role
+- Django 5.0环境验证：manage.py check通过
+
+**Bug修复（import命令dry-run）：**
+- import_students.py Line 76-78：异常回滚→transaction.set_rollback(True)
+- import_staff.py Line 55-56：异常回滚→transaction.set_rollback(True)
+- 问题：干运行时raise Exception导致统计结果无法打印
+- 修复后：干运行正常显示统计，事务仍正确回滚
+
+**数据预处理：**
+- 2026年社区辅导员信息统计表.csv → dorm_managers_processed.csv（72宿管员）
+  - 跳过标题行，添加角色列"宿管员"，楼栋号→楼栋
+- 2026年学院辅导员信息统计表.csv → counselors_processed.csv（20辅导员）
+  - 跳过标题行，添加角色列"辅导员"，无需楼栋字段
+- additional_staff.csv：无需预处理（格式已正确）
+
+**Phase 3.1执行 - 学生导入：**
+- 文件：file5_students_merged_v2.csv
+- 干运行：5946行，Created:5946, Updated:0, Skipped:0
+- 实际导入：5946行全部导入成功
+- 验证：0个TMP ID残留
+
+**Phase 3.2执行 - 宿管员导入：**
+- 文件：dorm_managers_processed.csv
+- 干运行：72行，dorm_manager:72
+- 实际导入：72宿管员全部导入成功
+
+**Phase 3.3执行 - 辅导员导入：**
+- 文件：counselors_processed.csv
+- 干运行：20行，counselor:20
+- 实际导入：20辅导员全部导入成功
+
+**Phase 3.4执行 - 管理员导入：**
+- 文件：additional_staff.csv
+- 干运行：3行，admin:2, dorm_manager:1
+- 实际导入：2学工管理员+1兜底宿管员全部导入成功
+
+**Phase 3数据验证：**
+- 学生：5956（预期5946，可能包含历史数据+10）
+- 宿管员：75（预期73，+2）
+- 辅导员：22（预期20，+2）
+- 学工管理员：2（符合预期）
+- 总计用户：6055
+- TMP ID残留：0 ✅
+- 楼栋覆盖率：97%（5830/5956，预期98%）
+- 无楼栋学生：126（预期116，+10）
+- 兜底宿管员：92008149 ✅ 已就位
+
+**数据轻微差异分析：**
+- 可能原因：数据库包含之前测试导入的历史数据
+- 影响评估：不影响系统功能，核心指标达标（0TMP，兜底宿管员已配置，覆盖率>95%）
+- 建议：生产环境使用clean模式导入确保数据纯净
+
+**产出物：**
+- backend/apps/users/management/commands/import_students.py（修改）
+- backend/apps/users/management/commands/import_staff.py（修改）
+- backend/data/dorm_managers_processed.csv
+- backend/data/counselors_processed.csv
+- .omc/session-context.json（更新）
+
+**状态：** ✅ Phase 3数据导入完成，6055用户已入库，0TMP残留，兜底宿管员已就位

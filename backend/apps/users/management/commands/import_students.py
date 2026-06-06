@@ -74,8 +74,7 @@ class Command(BaseCommand):
                         stats['errors'].append(f"Row {stats['total']}: {str(e)}")
 
                 if dry_run:
-                    # Rollback transaction in dry-run
-                    raise Exception('Dry run - rolling back')
+                    transaction.set_rollback(True)
 
         return stats
 

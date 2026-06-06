@@ -11,7 +11,7 @@ from .pagination import ApplicationLimitOffsetPagination
 from .providers import MockDormCheckoutProvider
 from .permissions import can_view_application
 from apps.approvals.models import Approval, ApprovalStep, ApprovalDecision
-from apps.users.models import UserRole
+from apps.users.models import UserRole, User
 from apps.notifications.services import notify_application_submitted
 from schema import ErrorResponseSerializer
 import uuid
@@ -158,11 +158,13 @@ def create_application(request):
 
     # Fallback: use default dorm manager for students without building
     if not dorm_manager:
+        from django.conf import settings
+        fallback_id = getattr(settings, 'FALLBACK_DORM_MANAGER_USER_ID', '92008149')
         try:
-            dorm_manager = User.objects.get(role=UserRole.DORM_MANAGER, user_id='92008149', active=True)
+            dorm_manager = User.objects.get(role=UserRole.DORM_MANAGER, user_id=fallback_id, active=True)
         except User.DoesNotExist:
             return Response({'error': {'code': 'NOT_FOUND', 'message': '无可用宿管员',
-                                        'details': {'building': building or '未分配'}}},
+                                        'details': {'building': building or '未分配', 'fallback_id': fallback_id}}},
                             status=status.HTTP_404_NOT_FOUND)
 
     dorm_manager_name = dorm_manager.name

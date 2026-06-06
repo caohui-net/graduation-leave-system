@@ -143,14 +143,27 @@ def create_application(request):
                                                 'blocking_reason': dorm_status.blocking_reason}}},
                         status=status.HTTP_422_UNPROCESSABLE_ENTITY)
 
-    try:
-        dorm_manager = User.objects.get(role=UserRole.DORM_MANAGER, building=user.building, active=True)
-    except User.DoesNotExist:
-        return Response({'error': {'code': 'NOT_FOUND', 'message': '该楼栋宿管员不存在',
-                                    'details': {'building': user.building}}},
-                        status=status.HTTP_404_NOT_FOUND)
-    except User.MultipleObjectsReturned:
-        dorm_manager = User.objects.filter(role=UserRole.DORM_MANAGER, building=user.building, active=True).first()
+    # Find dorm manager with fallback mechanism
+    dorm_manager = None
+    building = user.building
+
+    # Try to find dorm manager by building
+    if building and building.strip():
+        try:
+            dorm_manager = User.objects.get(role=UserRole.DORM_MANAGER, building=building, active=True)
+        except User.DoesNotExist:
+            pass  # Will try fallback
+        except User.MultipleObjectsReturned:
+            dorm_manager = User.objects.filter(role=UserRole.DORM_MANAGER, building=building, active=True).first()
+
+    # Fallback: use default dorm manager for students without building
+    if not dorm_manager:
+        try:
+            dorm_manager = User.objects.get(role=UserRole.DORM_MANAGER, user_id='92008149', active=True)
+        except User.DoesNotExist:
+            return Response({'error': {'code': 'NOT_FOUND', 'message': '无可用宿管员',
+                                        'details': {'building': building or '未分配'}}},
+                            status=status.HTTP_404_NOT_FOUND)
 
     dorm_manager_name = dorm_manager.name
 

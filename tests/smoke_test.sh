@@ -435,9 +435,9 @@ if [ -z "$STUDENT2_REJECT_NOTIF" ]; then
   exit 1
 fi
 
-NOTIF_TYPE=$(echo "$STUDENT2_REJECT_NOTIF" | jq -r '.type')
-NOTIF_ENTITY_TYPE=$(echo "$STUDENT2_REJECT_NOTIF" | jq -r '.entity_type')
-NOTIF_MESSAGE=$(echo "$STUDENT2_REJECT_NOTIF" | jq -r '.message')
+NOTIF_TYPE=$(echo "$STUDENT2_REJECT_NOTIF" | jq -r '.type' | head -1)
+NOTIF_ENTITY_TYPE=$(echo "$STUDENT2_REJECT_NOTIF" | jq -r '.entity_type' | head -1)
+NOTIF_MESSAGE=$(echo "$STUDENT2_REJECT_NOTIF" | jq -r '.message' | head -1)
 
 if [ "$NOTIF_TYPE" != "approval_rejected" ]; then
   echo "✗ Notification type wrong: $NOTIF_TYPE (expected: approval_rejected)"

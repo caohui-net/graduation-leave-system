@@ -160,10 +160,14 @@ def approve_approval(request, approval_id):
         application.status = ApplicationStatus.PENDING_COUNSELOR
         application.save()
 
-        # Get counselor by department
-        try:
-            counselor = User.objects.get(role=UserRole.COUNSELOR, department=application.student.department, active=True)
-        except User.DoesNotExist:
+        # Get counselor by department (use filter().first() to handle multiple matches)
+        counselor = User.objects.filter(
+            role=UserRole.COUNSELOR,
+            department=application.student.department,
+            active=True
+        ).order_by('user_id').first()
+
+        if not counselor:
             return Response({'error': {'code': 'NOT_FOUND', 'message': '该学院辅导员不存在',
                                         'details': {'department': application.student.department}}},
                             status=status.HTTP_404_NOT_FOUND)

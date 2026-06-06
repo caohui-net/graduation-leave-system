@@ -148,6 +148,25 @@ def approve_approval(request, approval_id):
 
     application = approval.application
     if approval.step == ApprovalStep.DORM_MANAGER:
+        # Auto-complete other pending dorm manager approvals for the same building
+        # (New requirement: any dorm manager in the building can approve, others see "already approved")
+        other_dorm_approvals = Approval.objects.filter(
+            application=application,
+            step=ApprovalStep.DORM_MANAGER,
+            decision=ApprovalDecision.PENDING
+        ).exclude(approval_id=approval.approval_id)
+
+        if other_dorm_approvals.exists():
+            other_dorm_approvals.update(
+                decision=ApprovalDecision.APPROVED,
+                comment=f'已由{approval.approver_name}完成审批，无需重复操作',
+                decided_at=timezone.now()
+            )
+            logging.info(
+                f"Auto-completed {other_dorm_approvals.count()} other dorm manager approvals "
+                f"for application {application.application_id} after approval by {approval.approver.user_id}"
+            )
+
         # Check for existing counselor approval to prevent duplicates
         existing_counselor_approval = Approval.objects.filter(
             application=application,

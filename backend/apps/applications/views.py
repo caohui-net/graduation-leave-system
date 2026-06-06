@@ -144,38 +144,35 @@ def create_application(request):
                                                 'blocking_reason': dorm_status.blocking_reason}}},
                         status=status.HTTP_422_UNPROCESSABLE_ENTITY)
 
-    # Find dorm manager with fallback mechanism
-    dorm_manager = None
+    # Find all dorm managers for the building
+    dorm_managers = []
     building = user.building
 
-    # Try to find dorm manager by building
+    # Try to find dorm managers by building
     if building and building.strip():
-        dorm_managers = User.objects.filter(
+        dorm_managers = list(User.objects.filter(
             role=UserRole.DORM_MANAGER,
             building=building,
             active=True
-        ).order_by('user_id')
+        ).order_by('user_id'))
 
-        if dorm_managers.exists():
-            if dorm_managers.count() > 1:
-                logging.warning(
-                    f"Multiple dorm managers found for building {building}: "
-                    f"{dorm_managers.count()} matches. Selected {dorm_managers.first().user_id} via order_by('user_id')"
-                )
-            dorm_manager = dorm_managers.first()
+        if len(dorm_managers) > 1:
+            logging.info(
+                f"Multiple dorm managers found for building {building}: "
+                f"{len(dorm_managers)} managers. Creating approval for each."
+            )
 
     # Fallback: use default dorm manager for students without building
-    if not dorm_manager:
+    if not dorm_managers:
         from django.conf import settings
         fallback_id = getattr(settings, 'FALLBACK_DORM_MANAGER_USER_ID', '92008149')
         try:
-            dorm_manager = User.objects.get(role=UserRole.DORM_MANAGER, user_id=fallback_id, active=True)
+            fallback_manager = User.objects.get(role=UserRole.DORM_MANAGER, user_id=fallback_id, active=True)
+            dorm_managers = [fallback_manager]
         except User.DoesNotExist:
             return Response({'error': {'code': 'NOT_FOUND', 'message': '无可用宿管员',
                                         'details': {'building': building or '未分配', 'fallback_id': fallback_id}}},
                             status=status.HTTP_404_NOT_FOUND)
-
-    dorm_manager_name = dorm_manager.name
 
     application = Application.objects.create(
         application_id=f'app_{uuid.uuid4().hex[:8]}',
@@ -188,16 +185,17 @@ def create_application(request):
         dorm_checkout_status=dorm_status.status
     )
 
-    dorm_manager_approval = Approval.objects.create(
-        approval_id=f'apv_{uuid.uuid4().hex[:8]}',
-        application=application,
-        step=ApprovalStep.DORM_MANAGER,
-        approver=dorm_manager,
-        approver_name=dorm_manager_name,
-        decision=ApprovalDecision.PENDING
-    )
-
-    notify_application_submitted(application, dorm_manager_approval)
+    # Create approval for each dorm manager
+    for dorm_manager in dorm_managers:
+        dorm_manager_approval = Approval.objects.create(
+            approval_id=f'apv_{uuid.uuid4().hex[:8]}',
+            application=application,
+            step=ApprovalStep.DORM_MANAGER,
+            approver=dorm_manager,
+            approver_name=dorm_manager.name,
+            decision=ApprovalDecision.PENDING
+        )
+        notify_application_submitted(application, dorm_manager_approval)
 
     return Response(ApplicationSerializer(application).data, status=status.HTTP_201_CREATED)
 

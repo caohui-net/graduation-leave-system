@@ -4,6 +4,7 @@ from django.db import models
 
 class UserRole(models.TextChoices):
     STUDENT = 'student', '学生'
+    DORM_MANAGER = 'dorm_manager', '宿管员'
     COUNSELOR = 'counselor', '辅导员'
     DEAN = 'dean', '学工部'
 
@@ -32,6 +33,12 @@ class User(AbstractBaseUser, PermissionsMixin):
     class_id = models.CharField(max_length=50, null=True, blank=True)
     is_graduating = models.BooleanField(null=True, blank=True)
     graduation_year = models.IntegerField(null=True, blank=True)
+
+    # API补充字段（学工系统）
+    phone = models.CharField(max_length=20, null=True, blank=True)
+    email = models.EmailField(null=True, blank=True)
+    department = models.CharField(max_length=100, null=True, blank=True)
+    building = models.CharField(max_length=100, null=True, blank=True)
 
     is_staff = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)

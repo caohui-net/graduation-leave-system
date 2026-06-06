@@ -12,7 +12,6 @@ from .providers import MockDormCheckoutProvider
 from .permissions import can_view_application
 from apps.approvals.models import Approval, ApprovalStep, ApprovalDecision
 from apps.users.models import UserRole
-from apps.users.class_mapping import ClassMapping
 from apps.notifications.services import notify_application_submitted
 from schema import ErrorResponseSerializer
 import uuid
@@ -66,6 +65,15 @@ def list_applications(request):
     if user.role == UserRole.STUDENT:
         queryset = Application.objects.filter(student=user)
 
+    # Dorm Manager: applications with own pending dorm manager approvals
+    elif user.role == UserRole.DORM_MANAGER:
+        pending_approvals = Approval.objects.filter(
+            approver=user,
+            step=ApprovalStep.DORM_MANAGER,
+            decision=ApprovalDecision.PENDING
+        ).values_list('application', flat=True)
+        queryset = Application.objects.filter(pk__in=pending_approvals)
+
     # Counselor: applications with own pending counselor approvals
     elif user.role == UserRole.COUNSELOR:
         pending_approvals = Approval.objects.filter(
@@ -75,14 +83,9 @@ def list_applications(request):
         ).values_list('application', flat=True)
         queryset = Application.objects.filter(pk__in=pending_approvals)
 
-    # Dean: applications with own pending dean approvals
+    # Dean: view all approved applications (archiving role)
     elif user.role == UserRole.DEAN:
-        pending_approvals = Approval.objects.filter(
-            approver=user,
-            step=ApprovalStep.DEAN,
-            decision=ApprovalDecision.PENDING
-        ).values_list('application', flat=True)
-        queryset = Application.objects.filter(pk__in=pending_approvals)
+        queryset = Application.objects.filter(status=ApplicationStatus.APPROVED)
 
     else:
         return Response(
@@ -118,7 +121,7 @@ def create_application(request):
     # Check for existing pending/approved applications
     existing = Application.objects.filter(
         student=user,
-        status__in=[ApplicationStatus.PENDING_COUNSELOR, ApplicationStatus.PENDING_DEAN, ApplicationStatus.APPROVED]
+        status__in=[ApplicationStatus.PENDING_DORM_MANAGER, ApplicationStatus.PENDING_COUNSELOR, ApplicationStatus.APPROVED]
     ).first()
     if existing:
         return Response({'error': {'code': 'CONFLICT', 'message': '已有待审批或已通过的申请，不能重复提交',
@@ -141,11 +144,15 @@ def create_application(request):
                         status=status.HTTP_422_UNPROCESSABLE_ENTITY)
 
     try:
-        class_mapping = ClassMapping.objects.get(class_id=user.class_id, active=True)
-    except ClassMapping.DoesNotExist:
-        return Response({'error': {'code': 'NOT_FOUND', 'message': '班级映射不存在',
-                                    'details': {'class_id': user.class_id}}},
+        dorm_manager = User.objects.get(role=UserRole.DORM_MANAGER, building=user.building, active=True)
+    except User.DoesNotExist:
+        return Response({'error': {'code': 'NOT_FOUND', 'message': '该楼栋宿管员不存在',
+                                    'details': {'building': user.building}}},
                         status=status.HTTP_404_NOT_FOUND)
+    except User.MultipleObjectsReturned:
+        dorm_manager = User.objects.filter(role=UserRole.DORM_MANAGER, building=user.building, active=True).first()
+
+    dorm_manager_name = dorm_manager.name
 
     application = Application.objects.create(
         application_id=f'app_{uuid.uuid4().hex[:8]}',
@@ -154,20 +161,20 @@ def create_application(request):
         class_id=user.class_id,
         reason=serializer.validated_data['reason'],
         leave_date=serializer.validated_data['leave_date'],
-        status=ApplicationStatus.PENDING_COUNSELOR,
+        status=ApplicationStatus.PENDING_DORM_MANAGER,
         dorm_checkout_status=dorm_status.status
     )
 
-    counselor_approval = Approval.objects.create(
+    dorm_manager_approval = Approval.objects.create(
         approval_id=f'apv_{uuid.uuid4().hex[:8]}',
         application=application,
-        step=ApprovalStep.COUNSELOR,
-        approver=class_mapping.counselor,
-        approver_name=class_mapping.counselor_name,
+        step=ApprovalStep.DORM_MANAGER,
+        approver=dorm_manager,
+        approver_name=dorm_manager_name,
         decision=ApprovalDecision.PENDING
     )
 
-    notify_application_submitted(application, counselor_approval)
+    notify_application_submitted(application, dorm_manager_approval)
 
     return Response(ApplicationSerializer(application).data, status=status.HTTP_201_CREATED)
 

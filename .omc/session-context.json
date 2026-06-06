@@ -1,5 +1,5 @@
 {
-  "last_updated": "2026-06-06T07:39:00Z",
+  "last_updated": "2026-06-06T10:30:00Z",
   "completed": [
     "Excel数据源关联策略协作（2026-06-05）",
     "用户需求最终确认（2026-06-05）: 5项关键业务决策",
@@ -19,24 +19,37 @@
     "Phase 2.3代码实施（2026-06-06）: 学院路由（User.department+辅导员匹配）",
     "Phase 2.4代码实施（2026-06-06）: 学工管理员角色（UserRole.ADMIN）",
     "数据补充脚本（2026-06-06）: supplement_building_data.py（更新File5楼栋数据）",
-    "Phase 0-2代码完成（2026-06-06）: 所有代码级变更已提交并推送"
+    "Phase 0-2代码完成（2026-06-06）: 所有代码级变更已提交并推送",
+    "数据差异分析（2026-06-06）: 116 vs 134人, 271 vs 290人对比，生成分析报告",
+    "271名研究生学号补充（2026-06-06）: 100%匹配成功，学号已填充CSV",
+    "新增3名管理员（2026-06-06）: 2学工管理员+1兜底宿管员",
+    "兜底宿管员路由实现（2026-06-06）: 方案B Fallback机制，解决116人无楼栋问题",
+    "协作任务TASK-20260606-08（2026-06-06）: 执行逻辑调整审查，已完成自主实施",
+    "执行逻辑调整总结（2026-06-06）: Phase 3任务调整（新增3.1a/3.4）"
   ],
   "pending": [
     "用户补充116名学生楼栋数据（CSV模板已提供: missing_building_data_request.csv）",
+    "19名额外研究生处理决策（在290人文件但不在File5）",
     "Django环境配置（Phase 3运行时依赖）",
-    "Phase 3数据导入执行（需Django环境: import_students/import_dorm_managers/import_counselors）",
+    "Phase 3.1 导入学生数据（File5）",
+    "Phase 3.1a 更新271人学号（使用missing_student_no_filled.csv）",
+    "Phase 3.2 导入宿管员（File3）",
+    "Phase 3.3 导入辅导员（File4）",
+    "Phase 3.4 导入3名管理员（additional_staff.csv）",
     "Phase 4前端UI调整（2级审批+4角色适配）",
-    "Phase 5端到端测试（需运行环境）",
-    "学工管理员数据提供（Excel/CSV，格式待定）"
+    "Phase 5端到端测试（包含无楼栋学生流程）"
   ],
   "evidence": [
     "Phase 0 Task 0.2: 5946行输出，0规范化失败，271临时ID生成，116 File2独有行导入",
     "Phase 0 Task 0.5: 辅导员100% (5946/5946)，宿管员98% (5830/5946)，116人缺楼栋数据",
     "Phase 2代码变更: applications/models.py, approvals/views.py, users/models.py, users/migrations/0005_user_building.py",
-    "最终提交: feat: 完成Phase 0-2代码实施和数据补充框架",
-    "数据补充接口: backend/scripts/supplement_building_data.py"
+    "数据验证完成: 116人=File2独有（100%重合），271人学号100%匹配，19人额外发现",
+    "兜底宿管员路由实现: applications/views.py Line 146-166（方案B Fallback机制）",
+    "数据补充接口: backend/scripts/supplement_building_data.py",
+    "271人学号已填充: backend/data/missing_student_no_filled.csv",
+    "3名管理员数据: backend/data/additional_staff.csv"
   ],
-  "next_focus": "Phase 0-2代码级实施已完成。项目达到代码就绪状态：1)98%覆盖率决策已采纳，5830名主流程学生可正常使用 2)2级审批流程、楼栋/学院路由、学工管理员角色已实现 3)数据补充框架已就绪。后续需要：1)用户提供116人楼栋数据 2)配置Django运行环境执行Phase 3-5。",
+  "next_focus": "Phase 0-2代码+执行逻辑调整全部完成。核心成果：1)数据结构明确（5946=5830+116无楼栋+271临时ID）2)兜底宿管员路由已实现，116人可正常申请 3)271人学号已找到并填充 4)3名管理员数据已准备。Phase 3任务已调整（新增3.1a学号更新/3.4管理员导入）。后续：1)用户决策19名额外研究生 2)配置Django环境 3)执行Phase 3-5。",
   "artifacts": {
     "user_requirements": "docs/用户需求最终确认与实施方案.md",
     "codex_review": ".omc/collaboration/artifacts/20260605-codex-implementation-plan-review.md",
@@ -46,9 +59,17 @@
     "phase0_scripts": "backend/scripts/{generate_temp_user_ids,merge_student_data,validate_routing_coverage,normalize_colleges}.py",
     "phase0_data": "backend/data/{file5_students_merged.csv,routing_coverage_report.json,merge_report.json}",
     "p0_blocker_analysis": ".omc/collaboration/artifacts/20260605-phase0-routing-coverage-blocker.md",
-    "data_request": "docs/数据补充请求-116名学生楼栋信息.md",
-    "data_request_csv": "backend/data/missing_building_data_request.csv",
+    "data_request_116": "docs/数据补充请求-116名学生楼栋信息.md",
+    "data_request_271": "docs/数据补充请求-271名研究生学号信息.md",
     "data_supplement_script": "backend/scripts/supplement_building_data.py",
+    "discrepancy_analysis": "docs/missing_building_data_discrepancy_analysis.md",
+    "graduate_analysis": "docs/271名研究生学号比对分析报告.md",
+    "comparison_csv": "docs/无楼栋信息学生对比表.csv",
+    "student_no_filled": "backend/data/missing_student_no_filled.csv",
+    "additional_staff": "backend/data/additional_staff.csv",
+    "fallback_dorm_plan": "docs/兜底宿管员路由逻辑方案.md",
+    "execution_adjustment": "docs/Phase0数据验证后执行逻辑调整总结.md",
+    "collab_task": ".omc/collaboration/tasks/TASK-20260606-08-审查请求.md",
     "project_summary": "docs/PROJECT-SUMMARY.md"
   },
   "suggested_skills": []

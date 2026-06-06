@@ -1,5 +1,5 @@
 {
-  "last_updated": "2026-06-06T18:46:00Z",
+  "last_updated": "2026-06-06T19:05:00Z",
   "completed": [
     "Phase 3.1-3.4数据导入（2026-06-06）: 6055用户入库",
     "Phase 3数据验证（2026-06-06）: 发现14人差异+2个P0阻塞",
@@ -18,7 +18,8 @@
     "Smoke test更新（2026-06-06）: 移除3级审批逻辑（pending_dean/dean approval），修复通知验证，H1测试通过",
     "Phase 5完成（2026-06-06）: 端到端验证（H1测试通过验证2级审批流程，4角色类型定义已更新，权限守卫已实现）",
     "H2测试修复（2026-06-06）: 配置M002/2020002/T002测试数据（building+department对齐），修复H2通知验证，H1+H2+N2全部通过",
-    "测试数据持久化（2026-06-06）: seed_data.py添加building/department字段（students/counselors/dorm_managers），测试配置可跨数据库重置复用"
+    "测试数据持久化（2026-06-06）: seed_data.py添加building/department字段（students/counselors/dorm_managers），测试配置可跨数据库重置复用",
+    "单元测试修复（2026-06-06）: 14个测试文件添加必需字段（building/department），修复路由依赖导致的404错误，101个单元测试全部通过"
   ],
   "pending": [
     "P1任务（可选）: 清理历史测试账号（2020001-2020010/M001-M002/T001-T002）",
@@ -38,9 +39,10 @@
     "Codex审批流程共识: 后端实际是2级审批(dorm_manager→counselor→approved), smoke_test.sh应移除pending_dean/dean相关断言",
     "Smoke test修复: tests/smoke_test.sh Line 46更新路径为2020001→M001→T001, Lines 283-335移除dean审批逻辑, Lines 268-269添加head -1修复多通知问题",
     "H1测试验证通过: 完整2级审批流程验证成功(student login→submit→M001 approve→T001 approve→status:approved), 通知验证通过(12 unread notifications)",
-    "seed_data.py持久化: Lines 28-38添加building/department字段到students, Lines 62-64添加department字段到counselors, Lines 83-84添加building字段到dorm_managers, 使用update_or_create确保可重复执行"
+    "seed_data.py持久化: Lines 28-38添加building/department字段到students, Lines 62-64添加department字段到counselors, Lines 83-84添加building字段到dorm_managers, 使用update_or_create确保可重复执行",
+    "单元测试修复: 14个测试文件添加必需字段, test_application_flow等修复后返回201而非404, 运行101个单元测试全部通过(OK in 26.104s)"
   ],
-  "next_focus": "Phase 4-5完成，H1+H2+N2 smoke test全部通过。核心功能完整验证（2级审批流程+4角色权限+拒绝流程）。可选优化：P1清理测试账号、废弃ClassMapping。测试账号配置：2020001/M001/T001(计算机学院,1号楼)，2020002/M002/T002(软件学院,2号楼)。",
+  "next_focus": "Phase 4-5完成，smoke test全部通过（H1+H2+N2），单元测试全部通过（101 tests OK）。核心功能验证完整：2级审批流程+4角色权限+拒绝流程+测试数据持久化。可选优化：P1清理测试账号、废弃ClassMapping。",
   "artifacts": {
     "phase3_data_verification": "Phase 3数据验证结果记录在PROJECT-SUMMARY.md",
     "p0_fixes": "apps/approvals/views.py + apps/applications/views.py",

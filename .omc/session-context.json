@@ -21,7 +21,9 @@
     "测试数据持久化（2026-06-06）: seed_data.py添加building/department字段（students/counselors/dorm_managers），测试配置可跨数据库重置复用",
     "单元测试修复（2026-06-06）: 14个测试文件添加必需字段（building/department），修复路由依赖导致的404错误，101个单元测试全部通过",
     "P1完成（2026-06-06）: ClassMapping废弃（permissions.py/seed_data.py/admin.py改用字段匹配），smoke test+单元测试全部通过",
-    "多宿管员协同审批（2026-06-06）: applications/views.py创建多个审批（Line 147-199），approvals/views.py自动完成其他审批（Line 153-168），添加GET /api/approvals/{id}/端点，M003测试用户，test_multi_dorm_manager.sh验证通过"
+    "多宿管员协同审批（2026-06-06）: applications/views.py创建多个审批（Line 147-199），approvals/views.py自动完成其他审批（Line 153-168），添加GET /api/approvals/{id}/端点，M003测试用户，test_multi_dorm_manager.sh验证通过",
+    "Docker本地部署（2026-06-07）: docker-compose.yml配置验证，PostgreSQL+Django服务启动成功，API可访问（localhost:8001），后台日志显示多宿管员测试正常执行",
+    "系统操作文档（2026-06-07）: 创建docs/SYSTEM-OPERATIONS-GUIDE.md，包含快速开始、用户操作流程、API参考、配置说明、故障排查、日常运维章节"
   ],
   "pending": [],
   "evidence": [

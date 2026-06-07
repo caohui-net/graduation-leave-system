@@ -23,14 +23,21 @@ class ApprovalListSerializer(serializers.ModelSerializer):
 
 
 class ApprovalSerializer(serializers.ModelSerializer):
+    """Full approval detail with nested application info"""
     application_id = serializers.CharField(source='application.application_id', read_only=True)
+    student_name = serializers.CharField(source='application.student.name', read_only=True)
+    student_id = serializers.CharField(source='application.student.user_id', read_only=True)
+    contact_phone = serializers.CharField(source='application.contact_phone', read_only=True)
+    reason = serializers.CharField(source='application.reason', read_only=True)
     approver_id = serializers.CharField(source='approver.user_id', read_only=True)
 
     class Meta:
         model = Approval
-        fields = ['approval_id', 'application_id', 'step', 'approver_id',
+        fields = ['approval_id', 'application_id', 'student_name', 'student_id',
+                  'contact_phone', 'reason', 'step', 'approver_id',
                   'approver_name', 'decision', 'comment', 'decided_at']
-        read_only_fields = ['approval_id', 'application_id', 'step',
+        read_only_fields = ['approval_id', 'application_id', 'student_name', 'student_id',
+                            'contact_phone', 'reason', 'step',
                             'approver_id', 'approver_name', 'decision', 'decided_at']
 
 

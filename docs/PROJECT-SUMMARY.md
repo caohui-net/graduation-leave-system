@@ -3771,3 +3771,11 @@ python backend/scripts/import_graduates.py graduate_students_supplement.csv --ap
 - 采用Codex草稿容器方案（复用ApplicationStatus.DRAFT）
 - 手机号快照机制（contact_phone保存申请时状态）
 - 事务保证一致性（transaction.atomic + User.phone同步）
+
+**Codex审查5项修复（2026-06-07完成）：**
+- ✓ P0-1: 草稿URL注册（backend/apps/applications/urls.py添加draft/路由）
+- ✓ P0-2: leave_date可空支持（null=True, blank=True，支持草稿场景）
+- ✓ P0-3: 数据库迁移（0006_application_contact_phone_and_more.py）
+- ✓ P0-4: 测试更新（7个测试文件，添加contact_phone参数）
+- ✓ P0-5: 并发保护（select_for_update防止竞态条件）
+- ✓ 测试验证：29/29 tests passed

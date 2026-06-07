@@ -68,8 +68,8 @@ def merge_files(file1_path: str, file2_path: str, output_path: str) -> dict:
             # Extract File1 fields
             name = row['学生姓名'].strip()
             college_raw = row['学院名称'].strip()
-            building = row['楼栋'].strip()
-            room = row['寝室'].strip()
+            building = row['楼栋名称'].strip()
+            room = row['寝室号'].strip()
             major = row['专业'].strip()
             grade = row['年级'].strip()
             class_name = row['班级'].strip()

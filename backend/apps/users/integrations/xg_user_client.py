@@ -115,9 +115,8 @@ class XGUserAPIClient:
 
     def fetch_users_page(self, page: int = 1, page_num: int = 1, timeout: int = 5, session=None) -> dict:
         """请求单页用户数据"""
-        import requests
-
         if session is None:
+            import requests
             session = requests.Session()
 
         headers = self.build_headers()
@@ -132,11 +131,79 @@ class XGUserAPIClient:
         if 'code' not in result:
             raise ValueError("Response missing 'code' field")
 
+        data = result.get('data')
+        if data is None:
+            raise ValueError("Response missing 'data' field")
+        if 'data' not in data:
+            raise ValueError("Response data missing 'data' (user list) field")
+        users = data['data']
+        if not isinstance(users, list):
+            raise ValueError(f"Response data.data must be list, got {type(users).__name__}")
+
         return {
             'code': result.get('code'),
             'msg': result.get('msg', ''),
-            'current_page': result.get('data', {}).get('current_page'),
-            'per_page': result.get('data', {}).get('per_page'),
-            'total': result.get('data', {}).get('total'),
-            'users': result.get('data', {}).get('data', [])
+            'current_page': data.get('current_page'),
+            'per_page': data.get('per_page'),
+            'total': data.get('total'),
+            'users': users
         }
+
+    def fetch_all_users(self, page_size: int = 100, max_pages: int = None, timeout: int = 5, session=None) -> dict:
+        """分页读取所有用户"""
+        if page_size <= 0:
+            raise ValueError(f"page_size must be positive, got {page_size}")
+        if max_pages is not None and max_pages <= 0:
+            raise ValueError(f"max_pages must be positive or None, got {max_pages}")
+
+        if session is None:
+            import requests
+            session = requests.Session()
+
+        all_users = []
+        page = 1
+        total = None
+        prev_current_page = None
+
+        while True:
+            result = self.fetch_users_page(page=page, page_num=page_size, timeout=timeout, session=session)
+
+            if result['code'] != 200:
+                raise ValueError(f"Business error: code={result['code']}, msg={result['msg']}")
+
+            users = result['users']
+            if not isinstance(users, list):
+                raise ValueError(f"users must be list, got {type(users).__name__}")
+
+            all_users.extend(users)
+
+            current_page = result['current_page']
+            per_page = result['per_page']
+            total = result['total']
+
+            # 转换per_page为整数并校验
+            if per_page is not None:
+                per_page = int(per_page) if isinstance(per_page, str) else per_page
+                if per_page <= 0:
+                    raise ValueError(f"Invalid per_page: {per_page}, must be positive")
+
+            # 校验current_page前进
+            if current_page is not None:
+                current_page_int = int(current_page) if isinstance(current_page, str) else current_page
+                if prev_current_page is not None and current_page_int <= prev_current_page:
+                    raise ValueError(f"Pagination not advancing: current_page={current_page_int}, previous={prev_current_page}")
+                prev_current_page = current_page_int
+
+            # 判断是否结束
+            if max_pages and page >= max_pages:
+                return {'users': all_users, 'total': total, 'pages_fetched': page, 'stopped_reason': 'max_pages'}
+
+            if not users:
+                return {'users': all_users, 'total': total, 'pages_fetched': page, 'stopped_reason': 'empty'}
+
+            if total is not None and current_page is not None and per_page is not None:
+                total_pages = (int(total) + per_page - 1) // per_page
+                if int(current_page) >= total_pages:
+                    return {'users': all_users, 'total': total, 'pages_fetched': page, 'stopped_reason': 'complete'}
+
+            page += 1

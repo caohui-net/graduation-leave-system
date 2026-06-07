@@ -129,7 +129,7 @@ def create_application(request):
 
     with transaction.atomic():
         # Check for existing pending/approved applications
-        existing = Application.objects.filter(
+        existing = Application.objects.select_for_update().filter(
             student=user,
             status__in=[ApplicationStatus.PENDING_DORM_MANAGER, ApplicationStatus.PENDING_COUNSELOR, ApplicationStatus.APPROVED]
         ).first()
@@ -170,7 +170,7 @@ def create_application(request):
                                 status=status.HTTP_404_NOT_FOUND)
 
         # Check for existing draft, convert if exists
-        draft = Application.objects.filter(student=user, status=ApplicationStatus.DRAFT).first()
+        draft = Application.objects.select_for_update().filter(student=user, status=ApplicationStatus.DRAFT).first()
 
         if draft:
             # Update draft to submitted application
@@ -260,14 +260,17 @@ def get_application(request, application_id):
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def get_or_create_draft(request):
+    from django.db import transaction
+
     user = request.user
 
     if user.role != UserRole.STUDENT:
         return Response({'error': {'code': 'FORBIDDEN', 'message': '只有学生可以创建草稿'}},
                         status=status.HTTP_403_FORBIDDEN)
 
-    # Get existing draft or create new one
-    draft = Application.objects.filter(student=user, status=ApplicationStatus.DRAFT).first()
+    with transaction.atomic():
+        # Get existing draft or create new one
+        draft = Application.objects.select_for_update().filter(student=user, status=ApplicationStatus.DRAFT).first()
 
     if draft:
         return Response(ApplicationSerializer(draft).data, status=status.HTTP_200_OK)

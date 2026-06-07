@@ -6,6 +6,8 @@ when key events occur (application submission, approval decisions).
 """
 
 from django.contrib.auth import get_user_model
+from django.utils import timezone
+from datetime import timedelta
 from .models import Notification, NotificationType
 from apps.approvals.models import ApprovalDecision
 
@@ -49,7 +51,11 @@ def notify_approval_decided(approval):
     Returns:
         tuple: (Notification instance, created boolean)
     """
-    approver_role = "辅导员" if approval.step == "counselor" else "学工部"
+    approver_role_map = {
+        "dorm_manager": "宿管员",
+        "counselor": "辅导员",
+    }
+    approver_role = approver_role_map.get(approval.step, "审批人")
 
     if approval.decision == ApprovalDecision.APPROVED:
         title = "审批通过"
@@ -71,3 +77,77 @@ def notify_approval_decided(approval):
             'message': message
         }
     )
+
+
+def create_approval_timeout_warnings(now=None, dry_run=False):
+    """
+    Create timeout warning notifications for pending approvals.
+
+    Args:
+        now: Current time (for testing), defaults to timezone.now()
+        dry_run: If True, only simulate without creating notifications
+
+    Returns:
+        dict: {created: int, skipped: int, warnings: list}
+    """
+    from apps.approvals.models import Approval
+
+    if now is None:
+        now = timezone.now()
+
+    dorm_manager_threshold = now - timedelta(days=2)
+    counselor_threshold = now - timedelta(days=3)
+
+    pending_approvals = Approval.objects.filter(
+        decision=ApprovalDecision.PENDING
+    ).select_related('approver', 'application__student')
+
+    created_count = 0
+    skipped_count = 0
+    warnings = []
+
+    for approval in pending_approvals:
+        threshold = counselor_threshold if approval.step == 'counselor' else dorm_manager_threshold
+
+        if approval.created_at > threshold:
+            continue
+
+        days = (now - approval.created_at).days
+        title = "审批超时提醒"
+        message = f"学生{approval.application.student_name}的离校申请已超过{days}天未审批，请及时处理。"
+
+        if dry_run:
+            warnings.append({
+                'approval_id': approval.pk,
+                'approver': approval.approver.name,
+                'days': days
+            })
+            created_count += 1
+        else:
+            notification, created = Notification.objects.get_or_create(
+                recipient=approval.approver,
+                entity_type='approval',
+                entity_id=approval.pk,
+                type=NotificationType.APPROVAL_TIMEOUT_WARNING,
+                defaults={
+                    'actor': None,
+                    'title': title,
+                    'message': message
+                }
+            )
+            if created:
+                created_count += 1
+                warnings.append({
+                    'notification_id': notification.notification_id,
+                    'approval_id': approval.pk,
+                    'approver': approval.approver.name,
+                    'days': days
+                })
+            else:
+                skipped_count += 1
+
+    return {
+        'created': created_count,
+        'skipped': skipped_count,
+        'warnings': warnings
+    }

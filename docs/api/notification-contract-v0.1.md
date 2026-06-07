@@ -87,17 +87,22 @@
 
 #### APPROVAL_TIMEOUT_WARNING（审批超时提醒）
 
-**触发条件：** 审批超过规定时限（辅导员3工作日，学工部2工作日）未处理
+**触发条件：** 审批超过规定时限（辅导员3自然日，学工部2自然日）未处理
 
 **接收者：** 待审批的辅导员/学工部
 
 **通知内容：**
 - 标题：`审批超时提醒`
-- 正文：`学生{student_name}的离校申请已超过{days}个工作日未审批，请及时处理。`
+- 正文：`学生{student_name}的离校申请已超过{days}天未审批，请及时处理。`
 
 **关联实体：**
 - entity_type: `approval`
 - entity_id: `{approval_id}`
+
+**v0.1实现说明：**
+- 通知创建由Management Command触发（`send_approval_timeout_warnings`）
+- 一次性提醒，不重复
+- 自动定时调度（Celery beat）推迟到后续版本
 
 ---
 

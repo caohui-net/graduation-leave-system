@@ -91,6 +91,7 @@ class ErrorCasesTestCase(TestCase):
 
         self.client.credentials(HTTP_AUTHORIZATION=f'Bearer {token}')
         response = self.client.post('/api/applications/', {
+            'contact_phone': '13800138000',
             'reason': '毕业离校',
             'leave_date': (timezone.now().date() + timedelta(days=1)).isoformat()
         }, format='json')
@@ -109,6 +110,7 @@ class ErrorCasesTestCase(TestCase):
 
         # First submission
         response = self.client.post('/api/applications/', {
+            'contact_phone': '13800138000',
             'reason': '毕业离校',
             'leave_date': (timezone.now().date() + timedelta(days=1)).isoformat()
         })
@@ -116,8 +118,9 @@ class ErrorCasesTestCase(TestCase):
 
         # Second submission (should fail)
         response = self.client.post('/api/applications/', {
-            'reason': '毕业离校',
-            'leave_date': (timezone.now().date() + timedelta(days=1)).isoformat()
+            'contact_phone': '13800138000',
+            'reason': '再次提交',
+            'leave_date': (timezone.now().date() + timedelta(days=2)).isoformat()
         })
         self.assertEqual(response.status_code, status.HTTP_409_CONFLICT)
         self.assertEqual(response.data['error']['code'], 'CONFLICT')
@@ -133,6 +136,7 @@ class ErrorCasesTestCase(TestCase):
 
         self.client.credentials(HTTP_AUTHORIZATION=f'Bearer {token1}')
         response = self.client.post('/api/applications/', {
+            'contact_phone': '13800138000',
             'reason': '毕业离校',
             'leave_date': (timezone.now().date() + timedelta(days=1)).isoformat()
         })

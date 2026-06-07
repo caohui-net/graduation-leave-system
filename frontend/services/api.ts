@@ -5,8 +5,8 @@ import type {
   LoginRequest,
   LoginResponse,
   ApplicationCreateRequest,
-  Application,
   ApplicationDetail,
+  Application,
   ApprovalListItem,
   ApprovalActionRequest,
   ApprovalActionResponse,
@@ -69,7 +69,7 @@ export class ApiClient {
   }
 
   // Applications
-  async createApplication(req: ApplicationCreateRequest): Promise<Application> {
+  async createApplication(req: ApplicationCreateRequest): Promise<ApplicationDetail> {
     return this.request('/api/applications/', {
       method: 'POST',
       body: JSON.stringify(req),

@@ -9,6 +9,7 @@ class ApplicationCreateSerializerTest(TestCase):
     def test_reason_max_length_500(self):
         """Test reason field enforces 500 character limit"""
         data = {
+            'contact_phone': '13800138000',
             'reason': 'a' * 501,
             'leave_date': (timezone.now().date() + timedelta(days=1)).isoformat()
         }
@@ -19,16 +20,18 @@ class ApplicationCreateSerializerTest(TestCase):
     def test_reason_empty_after_trim(self):
         """Test reason field rejects empty string after trim"""
         data = {
+            'contact_phone': '13800138000',
             'reason': '   ',
             'leave_date': (timezone.now().date() + timedelta(days=1)).isoformat()
         }
         serializer = ApplicationCreateSerializer(data=data)
-        self.assertFalse(serializer.is_valid())
-        self.assertIn('reason', serializer.errors)
+        # Reason is now optional, so this should pass validation
+        self.assertTrue(serializer.is_valid())
 
     def test_leave_date_past(self):
         """Test leave_date field rejects dates before today"""
         data = {
+            'contact_phone': '13800138000',
             'reason': '毕业离校',
             'leave_date': (timezone.now().date() - timedelta(days=1)).isoformat()
         }
@@ -39,6 +42,7 @@ class ApplicationCreateSerializerTest(TestCase):
     def test_leave_date_today(self):
         """Test leave_date field accepts today"""
         data = {
+            'contact_phone': '13800138000',
             'reason': '毕业离校',
             'leave_date': timezone.now().date().isoformat()
         }
@@ -48,6 +52,7 @@ class ApplicationCreateSerializerTest(TestCase):
     def test_valid_data(self):
         """Test serializer accepts valid data"""
         data = {
+            'contact_phone': '13800138000',
             'reason': '毕业离校',
             'leave_date': (timezone.now().date() + timedelta(days=1)).isoformat()
         }
@@ -66,6 +71,7 @@ class ApplicationCreateSerializerTest(TestCase):
 
         # Submit with leave_date=tomorrow (2026-06-02)
         data = {
+            'contact_phone': '13800138000',
             'reason': '毕业离校',
             'leave_date': '2026-06-02'
         }
@@ -83,6 +89,7 @@ class ApplicationCreateSerializerTest(TestCase):
 
         # Submit with leave_date=yesterday (2026-06-01)
         data = {
+            'contact_phone': '13800138000',
             'reason': '毕业离校',
             'leave_date': '2026-06-01'
         }

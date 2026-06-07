@@ -11,30 +11,34 @@ import type {
 
 export const mockLoginStudent: LoginResponse = {
   access_token: 'mock_token_student',
+  token_type: 'Bearer',
   user: {
     user_id: '2020001',
     name: '张三',
     role: 'student',
+    class_id: 'CS2020-01',
   },
 };
 
 export const mockLoginCounselor: LoginResponse = {
   access_token: 'mock_token_counselor',
+  token_type: 'Bearer',
   user: {
     user_id: 'T001',
     name: '李老师',
     role: 'counselor',
+    class_id: null,
   },
 };
 
 export const mockApplicationsList: PaginatedResponse<Application> = {
   count: 1,
-  next: null,
-  previous: null,
   results: [
     {
       application_id: 'app_eb41d2f5',
       student_id: '2020001',
+      student_name: '张三',
+      class_id: 'CS2020-01',
       reason: '毕业离校',
       leave_date: '2024-06-30',
       status: 'pending_counselor',
@@ -71,8 +75,6 @@ export const mockApplicationDetail: ApplicationDetail = {
 
 export const mockApprovalsList: PaginatedResponse<ApprovalListItem> = {
   count: 1,
-  next: null,
-  previous: null,
   results: [
     {
       approval_id: 'apv_c9f566c2',

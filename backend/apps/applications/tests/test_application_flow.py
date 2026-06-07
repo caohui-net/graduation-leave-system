@@ -73,6 +73,7 @@ class ApplicationFlowTestCase(TestCase):
         # Step 2: 学生提交申请
         self.client.credentials(HTTP_AUTHORIZATION=f'Bearer {student_token}')
         response = self.client.post('/api/applications/', {
+            'contact_phone': '13800138000',
             'reason': '毕业离校',
             'leave_date': (timezone.now().date() + timedelta(days=1)).isoformat()
         }, format='json')

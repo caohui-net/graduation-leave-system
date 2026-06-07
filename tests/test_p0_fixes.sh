@@ -2,6 +2,7 @@
 # Test P0 fixes: resubmission after rejection + approval history filter
 
 BASE_URL="http://localhost:8001"
+LEAVE_DATE=$(date -d "+1 day" +%Y-%m-%d)
 
 echo "=== Testing P0 Fixes ==="
 echo
@@ -21,7 +22,7 @@ echo "3. Submitting first application..."
 APP_ID=$(curl -s -X POST "$BASE_URL/api/applications/" \
   -H "Authorization: Bearer $TOKEN" \
   -H "Content-Type: application/json" \
-  -d '{"reason":"第一次申请","leave_date":"2024-06-30"}' | jq -r '.application_id')
+  -d "{\"reason\":\"第一次申请\",\"leave_date\":\"$LEAVE_DATE\"}" | jq -r '.application_id')
 echo "   Application ID: $APP_ID"
 
 # Try to submit again (should fail - pending exists)
@@ -29,7 +30,7 @@ echo "4. Try duplicate submission (should fail)..."
 RESULT=$(curl -s -X POST "$BASE_URL/api/applications/" \
   -H "Authorization: Bearer $TOKEN" \
   -H "Content-Type: application/json" \
-  -d '{"reason":"重复申请","leave_date":"2024-06-30"}')
+  -d "{\"reason\":\"重复申请\",\"leave_date\":\"$LEAVE_DATE\"}")
 echo "   Result: $(echo $RESULT | jq -r '.error.message')"
 
 # Counselor rejects
@@ -53,7 +54,7 @@ echo "6. Student resubmits after rejection (should succeed)..."
 APP_ID2=$(curl -s -X POST "$BASE_URL/api/applications/" \
   -H "Authorization: Bearer $TOKEN" \
   -H "Content-Type: application/json" \
-  -d '{"reason":"修改后重新申请","leave_date":"2024-06-30"}' | jq -r '.application_id')
+  -d "{\"reason\":\"修改后重新申请\",\"leave_date\":\"$LEAVE_DATE\"}" | jq -r '.application_id')
 echo "   New application ID: $APP_ID2"
 
 if [ "$APP_ID2" != "null" ]; then

@@ -54,6 +54,7 @@ class ApplicationDetailPermissionTest(TestCase):
         # Student1 creates application
         self.client.force_authenticate(user=self.student1)
         response = self.client.post('/api/applications/', {
+            'contact_phone': '13800138000',
             'reason': '测试',
             'leave_date': (timezone.now().date() + timezone.timedelta(days=1)).isoformat()
         }, format='json')
@@ -70,6 +71,7 @@ class ApplicationDetailPermissionTest(TestCase):
         # Student from CS2020-01 creates application
         self.client.force_authenticate(user=self.student1)
         response = self.client.post('/api/applications/', {
+            'contact_phone': '13800138000',
             'reason': '测试',
             'leave_date': (timezone.now().date() + timezone.timedelta(days=1)).isoformat()
         }, format='json')
@@ -86,6 +88,7 @@ class ApplicationDetailPermissionTest(TestCase):
         # Student creates application
         self.client.force_authenticate(user=self.student1)
         response = self.client.post('/api/applications/', {
+            'contact_phone': '13800138000',
             'reason': '测试',
             'leave_date': (timezone.now().date() + timezone.timedelta(days=1)).isoformat()
         }, format='json')

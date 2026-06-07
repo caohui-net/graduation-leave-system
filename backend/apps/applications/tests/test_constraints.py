@@ -59,6 +59,7 @@ class ApplicationConstraintsTestCase(TestCase):
         response1 = self.client.post(
             '/api/applications/',
             {
+                'contact_phone': '13800138000',
                 'reason': '毕业离校',
                 'leave_date': (timezone.now().date() + timedelta(days=1)).isoformat()
             },
@@ -70,6 +71,7 @@ class ApplicationConstraintsTestCase(TestCase):
         response2 = self.client.post(
             '/api/applications/',
             {
+                'contact_phone': '13800138000',
                 'reason': '再次提交',
                 'leave_date': (timezone.now().date() + timedelta(days=2)).isoformat()
             },

@@ -25,7 +25,7 @@ class Application(models.Model):
     class_id = models.CharField(max_length=50)
     contact_phone = models.CharField(max_length=20, null=True, blank=True)
     reason = models.TextField(blank=True, default='')
-    leave_date = models.DateField()
+    leave_date = models.DateField(null=True, blank=True)
     status = models.CharField(max_length=20, choices=ApplicationStatus.choices, default=ApplicationStatus.DRAFT)
     dorm_checkout_status = models.CharField(max_length=20, choices=DormCheckoutStatus.choices, default=DormCheckoutStatus.NOT_STARTED)
     created_at = models.DateTimeField(auto_now_add=True)

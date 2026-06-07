@@ -24,9 +24,9 @@ class MockDormCheckoutProvider:
             ),
             "2020002": DormCheckoutStatusDTO(
                 student_id="2020002",
-                status=DormCheckoutStatus.PENDING,
-                checked_at=None,
-                blocking_reason="宿舍物品未清理",
+                status=DormCheckoutStatus.COMPLETED,
+                checked_at="2024-05-15T10:15:00Z",
+                blocking_reason=None,
                 provider_error_code=None
             ),
             "2020003": DormCheckoutStatusDTO(

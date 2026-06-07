@@ -1,5 +1,5 @@
 {
-  "last_updated": "2026-06-07T06:17:00Z",
+  "last_updated": "2026-06-07T07:26:00Z",
   "completed": [
     "Codex审查完成: 研究生导入3方案评估",
     "File1验证完成: 0/10研究生学号匹配，File1不含研究生数据",
@@ -9,37 +9,30 @@
     "真实数据导入完成: 6041用户（5946学生+73宿管+20辅导+2管理）",
     "分析报告更新: Section6.4确认根因+Section7.1反映实施状态",
     "研究生数据匹配: 273/290人从住宿信息文件获取building/department",
-    "研究生导入完成: 273人入库（2创建+271更新），17人待补充",
-    "系统就绪验证: 6043用户，98.8%可用，72人阻塞（3学院无辅导员）"
+    "研究生导入完成（第一阶段）: 273人入库（2创建+271更新）",
+    "系统就绪验证: 6043用户，98.8%可用，72人阻塞（3学院无辅导员）",
+    "17名校外研究生导入完成: 基于17名研究生学院归属.xlsx，department完整，building留空触发兜底",
+    "研究生数据100%覆盖: 290/290人全部入库（273在校+17校外），数据完整性99.7%",
+    "文档更新完成: 系统就绪验证报告+PROJECT-SUMMARY更新为最终数据（6060用户）"
   ],
-  "pending": [
-    "【需用户决策】方案A: 确认building/department数据源（研究生系统/入住系统/手工整理）",
-    "【需用户决策】方案B: 业务授权统一路由到研究生院辅导员（如数据源不可用）",
-    "【需用户决策】方案C: 确认研究生不使用本系统（如不纳入）",
-    "执行选定方案的技术实施（6-10小时或3-5小时）"
-  ],
+  "pending": [],
   "evidence": [
-    "Codex审查: department缺失导致辅导员审批404（硬阻塞）",
-    "File1验证: 0/10样本研究生学号存在于File1，无法从现有数据提取",
-    "研究生文件: 290人仅3列（序号/学号/姓名），缺building/department/class_id等",
-    "系统路由: building有默认兜底，department无兜底（apps/approvals/views.py:213）",
-    "工作量评估: 方案A 6-10h，方案B 3-5h，方案C 0h"
+    "研究生总数验证: 290人（学号含'045'特征）",
+    "在校研究生: 273人（有building信息）",
+    "校外住宿: 17人（building为空，触发兜底机制）",
+    "department完整性: 0人缺失（100%）",
+    "系统最终数据: 6060用户（5965学生+73宿管+20辅导+2管理）",
+    "数据完整性: 99.7%（5948/5965完整）",
+    "系统可用率: 98.8%（5893/5965可完成流程，72人阻塞于3学院）"
   ],
-  "next_focus": "等待用户决策: 数据源可用性 OR 业务授权 OR 使用范围确认",
+  "next_focus": "研究生数据导入完成，系统就绪验证达标（98.8%），建议解决3学院辅导员缺口",
   "artifacts": {
-    "consensus": ".omc/collaboration/artifacts/20260607-0617-claude-codex-consensus-graduate-import-plan.md",
-    "data_request": "docs/数据补充请求-290名研究生building和department.md",
-    "db_analysis": "docs/数据库数据分析报告-2026-06-07.md",
-    "codex_review": ".omc/artifacts/ask/codex-0-docs-290-xls-290-phase-3-1-docs-290-xls-50kb-2-3-290-3-202-2026-06-07T06-13-07-956Z.md"
+    "graduate_import_script": "backend/scripts/update_offcampus_graduates.py",
+    "graduate_csv": "docs/17名研究生学院归属.csv",
+    "readiness_report": "docs/系统就绪验证报告-2026-06-07.md",
+    "project_summary": "docs/PROJECT-SUMMARY.md"
   },
-  "blockers": [
-    "【关键阻塞】所有3个技术方案均需外部决策:",
-    "  - 方案A: 需确认数据源（优先级最高）",
-    "  - 方案B: 需业务授权统一辅导员",
-    "  - 方案C: 需确认研究生不使用系统",
-    "【技术阻塞】department字段硬依赖（无兜底机制）",
-    "【数据阻塞】File1不含研究生，无法从现有数据补充"
-  ],
+  "blockers": [],
   "suggested_skills": [],
-  "critical_note": "研究生数据导入方案已完成技术评估和共识，所有实施路径需用户决策数据源或业务授权后方可执行"
+  "critical_note": "研究生数据导入100%完成（290/290），系统可用率98.8%，仅72人因学院无辅导员阻塞"
 }

@@ -1,5 +1,5 @@
 {
-  "last_updated": "2026-06-07T14:49:00Z",
+  "last_updated": "2026-06-07T14:54:00Z",
   "completed": [
     "登录设计修复：移除角色选择器，实现用户名/密码真实登录",
     "三方审计（Claude-Codex-Gemini）：验证登录设计修复代码正确性（3轮讨论）",
@@ -9,29 +9,32 @@
     "确认admin角色处理：demo-web仅支持4个演示角色，admin不在范围",
     "后端API集成验证：curl测试学生登录成功",
     "Task #18: 实现动态时间线渲染 - 基于application.status显示完整workflow",
+    "端到端集成测试：8个自动化测试全部通过（所有角色登录+API验证）",
     "更新PROJECT-SUMMARY.md：登录设计修复及审计章节"
   ],
   "pending": [
-    "浏览器手动测试登录流程（4个角色）",
-    "验证不同角色登录后显示正确UI",
-    "验证动态时间线显示完整workflow步骤",
-    "端到端集成测试",
-    "用户验收测试（UAT）"
+    "浏览器手动测试登录流程（4个角色）- 需要用户在浏览器中测试",
+    "验证不同角色登录后显示正确UI - 需要用户验证",
+    "验证动态时间线显示完整workflow步骤 - 需要用户验证",
+    "用户验收测试（UAT）- 需要用户执行"
   ],
   "evidence": [
     "三方讨论artifact: .omc/collaboration/artifacts/DISCUSS-审计登录设计修复代码-*",
     "git commit: fix(demo-web): 修复登录流程DOM索引冲突和状态清理问题",
     "git commit: feat(demo-web): 实现动态审批时间轴渲染",
+    "git commit: test: 添加集成测试脚本验证后端API",
+    "demo-web/test-integration.sh: 8个测试全部通过",
+    "测试结果: 所有4个角色登录成功，审批/申请API正常，status字段正确",
     "demo-web/index.html: login-screen class, dynamic timeline, application fetch",
     "demo-web/js/api.js: apiLogin失败分支清除状态",
-    "curl测试: POST /api/auth/login 返回token和user.role=student",
     "generateTimeline: 根据application.status渲染所有3个审批步骤",
     "PROJECT-SUMMARY.md: 新增'登录设计修复及审计'章节"
   ],
-  "next_focus": "登录流程和动态时间线已完成。下一步需浏览器测试验证：4个角色登录、UI显示、完整workflow时间轴。",
+  "next_focus": "所有后端API和集成测试已完成。剩余工作为浏览器UI测试，需要用户手动验证登录流程、角色UI和动态时间轴显示。",
   "artifacts": {
     "login_audit": ".omc/collaboration/artifacts/DISCUSS-审计登录设计修复代码-验证DEMO-WEB-1780842596-discuss-r3-codex-20260607-143642.md",
     "login_fix_summary": ".omc/artifacts/login-design-fix-summary-2026-06-07.md",
+    "integration_tests": "demo-web/test-integration.sh",
     "project_summary": "docs/PROJECT-SUMMARY.md"
   },
   "three_party_collaboration": {
@@ -50,5 +53,20 @@
     "dorm_manager": "M001 / M001",
     "counselor": "T001 / T001",
     "dean": "D001 / D001"
+  },
+  "integration_test_results": {
+    "total": 8,
+    "passed": 8,
+    "failed": 0,
+    "tests": [
+      "Student login (2020001)",
+      "Dorm manager login (M001)",
+      "Counselor login (T001)",
+      "Dean login (D001)",
+      "Get approval list",
+      "Get approval detail with student_name",
+      "Get application list",
+      "Get application detail with status"
+    ]
   }
 }

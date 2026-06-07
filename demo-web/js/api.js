@@ -65,9 +65,9 @@ async function apiSubmitApplication(phone, reason, leaveDate, files) {
     }
 }
 
-async function apiGetApplications() {
+async function apiGetApplications(limit = 20, offset = 0) {
     try {
-        const response = await fetch(API_BASE_URL + '/applications/', {
+        const response = await fetch(API_BASE_URL + '/applications/?limit=' + limit + '&offset=' + offset, {
             headers: getAuthHeaders()
         });
         if (response.ok) {
@@ -76,7 +76,7 @@ async function apiGetApplications() {
     } catch (e) {
         console.error("Get applications failed:", e);
     }
-    return { results: [] };
+    return { results: [], count: 0 };
 }
 
 async function apiGetApprovals(decision = 'pending', limit = 20, offset = 0) {

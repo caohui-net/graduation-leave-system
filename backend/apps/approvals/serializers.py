@@ -6,6 +6,8 @@ class ApplicationBriefSerializer(serializers.Serializer):
     """Brief application info for approval list"""
     id = serializers.CharField(source='application_id')
     status = serializers.CharField()
+    student_name = serializers.CharField(source='student.name')
+    student_id = serializers.CharField(source='student.user_id')
 
 
 class ApprovalListSerializer(serializers.ModelSerializer):

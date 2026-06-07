@@ -49,18 +49,18 @@ def list_approvals(request):
         queryset = Approval.objects.filter(
             approver=user,
             step=ApprovalStep.DORM_MANAGER
-        ).select_related('application', 'approver')
+        ).select_related('application', 'application__student', 'approver')
 
     # 辅导员: 只看自己的counselor审批
     elif user.role == UserRole.COUNSELOR:
         queryset = Approval.objects.filter(
             approver=user,
             step=ApprovalStep.COUNSELOR
-        ).select_related('application', 'approver')
+        ).select_related('application', 'application__student', 'approver')
 
     # 学工部: 查看所有审批（存档用）
     elif user.role == UserRole.DEAN:
-        queryset = Approval.objects.all().select_related('application', 'approver')
+        queryset = Approval.objects.all().select_related('application', 'application__student', 'approver')
 
     else:
         return Response(

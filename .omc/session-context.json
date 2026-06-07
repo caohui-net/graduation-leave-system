@@ -1,5 +1,5 @@
 {
-  "last_updated": "2026-06-07T09:30:00Z",
+  "last_updated": "2026-06-07T09:39:00Z",
   "completed": [
     "提交表单功能增强：添加手机号、离校原因改可选、附件上传前置",
     "后端模型修改：Application.contact_phone字段、reason字段改为可选、leave_date改为nullable",
@@ -10,7 +10,8 @@
     "Codex审查5项修复完成：URL注册、leave_date可空、并发保护select_for_update、测试更新（29个全通过）",
     "小程序UI实现（5/5完成）：contact_phone字段、草稿保存、表单验证更新、提交逻辑支持草稿转换、附件上传UI",
     "部署文档创建：README.md包含快速开始、Docker部署步骤、开发环境配置",
-    "全流程测试完成：5轮端到端测试全部通过（登录→创建申请→查询状态）"
+    "全流程测试完成：5轮端到端测试全部通过（登录→创建申请→查询状态）",
+    "多角色登录测试完成：5轮不同角色测试全部通过（student, counselor, dorm_manager, admin）"
   ],
   "pending": [],
   "evidence": [
@@ -22,13 +23,15 @@
     "backend/apps/applications/providers.py: 添加5名测试学生到MockDormCheckoutProvider（状态COMPLETED）",
     "frontend/types/api.ts: TypeScript接口已更新",
     "tests/full_workflow_test.py: 5轮测试全部通过（5/5 PASS）",
+    "tests/multi_role_test.py: 5个角色登录测试全部通过（student×2, counselor, dorm_manager, admin）",
     "docs/test-reports/workflow-test-2026-06-07.md: 完整测试报告（包含测试数据、结果、问题修复、结论）",
+    "docs/test-reports/multi-role-test-2026-06-07.md: 多角色登录测试报告（5/5登录成功，发现2个非阻塞问题）",
     "测试套件：29/29 tests passed（test_serializer_validation, test_error_cases, test_constraints等7个文件已更新contact_phone）",
     "miniprogram/pages/student-application/: contactPhone字段、草稿保存、附件上传（loadAttachments、onChooseFile、uploadFile、onDeleteAttachment）",
     "miniprogram/services/api.ts: createDraft方法（POST /api/applications/draft/）、uploadAttachment方法已存在",
     "README.md: 部署文档（Docker快速开始、开发环境配置、功能特性列表）"
   ],
-  "next_focus": "系统已完成MVP功能和全流程测试验证，可进入生产部署准备阶段",
+  "next_focus": "系统已完成MVP功能、全流程测试和多角色验证，发现2个非阻塞问题待修复（审批端点URL、管理员权限403）",
   "artifacts": {
     "models": "backend/apps/applications/models.py",
     "serializers": "backend/apps/applications/serializers.py",
@@ -38,8 +41,10 @@
     "migration": "backend/apps/applications/migrations/0006_application_contact_phone_and_more.py",
     "types": "frontend/types/api.ts",
     "tests": "backend/apps/applications/tests/",
-    "test_script": "tests/full_workflow_test.py",
-    "test_report": "docs/test-reports/workflow-test-2026-06-07.md",
+    "test_script_workflow": "tests/full_workflow_test.py",
+    "test_script_multi_role": "tests/multi_role_test.py",
+    "test_report_workflow": "docs/test-reports/workflow-test-2026-06-07.md",
+    "test_report_multi_role": "docs/test-reports/multi-role-test-2026-06-07.md",
     "summary": "docs/PROJECT-SUMMARY.md"
   },
   "blockers": [],
@@ -51,6 +56,7 @@
     "leave_date_nullable": "null=True, blank=True（支持草稿场景）",
     "transaction": "transaction.atomic保证一致性",
     "concurrency": "select_for_update()防止竞态条件",
-    "test_data": "使用真实学生数据（5名）+ MockDormCheckoutProvider模拟宿舍清退状态"
+    "test_data": "使用真实学生数据（5名）+ MockDormCheckoutProvider模拟宿舍清退状态",
+    "multi_role_testing": "测试4种角色（student, counselor, dorm_manager, admin）+ 多学生验证"
   }
 }

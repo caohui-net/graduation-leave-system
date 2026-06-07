@@ -47,7 +47,16 @@
 
     async function loadApprovals() {
         if (!currentToken) return;
-        const data = await apiGetApprovals();
+
+        // Map currentFilter to API decision parameter
+        let decision = 'pending';
+        if (currentFilter === 'all') {
+            decision = 'all';
+        } else if (currentFilter === 'decided') {
+            decision = 'all'; // Get all, then filter for approved/rejected
+        }
+
+        const data = await apiGetApprovals(decision);
         const listContainer = document.getElementById('approval-list-container');
 
         // Status map based on backend expectations
@@ -60,11 +69,9 @@
         };
 
         if (data.results && data.results.length > 0) {
-            // Apply filter
+            // Apply front-end filter only for 'decided' (approved or rejected)
             let filtered = data.results;
-            if (currentFilter === 'pending') {
-                filtered = data.results.filter(a => a.decision === 'pending');
-            } else if (currentFilter === 'decided') {
+            if (currentFilter === 'decided') {
                 filtered = data.results.filter(a => a.decision === 'approved' || a.decision === 'rejected');
             }
 

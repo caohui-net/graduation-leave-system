@@ -79,9 +79,10 @@ async function apiGetApplications() {
     return { results: [] };
 }
 
-async function apiGetApprovals() {
+async function apiGetApprovals(decision = 'pending') {
     try {
-        const response = await fetch(API_BASE_URL + '/approvals/', {
+        const url = API_BASE_URL + '/approvals/?decision=' + decision;
+        const response = await fetch(url, {
             headers: getAuthHeaders()
         });
         if (response.ok) {

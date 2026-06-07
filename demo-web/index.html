@@ -76,6 +76,19 @@
             }
 
             let htmlStr = '';
+
+            // For dean: group by application_id to avoid duplicates
+            if (currentUser && currentUser.role === 'dean') {
+                const appMap = new Map();
+                filtered.forEach(approval => {
+                    const appId = approval.application?.id || approval.id;
+                    if (!appMap.has(appId)) {
+                        appMap.set(appId, approval);
+                    }
+                });
+                filtered = Array.from(appMap.values());
+            }
+
             filtered.forEach(approval => {
                 const application = approval.application || {};
                 const appStatus = application.status || 'unknown';

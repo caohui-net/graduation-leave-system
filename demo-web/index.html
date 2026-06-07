@@ -90,9 +90,24 @@
                   '<div style="margin-bottom: 4px;">' +
                     '<span style="font-size: 14px; color: #999; margin-right: 8px;">学生:</span>' +
                     '<span style="font-size: 14px; color: #333;">' + (application.student_name || '-') + ' (' + (application.student_id || '-') + ')</span>' +
-                  '</div>' +
-                  '<div style="margin-top: 8px; padding-top: 8px; border-top: 1px solid #f0f0f0;">' +
-                    '<span style="font-size: 12px; color: #999;">' + new Date(approval.created_at || application.created_at).toLocaleString() + '</span>' +
+                  '</div>';
+
+                // Show approver and decision time for decided approvals
+                if (approval.decision === 'approved' || approval.decision === 'rejected') {
+                    htmlStr += '<div style="margin-bottom: 4px;">' +
+                      '<span style="font-size: 14px; color: #999; margin-right: 8px;">审批人:</span>' +
+                      '<span style="font-size: 14px; color: #333;">' + (approval.approver_name || '-') + '</span>' +
+                    '</div>';
+                    if (approval.decided_at) {
+                        htmlStr += '<div style="margin-bottom: 4px;">' +
+                          '<span style="font-size: 14px; color: #999; margin-right: 8px;">审批时间:</span>' +
+                          '<span style="font-size: 14px; color: #333;">' + new Date(approval.decided_at).toLocaleString() + '</span>' +
+                        '</div>';
+                    }
+                }
+
+                htmlStr += '<div style="margin-top: 8px; padding-top: 8px; border-top: 1px solid #f0f0f0;">' +
+                    '<span style="font-size: 12px; color: #999;">创建: ' + new Date(approval.created_at || application.created_at).toLocaleString() + '</span>' +
                   '</div>' +
                 '</div>';
             });

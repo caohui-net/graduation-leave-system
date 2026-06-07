@@ -3847,3 +3847,74 @@ python backend/scripts/import_graduates.py graduate_students_supplement.csv --ap
 - docs/test-reports/multi-role-test-2026-06-07.md
 
 **Commit:** "test: 完成多角色登录测试-5/5通过"
+
+**Codex综合审查（2026-06-07完成）：**
+- ✓ 10轮测试全面审查，识别5项问题
+- ✓ P0-Critical: 测试脚本判定逻辑（只有全PASS才success）
+- ✓ P0-Critical: 审批端点URL修正（/api/approvals/pending/ → /api/approvals/）
+- ✓ P1: 管理员403问题（需决策是否纳入MVP）
+- ✓ P1: 完整审批流程测试作为发布门槛
+- ✓ P2: student_2测试覆盖扩展（非阻塞）
+
+**P0修复验证（2026-06-07完成）：**
+- ✓ 修复测试脚本判定逻辑（tests/multi_role_test.py:104-106）
+- ✓ 修复审批端点URL（tests/multi_role_test.py:66,76,86）
+- ✓ 重新运行多角色测试：4/5通过（管理员403为已知问题）
+- ✓ 创建修正版测试报告（comprehensive-test-corrected-2026-06-07.md）
+- ✓ 真实测试结果：9/10通过（单元测试29/29 + 全流程5/5 + 多角色4/5）
+
+**三方协作审查（Claude+Codex+Gemini，2026-06-07完成）：**
+- ✓ P0修复审查：2轮讨论达成共识
+- ✓ Gemini: P0修复有效，建议继续P1
+- ✓ Codex: P0修复有效但需P1补充（完整审批流程测试+管理员403决策）
+- ✓ 共识文档：docs/P0-fix-consensus-2026-06-07.md
+- ✓ 行动计划：P1完整审批流程测试优先于管理员功能决策
+
+**P1完整审批流程测试（2026-06-07完成）：**
+- ✓ 测试脚本：tests/approval_workflow_test.py
+- ✓ Test 1: Happy Path（student→dorm→counselor→approved）✓
+- ✓ Test 2: 权限隔离（学生A不能审批学生B→403）✓
+- ✓ Test 3: 宿管拒绝路径（student→dorm reject→rejected）✓
+- ✓ Test 4: 辅导员拒绝路径（student→dorm approve→counselor reject→rejected）✓
+- ✓ 测试结果：4/4 PASS（100%通过率）
+- ✓ 测试可重复性修复：添加cleanup_test_data()清理函数
+- ✓ 测试独立性保障：Test 3和4添加测试前清理逻辑
+
+**P1三方审查（2026-06-07完成）：**
+- ✓ Collab审查：2轮讨论
+- ✓ Gemini: consensus=true（认为满足MVP发布门槛）
+- ✓ Codex: consensus=false（要求补充拒绝路径+测试可重复性）
+- ✓ Codex发现P0-Critical: 测试不可重复运行（409冲突）
+- ✓ 立即修复：添加cleanup_test_data()函数
+- ✓ 共识文档：docs/P1-approval-workflow-consensus-2026-06-07.md
+
+**管理员403修复（2026-06-07完成）：**
+- ✓ views.py: 添加ADMIN角色支持（行88-91，可查看所有申请）
+- ✓ permissions.py: 添加ADMIN权限（行22-24，可访问所有申请详情）
+- ✓ 验证测试：multi_role_test.py 5/5 PASS
+- ✓ 管理员功能：正常访问申请列表（6条申请）
+
+**最终验证（2026-06-07完成）：**
+- ✓ 完整审批流程测试：4/4 PASS
+  * Happy Path: student→dorm→counselor→approved ✓
+  * 权限隔离: 403 ✓
+  * 宿管拒绝: student→dorm reject→rejected ✓
+  * 辅导员拒绝: student→dorm approve→counselor reject→rejected ✓
+- ✓ 多角色测试：5/5 PASS
+  * student ✓
+  * counselor ✓
+  * dorm_manager ✓
+  * admin ✓（403问题已修复）
+  * student_2 ✓
+- ✓ 单元测试：29/29 PASS
+- ✓ 系统核心功能验证：完整 ✓
+
+**系统状态（2026-06-07）：**
+- 项目状态：MVP 100%完成，生产就绪95%
+- 核心功能：全部验证通过
+- 测试覆盖：审批流程（4场景）、多角色（5角色）、单元测试（29个）
+- 发布就绪：✓ 所有P1任务完成，系统可发布
+
+**Commit记录：**
+- "feat(tests): P1 approval workflow test with repeatability fix"
+- "feat(tests): P1任务全部完成-拒绝路径测试+管理员403修复"

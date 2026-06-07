@@ -1,5 +1,5 @@
 // API Integration Layer
-const API_BASE_URL = '/api';
+const API_BASE_URL = 'http://localhost:8001/api';
 
 let currentToken = null;
 let currentUser = null;

@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>毕业离校申请系统 - UI Demo</title>
   <link rel="stylesheet" href="css/global.css">
-  <script src="js/api.js"></script>
+  <script src="js/api.js?v=20260607"></script>
 <script>
     async function loadApprovals() {
         if (!currentToken) return;
@@ -475,11 +475,11 @@
         </div>
         <div style="display: flex; align-items: center; padding: 10px 0;">
           <span style="font-size: 14px; color: #666; width: 80px;">姓名</span>
-          <span style="font-size: 14px; color: #333;">张三</span>
+          <span id="studentName" style="font-size: 14px; color: #333;">-</span>
         </div>
         <div style="display: flex; align-items: center; padding: 10px 0;">
           <span style="font-size: 14px; color: #666; width: 80px;">学号</span>
-          <span style="font-size: 14px; color: #333;">2020001</span>
+          <span id="studentId" style="font-size: 14px; color: #333;">-</span>
         </div>
       </div>
 
@@ -535,41 +535,7 @@
 
     <div style="padding: 10px;">
       <!-- 列表项 -->
-      <div class="card">
-        <div class="flex-row justify-between align-center" style="margin-bottom: 8px;">
-          <span style="font-size: 16px; font-weight: bold;">申请 APP-001</span>
-          <span class="tag tag-pending">待审批</span>
-        </div>
-        <div style="margin-bottom: 4px;">
-          <span style="font-size: 14px; color: #999; margin-right: 8px;">申请ID:</span>
-          <span style="font-size: 14px; color: #333;">APP-001</span>
-        </div>
-        <div style="margin-bottom: 4px;">
-          <span style="font-size: 14px; color: #999; margin-right: 8px;">审批步骤:</span>
-          <span style="font-size: 14px; color: #333;">宿管员审批</span>
-        </div>
-        <div style="margin-top: 8px; padding-top: 8px; border-top: 1px solid #f0f0f0;">
-          <span style="font-size: 12px; color: #999;">2024-06-01 10:30</span>
-        </div>
-      </div>
-
-      <div class="card">
-        <div class="flex-row justify-between align-center" style="margin-bottom: 8px;">
-          <span style="font-size: 16px; font-weight: bold;">申请 APP-002</span>
-          <span class="tag tag-approved">已通过</span>
-        </div>
-        <div style="margin-bottom: 4px;">
-          <span style="font-size: 14px; color: #999; margin-right: 8px;">申请ID:</span>
-          <span style="font-size: 14px; color: #333;">APP-002</span>
-        </div>
-        <div style="margin-bottom: 4px;">
-          <span style="font-size: 14px; color: #999; margin-right: 8px;">审批步骤:</span>
-          <span style="font-size: 14px; color: #333;">辅导员审批</span>
-        </div>
-        <div style="margin-top: 8px; padding-top: 8px; border-top: 1px solid #f0f0f0;">
-          <span style="font-size: 12px; color: #999;">2024-05-30 14:20</span>
-        </div>
-      </div>
+      <div style="text-align:center; padding: 20px; color:#999;">加载中...</div>
     </div>
   </div>
 
@@ -585,19 +551,19 @@
         <div style="font-size: 16px; font-weight: bold; margin-bottom: 10px;">基本信息</div>
         <div style="display: flex; margin-bottom: 8px;">
           <span style="font-size: 14px; color: #999; width: 80px;">申请ID:</span>
-          <span style="font-size: 14px; color: #333; flex: 1;">APP-001</span>
+          <span style="font-size: 14px; color: #333; flex: 1;">-</span>
         </div>
         <div style="display: flex; margin-bottom: 8px;">
           <span style="font-size: 14px; color: #999; width: 80px;">学生:</span>
-          <span style="font-size: 14px; color: #333; flex: 1;">张三 (2020001)</span>
+          <span style="font-size: 14px; color: #333; flex: 1;">-</span>
         </div>
         <div style="display: flex; margin-bottom: 8px;">
           <span style="font-size: 14px; color: #999; width: 80px;">离校日期:</span>
-          <span style="font-size: 14px; color: #333; flex: 1;">2024-06-15</span>
+          <span style="font-size: 14px; color: #333; flex: 1;">-</span>
         </div>
         <div style="display: flex; margin-bottom: 8px;">
           <span style="font-size: 14px; color: #999; width: 80px;">申请原因:</span>
-          <span style="font-size: 14px; color: #333; flex: 1;">毕业实习，需要提前离校</span>
+          <span style="font-size: 14px; color: #333; flex: 1;">-</span>
         </div>
       </div>
 
@@ -702,6 +668,12 @@
 
           // Update UI based on role
           updateUIForRole(result.user.role);
+
+          // Populate student info if student role
+          if (result.user.role === 'student') {
+            document.getElementById('studentName').textContent = result.user.name;
+            document.getElementById('studentId').textContent = result.user.user_id;
+          }
 
           // Hide login screen, show appropriate screen
           document.getElementById('screen-login').classList.remove('active');

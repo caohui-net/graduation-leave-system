@@ -46,17 +46,22 @@ async function apiSubmitApplication(phone, reason, leaveDate, files) {
     formData.append('reason', reason);
     formData.append('leave_date', leaveDate);
     files.forEach(f => formData.append('attachments', f));
-    
+
     try {
         const response = await fetch(API_BASE_URL + '/applications/', {
             method: 'POST',
             headers: { 'Authorization': 'Bearer ' + currentToken },
             body: formData
         });
-        return response.ok;
+        if (response.ok) {
+            return { success: true, data: await response.json() };
+        } else {
+            const error = await response.json().catch(() => ({ error: { message: '提交失败' } }));
+            return { success: false, error: error.error || { message: '提交失败' } };
+        }
     } catch (e) {
         console.error("Submit application failed:", e);
-        return false;
+        return { success: false, error: { message: '网络错误，请检查连接' } };
     }
 }
 

@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>毕业离校申请系统 - UI Demo</title>
   <link rel="stylesheet" href="css/global.css">
-  <script src="js/api.js?v=20260607"></script>
+  <script src="js/api.js?v=20260607-1735"></script>
 <script>
     async function loadApprovals() {
         if (!currentToken) return;
@@ -298,8 +298,8 @@
         btn.textContent = '提交中...';
 
         try {
-            const ok = await apiSubmitApplication(phone, reason, leaveDate, uploadedFiles);
-            if (ok) {
+            const result = await apiSubmitApplication(phone, reason, leaveDate, uploadedFiles);
+            if (result.success) {
                 showToast('申请提交成功', 'success');
                 document.getElementById('contactPhone').value = '';
                 document.getElementById('applicationReason').value = '';
@@ -307,7 +307,7 @@
                 uploadedFiles = [];
                 renderFileList();
             } else {
-                showToast('申请提交失败', 'error');
+                showToast(result.error.message || '申请提交失败', 'error');
             }
         } finally {
             btn.disabled = false;

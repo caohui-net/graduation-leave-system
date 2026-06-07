@@ -718,6 +718,11 @@
             document.getElementById('studentName').textContent = result.user.name;
             document.getElementById('studentId').textContent = result.user.user_id;
 
+            // Pre-fill phone if available
+            if (result.user.phone) {
+              document.getElementById('contactPhone').value = result.user.phone;
+            }
+
             // Check if student has applications
             const applications = await apiGetApplications();
             if (applications.results && applications.results.length > 0) {

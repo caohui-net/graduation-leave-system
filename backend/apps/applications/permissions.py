@@ -23,4 +23,8 @@ def can_view_application(user, application):
         # Dean archives completed applications and does not participate in approval.
         return application.status == 'approved'
 
+    if user.role == UserRole.ADMIN:
+        # Admin can view all applications
+        return True
+
     return False

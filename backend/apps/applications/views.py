@@ -88,6 +88,10 @@ def list_applications(request):
     elif user.role == UserRole.DEAN:
         queryset = Application.objects.filter(status=ApplicationStatus.APPROVED)
 
+    # Admin: view all applications
+    elif user.role == UserRole.ADMIN:
+        queryset = Application.objects.all()
+
     else:
         return Response(
             {'error': {'code': 'FORBIDDEN', 'message': '无效的用户角色'}},

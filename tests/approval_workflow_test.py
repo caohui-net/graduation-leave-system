@@ -265,6 +265,226 @@ def test_permission_isolation():
     return result
 
 
+def test_dorm_manager_rejection():
+    """
+    Test Scenario 3: Dorm manager rejection path
+    Student submit → Dorm manager reject → Status=rejected
+    """
+    result = {
+        "scenario": "Dorm Manager Rejection Path",
+        "steps": {},
+        "success": False,
+        "error": None
+    }
+
+    try:
+        # Cleanup this student's existing applications first
+        cleanup_cmd = f"""
+from apps.applications.models import Application
+from apps.approvals.models import Approval
+Approval.objects.filter(application__student_id='{STUDENT["user_id"]}').delete()
+Application.objects.filter(student_id='{STUDENT["user_id"]}').delete()
+"""
+        subprocess.run(
+            ["docker", "exec", "graduation-leave-system-backend-1",
+             "python", "manage.py", "shell", "-c", cleanup_cmd],
+            check=True, capture_output=True, text=True
+        )
+
+        # Step 1: Student login and submit application
+        student_token = login(STUDENT["user_id"], STUDENT["password"])
+        result["steps"]["student_login"] = "PASS"
+
+        headers = {"Authorization": f"Bearer {student_token}"}
+        submit_resp = requests.post(f"{BASE_URL}/api/applications/", headers=headers, json={
+            "contact_phone": "13800138000",
+            "reason": "测试宿管拒绝路径",
+            "leave_date": str(date.today())
+        })
+
+        if submit_resp.status_code != 201:
+            result["steps"]["submit_application"] = "FAIL"
+            result["error"] = f"Submit failed: {submit_resp.status_code}"
+            return result
+
+        app_data = submit_resp.json()
+        app_id = app_data["application_id"]
+        result["steps"]["submit_application"] = "PASS"
+        result["application_id"] = app_id
+
+        # Step 2: Dorm manager login and get pending approval
+        dorm_token = login(DORM_MANAGER["user_id"], DORM_MANAGER["password"])
+        result["steps"]["dorm_login"] = "PASS"
+
+        headers = {"Authorization": f"Bearer {dorm_token}"}
+        approvals_resp = requests.get(f"{BASE_URL}/api/approvals/", headers=headers)
+
+        if approvals_resp.status_code != 200:
+            result["steps"]["get_dorm_approvals"] = "FAIL"
+            result["error"] = f"Get approvals failed: {approvals_resp.status_code}"
+            return result
+
+        approvals = approvals_resp.json()["results"]
+        dorm_approval = next((a for a in approvals if a["application_id"] == app_id), None)
+
+        if not dorm_approval:
+            result["steps"]["get_dorm_approvals"] = "FAIL"
+            result["error"] = "Dorm manager approval not found"
+            return result
+        result["steps"]["get_dorm_approvals"] = "PASS"
+
+        # Step 3: Reject as dorm manager
+        reject_resp = requests.post(
+            f"{BASE_URL}/api/approvals/{dorm_approval['approval_id']}/reject/",
+            headers=headers,
+            json={"comment": "宿管拒绝测试"}
+        )
+
+        if reject_resp.status_code != 200:
+            result["steps"]["dorm_reject"] = "FAIL"
+            result["error"] = f"Dorm rejection failed: {reject_resp.status_code} - {reject_resp.text}"
+            return result
+        result["steps"]["dorm_reject"] = "PASS"
+
+        # Step 4: Verify final status is rejected
+        app_resp = requests.get(f"{BASE_URL}/api/applications/{app_id}/", headers={"Authorization": f"Bearer {student_token}"})
+        if app_resp.json()["status"] != "rejected":
+            result["steps"]["final_status"] = "FAIL"
+            result["error"] = f"Expected rejected, got {app_resp.json()['status']}"
+            return result
+        result["steps"]["final_status"] = "PASS"
+
+        result["success"] = True
+
+    except Exception as e:
+        result["error"] = str(e)
+
+    return result
+
+
+def test_counselor_rejection():
+    """
+    Test Scenario 4: Counselor rejection path
+    Student submit → Dorm manager approve → Counselor reject → Status=rejected
+    """
+    result = {
+        "scenario": "Counselor Rejection Path",
+        "steps": {},
+        "success": False,
+        "error": None
+    }
+
+    try:
+        # Cleanup this student's existing applications first
+        cleanup_cmd = f"""
+from apps.applications.models import Application
+from apps.approvals.models import Approval
+Approval.objects.filter(application__student_id='{STUDENT_B["user_id"]}').delete()
+Application.objects.filter(student_id='{STUDENT_B["user_id"]}').delete()
+"""
+        subprocess.run(
+            ["docker", "exec", "graduation-leave-system-backend-1",
+             "python", "manage.py", "shell", "-c", cleanup_cmd],
+            check=True, capture_output=True, text=True
+        )
+
+        # Step 1: Student login and submit application
+        student_token = login(STUDENT_B["user_id"], STUDENT_B["password"])
+        result["steps"]["student_login"] = "PASS"
+
+        headers = {"Authorization": f"Bearer {student_token}"}
+        submit_resp = requests.post(f"{BASE_URL}/api/applications/", headers=headers, json={
+            "contact_phone": "13800138002",
+            "reason": "测试辅导员拒绝路径",
+            "leave_date": str(date.today())
+        })
+
+        if submit_resp.status_code != 201:
+            result["steps"]["submit_application"] = "FAIL"
+            result["error"] = f"Submit failed: {submit_resp.status_code}"
+            return result
+
+        app_data = submit_resp.json()
+        app_id = app_data["application_id"]
+        result["steps"]["submit_application"] = "PASS"
+        result["application_id"] = app_id
+
+        # Step 2: Dorm manager approve first
+        dorm_token = login(DORM_MANAGER["user_id"], DORM_MANAGER["password"])
+        result["steps"]["dorm_login"] = "PASS"
+
+        headers = {"Authorization": f"Bearer {dorm_token}"}
+        approvals_resp = requests.get(f"{BASE_URL}/api/approvals/", headers=headers)
+        approvals = approvals_resp.json()["results"]
+        dorm_approval = next((a for a in approvals if a["application_id"] == app_id), None)
+
+        if not dorm_approval:
+            result["steps"]["get_dorm_approvals"] = "FAIL"
+            result["error"] = "Dorm approval not found"
+            return result
+        result["steps"]["get_dorm_approvals"] = "PASS"
+
+        approve_resp = requests.post(
+            f"{BASE_URL}/api/approvals/{dorm_approval['approval_id']}/approve/",
+            headers=headers,
+            json={"comment": "宿管通过"}
+        )
+
+        if approve_resp.status_code != 200:
+            result["steps"]["dorm_approve"] = "FAIL"
+            result["error"] = f"Dorm approval failed: {approve_resp.status_code}"
+            return result
+        result["steps"]["dorm_approve"] = "PASS"
+
+        # Step 3: Counselor login and reject
+        counselor_token = login(COUNSELOR["user_id"], COUNSELOR["password"])
+        result["steps"]["counselor_login"] = "PASS"
+
+        headers = {"Authorization": f"Bearer {counselor_token}"}
+        approvals_resp = requests.get(f"{BASE_URL}/api/approvals/", headers=headers)
+
+        if approvals_resp.status_code != 200:
+            result["steps"]["get_counselor_approvals"] = "FAIL"
+            result["error"] = f"Get approvals failed: {approvals_resp.status_code}"
+            return result
+
+        approvals = approvals_resp.json()["results"]
+        counselor_approval = next((a for a in approvals if a["application_id"] == app_id), None)
+
+        if not counselor_approval:
+            result["steps"]["get_counselor_approvals"] = "FAIL"
+            result["error"] = "Counselor approval not found"
+            return result
+        result["steps"]["get_counselor_approvals"] = "PASS"
+
+        reject_resp = requests.post(
+            f"{BASE_URL}/api/approvals/{counselor_approval['approval_id']}/reject/",
+            headers=headers,
+            json={"comment": "辅导员拒绝测试"}
+        )
+
+        if reject_resp.status_code != 200:
+            result["steps"]["counselor_reject"] = "FAIL"
+            result["error"] = f"Counselor rejection failed: {reject_resp.status_code} - {reject_resp.text}"
+            return result
+        result["steps"]["counselor_reject"] = "PASS"
+
+        # Step 4: Verify final status is rejected
+        app_resp = requests.get(f"{BASE_URL}/api/applications/{app_id}/", headers={"Authorization": f"Bearer {student_token}"})
+        if app_resp.json()["status"] != "rejected":
+            result["steps"]["final_status"] = "FAIL"
+            result["error"] = f"Expected rejected, got {app_resp.json()['status']}"
+            return result
+        result["steps"]["final_status"] = "PASS"
+
+        result["success"] = True
+
+    except Exception as e:
+        result["error"] = str(e)
+
+    return result
+
+
 if __name__ == "__main__":
     print("=== Complete Approval Workflow Test (P1) ===")
     print(f"Start time: {datetime.now().isoformat()}")
@@ -299,6 +519,32 @@ if __name__ == "__main__":
     else:
         print(f"  ✗ FAILED - {result2['error']}")
         print(f"    Steps: {result2['steps']}")
+    print()
+
+    # Test 3: Dorm manager rejection
+    print("Test 3: Dorm Manager Rejection Path")
+    result3 = test_dorm_manager_rejection()
+    results.append(result3)
+
+    if result3["success"]:
+        print(f"  ✓ SUCCESS - Dorm rejection path verified")
+        print(f"    Application ID: {result3.get('application_id')}")
+    else:
+        print(f"  ✗ FAILED - {result3['error']}")
+        print(f"    Steps: {result3['steps']}")
+    print()
+
+    # Test 4: Counselor rejection
+    print("Test 4: Counselor Rejection Path")
+    result4 = test_counselor_rejection()
+    results.append(result4)
+
+    if result4["success"]:
+        print(f"  ✓ SUCCESS - Counselor rejection path verified")
+        print(f"    Application ID: {result4.get('application_id')}")
+    else:
+        print(f"  ✗ FAILED - {result4['error']}")
+        print(f"    Steps: {result4['steps']}")
     print()
 
     # Summary

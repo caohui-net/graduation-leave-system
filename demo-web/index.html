@@ -10,6 +10,7 @@
     let currentFilter = 'all';
     let approvalOffset = 0;
     let approvalHasMore = true;
+    let deanDisplayedApps = new Set(); // Track displayed application IDs for dean deduplication
 
     async function loadMyApplications() {
         if (!currentToken) return;
@@ -56,6 +57,7 @@
         if (!append) {
             approvalOffset = 0;
             approvalHasMore = true;
+            deanDisplayedApps.clear(); // Clear deduplication set on fresh load
         }
 
         // Map currentFilter to API decision parameter
@@ -95,13 +97,14 @@
 
             let htmlStr = '';
 
-            // For dean: group by application_id to avoid duplicates
+            // For dean: group by application_id to avoid duplicates (cross-page deduplication)
             if (currentUser && currentUser.role === 'dean') {
                 const appMap = new Map();
                 filtered.forEach(approval => {
-                    const appId = approval.application?.id || approval.id;
-                    if (!appMap.has(appId)) {
+                    const appId = approval.application?.id;
+                    if (appId && !deanDisplayedApps.has(appId) && !appMap.has(appId)) {
                         appMap.set(appId, approval);
+                        deanDisplayedApps.add(appId); // Track globally
                     }
                 });
                 filtered = Array.from(appMap.values());

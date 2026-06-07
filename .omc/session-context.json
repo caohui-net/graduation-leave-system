@@ -1,39 +1,31 @@
 {
-  "last_updated": "2026-06-07T07:38:00Z",
+  "last_updated": "2026-06-07T07:42:00Z",
   "completed": [
-    "17名校外研究生导入完成: 基于17名研究生学院归属.xlsx，department完整，building留空触发兜底",
-    "研究生数据100%覆盖: 290/290人全部入库（273在校+17校外），数据完整性99.7%",
-    "辅导员数据补充: 3名辅导员更新（音乐学院、黄梅戏学院、文学院（苏东坡书院）、生物与农业资源学院）",
-    "学院名称标准化: 792人解除阻塞（音乐与戏剧学院360+文学院变体432）",
-    "系统可用率提升: 82.5%→95.8%（1043→251阻塞）",
-    "文档更新完成: 系统就绪验证报告+PROJECT-SUMMARY反映标准化后数据（6060用户，95.8%可用）"
+    "17名校外研究生导入完成: 290/290人全部入库（100%覆盖）",
+    "辅导员数据补充: 3名辅导员更新",
+    "学院名称标准化第一阶段: 792人解除阻塞（音乐与戏剧学院、文学院变体）",
+    "学院名称标准化第二阶段: 251人解除阻塞（生命科学学院→生物与农业资源学院）",
+    "系统100%覆盖达成: 5965名学生全部可完成审批流程"
   ],
-  "pending": [
-    "【待解决】生命科学学院251人无辅导员覆盖（4.2%阻塞，需单独处理）"
-  ],
+  "pending": [],
   "evidence": [
-    "研究生总数: 290人（273在校+17校外，100%覆盖）",
+    "研究生: 290人（273在校+17校外，100%）",
     "辅导员: 20人覆盖20学院",
-    "学院名称标准化: 792人映射成功",
-    "  - 音乐与戏剧学院→音乐学院、黄梅戏学院: 360人",
-    "  - 文学院(苏东坡书院)→文学院（苏东坡书院）: 431人",
-    "  - 文学院→文学院（苏东坡书院）: 1人",
-    "阻塞学生: 251人（生命科学学院，无辅导员）",
-    "系统最终数据: 6060用户（5965学生+73宿管+20辅导+2管理）",
-    "系统可用率: 95.8%（5714/5965可完成流程）"
+    "学院标准化: 1043人映射成功",
+    "  第一批: 792人（音乐与戏剧学院360+文学院变体432）",
+    "  第二批: 251人（生命科学学院）",
+    "阻塞学生: 0人",
+    "系统最终: 6060用户（5965学生+73宿管+20辅导+2管理）",
+    "系统可用率: 100%（5965/5965）"
   ],
-  "next_focus": "生命科学学院251人需确认辅导员归属或创建独立辅导员账号",
+  "next_focus": "系统数据导入与验证完成，可进入下一阶段工作",
   "artifacts": {
-    "graduate_import_script": "backend/scripts/update_offcampus_graduates.py",
-    "graduate_csv": "docs/17名研究生学院归属.csv",
-    "counselor_import_script": "backend/scripts/import_missing_counselors.py",
-    "normalization_script": "backend/scripts/normalize_department_names.py",
-    "readiness_report": "docs/系统就绪验证报告-2026-06-07.md",
+    "graduate_import": "backend/scripts/update_offcampus_graduates.py",
+    "counselor_import": "backend/scripts/import_missing_counselors.py",
+    "normalization": "backend/scripts/normalize_department_names.py",
     "project_summary": "docs/PROJECT-SUMMARY.md"
   },
-  "blockers": [
-    "生命科学学院251人无辅导员（需确认该学院是否独立或属于其他学院）"
-  ],
+  "blockers": [],
   "suggested_skills": [],
-  "critical_note": "研究生100%完成+学院标准化792人解除阻塞，系统可用率95.8%，剩余251人需处理生命科学学院辅导员问题"
+  "critical_note": "系统数据导入完成：290研究生+1043学院标准化=100%覆盖，所有学生可完成审批流程"
 }

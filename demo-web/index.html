@@ -119,9 +119,18 @@
 
                 // Show approver and decision time for decided approvals
                 if (approval.decision === 'approved' || approval.decision === 'rejected') {
+                    // Extract real approver name from comment if auto-completed
+                    let realApprover = approval.approver_name || '-';
+                    if (approval.comment && approval.comment.includes('已由')) {
+                        const match = approval.comment.match(/已由(.+?)完成审批/);
+                        if (match) {
+                            realApprover = match[1];
+                        }
+                    }
+
                     htmlStr += '<div style="margin-bottom: 4px;">' +
                       '<span style="font-size: 14px; color: #999; margin-right: 8px;">审批人:</span>' +
-                      '<span style="font-size: 14px; color: #333;">' + (approval.approver_name || '-') + '</span>' +
+                      '<span style="font-size: 14px; color: #333;">' + realApprover + '</span>' +
                     '</div>';
                     if (approval.decided_at) {
                         htmlStr += '<div style="margin-bottom: 4px;">' +

@@ -19,9 +19,9 @@ class ApprovalListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Approval
         fields = ['id', 'application', 'step', 'approver_id',
-                  'approver_name', 'decision', 'created_at']
+                  'approver_name', 'decision', 'comment', 'created_at']
         read_only_fields = ['id', 'step', 'approver_id',
-                            'approver_name', 'decision', 'created_at']
+                            'approver_name', 'decision', 'comment', 'created_at']
 
 
 class ApprovalSerializer(serializers.ModelSerializer):

@@ -65,6 +65,20 @@ async function apiSubmitApplication(phone, reason, leaveDate, files) {
     }
 }
 
+async function apiGetApplications() {
+    try {
+        const response = await fetch(API_BASE_URL + '/applications/', {
+            headers: getAuthHeaders()
+        });
+        if (response.ok) {
+            return await response.json();
+        }
+    } catch (e) {
+        console.error("Get applications failed:", e);
+    }
+    return { results: [] };
+}
+
 async function apiGetApprovals() {
     try {
         const response = await fetch(API_BASE_URL + '/approvals/', {
@@ -76,7 +90,7 @@ async function apiGetApprovals() {
     } catch (e) {
         console.error("Get approvals failed:", e);
     }
-    return [];
+    return { results: [] };
 }
 
 async function apiApprove(approvalId, comment) {

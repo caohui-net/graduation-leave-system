@@ -401,7 +401,7 @@
       </div>
 
       <!-- 审批操作 -->
-      <div style="padding: 10px;">
+      <div id="approval-section" style="padding: 10px;">
         <div class="card" style="margin-bottom: 10px;">
           <label style="display: block; font-size: 14px; color: #333; margin-bottom: 6px; font-weight: 500;">审批意见（可选）</label>
           <textarea id="approvalComment" style="width: 100%; min-height: 60px; padding: 8px; border: 1px solid #e8e8e8; border-radius: 4px; font-size: 14px;" placeholder="请输入审批意见"></textarea>
@@ -461,16 +461,16 @@
       const isDean = role === 'dean';
 
       // Update nav tab text
-      document.getElementById('nav-approval-text').textContent = (isStudent || isDean) ? '我的申请' : '审批列表';
+      document.getElementById('nav-approval-text').textContent = isStudent ? '我的申请' : (isDean ? '备案查询' : '审批列表');
 
       // Update list page title and role display
-      document.getElementById('list-title').textContent = (isStudent || isDean) ? '我的申请' : '审批列表';
+      document.getElementById('list-title').textContent = isStudent ? '我的申请' : (isDean ? '备案查询' : '审批列表');
       document.getElementById('role-display').textContent = roleMap[role];
 
-      // Show/hide approval buttons
-      const approvalActions = document.getElementById('approval-actions');
-      if (approvalActions) {
-        approvalActions.style.display = isDean ? 'none' : 'flex';
+      // Show/hide entire approval section for student/dean
+      const approvalSection = document.getElementById('approval-section');
+      if (approvalSection) {
+        approvalSection.style.display = (isStudent || isDean) ? 'none' : 'block';
       }
     }
 

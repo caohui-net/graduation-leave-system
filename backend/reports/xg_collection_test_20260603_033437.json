@@ -1,0 +1,81 @@
+{
+  "test_time": "2026-06-03T03:34:33.463139",
+  "scope_tests": {
+    "pagination": {
+      "status": "completed",
+      "pages_tested": 3,
+      "results": [
+        {
+          "page": 1,
+          "current_page": 1,
+          "per_page": 10,
+          "total": 32039,
+          "record_count": 10,
+          "has_next": true
+        },
+        {
+          "page": 2,
+          "current_page": 2,
+          "per_page": 10,
+          "total": 32039,
+          "record_count": 10,
+          "has_next": true
+        },
+        {
+          "page": 3,
+          "current_page": 3,
+          "per_page": 10,
+          "total": 32039,
+          "record_count": 10,
+          "has_next": true
+        }
+      ]
+    },
+    "filters": {
+      "status": "failed",
+      "tests": []
+    }
+  },
+  "content_tests": {
+    "field_completeness": {
+      "status": "completed",
+      "sample_size": 20,
+      "required_fields": {
+        "number": {
+          "present": 20,
+          "null": 0,
+          "empty": 0
+        },
+        "name": {
+          "present": 20,
+          "null": 0,
+          "empty": 0
+        },
+        "phone": {
+          "present": 16,
+          "null": 0,
+          "empty": 4
+        },
+        "status": {
+          "present": 20,
+          "null": 0,
+          "empty": 0
+        }
+      },
+      "related_objects": {
+        "user_identity": 20,
+        "department": 20,
+        "parent_dep": 20,
+        "user": 18
+      }
+    }
+  },
+  "volume_tests": {
+    "statistics": {
+      "total_records": 32039,
+      "total_pages": 32039,
+      "per_page": 1,
+      "estimated_fetch_time_minutes": 266.9916666666667
+    }
+  }
+}

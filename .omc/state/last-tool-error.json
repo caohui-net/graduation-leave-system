@@ -1,0 +1,7 @@
+{
+  "tool_name": "Bash",
+  "tool_input_preview": "{\"command\":\"docker compose exec backend python -c \\\"\\nfrom django.test import TestCase, Client\\nfrom django.utils import timezone\\nfrom datetime import timedelta\\nimport json\\n\\nclient = Client()\\n# L...",
+  "error": "Exit code 1\ntime=\"2026-06-07T19:19:57+08:00\" level=warning msg=\"/home/caohui/projects/graduation-leave-system/docker-compose.yml: the attribute `version` is obsolete, it will be ignored, please remove it to avoid potential confusion\"\nTraceback (most recent call last):\n  File \"<string>\", line 9, in <module>\n  File \"/usr/local/lib/python3.11/site-packages/django/test/client.py\", line 948, in post\n    response = super().post(\n               ^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.11/site-packa...",
+  "timestamp": "2026-06-07T11:19:57.846Z",
+  "retry_count": 1
+}

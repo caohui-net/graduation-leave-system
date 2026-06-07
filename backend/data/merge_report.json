@@ -1,0 +1,10 @@
+{
+  "total_file1_rows": 5830,
+  "matched_count": 5559,
+  "file1_only_count": 271,
+  "file2_only_count": 116,
+  "grad_generated_ids": 0,
+  "tmp_generated_ids": 271,
+  "normalization_failures": 0,
+  "skipped_rows": []
+}

@@ -11,7 +11,7 @@ urlpatterns = [
     path('api/approvals/', include('apps.approvals.urls')),
     path('api/notifications/', include('apps.notifications.urls')),
 
-    # API Documentation
-    path('api/schema/', SpectacularAPIView.as_view(), name='schema'),
-    path('api/schema/swagger-ui/', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),
+    # API Documentation (temporarily disabled due to OpenApiTypes serialization error)
+    # path('api/schema/', SpectacularAPIView.as_view(), name='schema'),
+    # path('api/schema/swagger-ui/', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),
 ]

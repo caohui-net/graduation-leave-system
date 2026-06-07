@@ -1,0 +1,61 @@
+{
+  "session_id": "session-2026-06-07-1914",
+  "started": "2026-06-07T11:14:29.930Z",
+  "files_read": {
+    "/home/caohui/projects/graduation-leave-system/docs/PROJECT-SUMMARY.md": {
+      "count": 1,
+      "tokens": 25303,
+      "first_read": "2026-06-07T11:15:29.252Z"
+    },
+    "/home/caohui/projects/graduation-leave-system/.omc/session-context.json": {
+      "count": 1,
+      "tokens": 1756,
+      "first_read": "2026-06-07T11:15:29.870Z"
+    },
+    "/home/caohui/projects/graduation-leave-system/backend/apps/approvals/tests/test_rejection_flow.py": {
+      "count": 2,
+      "tokens": 1400,
+      "first_read": "2026-06-07T11:19:25.884Z"
+    },
+    "/home/caohui/projects/graduation-leave-system/backend/config/urls.py": {
+      "count": 1,
+      "tokens": 0,
+      "first_read": "2026-06-07T11:20:39.199Z"
+    },
+    "/home/caohui/projects/graduation-leave-system/backend/apps/notifications/tests/test_auto_notifications_api.py": {
+      "count": 1,
+      "tokens": 3028,
+      "first_read": "2026-06-07T11:23:45.107Z"
+    }
+  },
+  "files_written": [
+    {
+      "file": "/home/caohui/projects/graduation-leave-system/backend/config/urls.py",
+      "action": "edit",
+      "tokens": 76,
+      "at": "2026-06-07T11:20:53.536Z"
+    },
+    {
+      "file": "/home/caohui/projects/graduation-leave-system/backend/apps/approvals/tests/test_rejection_flow.py",
+      "action": "edit",
+      "tokens": 87,
+      "at": "2026-06-07T11:23:27.109Z"
+    },
+    {
+      "file": "/home/caohui/projects/graduation-leave-system/backend/apps/notifications/tests/test_auto_notifications_api.py",
+      "action": "edit",
+      "tokens": 50,
+      "at": "2026-06-07T11:23:55.449Z"
+    }
+  ],
+  "edit_counts": {
+    "backend/config/urls.py": 1,
+    "backend/apps/approvals/tests/test_rejection_flow.py": 1,
+    "backend/apps/notifications/tests/test_auto_notifications_api.py": 1
+  },
+  "anatomy_hits": 3,
+  "anatomy_misses": 1,
+  "repeated_reads_warned": 1,
+  "cerebrum_warnings": 0,
+  "stop_count": 2
+}

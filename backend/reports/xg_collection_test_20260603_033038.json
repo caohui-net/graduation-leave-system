@@ -1,0 +1,16 @@
+{
+  "test_time": "2026-06-03T03:30:38.811040",
+  "scope_tests": {
+    "pagination": {
+      "status": "failed",
+      "pages_tested": 0,
+      "results": []
+    },
+    "filters": {
+      "status": "failed",
+      "tests": []
+    }
+  },
+  "content_tests": {},
+  "volume_tests": {}
+}

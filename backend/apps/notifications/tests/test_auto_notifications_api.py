@@ -63,6 +63,7 @@ class AutoNotificationAPITest(TestCase):
         # Student submits application (triggers notification)
         self.client.force_authenticate(user=self.student)
         response = self.client.post('/api/applications/', {
+            'contact_phone': '13800138000',
             'reason': '毕业离校',
             'leave_date': '2026-07-01'
         })
@@ -254,6 +255,7 @@ class AutoNotificationAPITest(TestCase):
         # Student tries to submit application (should fail with 422 dorm blocked)
         self.client.force_authenticate(user=blocked_student)
         response = self.client.post('/api/applications/', {
+            'contact_phone': '13800138000',
             'reason': '毕业离校',
             'leave_date': '2026-07-01'
         })

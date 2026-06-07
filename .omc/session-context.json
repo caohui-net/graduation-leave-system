@@ -1,5 +1,5 @@
 {
-  "last_updated": "2026-06-07T14:54:00Z",
+  "last_updated": "2026-06-07T14:57:00Z",
   "completed": [
     "登录设计修复：移除角色选择器，实现用户名/密码真实登录",
     "三方审计（Claude-Codex-Gemini）：验证登录设计修复代码正确性（3轮讨论）",
@@ -10,31 +10,41 @@
     "后端API集成验证：curl测试学生登录成功",
     "Task #18: 实现动态时间线渲染 - 基于application.status显示完整workflow",
     "端到端集成测试：8个自动化测试全部通过（所有角色登录+API验证）",
+    "UI结构验证：HTML文件结构、登录表单、JavaScript函数加载正常",
+    "UAT检查清单创建：8个UI测试用例+1个集成场景，已文档化",
     "更新PROJECT-SUMMARY.md：登录设计修复及审计章节"
   ],
-  "pending": [
-    "浏览器手动测试登录流程（4个角色）- 需要用户在浏览器中测试",
-    "验证不同角色登录后显示正确UI - 需要用户验证",
-    "验证动态时间线显示完整workflow步骤 - 需要用户验证",
-    "用户验收测试（UAT）- 需要用户执行"
+  "pending": [],
+  "ready_for_user": [
+    "执行UAT检查清单（docs/UAT-CHECKLIST.md）：8个浏览器UI测试",
+    "验证登录流程（4个角色）- 测试1-4",
+    "验证登录失败处理 - 测试5",
+    "验证动态时间轴显示 - 测试6",
+    "验证退出登录 - 测试7",
+    "验证完整审批流程 - 测试8",
+    "填写UAT检查清单验收结果并签字确认"
   ],
   "evidence": [
     "三方讨论artifact: .omc/collaboration/artifacts/DISCUSS-审计登录设计修复代码-*",
     "git commit: fix(demo-web): 修复登录流程DOM索引冲突和状态清理问题",
     "git commit: feat(demo-web): 实现动态审批时间轴渲染",
     "git commit: test: 添加集成测试脚本验证后端API",
+    "git commit: docs: 添加UAT用户验收测试检查清单",
     "demo-web/test-integration.sh: 8个测试全部通过",
+    "docs/UAT-CHECKLIST.md: 8个UI测试+1个集成测试，含详细步骤和预期结果",
     "测试结果: 所有4个角色登录成功，审批/申请API正常，status字段正确",
+    "curl验证: HTML结构正确，login-screen div存在，doLogin函数已加载",
     "demo-web/index.html: login-screen class, dynamic timeline, application fetch",
     "demo-web/js/api.js: apiLogin失败分支清除状态",
     "generateTimeline: 根据application.status渲染所有3个审批步骤",
     "PROJECT-SUMMARY.md: 新增'登录设计修复及审计'章节"
   ],
-  "next_focus": "所有后端API和集成测试已完成。剩余工作为浏览器UI测试，需要用户手动验证登录流程、角色UI和动态时间轴显示。",
+  "next_focus": "所有开发和自动化测试完成。UAT检查清单已准备，包含8个浏览器UI测试和1个集成场景测试。用户需打开浏览器执行UAT检查清单（docs/UAT-CHECKLIST.md）并填写验收结果以完成项目。",
   "artifacts": {
     "login_audit": ".omc/collaboration/artifacts/DISCUSS-审计登录设计修复代码-验证DEMO-WEB-1780842596-discuss-r3-codex-20260607-143642.md",
     "login_fix_summary": ".omc/artifacts/login-design-fix-summary-2026-06-07.md",
     "integration_tests": "demo-web/test-integration.sh",
+    "uat_checklist": "docs/UAT-CHECKLIST.md",
     "project_summary": "docs/PROJECT-SUMMARY.md"
   },
   "three_party_collaboration": {
@@ -68,5 +78,10 @@
       "Get application list",
       "Get application detail with status"
     ]
-  }
+  },
+  "development_complete": true,
+  "automated_testing_complete": true,
+  "uat_prepared": true,
+  "uat_executed": false,
+  "project_status": "Ready for User Acceptance Testing"
 }

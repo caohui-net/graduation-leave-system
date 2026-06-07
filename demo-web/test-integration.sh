@@ -10,10 +10,10 @@ echo "=== Integration Test Suite ==="
 echo
 
 # Test 1: Student Login
-echo "[TEST 1] Student login (2020001/2020001)"
+echo "[TEST 1] Student login (2024220220323/test123 - 孙芮)"
 STUDENT_TOKEN=$(curl -s -X POST "$API_BASE/auth/login" \
   -H "Content-Type: application/json" \
-  -d '{"user_id":"2020001","password":"2020001"}' \
+  -d '{"user_id":"2024220220323","password":"test123"}' \
   | grep -o '"access_token":"[^"]*"' | cut -d'"' -f4)
 if [ -n "$STUDENT_TOKEN" ]; then
   echo "✓ Student login successful"
@@ -24,10 +24,10 @@ else
 fi
 
 # Test 2: Dorm Manager Login
-echo "[TEST 2] Dorm manager login (M001/M001)"
+echo "[TEST 2] Dorm manager login (92025040/test123 - 孙凤)"
 DM_TOKEN=$(curl -s -X POST "$API_BASE/auth/login" \
   -H "Content-Type: application/json" \
-  -d '{"user_id":"M001","password":"M001"}' \
+  -d '{"user_id":"92025040","password":"test123"}' \
   | grep -o '"access_token":"[^"]*"' | cut -d'"' -f4)
 if [ -n "$DM_TOKEN" ]; then
   echo "✓ Dorm manager login successful"
@@ -38,10 +38,10 @@ else
 fi
 
 # Test 3: Counselor Login
-echo "[TEST 3] Counselor login (T001/T001)"
+echo "[TEST 3] Counselor login (20250015/test123 - 胡晓炀)"
 COUNSELOR_TOKEN=$(curl -s -X POST "$API_BASE/auth/login" \
   -H "Content-Type: application/json" \
-  -d '{"user_id":"T001","password":"T001"}' \
+  -d '{"user_id":"20250015","password":"test123"}' \
   | grep -o '"access_token":"[^"]*"' | cut -d'"' -f4)
 if [ -n "$COUNSELOR_TOKEN" ]; then
   echo "✓ Counselor login successful"
@@ -51,17 +51,17 @@ else
   ((FAILED++))
 fi
 
-# Test 4: Dean Login
-echo "[TEST 4] Dean login (D001/D001)"
-DEAN_TOKEN=$(curl -s -X POST "$API_BASE/auth/login" \
+# Test 4: Admin Login
+echo "[TEST 4] Admin login (20144020/test123 - 肖延量)"
+ADMIN_TOKEN=$(curl -s -X POST "$API_BASE/auth/login" \
   -H "Content-Type: application/json" \
-  -d '{"user_id":"D001","password":"D001"}' \
+  -d '{"user_id":"20144020","password":"test123"}' \
   | grep -o '"access_token":"[^"]*"' | cut -d'"' -f4)
-if [ -n "$DEAN_TOKEN" ]; then
-  echo "✓ Dean login successful"
+if [ -n "$ADMIN_TOKEN" ]; then
+  echo "✓ Admin login successful"
   ((PASSED++))
 else
-  echo "✗ Dean login failed"
+  echo "✗ Admin login failed"
   ((FAILED++))
 fi
 

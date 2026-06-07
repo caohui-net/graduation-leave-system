@@ -78,6 +78,20 @@ class MockDormCheckoutProvider:
                 blocking_reason=None,
                 provider_error_code=None
             ),
+            "2022220040109": DormCheckoutStatusDTO(
+                student_id="2022220040109",
+                status=DormCheckoutStatus.COMPLETED,
+                checked_at="2024-05-15T10:00:00Z",
+                blocking_reason=None,
+                provider_error_code=None
+            ),
+            "2022220040203": DormCheckoutStatusDTO(
+                student_id="2022220040203",
+                status=DormCheckoutStatus.COMPLETED,
+                checked_at="2024-05-15T10:00:00Z",
+                blocking_reason=None,
+                provider_error_code=None
+            ),
             "2022250140610": DormCheckoutStatusDTO(
                 student_id="2022250140610",
                 status=DormCheckoutStatus.COMPLETED,

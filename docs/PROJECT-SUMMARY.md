@@ -3717,3 +3717,18 @@ python backend/scripts/import_graduates.py graduate_students_supplement.csv --ap
 - ✓ 所有5,965名学生均可完成审批流程
 
 **Commit:** "fix: 生命科学学院映射-251人解除+系统100%覆盖"
+
+### 2026-06-07 - Building字段标准化（116人NULL修正）
+
+**问题发现：** 二次检测发现116名本科生building=NULL，前期仅检查空字符串遗漏
+
+**数据修正：**
+- 116人building NULL→空字符串
+- 保持兜底宿管building=NULL（匹配机制）
+
+**最终数据：**
+- 缺building：133人（116本科+17研究生，2.2%）
+- 数据完整：5,832/5,965（97.8%）
+- 所有133人通过兜底宿管完成审批
+
+**Commit:** "fix: building字段标准化-116人NULL修正"

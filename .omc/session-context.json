@@ -1,31 +1,31 @@
 {
-  "last_updated": "2026-06-07T07:42:00Z",
+  "last_updated": "2026-06-07T07:48:00Z",
   "completed": [
-    "17名校外研究生导入完成: 290/290人全部入库（100%覆盖）",
-    "辅导员数据补充: 3名辅导员更新",
-    "学院名称标准化第一阶段: 792人解除阻塞（音乐与戏剧学院、文学院变体）",
-    "学院名称标准化第二阶段: 251人解除阻塞（生命科学学院→生物与农业资源学院）",
-    "系统100%覆盖达成: 5965名学生全部可完成审批流程"
+    "研究生导入完成: 290/290（273在校+17校外）",
+    "辅导员补充: 3名更新",
+    "学院标准化: 1043人解除阻塞（音乐与戏剧、文学院、生命科学）",
+    "系统100%覆盖达成: 所有5965学生可完成审批",
+    "Building字段标准化: 116人NULL→空字符串，统一兜底路由"
   ],
   "pending": [],
   "evidence": [
-    "研究生: 290人（273在校+17校外，100%）",
-    "辅导员: 20人覆盖20学院",
-    "学院标准化: 1043人映射成功",
-    "  第一批: 792人（音乐与戏剧学院360+文学院变体432）",
-    "  第二批: 251人（生命科学学院）",
-    "阻塞学生: 0人",
-    "系统最终: 6060用户（5965学生+73宿管+20辅导+2管理）",
+    "研究生: 290人（100%）",
+    "辅导员: 20人覆盖20学院（100%）",
+    "学院标准化: 1043人",
+    "Building标准化: 116人NULL修正",
+    "缺building: 133人（116本科+17研究生，2.2%）",
+    "数据完整: 5832/5965（97.8%）",
+    "兜底宿管: 1人（覆盖133人）",
     "系统可用率: 100%（5965/5965）"
   ],
-  "next_focus": "系统数据导入与验证完成，可进入下一阶段工作",
+  "next_focus": "数据导入与验证完成，系统就绪",
   "artifacts": {
     "graduate_import": "backend/scripts/update_offcampus_graduates.py",
     "counselor_import": "backend/scripts/import_missing_counselors.py",
-    "normalization": "backend/scripts/normalize_department_names.py",
-    "project_summary": "docs/PROJECT-SUMMARY.md"
+    "dept_normalization": "backend/scripts/normalize_department_names.py",
+    "building_normalization": "backend/scripts/normalize_building_null.py"
   },
   "blockers": [],
   "suggested_skills": [],
-  "critical_note": "系统数据导入完成：290研究生+1043学院标准化=100%覆盖，所有学生可完成审批流程"
+  "critical_note": "数据导入完成：290研究生+1043学院标准化+116 building修正=100%系统覆盖"
 }

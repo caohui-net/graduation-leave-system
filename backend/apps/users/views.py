@@ -1,10 +1,15 @@
 import os
 from rest_framework import status
-from rest_framework.decorators import api_view, permission_classes
+from rest_framework.decorators import api_view, permission_classes, throttle_classes
 from rest_framework.permissions import AllowAny
+from rest_framework.throttling import AnonRateThrottle
 from rest_framework.response import Response
 from drf_spectacular.utils import extend_schema, OpenApiResponse
 from .serializers import LoginSerializer, LoginResponseSerializer, DemoLoginSerializer
+
+
+class LoginRateThrottle(AnonRateThrottle):
+    rate = '5/minute'
 
 
 @extend_schema(
@@ -20,11 +25,15 @@ from .serializers import LoginSerializer, LoginResponseSerializer, DemoLoginSeri
         400: OpenApiResponse(
             description='登录失败：DRF默认ValidationError格式（非项目envelope）'
         ),
+        429: OpenApiResponse(
+            description='请求过于频繁，请稍后重试'
+        ),
     },
     tags=['认证']
 )
 @api_view(['POST'])
 @permission_classes([AllowAny])
+@throttle_classes([LoginRateThrottle])
 def login(request):
     serializer = LoginSerializer(data=request.data)
     if serializer.is_valid():
@@ -48,11 +57,15 @@ def login(request):
         400: OpenApiResponse(
             description='无效的角色或演示用户不存在'
         ),
+        429: OpenApiResponse(
+            description='请求过于频繁，请稍后重试'
+        ),
     },
     tags=['认证']
 )
 @api_view(['POST'])
 @permission_classes([AllowAny])
+@throttle_classes([LoginRateThrottle])
 def demo_login(request):
     # 生产环境守卫
     if os.environ.get('DEMO_AUTH_ENABLED', 'false').lower() != 'true':

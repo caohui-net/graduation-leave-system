@@ -225,17 +225,39 @@
     async function doApprove() {
         if(!currentApprovalId) return;
         const comment = document.getElementById('approvalComment').value;
-        const ok = await apiApprove(currentApprovalId, comment);
-        if(ok) { showToast('审批通过', 'success'); showScreen(1); loadApprovals(); }
-        else { showToast('审批失败', 'error'); }
+        const btn = event?.target || document.querySelector('#approval-actions .btn-primary');
+
+        const originalText = btn.textContent;
+        btn.disabled = true;
+        btn.textContent = '处理中...';
+
+        try {
+            const ok = await apiApprove(currentApprovalId, comment);
+            if(ok) { showToast('审批通过', 'success'); showScreen(1); loadApprovals(); }
+            else { showToast('审批失败', 'error'); }
+        } finally {
+            btn.disabled = false;
+            btn.textContent = originalText;
+        }
     }
 
     async function doReject() {
         if(!currentApprovalId) return;
         const comment = document.getElementById('approvalComment').value;
-        const ok = await apiReject(currentApprovalId, comment);
-        if(ok) { showToast('审批拒绝', 'success'); showScreen(1); loadApprovals(); }
-        else { showToast('审批失败', 'error'); }
+        const btn = event?.target || document.querySelector('#approval-actions .btn-outline');
+
+        const originalText = btn.textContent;
+        btn.disabled = true;
+        btn.textContent = '处理中...';
+
+        try {
+            const ok = await apiReject(currentApprovalId, comment);
+            if(ok) { showToast('审批拒绝', 'success'); showScreen(1); loadApprovals(); }
+            else { showToast('审批失败', 'error'); }
+        } finally {
+            btn.disabled = false;
+            btn.textContent = originalText;
+        }
     }
     
     async function doSubmitApplication() {
@@ -270,16 +292,26 @@
              return;
         }
 
-        const ok = await apiSubmitApplication(phone, reason, leaveDate, uploadedFiles);
-        if (ok) {
-            showToast('申请提交成功', 'success');
-            document.getElementById('contactPhone').value = '';
-            document.getElementById('applicationReason').value = '';
-            document.getElementById('leaveDate').value = '';
-            uploadedFiles = [];
-            renderFileList();
-        } else {
-            showToast('申请提交失败', 'error');
+        const btn = event?.target || document.querySelector('#screen-0 .btn-primary');
+        const originalText = btn.textContent;
+        btn.disabled = true;
+        btn.textContent = '提交中...';
+
+        try {
+            const ok = await apiSubmitApplication(phone, reason, leaveDate, uploadedFiles);
+            if (ok) {
+                showToast('申请提交成功', 'success');
+                document.getElementById('contactPhone').value = '';
+                document.getElementById('applicationReason').value = '';
+                document.getElementById('leaveDate').value = '';
+                uploadedFiles = [];
+                renderFileList();
+            } else {
+                showToast('申请提交失败', 'error');
+            }
+        } finally {
+            btn.disabled = false;
+            btn.textContent = originalText;
         }
     }
 </script>
@@ -636,6 +668,7 @@
       const userId = document.getElementById('loginUserId').value.trim();
       const password = document.getElementById('loginPassword').value.trim();
       const errorEl = document.getElementById('loginError');
+      const btn = event?.target || document.querySelector('#screen-login .btn-primary');
 
       if (!userId || !password) {
         errorEl.textContent = '请输入用户ID和密码';
@@ -643,38 +676,48 @@
         return;
       }
 
-      const result = await apiLogin(userId, password);
+      // Loading state
+      const originalText = btn.textContent;
+      btn.disabled = true;
+      btn.textContent = '登录中...';
 
-      if (result.success) {
-        errorEl.style.display = 'none';
-        document.getElementById('loginUserId').value = '';
-        document.getElementById('loginPassword').value = '';
+      try {
+        const result = await apiLogin(userId, password);
 
-        // Show user bar
-        document.getElementById('userBar').style.display = 'flex';
-        document.getElementById('currentUserName').textContent = result.user.name;
-        const roleMap = {
-          'student': '学生',
-          'dorm_manager': '宿管员',
-          'counselor': '辅导员',
-          'dean': '学工部'
-        };
-        document.getElementById('currentUserRole').textContent = '(' + (roleMap[result.user.role] || result.user.role) + ')';
+        if (result.success) {
+          errorEl.style.display = 'none';
+          document.getElementById('loginUserId').value = '';
+          document.getElementById('loginPassword').value = '';
 
-        // Update UI based on role
-        updateUIForRole(result.user.role);
+          // Show user bar
+          document.getElementById('userBar').style.display = 'flex';
+          document.getElementById('currentUserName').textContent = result.user.name;
+          const roleMap = {
+            'student': '学生',
+            'dorm_manager': '宿管员',
+            'counselor': '辅导员',
+            'dean': '学工部'
+          };
+          document.getElementById('currentUserRole').textContent = '(' + (roleMap[result.user.role] || result.user.role) + ')';
 
-        // Hide login screen, show appropriate screen
-        document.getElementById('screen-login').classList.remove('active');
-        if (result.user.role === 'student') {
-          showScreen(0); // Student application screen
+          // Update UI based on role
+          updateUIForRole(result.user.role);
+
+          // Hide login screen, show appropriate screen
+          document.getElementById('screen-login').classList.remove('active');
+          if (result.user.role === 'student') {
+            showScreen(0); // Student application screen
+          } else {
+            showScreen(1); // Approval list screen
+            loadApprovals();
+          }
         } else {
-          showScreen(1); // Approval list screen
-          loadApprovals();
+          errorEl.textContent = result.error.error || '登录失败，请检查用户ID和密码';
+          errorEl.style.display = 'block';
         }
-      } else {
-        errorEl.textContent = result.error.error || '登录失败，请检查用户ID和密码';
-        errorEl.style.display = 'block';
+      } finally {
+        btn.disabled = false;
+        btn.textContent = originalText;
       }
     }
 

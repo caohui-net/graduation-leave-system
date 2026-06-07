@@ -73,6 +73,9 @@ class DemoLoginSerializer(serializers.Serializer):
         except User.DoesNotExist:
             raise serializers.ValidationError(f'Demo user for role {role} not found')
 
+        if not user.is_demo:
+            raise serializers.ValidationError('This account is not marked as a demo account')
+
         if not user.active:
             raise serializers.ValidationError('Demo account is inactive')
 

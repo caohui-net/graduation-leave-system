@@ -41,6 +41,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     department = models.CharField(max_length=100, null=True, blank=True)
     building = models.CharField(max_length=100, null=True, blank=True)
 
+    is_demo = models.BooleanField(default=False)
     is_staff = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

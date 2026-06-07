@@ -50,6 +50,41 @@ class MockDormCheckoutProvider:
                 blocking_reason="学生信息不存在",
                 provider_error_code="STUDENT_NOT_FOUND"
             ),
+            "2022240340415": DormCheckoutStatusDTO(
+                student_id="2022240340415",
+                status=DormCheckoutStatus.COMPLETED,
+                checked_at="2024-05-15T10:00:00Z",
+                blocking_reason=None,
+                provider_error_code=None
+            ),
+            "2022190140302": DormCheckoutStatusDTO(
+                student_id="2022190140302",
+                status=DormCheckoutStatus.COMPLETED,
+                checked_at="2024-05-15T10:00:00Z",
+                blocking_reason=None,
+                provider_error_code=None
+            ),
+            "2022190140325": DormCheckoutStatusDTO(
+                student_id="2022190140325",
+                status=DormCheckoutStatus.COMPLETED,
+                checked_at="2024-05-15T10:00:00Z",
+                blocking_reason=None,
+                provider_error_code=None
+            ),
+            "2022250140422": DormCheckoutStatusDTO(
+                student_id="2022250140422",
+                status=DormCheckoutStatus.COMPLETED,
+                checked_at="2024-05-15T10:00:00Z",
+                blocking_reason=None,
+                provider_error_code=None
+            ),
+            "2022250140610": DormCheckoutStatusDTO(
+                student_id="2022250140610",
+                status=DormCheckoutStatus.COMPLETED,
+                checked_at="2024-05-15T10:00:00Z",
+                blocking_reason=None,
+                provider_error_code=None
+            ),
         }
 
         return mock_data.get(student_id, DormCheckoutStatusDTO(

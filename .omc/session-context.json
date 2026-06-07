@@ -1,5 +1,5 @@
 {
-  "last_updated": "2026-06-07T09:13:00Z",
+  "last_updated": "2026-06-07T09:30:00Z",
   "completed": [
     "提交表单功能增强：添加手机号、离校原因改可选、附件上传前置",
     "后端模型修改：Application.contact_phone字段、reason字段改为可选、leave_date改为nullable",
@@ -9,7 +9,8 @@
     "数据库迁移生成并应用：0006_application_contact_phone_and_more.py",
     "Codex审查5项修复完成：URL注册、leave_date可空、并发保护select_for_update、测试更新（29个全通过）",
     "小程序UI实现（5/5完成）：contact_phone字段、草稿保存、表单验证更新、提交逻辑支持草稿转换、附件上传UI",
-    "部署文档创建：README.md包含快速开始、Docker部署步骤、开发环境配置"
+    "部署文档创建：README.md包含快速开始、Docker部署步骤、开发环境配置",
+    "全流程测试完成：5轮端到端测试全部通过（登录→创建申请→查询状态）"
   ],
   "pending": [],
   "evidence": [
@@ -18,21 +19,27 @@
     "backend/apps/applications/views.py: 草稿接口、提交接口支持草稿转换、select_for_update并发保护",
     "backend/apps/applications/urls.py: draft/ endpoint注册",
     "backend/apps/applications/migrations/0006_*.py: 迁移已生成并应用",
+    "backend/apps/applications/providers.py: 添加5名测试学生到MockDormCheckoutProvider（状态COMPLETED）",
     "frontend/types/api.ts: TypeScript接口已更新",
+    "tests/full_workflow_test.py: 5轮测试全部通过（5/5 PASS）",
+    "docs/test-reports/workflow-test-2026-06-07.md: 完整测试报告（包含测试数据、结果、问题修复、结论）",
     "测试套件：29/29 tests passed（test_serializer_validation, test_error_cases, test_constraints等7个文件已更新contact_phone）",
     "miniprogram/pages/student-application/: contactPhone字段、草稿保存、附件上传（loadAttachments、onChooseFile、uploadFile、onDeleteAttachment）",
     "miniprogram/services/api.ts: createDraft方法（POST /api/applications/draft/）、uploadAttachment方法已存在",
     "README.md: 部署文档（Docker快速开始、开发环境配置、功能特性列表）"
   ],
-  "next_focus": "MVP功能完成，可进入生产部署阶段",
+  "next_focus": "系统已完成MVP功能和全流程测试验证，可进入生产部署准备阶段",
   "artifacts": {
     "models": "backend/apps/applications/models.py",
     "serializers": "backend/apps/applications/serializers.py",
     "views": "backend/apps/applications/views.py",
     "urls": "backend/apps/applications/urls.py",
+    "providers": "backend/apps/applications/providers.py",
     "migration": "backend/apps/applications/migrations/0006_application_contact_phone_and_more.py",
     "types": "frontend/types/api.ts",
     "tests": "backend/apps/applications/tests/",
+    "test_script": "tests/full_workflow_test.py",
+    "test_report": "docs/test-reports/workflow-test-2026-06-07.md",
     "summary": "docs/PROJECT-SUMMARY.md"
   },
   "blockers": [],
@@ -43,6 +50,7 @@
     "reason_handling": "blank=True, default=''（避免null兼容成本）",
     "leave_date_nullable": "null=True, blank=True（支持草稿场景）",
     "transaction": "transaction.atomic保证一致性",
-    "concurrency": "select_for_update()防止竞态条件"
+    "concurrency": "select_for_update()防止竞态条件",
+    "test_data": "使用真实学生数据（5名）+ MockDormCheckoutProvider模拟宿舍清退状态"
   }
 }

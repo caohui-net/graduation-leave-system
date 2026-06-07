@@ -1,5 +1,5 @@
 {
-  "last_updated": "2026-06-07T09:39:00Z",
+  "last_updated": "2026-06-07T09:52:00Z",
   "completed": [
     "提交表单功能增强：添加手机号、离校原因改可选、附件上传前置",
     "后端模型修改：Application.contact_phone字段、reason字段改为可选、leave_date改为nullable",
@@ -11,9 +11,17 @@
     "小程序UI实现（5/5完成）：contact_phone字段、草稿保存、表单验证更新、提交逻辑支持草稿转换、附件上传UI",
     "部署文档创建：README.md包含快速开始、Docker部署步骤、开发环境配置",
     "全流程测试完成：5轮端到端测试全部通过（登录→创建申请→查询状态）",
-    "多角色登录测试完成：5轮不同角色测试全部通过（student, counselor, dorm_manager, admin）"
+    "多角色登录测试完成：5轮不同角色测试（原报告5/5登录成功，实际权限4/5通过）",
+    "Codex审查完成：10轮测试综合审查，识别5项问题，生成行动计划",
+    "P0修复完成：测试脚本判定逻辑修正+审批端点URL修正",
+    "P0验证完成：重新运行多角色测试，确认4/5通过（管理员403为已知问题）",
+    "修正版测试报告：创建comprehensive-test-corrected-2026-06-07.md，记录真实测试结果9/10通过"
   ],
-  "pending": [],
+  "pending": [
+    "P1: 创建完整审批流程测试（student→dorm_manager→counselor→approved）",
+    "P1: 管理员功能决策（修复ADMIN权限或从MVP排除）",
+    "P2: 更新原综合测试报告或归档过时版本"
+  ],
   "evidence": [
     "backend/apps/applications/models.py: contact_phone字段、reason改为blank=True、leave_date改为nullable",
     "backend/apps/applications/serializers.py: ApplicationCreateSerializer支持contact_phone必填、reason可选",
@@ -23,15 +31,18 @@
     "backend/apps/applications/providers.py: 添加5名测试学生到MockDormCheckoutProvider（状态COMPLETED）",
     "frontend/types/api.ts: TypeScript接口已更新",
     "tests/full_workflow_test.py: 5轮测试全部通过（5/5 PASS）",
-    "tests/multi_role_test.py: 5个角色登录测试全部通过（student×2, counselor, dorm_manager, admin）",
-    "docs/test-reports/workflow-test-2026-06-07.md: 完整测试报告（包含测试数据、结果、问题修复、结论）",
-    "docs/test-reports/multi-role-test-2026-06-07.md: 多角色登录测试报告（5/5登录成功，发现2个非阻塞问题）",
+    "tests/multi_role_test.py: P0修复后4/5通过（student×2✓, counselor✓, dorm_manager✓, admin✗403）",
+    "tests/multi_role_test.py:104-106: 判定逻辑已修正（只有所有步骤PASS才标记success）",
+    "tests/multi_role_test.py:66,76,86: 审批端点已修正（/api/approvals/pending/ → /api/approvals/）",
+    "docs/test-reports/comprehensive-test-corrected-2026-06-07.md: 修正版报告记录9/10通过",
+    "docs/codex-review-action-plan-2026-06-07.md: Codex审查结论和P0/P1/P2行动计划",
+    ".omc/collaboration/artifacts/: Codex审查原始记录（discuss round 2）",
     "测试套件：29/29 tests passed（test_serializer_validation, test_error_cases, test_constraints等7个文件已更新contact_phone）",
     "miniprogram/pages/student-application/: contactPhone字段、草稿保存、附件上传（loadAttachments、onChooseFile、uploadFile、onDeleteAttachment）",
     "miniprogram/services/api.ts: createDraft方法（POST /api/applications/draft/）、uploadAttachment方法已存在",
     "README.md: 部署文档（Docker快速开始、开发环境配置、功能特性列表）"
   ],
-  "next_focus": "系统已完成MVP功能、全流程测试和多角色验证，发现2个非阻塞问题待修复（审批端点URL、管理员权限403）",
+  "next_focus": "P0修复完成并验证。下一步：(1)使用collab提交修正报告讨论 (2)根据反馈决定P1任务优先级（完整审批流程测试 vs 管理员功能决策）",
   "artifacts": {
     "models": "backend/apps/applications/models.py",
     "serializers": "backend/apps/applications/serializers.py",
@@ -45,6 +56,10 @@
     "test_script_multi_role": "tests/multi_role_test.py",
     "test_report_workflow": "docs/test-reports/workflow-test-2026-06-07.md",
     "test_report_multi_role": "docs/test-reports/multi-role-test-2026-06-07.md",
+    "test_report_comprehensive_original": "docs/test-reports/comprehensive-test-2026-06-07.md",
+    "test_report_comprehensive_corrected": "docs/test-reports/comprehensive-test-corrected-2026-06-07.md",
+    "codex_review_action_plan": "docs/codex-review-action-plan-2026-06-07.md",
+    "codex_review_artifacts": ".omc/collaboration/artifacts/DISCUSS-10轮系统测试完成审查-*",
     "summary": "docs/PROJECT-SUMMARY.md"
   },
   "blockers": [],
@@ -57,6 +72,8 @@
     "transaction": "transaction.atomic保证一致性",
     "concurrency": "select_for_update()防止竞态条件",
     "test_data": "使用真实学生数据（5名）+ MockDormCheckoutProvider模拟宿舍清退状态",
-    "multi_role_testing": "测试4种角色（student, counselor, dorm_manager, admin）+ 多学生验证"
+    "multi_role_testing": "测试4种角色（student, counselor, dorm_manager, admin）+ 多学生验证",
+    "test_judgment_logic": "只有所有测试步骤PASS才标记success=True（P0修复）",
+    "approval_endpoint": "/api/approvals/（非/pending/，P0修复）"
   }
 }

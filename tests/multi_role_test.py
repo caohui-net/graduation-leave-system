@@ -63,7 +63,7 @@ def test_role_login(role, user_id, password):
 
         elif role == "counselor":
             # Test: Get pending approvals
-            resp = requests.get(f"{BASE_URL}/api/approvals/pending/", headers=headers)
+            resp = requests.get(f"{BASE_URL}/api/approvals/", headers=headers)
             if resp.status_code == 200:
                 result["steps"]["list_pending_approvals"] = "PASS"
                 result["pending_count"] = len(resp.json().get("results", []))
@@ -73,7 +73,7 @@ def test_role_login(role, user_id, password):
 
         elif role == "dorm_manager":
             # Test: Get pending approvals
-            resp = requests.get(f"{BASE_URL}/api/approvals/pending/", headers=headers)
+            resp = requests.get(f"{BASE_URL}/api/approvals/", headers=headers)
             if resp.status_code == 200:
                 result["steps"]["list_pending_approvals"] = "PASS"
                 result["pending_count"] = len(resp.json().get("results", []))
@@ -83,7 +83,7 @@ def test_role_login(role, user_id, password):
 
         elif role == "academic_staff":
             # Test: Get pending approvals
-            resp = requests.get(f"{BASE_URL}/api/approvals/pending/", headers=headers)
+            resp = requests.get(f"{BASE_URL}/api/approvals/", headers=headers)
             if resp.status_code == 200:
                 result["steps"]["list_pending_approvals"] = "PASS"
                 result["pending_count"] = len(resp.json().get("results", []))
@@ -101,7 +101,9 @@ def test_role_login(role, user_id, password):
                 result["steps"]["list_all_applications"] = "FAIL"
                 result["error"] = f"List applications failed: {resp.status_code}"
 
-        result["success"] = True
+        # Check if all steps passed (no FAIL status)
+        all_passed = all(status == "PASS" for status in result["steps"].values())
+        result["success"] = all_passed
 
     except Exception as e:
         result["error"] = str(e)

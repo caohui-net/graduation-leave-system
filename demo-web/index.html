@@ -23,21 +23,23 @@
 
         if (data.results && data.results.length > 0) {
             let htmlStr = '';
-            data.results.forEach(app => {
-                const step = statusMap[app.status] ? statusMap[app.status].text : app.status;
-                const tagCls = statusMap[app.status] ? statusMap[app.status].cls : 'tag-pending';
-                
-                htmlStr += '<div class="card" onclick="openApproval(\'' + app.id + '\')" style="cursor: pointer;">' +
+            data.results.forEach(approval => {
+                const application = approval.application || {};
+                const appStatus = application.status || 'unknown';
+                const step = statusMap[appStatus] ? statusMap[appStatus].text : appStatus;
+                const tagCls = statusMap[appStatus] ? statusMap[appStatus].cls : 'tag-pending';
+
+                htmlStr += '<div class="card" onclick="openApproval(\'' + approval.id + '\')" style="cursor: pointer;">' +
                   '<div class="flex-row justify-between align-center" style="margin-bottom: 8px;">' +
-                    '<span style="font-size: 16px; font-weight: bold;">申请 ' + (app.application_id || app.id.substring(0,8)) + '</span>' +
+                    '<span style="font-size: 16px; font-weight: bold;">申请 ' + (application.id ? application.id.substring(0,8) : approval.id.substring(0,8)) + '</span>' +
                     '<span class="tag ' + tagCls + '">' + step + '</span>' +
                   '</div>' +
                   '<div style="margin-bottom: 4px;">' +
                     '<span style="font-size: 14px; color: #999; margin-right: 8px;">学生:</span>' +
-                    '<span style="font-size: 14px; color: #333;">' + app.student_name + ' (' + app.student_id + ')</span>' +
+                    '<span style="font-size: 14px; color: #333;">' + (application.student_name || '-') + ' (' + (application.student_id || '-') + ')</span>' +
                   '</div>' +
                   '<div style="margin-top: 8px; padding-top: 8px; border-top: 1px solid #f0f0f0;">' +
-                    '<span style="font-size: 12px; color: #999;">' + new Date(app.created_at).toLocaleString() + '</span>' +
+                    '<span style="font-size: 12px; color: #999;">' + new Date(approval.created_at || application.created_at).toLocaleString() + '</span>' +
                   '</div>' +
                 '</div>';
             });
@@ -105,15 +107,17 @@
     async function doSubmitApplication() {
         const phone = document.getElementById('contactPhone').value;
         const reason = document.getElementById('applicationReason').value;
-        if (!phone) {
-             alert('请输入联系电话');
+        const leaveDate = document.getElementById('leaveDate').value;
+        if (!phone || !leaveDate) {
+             alert('请输入联系电话和离校日期');
              return;
         }
-        const ok = await apiSubmitApplication(phone, reason, uploadedFiles);
+        const ok = await apiSubmitApplication(phone, reason, leaveDate, uploadedFiles);
         if (ok) {
             alert('申请提交成功');
             document.getElementById('contactPhone').value = '';
             document.getElementById('applicationReason').value = '';
+            document.getElementById('leaveDate').value = '';
             uploadedFiles = [];
             renderFileList();
         } else {
@@ -237,6 +241,7 @@
   <div style="background: white; padding: 8px 16px; border-bottom: 1px solid #f0f0f0; display: flex; align-items: center; gap: 10px;">
     <span style="font-size: 14px; color: #666;">演示角色:</span>
     <select id="roleSelector" onchange="switchRole(this.value)" style="padding: 4px 8px; border: 1px solid #d9d9d9; border-radius: 4px; font-size: 14px;">
+      <option value="student">学生</option>
       <option value="dorm_manager">宿管员</option>
       <option value="counselor">辅导员</option>
       <option value="dean">学工部</option>
@@ -264,13 +269,17 @@
       <!-- 表单卡片 -->
       <div class="card">
         <div style="margin-bottom: 20px;">
+          <label style="display: block; font-size: 14px; margin-bottom: 8px; font-weight: 500;">联系电话</label>
+          <input id="contactPhone" type="tel" name="contact_phone" maxlength="20" inputmode="numeric" style="width: 100%; padding: 12px; border: 1px solid #d9d9d9; border-radius: 4px; font-size: 14px;" placeholder="请输入联系电话" required>
+        </div>
+        <div style="margin-bottom: 20px;">
           <label style="display: block; font-size: 14px; margin-bottom: 8px; font-weight: 500;">离校原因</label>
           <textarea id="applicationReason" style="width: 100%; min-height: 120px; padding: 12px; border: 1px solid #d9d9d9; border-radius: 4px; font-size: 14px;" placeholder="请输入离校原因"></textarea>
           <span style="display: block; text-align: right; font-size: 12px; color: #999; margin-top: 4px;">0/500</span>
         </div>
         <div style="margin-bottom: 20px;">
           <label style="display: block; font-size: 14px; margin-bottom: 8px; font-weight: 500;">离校日期</label>
-          <input type="date" style="width: 100%; padding: 12px; border: 1px solid #d9d9d9; border-radius: 4px; font-size: 14px;">
+          <input id="leaveDate" type="date" name="leave_date" style="width: 100%; padding: 12px; border: 1px solid #d9d9d9; border-radius: 4px; font-size: 14px;" required>
         </div>
 
         <!-- 附件上传区域 -->
@@ -416,7 +425,7 @@
   </div>
 
   <script>
-    let currentRole = 'dorm_manager';
+    let currentRole = 'student';
 
     // Status mapping
     const statusMap = {

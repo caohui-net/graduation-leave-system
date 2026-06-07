@@ -23,7 +23,7 @@ async function apiLogin(role) {
         
         if (response.ok) {
             const data = await response.json();
-            currentToken = data.access;
+            currentToken = data.access_token;
             return true;
         }
     } catch (e) {
@@ -38,10 +38,11 @@ function getAuthHeaders() {
     };
 }
 
-async function apiSubmitApplication(phone, reason, files) {
+async function apiSubmitApplication(phone, reason, leaveDate, files) {
     const formData = new FormData();
     formData.append('contact_phone', phone);
     formData.append('reason', reason);
+    formData.append('leave_date', leaveDate);
     files.forEach(f => formData.append('attachments', f));
     
     try {

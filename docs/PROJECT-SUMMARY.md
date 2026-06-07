@@ -4107,14 +4107,56 @@ python backend/scripts/import_graduates.py graduate_students_supplement.csv --ap
 - .omc/collaboration/artifacts/DISCUSS-DEMO-WEB-UI优化-* (8个artifacts)
 - .omc/collaboration/artifacts/DISCUSS-DEMO-WEB认证方案-* (4个artifacts)
 
-**验证状态:**
-- ✓ 所有8个问题已修复并提交
+**初始验证状态（审计前）:**
+- ✓ 8个UI问题已修复并提交
 - ✓ 代码已推送到远程仓库
-- ✓ demo-web达到生产就绪标准
-- ⏳ 后端需实现demo-login端点（DEMO_AUTH_ENABLED守卫）
+- ⚠️ 声称"生产就绪"但未验证后端集成
+
+### Demo-Web代码审计（2026-06-07下午，三方协作）
+
+**审计背景:**
+- 使用Claude-Codex-Gemini三方协作对8个修复进行验证
+- 5轮讨论，Codex和Gemini达成共识
+- 目标：验证修复的正确性，确认无遗漏问题
+
+**审计发现（5个阻塞问题）:**
+1. ❌ **后端缺失demo-login端点** - 前端调用但后端未实现，认证流程完全中断
+2. ❌ **审批列表数据契约不匹配** - 前端期望嵌套结构，后端返回扁平结构
+3. ❌ **审批详情数据契约不匹配** - 前端期望student_name等字段，后端未提供
+4. ❌ **时间线硬编码HTML** - 未使用API数据动态渲染
+5. ❌ **文档过早宣称就绪** - 声称生产就绪但存在阻塞问题
+
+**审计结论:**
+- UI修复已实现（Toast、表单验证、响应式布局等）
+- 但后端集成问题导致demo-web**无法实际工作**
+- 8个UI修复无法被验证，因为系统根本跑不起来
+
+**集成修复（2026-06-07晚）:**
+
+*Task #15: 实现demo-login端点*
+- ✓ 后端新增POST /api/auth/demo-login
+- ✓ DemoLoginSerializer接收role，返回对应演示用户token
+- ✓ DEMO_AUTH_ENABLED环境变量守卫（生产环境=false）
+- ✓ 角色映射：student→2020001, dorm_manager→M001, counselor→T001, dean→D001
+
+*Task #16: 修复审批列表数据契约*
+- ✓ 新增ApplicationBriefSerializer提供嵌套application对象
+- ✓ ApprovalListSerializer返回{id, application:{id, status}, ...}
+- ✓ 前端`approval.application.status`现在可正常访问
+
+*Task #17: 修复审批详情数据契约*
+- ✓ ApprovalSerializer新增student_name, student_id, contact_phone, reason字段
+- ✓ 前端详情页面现在可正确显示学生信息
+
+**当前状态:**
+- ✓ 认证流程已打通（demo-login端点实现）
+- ✓ 审批列表可正确渲染（数据契约修复）
+- ✓ 审批详情可正确显示（数据契约修复）
+- ⏳ 时间线仍为硬编码HTML（待实现动态渲染）
+- ⏳ 需端到端测试验证完整流程
 
 **下一步:**
-- [ ] 后端实现/api/auth/demo-login端点
+- [ ] Task #18: 实现动态时间线渲染
+- [ ] 端到端集成测试
 - [ ] 用户验收测试（UAT）
-- [ ] 生产环境部署
 

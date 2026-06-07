@@ -81,11 +81,60 @@
                 '</div>' +
               '</div>';
             
+            // 动态生成审批时间轴
+            const timelineHtml = generateTimeline(detail);
+
             const cards = container.querySelectorAll('.card');
             if (cards.length > 0) {
                 cards[0].outerHTML = basicInfoHtml;
             }
+            if (cards.length > 1) {
+                cards[1].outerHTML = timelineHtml;
+            }
         }
+    }
+
+    function generateTimeline(detail) {
+        const stepNames = {
+            'dorm_manager': '宿管员审批',
+            'counselor': '辅导员审批',
+            'dean': '学工部审批'
+        };
+        const decisionTags = {
+            'pending': { text: '待审批', cls: 'tag-pending' },
+            'approved': { text: '已通过', cls: 'tag-approved' },
+            'rejected': { text: '已驳回', cls: 'tag-rejected' }
+        };
+
+        const stepName = stepNames[detail.step] || detail.step;
+        const decisionTag = decisionTags[detail.decision] || decisionTags.pending;
+        const approverText = detail.approver_name || '待分配';
+        const timeText = detail.decided_at || '待审批';
+
+        return '<div class="card">' +
+            '<div style="font-size: 16px; font-weight: bold; margin-bottom: 10px;">审批记录</div>' +
+            '<div style="position: relative; padding-left: 30px; margin-bottom: 20px;">' +
+              '<div style="position: absolute; left: 10px; top: 4px; width: 10px; height: 10px; border-radius: 50%; background: ' +
+                (detail.decision === 'approved' ? 'var(--status-success)' : detail.decision === 'rejected' ? 'var(--status-error)' : 'white') +
+                '; border: 2px solid ' + (detail.decision === 'pending' ? 'var(--primary-color)' : detail.decision === 'approved' ? 'var(--status-success)' : 'var(--status-error)') + ';"></div>' +
+              '<div style="position: absolute; left: 14px; top: 16px; bottom: -20px; width: 1px; background: #e8e8e8;"></div>' +
+              '<div class="flex-row justify-between align-center" style="margin-bottom: 6px;">' +
+                '<span style="font-size: 15px; font-weight: 600;">' + stepName + '</span>' +
+                '<span class="tag ' + decisionTag.cls + '">' + decisionTag.text + '</span>' +
+              '</div>' +
+              '<div style="font-size: 13px; color: #666;">审批人: ' + approverText + '</div>' +
+              (detail.decided_at ? '<div style="font-size: 13px; color: #666;">时间: ' + timeText + '</div>' : '') +
+              (detail.comment ? '<div style="font-size: 13px; color: #666; margin-top: 4px;">意见: ' + detail.comment + '</div>' : '') +
+            '</div>' +
+            '<div style="position: relative; padding-left: 30px;">' +
+              '<div style="position: absolute; left: 10px; top: 4px; width: 10px; height: 10px; border-radius: 50%; background: var(--status-success); border: 2px solid var(--status-success);"></div>' +
+              '<div class="flex-row justify-between align-center" style="margin-bottom: 6px;">' +
+                '<span style="font-size: 15px; font-weight: 600;">提交申请</span>' +
+                '<span class="tag tag-approved">已完成</span>' +
+              '</div>' +
+              '<div style="font-size: 13px; color: #666;">学生已提交</div>' +
+            '</div>' +
+          '</div>';
     }
     
     async function doApprove() {

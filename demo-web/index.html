@@ -89,6 +89,9 @@
         };
 
         if (data.results && data.results.length > 0) {
+            // Save raw page size before filtering for pagination offset
+            const rawResultsLength = data.results.length;
+
             // Apply front-end filter only for 'decided' (approved or rejected)
             let filtered = data.results;
             if (currentFilter === 'decided') {
@@ -163,7 +166,7 @@
                 listContainer.innerHTML = htmlStr;
             }
 
-            approvalOffset += filtered.length;
+            approvalOffset += rawResultsLength;
             approvalHasMore = data.count > approvalOffset;
 
             if (loadMoreBtn) {

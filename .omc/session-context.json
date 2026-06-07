@@ -1,30 +1,41 @@
 {
-  "last_updated": "2026-06-07T03:30:00Z",
+  "last_updated": "2026-06-07T06:17:00Z",
   "completed": [
-    "Phase 3-5完成（2026-06-06）: 6055用户入库，2级审批流程验证，101单元测试通过",
-    "多宿管员协同审批（2026-06-06）: 任意宿管员可审批",
-    "Docker本地部署（2026-06-07）: 服务就绪",
-    "系统操作文档（2026-06-07）: SYSTEM-OPERATIONS-GUIDE.md",
-    "用户操作手册v1（2026-06-07）: DOCX含截图占位符，39.8K",
-    "API测试流程演示（2026-06-07）: 10步完整流程演示",
-    "用户操作手册v2（2026-06-07）: 添加4角色流程图+管理员操作指南，41.8K"
+    "Codex审查完成: 研究生导入3方案评估",
+    "File1验证完成: 0/10研究生学号匹配，File1不含研究生数据",
+    "Claude-Codex共识文档: 方案A推荐（补充数据），方案B备选（统一路由）",
+    "数据补充请求文档: 290名研究生building/department CSV模板",
+    "综合数据库分析报告: 6041用户，0名研究生，详细分析5个检测方法",
+    "真实数据导入完成: 6041用户（5946学生+73宿管+20辅导+2管理）"
   ],
   "pending": [
-    "实际UI截图采集（可选）",
-    "SSO集成实施"
+    "【需用户决策】方案A: 确认building/department数据源（研究生系统/入住系统/手工整理）",
+    "【需用户决策】方案B: 业务授权统一路由到研究生院辅导员（如数据源不可用）",
+    "【需用户决策】方案C: 确认研究生不使用本系统（如不纳入）",
+    "执行选定方案的技术实施（6-10小时或3-5小时）"
   ],
   "evidence": [
-    "用户操作手册: docs/用户操作手册.docx (41.8K)",
-    "流程图: 学生/宿管员/辅导员/管理员4个流程示意图",
-    "管理员指南: 登录/查询/导出/权限说明",
-    "API测试演示: docs/API测试流程演示.md",
-    "补充文档: docs/管理员操作指南和流程图补充.md"
+    "Codex审查: department缺失导致辅导员审批404（硬阻塞）",
+    "File1验证: 0/10样本研究生学号存在于File1，无法从现有数据提取",
+    "研究生文件: 290人仅3列（序号/学号/姓名），缺building/department/class_id等",
+    "系统路由: building有默认兜底，department无兜底（apps/approvals/views.py:213）",
+    "工作量评估: 方案A 6-10h，方案B 3-5h，方案C 0h"
   ],
-  "next_focus": "用户操作文档完成（WORD格式+流程图+4角色指南含管理员）。独立业务系统文档齐全，可进行SSO集成。",
+  "next_focus": "等待用户决策: 数据源可用性 OR 业务授权 OR 使用范围确认",
   "artifacts": {
-    "user_manual_docx": "docs/用户操作手册.docx",
-    "admin_supplement": "docs/管理员操作指南和流程图补充.md",
-    "api_demo": "docs/API测试流程演示.md",
-    "system_ops": "docs/SYSTEM-OPERATIONS-GUIDE.md"
-  }
+    "consensus": ".omc/collaboration/artifacts/20260607-0617-claude-codex-consensus-graduate-import-plan.md",
+    "data_request": "docs/数据补充请求-290名研究生building和department.md",
+    "db_analysis": "docs/数据库数据分析报告-2026-06-07.md",
+    "codex_review": ".omc/artifacts/ask/codex-0-docs-290-xls-290-phase-3-1-docs-290-xls-50kb-2-3-290-3-202-2026-06-07T06-13-07-956Z.md"
+  },
+  "blockers": [
+    "【关键阻塞】所有3个技术方案均需外部决策:",
+    "  - 方案A: 需确认数据源（优先级最高）",
+    "  - 方案B: 需业务授权统一辅导员",
+    "  - 方案C: 需确认研究生不使用系统",
+    "【技术阻塞】department字段硬依赖（无兜底机制）",
+    "【数据阻塞】File1不含研究生，无法从现有数据补充"
+  ],
+  "suggested_skills": [],
+  "critical_note": "研究生数据导入方案已完成技术评估和共识，所有实施路径需用户决策数据源或业务授权后方可执行"
 }

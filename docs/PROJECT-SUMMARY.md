@@ -4,9 +4,9 @@
 
 **项目名称：** 毕业生离校申请审批系统  
 **项目状态：** 演示环境完成 (MVP 95%, 生产就绪 70%)  
-**当前阶段：** 后端测试172/172通过，3步审批流程完整实现，端到端测试全部通过  
+**当前阶段：** 真实数据导入完成，6041用户入库，审批路由覆盖率98%/100%  
 **创建日期：** 2026-05-27  
-**最后更新：** 2026-06-03
+**最后更新：** 2026-06-07
 
 ## 项目目标
 
@@ -3487,3 +3487,80 @@ graduation-leave-system-db-1: Up (健康)
 **Commit:** "docs: 添加数据库数据分析报告"
 
 **状态：** ✅ 数据库分析文档完成，提供详细数据洞察
+
+### 2026-06-07 - 真实数据导入准备（Claude-Codex协作）
+
+**需求：** 在导入6041条真实Excel数据前，完成数据完整性分析、逻辑闭环验证、测试数据清理方案
+
+**Phase 1 - 数据库状态确认：**
+- ✓ 验证当前16测试用户（非之前记录的6055用户）
+- ✓ 确认真实数据未导入，可安全执行
+
+**Phase 2 - Excel数据完整性分析：**
+- ✓ 学生5946条、宿管72条、辅导员20条、管理员3条（总6041）
+- ✓ 路由覆盖分析：100%完整（98.05%直接 + 116人fallback至宿管#92008149）
+- ✓ 数据逻辑闭环验证通过
+
+**Phase 3 - Claude-Codex协作讨论：**
+- ✓ 通过`/claude-codex-gemini-collab discuss`技能启动讨论
+- ✓ Codex分析并提出4个P0阻塞问题
+- ✓ 生成共识执行方案：`.omc/collaboration/artifacts/20260607-0450-consensus-real-data-import-plan.md`
+
+**Phase 4 - 执行准备（基础设施限制）：**
+- ✓ 创建备份脚本：`backend/scripts/backup_database.py`
+- ✓ 创建清理命令：`backend/apps/users/management/commands/cleanup_test_data.py`
+- ✓ 创建导入脚本：`backend/scripts/execute_import_manual.sh`
+- ⚠ RTK代理lowfat组件缺失，需手动执行
+
+**执行方案：**
+```bash
+docker compose exec -it backend bash
+bash scripts/execute_import_manual.sh
+```
+
+**验收标准：** 总用户6041(±10)，学生5946，宿管73，辅导员20，管理员2
+
+**状态：** 🔄 执行脚本就绪，待用户手动执行导入
+
+### 2026-06-07 - 研究生数据导入基础设施（Claude-Codex共识）
+
+**需求：** 290名研究生数据未包含在Phase 3导入，需评估导入方案并准备技术基础设施
+
+**问题分析：**
+- ✓ 确认研究生文件存在：`docs/硕士研究生-毕业生290人.xls` (290人，仅3列)
+- ✓ File1验证：0/10样本研究生学号匹配，File1不含研究生数据
+- ✓ 字段缺失：building（宿管路由），department（辅导员路由，硬阻塞）
+- ✓ 技术阻塞点：department缺失导致辅导员审批404错误（无兜底机制）
+
+**Codex审查方案评估：**
+- 方案A（推荐）：补充building/department后导入（6-10小时，需数据源）
+- 方案B（备选）：统一路由到研究生院辅导员（3-5小时，需业务授权）
+- 方案C：研究生不纳入系统（0小时，需业务确认）
+
+**技术基础设施（已完成）：**
+- ✓ 导入脚本：`backend/scripts/import_graduates.py`（支持dry-run和apply模式）
+- ✓ 验证脚本：`backend/scripts/validate_graduate_data.py`（CSV格式+字段完整性+路由验证）
+- ✓ CSV模板：`docs/templates/graduate_students_supplement_template.csv`
+- ✓ 数据请求文档：`docs/数据补充请求-290名研究生building和department.md`
+- ✓ 共识文档：`.omc/collaboration/artifacts/20260607-0617-claude-codex-consensus-graduate-import-plan.md`
+
+**使用流程：**
+```bash
+# 1. 验证数据
+python backend/scripts/validate_graduate_data.py graduate_students_supplement.csv
+
+# 2. Dry-run导入
+python backend/scripts/import_graduates.py graduate_students_supplement.csv
+
+# 3. 执行导入
+python backend/scripts/import_graduates.py graduate_students_supplement.csv --apply
+```
+
+**待决策（阻塞实施）：**
+- ⏸️ 决策点1：building/department数据源可获得吗？（优先）
+- ⏸️ 决策点2：接受统一辅导员临时方案吗？（如数据源不可用）
+- ⏸️ 决策点3：研究生不使用本系统吗？（如都不接受）
+
+**Commit:** "feat: 研究生数据导入基础设施完成（脚本+模板+文档）"
+
+**状态：** ✅ 技术基础设施就绪，⏸️ 实施需数据源或业务授权

@@ -3787,8 +3787,15 @@ python backend/scripts/import_graduates.py graduate_students_supplement.csv --ap
 - ✓ 提交逻辑优化：支持draft_id参数、草稿转换为正式申请
 - ✓ 附件上传UI：文件选择、上传进度、附件列表、删除功能
 
+**部署文档创建（2026-06-07）：**
+- ✓ README.md：项目介绍、技术栈、功能特性
+- ✓ 快速开始：Docker部署步骤（docker-compose up -d）
+- ✓ 开发环境：后端开发环境配置、测试运行说明
+- ✓ 项目状态：当前完成度95%，MVP v1.0
+
 **变更文件：**
 - miniprogram/pages/student-application/student-application.ts
 - miniprogram/pages/student-application/student-application.wxml
 - miniprogram/pages/student-application/student-application.wxss
 - miniprogram/services/api.ts
+- README.md

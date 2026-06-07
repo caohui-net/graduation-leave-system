@@ -306,6 +306,10 @@
                 document.getElementById('leaveDate').value = '';
                 uploadedFiles = [];
                 renderFileList();
+
+                // Switch to progress view
+                showScreen(1);
+                loadApprovals();
             } else {
                 showToast(result.error.message || '申请提交失败', 'error');
             }
@@ -428,7 +432,7 @@
 </head>
 <body>
   <!-- 顶部导航 -->
-  <div class="nav-tabs">
+  <div class="nav-tabs" id="navTabs" style="display: none;">
     <button class="nav-tab active" onclick="showScreen(0)">学生申请</button>
     <button class="nav-tab" onclick="showScreen(1)"><span id="nav-approval-text">审批列表</span></button>
     <button class="nav-tab" onclick="showScreen(2)">申请详情</button>
@@ -655,7 +659,8 @@
           document.getElementById('loginUserId').value = '';
           document.getElementById('loginPassword').value = '';
 
-          // Show user bar
+          // Show nav tabs and user bar
+          document.getElementById('navTabs').style.display = 'flex';
           document.getElementById('userBar').style.display = 'flex';
           document.getElementById('currentUserName').textContent = result.user.name;
           const roleMap = {
@@ -669,16 +674,22 @@
           // Update UI based on role
           updateUIForRole(result.user.role);
 
-          // Populate student info if student role
+          // Hide login screen
+          document.getElementById('screen-login').classList.remove('active');
+
+          // Route based on role and application status
           if (result.user.role === 'student') {
             document.getElementById('studentName').textContent = result.user.name;
             document.getElementById('studentId').textContent = result.user.user_id;
-          }
 
-          // Hide login screen, show appropriate screen
-          document.getElementById('screen-login').classList.remove('active');
-          if (result.user.role === 'student') {
-            showScreen(0); // Student application screen
+            // Check if student has applications
+            const applications = await apiGetApprovals();
+            if (applications.results && applications.results.length > 0) {
+              showScreen(1); // Show application progress
+              loadApprovals();
+            } else {
+              showScreen(0); // Show application form
+            }
           } else {
             showScreen(1); // Approval list screen
             loadApprovals();
@@ -714,6 +725,7 @@
     function logout() {
       currentToken = null;
       currentUser = null;
+      document.getElementById('navTabs').style.display = 'none';
       document.getElementById('userBar').style.display = 'none';
       document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
       document.getElementById('screen-login').classList.add('active');

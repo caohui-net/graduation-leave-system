@@ -65,6 +65,9 @@
             });
             const appData = appRes.ok ? await appRes.json() : null;
 
+            // Fetch attachments
+            const attachments = await apiGetAttachments(detail.application_id);
+
             const container = document.querySelector('#screen-2');
 
             const basicInfoHtml = '<div class="card">' +
@@ -87,6 +90,19 @@
                 '</div>' +
               '</div>';
 
+            // Generate attachment HTML
+            let attachmentHtml = '';
+            if (attachments && attachments.length > 0) {
+                attachmentHtml = '<div class="card"><div style="font-size: 16px; font-weight: bold; margin-bottom: 10px;">附件材料</div>';
+                attachments.forEach(att => {
+                    attachmentHtml += '<div style="display: flex; align-items: center; padding: 8px 0; border-bottom: 1px solid #f0f0f0;">' +
+                        '<span style="font-size: 14px; color: #333; flex: 1;">' + (att.original_filename || att.file) + '</span>' +
+                        '<a href="' + att.file + '" download style="font-size: 14px; color: var(--primary-color); text-decoration: none;">下载</a>' +
+                    '</div>';
+                });
+                attachmentHtml += '</div>';
+            }
+
             // 动态生成审批时间轴
             const timelineHtml = generateTimeline(detail, appData);
 
@@ -95,7 +111,11 @@
                 cards[0].outerHTML = basicInfoHtml;
             }
             if (cards.length > 1) {
-                cards[1].outerHTML = timelineHtml;
+                if (attachmentHtml) {
+                    cards[1].outerHTML = attachmentHtml + timelineHtml;
+                } else {
+                    cards[1].outerHTML = timelineHtml;
+                }
             }
         }
     }
@@ -110,6 +130,19 @@
         const appStatus = appData ? appData.status : detail.step;
         const workflow = ['dorm_manager', 'counselor', 'dean'];
 
+        // Calculate current level index
+        let currentLevel;
+        if (appStatus === 'approved') {
+            currentLevel = workflow.length;
+        } else if (appStatus === 'rejected') {
+            currentLevel = workflow.indexOf(detail.step);
+        } else if (appStatus.startsWith('pending_')) {
+            const pendingStep = appStatus.replace('pending_', '');
+            currentLevel = workflow.indexOf(pendingStep);
+        } else {
+            currentLevel = -1;
+        }
+
         let html = '<div class="card"><div style="font-size: 16px; font-weight: bold; margin-bottom: 10px;">审批记录</div>';
 
         for (let i = workflow.length - 1; i >= 0; i--) {
@@ -118,14 +151,16 @@
             const isLast = i === 0;
 
             let state, tagText, tagCls, dotBg, dotBorder, showConnector;
-            if (appStatus === 'approved' || appStatus === 'pending_' + workflow[i+1] || (i === workflow.length - 1 && appStatus === 'approved')) {
+
+            // Index-based comparison
+            if (i < currentLevel || appStatus === 'approved') {
                 state = 'approved';
                 tagText = '已通过';
                 tagCls = 'tag-approved';
                 dotBg = 'var(--status-success)';
                 dotBorder = 'var(--status-success)';
                 showConnector = !isLast;
-            } else if (appStatus === 'pending_' + step) {
+            } else if (i === currentLevel && appStatus !== 'rejected') {
                 state = 'pending';
                 tagText = '待审批';
                 tagCls = 'tag-pending';
@@ -395,13 +430,6 @@
         </div>
         <div id="loginError" style="display: none; padding: 10px; background: #fff2f0; border: 1px solid #ffccc7; border-radius: 4px; color: #cf1322; font-size: 14px; margin-bottom: 16px;"></div>
         <button class="btn-primary" onclick="doLogin()">登录</button>
-        <div style="margin-top: 16px; padding: 12px; background: #f6f6f6; border-radius: 4px;">
-          <div style="font-size: 12px; color: #666; margin-bottom: 4px;">演示账号：</div>
-          <div style="font-size: 12px; color: #999;">学生: 2020001 / 2020001</div>
-          <div style="font-size: 12px; color: #999;">宿管员: M001 / M001</div>
-          <div style="font-size: 12px; color: #999;">辅导员: T001 / T001</div>
-          <div style="font-size: 12px; color: #999;">学工部: D001 / D001</div>
-        </div>
       </div>
     </div>
   </div>

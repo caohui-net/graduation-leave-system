@@ -158,7 +158,15 @@
         };
 
         const appStatus = appData ? appData.status : detail.step;
-        const workflow = ['dorm_manager', 'counselor', 'dean'];
+
+        // Filter workflow based on current user role
+        let workflow = ['dorm_manager', 'counselor', 'dean'];
+        if (currentUser && currentUser.role === 'dorm_manager') {
+            workflow = ['dorm_manager'];
+        } else if (currentUser && currentUser.role === 'counselor') {
+            workflow = ['counselor'];
+        }
+        // dean/admin sees all steps (default)
 
         // Calculate current level index
         let currentLevel;

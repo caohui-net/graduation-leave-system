@@ -4235,3 +4235,11 @@ python backend/scripts/import_graduates.py graduate_students_supplement.csv --ap
 
 **提交**：commit 2807162
 
+
+**Demo-web UI优化（2026-06-07晚）：**
+- ✓ 审批时间轴角色过滤（宿管员/辅导员只看自己步骤，学工部看全部）
+- ✓ 修改generateTimeline()函数（demo-web/index.html line 162-169）
+
+**变更文件：**
+- demo-web/index.html
+

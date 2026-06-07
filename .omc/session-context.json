@@ -23,7 +23,17 @@
     "修复审批详情时间轴状态显示：generateTimeline使用approval.decision判断当前步骤状态（已通过/待审批/已驳回）",
     "修复学工部角色标签：备案查询→审批查询（updateUIForRole函数）",
     "诊断辅导员列表为空问题：department不匹配（辅导员20020559体育学院 vs 学生新闻与传播学院）",
-    "确定新测试账号：辅导员20200106张兴（新闻与传播学院）替换20020559"
+    "确定新测试账号：辅导员20200106张兴（新闻与传播学院）替换20020559",
+    "修复JavaScript语法错误：移除demo-web/index.html中重复的let currentFilter声明（第52行和第166行），解决学工部界面加载阻塞问题",
+    "修复JavaScript语法错误：移除demo-web/index.html中重复的let approvalOffset/approvalHasMore声明（第52-53行）",
+    "修复导航tab问题：隐藏顶部'申请详情'tab，防止未选择审批时直接进入详情页导致数据为空",
+    "添加返回按钮：审批详情页添加←返回按钮，点击返回审批列表，改善导航体验",
+    "修复辅导员timeline显示：辅导员审批详情页显示宿管员+辅导员步骤（之前仅显示辅导员步骤），符合审批流程顺序",
+    "修复宿管员审批人显示：后端serializer添加comment字段，前端解析'已由XXX完成审批'提取真实审批人，解决多宿管员看到自己为审批人的问题",
+    "修复学工部已审批列表：使用approval.decision而非application.status显示状态标签，避免已审批过滤器显示待审批状态",
+    "修复学工部列表重复显示：添加deanDisplayedApps全局Set跨页去重，防止分页加载时同一申请出现多次",
+    "学工部审批列表分页功能：添加limit/offset参数支持、加载更多按钮、按application_id去重逻辑",
+    "学工部审批列表显示学生信息：ApprovalListSerializer添加student_name/student_id字段，优化queryset性能"
   ],
   "pending": [],
   "user_acceptance_required": [
@@ -50,7 +60,7 @@
     "docs/UAT-CHECKLIST.md: 8个UI测试+1个集成测试",
     "所有代码已提交并推送到远程仓库"
   ],
-  "next_focus": "3个UI问题已修复（问题1: 审批详情状态✓，问题3: 学工部标签✓）。问题2(辅导员列表为空)已诊断为department不匹配，需使用新测试账号20200106张兴（新闻与传播学院）测试完整流程。",
+  "next_focus": "JavaScript语法错误已修复，学工部界面应能正常加载。需使用更正后的测试账号（辅导员20200106张兴）进行完整审批流程测试，验证department匹配和分页功能。",
   "artifacts": {
     "login_audit": ".omc/collaboration/artifacts/DISCUSS-审计登录设计修复代码-验证DEMO-WEB-1780842596-discuss-r3-codex-20260607-143642.md",
     "security_audit": ".omc/artifacts/ask/codex-demo-web-demo-login-1-backend-apps-users-views-py-demo-login-2026-06-07T15-30-27-401Z.md",
@@ -109,7 +119,7 @@
   "test_accounts": {
     "student": "2024220220323 / test123 (孙芮)",
     "dorm_manager": "92025040 / test123 (孙凤)",
-    "counselor": "20250015 / test123 (胡晓炀)",
+    "counselor": "20200106 / test123 (张兴，新闻与传播学院) - 已更正，原20250015不匹配",
     "admin": "20144020 / test123 (肖延量)",
     "new_test_set_liuyuan4": {
       "students": ["2020180340301/test123 陈静茹", "2021180240603/test123 丁怡如"],
@@ -147,5 +157,12 @@
     "all_commits_pushed": false
   },
   "project_status": "Development Complete - Ready for UAT",
-  "completion_note": "代码审计发现10个阻塞问题（6P0+4P1），已全部修复。申请提交错误处理已完善。审批时间轴角色过滤已完成。所有代码待提交并推送到远程仓库。开发完成度：100%。准备执行UAT用户验收测试。"
+  "completion_note": "代码审计发现10个阻塞问题（6P0+4P1），已全部修复。申请提交错误处理已完善。审批时间轴角色过滤已完成。创建测试数据重置工具和Word测试文档。开发完成度：100%。准备执行UAT用户验收测试。",
+  "test_preparation": {
+    "reset_command_created": true,
+    "test_data_reset": "删除3条申请+7条审批记录",
+    "test_document_generated": "docs/测试文档-完整流程测试.docx (12KB)",
+    "test_groups": 5,
+    "test_groups_details": "物理与电信学院+荷园2栋, 商学院+兰园4栋, 商学院+荷园2栋, 政法学院+柳园3栋, 旅游文化与地理科学学院+荷园3栋"
+  }
 }

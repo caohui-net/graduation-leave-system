@@ -10,7 +10,7 @@
     async function loadMyApplications() {
         if (!currentToken) return;
         const data = await apiGetApplications();
-        const listContainer = document.querySelector('#screen-1').querySelector('.card').parentNode;
+        const listContainer = document.getElementById('approval-list-container');
 
         if (data.results && data.results.length > 0) {
             let htmlStr = '';
@@ -39,8 +39,8 @@
     async function loadApprovals() {
         if (!currentToken) return;
         const data = await apiGetApprovals();
-        const listContainer = document.querySelector('#screen-1').querySelector('.card').parentNode;
-        
+        const listContainer = document.getElementById('approval-list-container');
+
         // Status map based on backend expectations
         const statusMap = {
             'pending_dorm_manager': { text: '待宿管审批', cls: 'tag-pending' },
@@ -566,7 +566,7 @@
       <div class="nav-tab" style="flex: 1;">已审批</div>
     </div>
 
-    <div style="padding: 10px;">
+    <div style="padding: 10px;" id="approval-list-container">
       <!-- 列表项 -->
       <div style="text-align:center; padding: 20px; color:#999;">加载中...</div>
     </div>

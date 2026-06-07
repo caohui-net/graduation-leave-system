@@ -16,9 +16,10 @@
             let htmlStr = '';
             data.results.forEach(app => {
                 const statusDisplay = getStatusDisplay(app.status);
+                const appIdDisplay = app.id ? app.id.substring(0,8) : '未知';
                 htmlStr += '<div class="card" style="cursor: pointer;">' +
                   '<div class="flex-row justify-between align-center" style="margin-bottom: 8px;">' +
-                    '<span style="font-size: 16px; font-weight: bold;">申请 ' + app.id.substring(0,8) + '</span>' +
+                    '<span style="font-size: 16px; font-weight: bold;">申请 ' + appIdDisplay + '</span>' +
                     '<span class="tag ' + statusDisplay.class + '">' + statusDisplay.text + '</span>' +
                   '</div>' +
                   '<div style="margin-bottom: 4px;">' +

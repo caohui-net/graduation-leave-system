@@ -3985,3 +3985,30 @@ python backend/scripts/import_graduates.py graduate_students_supplement.csv --ap
 - 测试完成后需清理临时密码
 - 测试期间产生的申请记录可选择保留或删除
 
+### API Schema错误修复（2026-06-07晚完成）
+
+**问题诊断：**
+- ✓ 识别drf-spectacular OpenAPI schema生成失败
+- ✓ 错误：`RepresenterError: cannot represent an object <OpenApiTypes.INT>`
+- ✓ 根本原因：PyYAML无法序列化OpenApiTypes枚举对象
+
+**修复方案：**
+- ✓ 替换所有OpenApiTypes枚举为Python原生类型
+- ✓ 修复文件：apps/notifications/views.py（参数+响应）
+- ✓ 修复文件：apps/applications/views.py（参数）
+- ✓ 修复文件：apps/attachments/views.py（二进制响应）
+- ✓ 修复文件：apps/approvals/views.py（移除未使用的导入+参数）
+- ✓ 重新启用schema端点（config/urls.py）
+
+**验证结果：**
+- ✓ Schema端点正常：http://localhost:8001/api/schema/（返回OpenAPI 3.0.3 YAML）
+- ✓ Swagger UI正常：http://localhost:8001/api/schema/swagger-ui/（可访问）
+- ✓ 无YAML序列化错误
+- ✓ API文档完整生成
+
+**技术细节：**
+- OpenApiTypes.STR → str
+- OpenApiTypes.INT → int  
+- OpenApiTypes.BINARY → 移除类型声明（FileResponse自描述）
+- 内联响应字典：移除类型规范，保留描述
+

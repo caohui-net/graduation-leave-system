@@ -5,8 +5,7 @@ from rest_framework.response import Response
 from django.utils import timezone
 from django.db import transaction
 import logging
-from drf_spectacular.utils import extend_schema, OpenApiParameter, OpenApiTypes
-from drf_spectacular.types import OpenApiTypes as Types
+from drf_spectacular.utils import extend_schema, OpenApiParameter
 from .models import Approval, ApprovalDecision, ApprovalStep
 from .serializers import ApprovalSerializer, ApprovalActionSerializer, ApprovalListSerializer, ApprovalListResponseSerializer
 from .pagination import ApprovalLimitOffsetPagination
@@ -23,9 +22,9 @@ import uuid
     summary='获取审批列表',
     description='获取当前用户的待审批列表（辅导员或学工部）',
     parameters=[
-        OpenApiParameter('decision', Types.STR, description='决策过滤：pending/approved/rejected/all（默认pending）'),
-        OpenApiParameter('limit', Types.INT, description='每页数量（默认20）'),
-        OpenApiParameter('offset', Types.INT, description='偏移量（默认0）'),
+        OpenApiParameter('decision', str, description='决策过滤：pending/approved/rejected/all（默认pending）'),
+        OpenApiParameter('limit', int, description='每页数量（默认20）'),
+        OpenApiParameter('offset', int, description='偏移量（默认0）'),
     ],
     responses={
         200: ApprovalListResponseSerializer,

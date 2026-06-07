@@ -4,7 +4,6 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from drf_spectacular.utils import extend_schema, OpenApiParameter, OpenApiResponse
-from drf_spectacular.types import OpenApiTypes
 from .models import Notification
 from .serializers import NotificationSerializer, NotificationListResponseSerializer
 from schema import ErrorResponseSerializer
@@ -15,9 +14,9 @@ from schema import ErrorResponseSerializer
     summary='获取通知列表',
     description='列出当前用户的通知，支持按已读状态过滤和分页',
     parameters=[
-        OpenApiParameter('read', OpenApiTypes.STR, description='过滤条件：all/read/unread（默认all）'),
-        OpenApiParameter('limit', OpenApiTypes.INT, description='每页数量（默认20）'),
-        OpenApiParameter('offset', OpenApiTypes.INT, description='偏移量（默认0）'),
+        OpenApiParameter('read', str, description='过滤条件：all/read/unread（默认all）'),
+        OpenApiParameter('limit', int, description='每页数量（默认20）'),
+        OpenApiParameter('offset', int, description='偏移量（默认0）'),
     ],
     responses={
         200: NotificationListResponseSerializer,
@@ -63,7 +62,6 @@ def list_notifications(request):
     description='返回当前用户的未读通知数量',
     responses={
         200: OpenApiResponse(
-            response={'unread_count': OpenApiTypes.INT},
             description='未读通知数量'
         ),
     },
@@ -130,7 +128,6 @@ def mark_as_read(request, notification_id):
     request=None,
     responses={
         200: OpenApiResponse(
-            response={'marked_count': OpenApiTypes.INT},
             description='标记为已读的通知数量'
         ),
     },

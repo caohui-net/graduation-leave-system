@@ -6,7 +6,6 @@ from rest_framework.response import Response
 from django.http import FileResponse, Http404
 from django.utils import timezone
 from drf_spectacular.utils import extend_schema, OpenApiResponse
-from drf_spectacular.types import OpenApiTypes
 from apps.users.models import UserRole
 from apps.applications.models import Application
 from apps.applications.permissions import can_view_application
@@ -118,7 +117,7 @@ def list_attachments(request, application_id):
     summary='下载附件',
     description='下载指定附件文件',
     responses={
-        200: OpenApiResponse(response=OpenApiTypes.BINARY, description='附件文件内容'),
+        200: OpenApiResponse(description='附件文件内容'),
         403: ErrorResponseSerializer,
         404: ErrorResponseSerializer,
     },

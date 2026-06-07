@@ -4,7 +4,6 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from django.utils import timezone
 from drf_spectacular.utils import extend_schema, OpenApiParameter
-from drf_spectacular.types import OpenApiTypes
 from .models import Application, ApplicationStatus, DormCheckoutStatus
 from .serializers import ApplicationSerializer, ApplicationCreateSerializer, ApplicationListSerializer, ApplicationListResponseSerializer
 from .pagination import ApplicationLimitOffsetPagination
@@ -24,9 +23,9 @@ import logging
     summary='获取申请列表',
     description='获取当前用户的申请列表（学生/辅导员/学工部）',
     parameters=[
-        OpenApiParameter('status', OpenApiTypes.STR, description='状态过滤'),
-        OpenApiParameter('limit', OpenApiTypes.INT, description='每页数量（默认20）'),
-        OpenApiParameter('offset', OpenApiTypes.INT, description='偏移量（默认0）'),
+        OpenApiParameter('status', str, description='状态过滤'),
+        OpenApiParameter('limit', int, description='每页数量（默认20）'),
+        OpenApiParameter('offset', int, description='偏移量（默认0）'),
     ],
     responses={
         200: ApplicationListResponseSerializer,

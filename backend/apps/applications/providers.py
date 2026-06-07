@@ -99,6 +99,13 @@ class MockDormCheckoutProvider:
                 blocking_reason=None,
                 provider_error_code=None
             ),
+            "2024220220323": DormCheckoutStatusDTO(
+                student_id="2024220220323",
+                status=DormCheckoutStatus.COMPLETED,
+                checked_at="2024-06-01T09:00:00Z",
+                blocking_reason=None,
+                provider_error_code=None
+            ),
         }
 
         return mock_data.get(student_id, DormCheckoutStatusDTO(

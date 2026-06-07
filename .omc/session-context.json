@@ -1,5 +1,5 @@
 {
-  "last_updated": "2026-06-07T15:01:00Z",
+  "last_updated": "2026-06-07T15:07:00Z",
   "completed": [
     "登录设计修复：移除角色选择器，实现用户名/密码真实登录",
     "三方审计（Claude-Codex-Gemini）：验证登录设计修复代码正确性（3轮讨论）",
@@ -13,7 +13,8 @@
     "UI结构验证：HTML文件结构、登录表单、JavaScript函数加载正常",
     "浏览器UI测试准备：创建UAT检查清单，8个测试用例含详细步骤和预期结果",
     "用户验收测试准备：完整UAT文档，演示账号，测试环境就绪",
-    "更新PROJECT-SUMMARY.md：登录设计修复及审计章节"
+    "更新PROJECT-SUMMARY.md：登录设计修复及审计章节",
+    "集成测试账号更新：替换demo账号为真实生产测试账号（testing-guide.md），6/6测试通过"
   ],
   "pending": [],
   "user_acceptance_required": [
@@ -56,11 +57,11 @@
     "blocking_issues": ["showScreen索引冲突", "登录失败状态清理"],
     "status": "所有阻塞问题已修复"
   },
-  "demo_accounts": {
-    "student": "2020001 / 2020001",
-    "dorm_manager": "M001 / M001",
-    "counselor": "T001 / T001",
-    "dean": "D001 / D001"
+  "test_accounts": {
+    "student": "2024220220323 / test123 (孙芮)",
+    "dorm_manager": "92025040 / test123 (孙凤)",
+    "counselor": "20250015 / test123 (胡晓炀)",
+    "admin": "20144020 / test123 (肖延量)"
   },
   "integration_test_results": {
     "total": 8,

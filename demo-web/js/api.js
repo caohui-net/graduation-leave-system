@@ -21,11 +21,15 @@ async function apiLogin(userId, password) {
             currentUser = data.user;
             return { success: true, user: data.user };
         } else {
+            currentToken = null;
+            currentUser = null;
             const error = await response.json().catch(() => ({ error: 'Login failed' }));
             return { success: false, error: error };
         }
     } catch (e) {
         console.error("Login failed:", e);
+        currentToken = null;
+        currentUser = null;
         return { success: false, error: 'Network error' };
     }
 }

@@ -300,6 +300,13 @@
     .screen.active {
       display: block;
     }
+    .login-screen {
+      display: none;
+      min-height: calc(100vh - 45px);
+    }
+    .login-screen.active {
+      display: block;
+    }
   </style>
 </head>
 <body>
@@ -321,7 +328,7 @@
   </div>
 
   <!-- 登录屏幕 -->
-  <div class="screen active" id="screen-login">
+  <div class="login-screen active" id="screen-login">
     <div style="padding: 40px 20px; max-width: 400px; margin: 0 auto;">
       <div class="card">
         <div style="text-align: center; margin-bottom: 30px;">

@@ -266,7 +266,7 @@
         if (currentUser && currentUser.role === 'dorm_manager') {
             workflow = ['dorm_manager'];
         } else if (currentUser && currentUser.role === 'counselor') {
-            workflow = ['counselor'];
+            workflow = ['dorm_manager', 'counselor'];
         }
         // dean/admin sees all steps (default)
 

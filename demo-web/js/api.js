@@ -1,26 +1,23 @@
 // API Integration Layer
 const API_BASE_URL = '/api';
 
-const TestAccounts = {
-    'student': { id: '2024220220323', password: 'test123' },
-    'dorm_manager': { id: '92025040', password: 'test123' },
-    'counselor': { id: '20250015', password: 'test123' },
-    'dean': { id: '20144020', password: 'test123' } // using admin as dean for demo
-};
+// NOTE: TestAccounts已移除（安全要求）
+// 演示功能依赖后端demo-login端点：
+// - 仅在DEMO_AUTH_ENABLED=true时启用
+// - 接收role参数，返回对应演示用户的token
+// - 生产环境必须禁用（返回404/403）
 
 let currentToken = null;
 
 async function apiLogin(role) {
-    const account = TestAccounts[role];
-    if (!account) return false;
-    
     try {
-        const response = await fetch(API_BASE_URL + '/auth/login/', {
+        // 调用demo-login端点，仅传递角色
+        const response = await fetch(API_BASE_URL + '/auth/demo-login', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ user_id: account.id, password: account.password })
+            body: JSON.stringify({ role: role })
         });
-        
+
         if (response.ok) {
             const data = await response.json();
             currentToken = data.access_token;

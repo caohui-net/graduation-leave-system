@@ -1,32 +1,33 @@
 // API Integration Layer
 const API_BASE_URL = '/api';
 
-// NOTE: TestAccounts已移除（安全要求）
-// 演示功能依赖后端demo-login端点：
-// - 仅在DEMO_AUTH_ENABLED=true时启用
-// - 接收role参数，返回对应演示用户的token
-// - 生产环境必须禁用（返回404/403）
-
 let currentToken = null;
+let currentUser = null;
 
-async function apiLogin(role) {
+async function apiLogin(userId, password) {
     try {
-        // 调用demo-login端点，仅传递角色
-        const response = await fetch(API_BASE_URL + '/auth/demo-login', {
+        const response = await fetch(API_BASE_URL + '/auth/login', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ role: role })
+            body: JSON.stringify({
+                user_id: userId,
+                password: password
+            })
         });
 
         if (response.ok) {
             const data = await response.json();
             currentToken = data.access_token;
-            return true;
+            currentUser = data.user;
+            return { success: true, user: data.user };
+        } else {
+            const error = await response.json().catch(() => ({ error: 'Login failed' }));
+            return { success: false, error: error };
         }
     } catch (e) {
         console.error("Login failed:", e);
+        return { success: false, error: 'Network error' };
     }
-    return false;
 }
 
 function getAuthHeaders() {

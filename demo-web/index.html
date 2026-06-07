@@ -310,19 +310,46 @@
     <button class="nav-tab" onclick="showScreen(2)">申请详情</button>
   </div>
 
-  <!-- 角色选择器 -->
-  <div style="background: white; padding: 8px 16px; border-bottom: 1px solid #f0f0f0; display: flex; align-items: center; gap: 10px;">
-    <span style="font-size: 14px; color: #666;">演示角色:</span>
-    <select id="roleSelector" onchange="switchRole(this.value)" style="padding: 4px 8px; border: 1px solid #d9d9d9; border-radius: 4px; font-size: 14px;">
-      <option value="dorm_manager">宿管员</option>
-      <option value="student">学生</option>
-      <option value="counselor">辅导员</option>
-      <option value="dean">学工部</option>
-    </select>
+  <!-- 登录状态栏 -->
+  <div id="userBar" style="background: white; padding: 8px 16px; border-bottom: 1px solid #f0f0f0; display: none; align-items: center; justify-content: space-between;">
+    <div>
+      <span style="font-size: 14px; color: #666;">当前用户:</span>
+      <span id="currentUserName" style="font-size: 14px; font-weight: 500; margin-left: 8px;"></span>
+      <span id="currentUserRole" style="font-size: 12px; color: #999; margin-left: 8px;"></span>
+    </div>
+    <button onclick="logout()" style="padding: 4px 12px; border: 1px solid #d9d9d9; border-radius: 4px; background: white; cursor: pointer;">退出登录</button>
   </div>
 
-  <!-- 屏幕1: 学生申请页 -->
-  <div class="screen active" id="screen-0">
+  <!-- 登录屏幕 -->
+  <div class="screen active" id="screen-login">
+    <div style="padding: 40px 20px; max-width: 400px; margin: 0 auto;">
+      <div class="card">
+        <div style="text-align: center; margin-bottom: 30px;">
+          <h2 style="color: var(--primary-color); margin-bottom: 8px;">毕业离校申请系统</h2>
+          <p style="color: #666; font-size: 14px;">请登录以继续</p>
+        </div>
+        <div style="margin-bottom: 20px;">
+          <label style="display: block; font-size: 14px; margin-bottom: 8px; font-weight: 500;">用户ID</label>
+          <input id="loginUserId" type="text" style="width: 100%; padding: 12px; border: 1px solid #d9d9d9; border-radius: 4px; font-size: 14px;" placeholder="请输入用户ID（如 2020001）" required>
+        </div>
+        <div style="margin-bottom: 24px;">
+          <label style="display: block; font-size: 14px; margin-bottom: 8px; font-weight: 500;">密码</label>
+          <input id="loginPassword" type="password" style="width: 100%; padding: 12px; border: 1px solid #d9d9d9; border-radius: 4px; font-size: 14px;" placeholder="请输入密码" required>
+        </div>
+        <div id="loginError" style="display: none; padding: 10px; background: #fff2f0; border: 1px solid #ffccc7; border-radius: 4px; color: #cf1322; font-size: 14px; margin-bottom: 16px;"></div>
+        <button class="btn-primary" onclick="doLogin()">登录</button>
+        <div style="margin-top: 16px; padding: 12px; background: #f6f6f6; border-radius: 4px;">
+          <div style="font-size: 12px; color: #666; margin-bottom: 4px;">演示账号：</div>
+          <div style="font-size: 12px; color: #999;">学生: 2020001 / 2020001</div>
+          <div style="font-size: 12px; color: #999;">宿管员: M001 / M001</div>
+          <div style="font-size: 12px; color: #999;">辅导员: T001 / T001</div>
+          <div style="font-size: 12px; color: #999;">学工部: D001 / D001</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="screen" id="screen-0">
     <div style="padding: 20px;">
       <!-- 用户信息卡片 -->
       <div class="card" style="margin-bottom: 20px;">
@@ -498,8 +525,6 @@
   </div>
 
   <script>
-    let currentRole = 'student';
-
     // Status mapping
     const statusMap = {
       'pending_dorm_manager': { text: '待宿管审批', class: 'tag-pending' },
@@ -522,23 +547,53 @@
       });
     }
 
-    async function switchRole(role) {
-      const loggedIn = await apiLogin(role);
-      if (!loggedIn) {
-          console.error("Failed to login as", role);
-      } else {
-          console.log("Logged in as", role);
-          if (role !== "student") {
-             loadApprovals();
-          }
+    async function doLogin() {
+      const userId = document.getElementById('loginUserId').value.trim();
+      const password = document.getElementById('loginPassword').value.trim();
+      const errorEl = document.getElementById('loginError');
+
+      if (!userId || !password) {
+        errorEl.textContent = '请输入用户ID和密码';
+        errorEl.style.display = 'block';
+        return;
       }
-      currentRole = role;
-      const roleMap = {
-        'student': '学生',
-        'dorm_manager': '宿管员',
-        'counselor': '辅导员',
-        'dean': '学工部'
-      };
+
+      const result = await apiLogin(userId, password);
+
+      if (result.success) {
+        errorEl.style.display = 'none';
+        document.getElementById('loginUserId').value = '';
+        document.getElementById('loginPassword').value = '';
+
+        // Show user bar
+        document.getElementById('userBar').style.display = 'flex';
+        document.getElementById('currentUserName').textContent = result.user.name;
+        const roleMap = {
+          'student': '学生',
+          'dorm_manager': '宿管员',
+          'counselor': '辅导员',
+          'dean': '学工部'
+        };
+        document.getElementById('currentUserRole').textContent = '(' + (roleMap[result.user.role] || result.user.role) + ')';
+
+        // Update UI based on role
+        updateUIForRole(result.user.role);
+
+        // Hide login screen, show appropriate screen
+        document.getElementById('screen-login').classList.remove('active');
+        if (result.user.role === 'student') {
+          showScreen(0); // Student application screen
+        } else {
+          showScreen(1); // Approval list screen
+          loadApprovals();
+        }
+      } else {
+        errorEl.textContent = result.error.error || '登录失败，请检查用户ID和密码';
+        errorEl.style.display = 'block';
+      }
+    }
+
+    function updateUIForRole(role) {
       const isStudent = role === 'student';
       const isDean = role === 'dean';
 
@@ -547,13 +602,21 @@
 
       // Update list page title and role display
       document.getElementById('list-title').textContent = isStudent ? '我的申请' : (isDean ? '备案查询' : '审批列表');
-      document.getElementById('role-display').textContent = roleMap[role];
+      document.getElementById('role-display').textContent = (isStudent ? '学生' : isDean ? '学工部' : role === 'counselor' ? '辅导员' : '宿管员');
 
-      // Show/hide entire approval section for student/dean
+      // Show/hide approval section for student/dean
       const approvalSection = document.getElementById('approval-section');
       if (approvalSection) {
         approvalSection.style.display = (isStudent || isDean) ? 'none' : 'block';
       }
+    }
+
+    function logout() {
+      currentToken = null;
+      currentUser = null;
+      document.getElementById('userBar').style.display = 'none';
+      document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+      document.getElementById('screen-login').classList.add('active');
     }
 
     // File upload management
@@ -642,12 +705,6 @@
       return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
     }
   </script>
-<script>
-// Init default role on load
-window.addEventListener("DOMContentLoaded", () => {
-  switchRole(document.getElementById("roleSelector").value);
-});
-</script>
 
 <!-- Toast容器 -->
 <div class="toast-container" id="toastContainer"></div>

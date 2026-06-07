@@ -54,6 +54,7 @@
     let approvalHasMore = true;
 
     async function loadApprovals(append = false) {
+        console.log('[DEBUG] loadApprovals called, append=', append, 'currentToken=', currentToken);
         if (!currentToken) return;
 
         if (!append) {
@@ -70,6 +71,7 @@
         }
 
         const data = await apiGetApprovals(decision, 20, approvalOffset);
+        console.log('[DEBUG] apiGetApprovals returned:', data);
         const listContainer = document.getElementById('approval-list-container');
         const loadMoreBtn = document.getElementById('load-more-approvals');
 

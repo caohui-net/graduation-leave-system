@@ -128,3 +128,47 @@ body {
 .text-bold {
   font-weight: 600;
 }
+
+/* Toast通知 */
+.toast-container {
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  pointer-events: none;
+}
+
+.toast {
+  background: rgba(0, 0, 0, 0.8);
+  color: white;
+  padding: 12px 20px;
+  border-radius: 4px;
+  font-size: 14px;
+  max-width: 300px;
+  word-wrap: break-word;
+  animation: slideIn 0.3s ease-out;
+  pointer-events: auto;
+}
+
+.toast.success {
+  background: var(--status-success);
+}
+
+.toast.error {
+  background: var(--status-error);
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

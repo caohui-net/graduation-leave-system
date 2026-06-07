@@ -92,16 +92,16 @@
         if(!currentApprovalId) return;
         const comment = document.getElementById('approvalComment').value;
         const ok = await apiApprove(currentApprovalId, comment);
-        if(ok) { alert('审批通过'); showScreen(1); loadApprovals(); }
-        else { alert('审批失败'); }
+        if(ok) { showToast('审批通过', 'success'); showScreen(1); loadApprovals(); }
+        else { showToast('审批失败', 'error'); }
     }
 
     async function doReject() {
         if(!currentApprovalId) return;
         const comment = document.getElementById('approvalComment').value;
         const ok = await apiReject(currentApprovalId, comment);
-        if(ok) { alert('审批拒绝'); showScreen(1); loadApprovals(); }
-        else { alert('审批失败'); }
+        if(ok) { showToast('审批拒绝', 'success'); showScreen(1); loadApprovals(); }
+        else { showToast('审批失败', 'error'); }
     }
     
     async function doSubmitApplication() {
@@ -111,19 +111,19 @@
 
         // 验证必填字段
         if (!phone || !leaveDate) {
-             alert('请输入联系电话和离校日期');
+             showToast('请输入联系电话和离校日期', 'error');
              return;
         }
 
         // 验证手机号格式（11位，1开头）
         if (!/^1\d{10}$/.test(phone)) {
-             alert('请输入有效的11位手机号码');
+             showToast('请输入有效的11位手机号码', 'error');
              return;
         }
 
         // 验证原因长度（最多500字符）
         if (reason && reason.length > 500) {
-             alert('离校原因不能超过500字');
+             showToast('离校原因不能超过500字', 'error');
              return;
         }
 
@@ -132,20 +132,20 @@
         today.setHours(0, 0, 0, 0);
         const selectedDate = new Date(leaveDate);
         if (selectedDate < today) {
-             alert('离校日期不能早于今天');
+             showToast('离校日期不能早于今天', 'error');
              return;
         }
 
         const ok = await apiSubmitApplication(phone, reason, leaveDate, uploadedFiles);
         if (ok) {
-            alert('申请提交成功');
+            showToast('申请提交成功', 'success');
             document.getElementById('contactPhone').value = '';
             document.getElementById('applicationReason').value = '';
             document.getElementById('leaveDate').value = '';
             uploadedFiles = [];
             renderFileList();
         } else {
-            alert('申请提交失败');
+            showToast('申请提交失败', 'error');
         }
     }
 </script>
@@ -561,7 +561,7 @@
       });
 
       if (errors.length > 0) {
-        alert(errors.join('\n'));
+        errors.forEach(err => showToast(err, 'error'));
       }
 
       uploadedFiles = uploadedFiles.concat(validFiles);
@@ -598,6 +598,25 @@
 window.addEventListener("DOMContentLoaded", () => {
   switchRole(document.getElementById("roleSelector").value);
 });
+</script>
+
+<!-- Toast容器 -->
+<div class="toast-container" id="toastContainer"></div>
+
+<script>
+// Toast通知函数
+function showToast(message, type = 'info') {
+  const container = document.getElementById('toastContainer');
+  const toast = document.createElement('div');
+  toast.className = 'toast' + (type !== 'info' ? ' ' + type : '');
+  toast.textContent = message;
+  container.appendChild(toast);
+
+  setTimeout(() => {
+    toast.style.animation = 'slideIn 0.3s ease-out reverse';
+    setTimeout(() => container.removeChild(toast), 300);
+  }, 3000);
+}
 </script>
 </body>
 </html>

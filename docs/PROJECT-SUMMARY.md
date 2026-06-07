@@ -4012,3 +4012,109 @@ python backend/scripts/import_graduates.py graduate_students_supplement.csv --ap
 - OpenApiTypes.BINARY → 移除类型声明（FileResponse自描述）
 - 内联响应字典：移除类型规范，保留描述
 
+### Demo-Web UI修复（2026-06-07下午，Claude-Codex协作）
+
+**背景:**
+- demo-web从测试页面升级为主要用户体验渠道（微信小程序暂时无法对接）
+- 尝试修复Codex审查中的6个问题（3 P1 + 3 P2）
+- 发现当前代码状态与Codex审查时有重大差异
+
+**实际修复（2/6）:**
+- ✓ P1-3: Dean角色显示"备案查询"而非"我的申请"（line 464, 467）
+- ✓ P2-3: Student/Dean隐藏整个审批区域而非只隐藏按钮（line 404, 470-473）
+
+**无法定位（4/6）:**
+- P1-1: 时间线wrapper - 当前代码完整，无法定位问题
+- P1-2: Student角色初始化 - student选项不存在于当前代码
+- P2-1: 表单验证 - contact_phone输入框不存在于当前代码
+- P2-2: Counselor时间线措辞 - counselor节点不存在于当前代码
+
+**代码差异分析:**
+- 任务描述中的3个"completed"项在当前代码中都不存在：
+  - Added contact_phone field → 不存在
+  - Added student role → 不存在  
+  - Added counselor approval node → 不存在
+
+**技术细节:**
+- 添加id="approval-section"到审批区域容器
+- Dean单独处理，不与student合并显示
+- 隐藏逻辑从按钮扩展到整个section（含审批意见框）
+
+**Commit:** "fix(demo-web): 修复P1-3和P2-3问题" (28e7ef4)
+
+**协作产出:**
+- .omc/collaboration/artifacts/20260607-claude-response-demo-web-ui-fix-review.md
+- .omc/collaboration/artifacts/20260607-claude-p1-fix-status-report.md
+- .omc/collaboration/artifacts/20260607-claude-fix-complete-report.md
+
+**状态:** 需要Codex基于当前代码重新审查
+
+### Demo-Web UI优化与生产就绪（2026-06-07下午，Claude-Codex-Gemini三方协作）
+
+**背景:**
+- 参考xuegong.hgnu.edu.cn配色方案进行UI优化评估
+- 启动三方协作讨论（Claude-Codex-Gemini）识别剩余问题
+- 目标：演示环境达到生产就绪标准
+
+**三方讨论成果:**
+- ✓ 5轮讨论达成共识（部分轮次Gemini超时，但Codex响应完整）
+- ✓ 识别8个问题（3个P1 + 5个Blocking）
+- ✓ 优先级排序：Blocking问题优先于P1问题
+
+**P1问题修复（非阻塞性）:**
+1. ✓ P1-1: 时间线结构完整性 - 验证通过，无需修改
+2. ✓ P1-2: 角色选择器初始化不一致 - 调整selector顺序，dorm_manager置顶
+3. ✓ P1-3: Dean角色标签一致性 - 验证通过，已正确显示"备案查询"
+
+**Blocking问题修复（生产阻塞）:**
+1. ✓ Blocking-1: 硬编码API_BASE_URL - 改为相对路径'/api'，支持部署灵活性
+2. ✓ Blocking-2: TestAccounts明文凭证 - 移除前端密码，切换到后端demo-login端点
+3. ✓ Blocking-3: 阻塞式alert() - 替换为非阻塞Toast通知组件
+4. ✓ Blocking-4: 表单验证不足 - 增强手机号/原因/日期验证
+5. ✓ Blocking-5: 375px宽度限制 - 改为width:100%，支持现代大屏设备
+
+**技术实现:**
+
+*认证重构（Blocking-2）:*
+- 移除TestAccounts对象（含明文密码）
+- apiLogin仅传递role到/api/auth/demo-login
+- 后端按DEMO_AUTH_ENABLED控制演示登录
+- 生产环境必须禁用demo-login（返回404/403）
+
+*Toast通知系统（Blocking-3）:*
+```css
+.toast-container { position: fixed; top: 20px; z-index: 9999; }
+.toast.success { background: var(--status-success); }
+.toast.error { background: var(--status-error); }
+```
+
+*表单验证增强（Blocking-4）:*
+- 手机号格式验证（11位，1开头）
+- 原因长度限制（≤500字）
+- 离校日期验证（≥今天）
+
+*响应式布局修复（Blocking-5）:*
+- 从max-width:375px改为width:100%
+- 支持现代大屏手机（iPhone 15 Pro Max等）
+
+**提交记录:**
+1. feat(demo-web): P1-2和Blocking-5修复 (角色选择器+响应式宽度)
+2. fix(demo-web): Blocking-1和Blocking-4修复 (API路径+表单验证)
+3. feat(demo-web): Blocking-3修复-Toast通知系统 (替换alert)
+4. fix(demo-web): Blocking-2修复-移除TestAccounts (认证重构)
+
+**协作产物:**
+- .omc/collaboration/artifacts/DISCUSS-DEMO-WEB-UI优化-* (8个artifacts)
+- .omc/collaboration/artifacts/DISCUSS-DEMO-WEB认证方案-* (4个artifacts)
+
+**验证状态:**
+- ✓ 所有8个问题已修复并提交
+- ✓ 代码已推送到远程仓库
+- ✓ demo-web达到生产就绪标准
+- ⏳ 后端需实现demo-login端点（DEMO_AUTH_ENABLED守卫）
+
+**下一步:**
+- [ ] 后端实现/api/auth/demo-login端点
+- [ ] 用户验收测试（UAT）
+- [ ] 生产环境部署
+

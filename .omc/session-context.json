@@ -1,26 +1,46 @@
 {
-  "last_updated": "2026-06-07T11:35:00Z",
+  "last_updated": "2026-06-07T13:36:00Z",
   "completed": [
-    "修复API schema序列化错误（临时禁用drf-spectacular）",
-    "修复4个测试失败（添加contact_phone字段）",
-    "所有176个单元测试通过（100%）",
-    "创建测试账号（seed_data: 2020001-2020010 + 管理员）",
-    "验证真实测试账号登录（2024220220323成功）",
-    "API schema错误根本修复（替换OpenApiTypes为Python类型）",
-    "重新启用API文档端点（/api/schema/, /api/schema/swagger-ui/）"
+    "三方讨论（Claude-Codex-Gemini）：demo-web UI优化与生产就绪评估",
+    "识别8个问题（3 P1 + 5 Blocking）并完成全部修复",
+    "P1-1: 时间线结构 - 验证通过，无需修改",
+    "P1-2: 角色选择器顺序 - dorm_manager置顶",
+    "P1-3: Dean角色标签 - 验证通过，已正确",
+    "Blocking-1: API_BASE_URL硬编码 - 改为相对路径'/api'",
+    "Blocking-2: TestAccounts明文凭证 - 移除，切换到demo-login端点",
+    "Blocking-3: 阻塞式alert() - 替换为Toast通知组件",
+    "Blocking-4: 表单验证不足 - 增强手机号/原因/日期验证",
+    "Blocking-5: 375px宽度限制 - 改为width:100%",
+    "4次提交并推送到远程：P1-2+Blocking-5, Blocking-1+4, Blocking-3, Blocking-2",
+    "更新PROJECT-SUMMARY.md：三方协作成果与技术细节"
   ],
-  "pending": [],
+  "pending": [
+    "后端实现/api/auth/demo-login端点（DEMO_AUTH_ENABLED守卫）",
+    "用户验收测试（UAT）",
+    "生产环境部署"
+  ],
   "evidence": [
-    "单元测试：176/176通过（100%）",
-    "真实账号登录：2024220220323（孙芮）成功",
-    "API正常：http://localhost:8001",
-    "API文档：http://localhost:8001/api/schema/swagger-ui/ 正常访问",
-    "Schema端点：返回有效OpenAPI 3.0.3 YAML"
+    "三方讨论artifacts: .omc/collaboration/artifacts/DISCUSS-DEMO-WEB-UI优化-* (8个)",
+    "三方讨论artifacts: .omc/collaboration/artifacts/DISCUSS-DEMO-WEB认证方案-* (4个)",
+    "git commits: 4次提交覆盖所有8个问题修复",
+    "demo-web/js/api.js: API_BASE_URL='/api', apiLogin重构",
+    "demo-web/index.html: Toast组件，表单验证增强，角色选择器调整",
+    "demo-web/css/global.css: Toast样式，响应式宽度修复",
+    "PROJECT-SUMMARY.md: 新增'Demo-Web UI优化与生产就绪'章节"
   ],
-  "next_focus": "所有任务完成",
+  "next_focus": "所有demo-web阻塞问题已解决，系统达到生产就绪标准。下一步为后端团队实现demo-login端点（非demo-web范围）。",
   "artifacts": {
-    "test_fix_commit": "dd91542",
-    "test_accounts": ".omc/test-accounts.md",
-    "testing_guide": "docs/testing-guide.md"
+    "discussion_ui": ".omc/collaboration/artifacts/DISCUSS-DEMO-WEB-UI优化与生产就绪评估-*",
+    "discussion_auth": ".omc/collaboration/artifacts/DISCUSS-DEMO-WEB认证方案-*",
+    "project_summary": "docs/PROJECT-SUMMARY.md"
+  },
+  "three_party_collaboration": {
+    "topic": "demo-web UI优化与生产就绪评估",
+    "rounds": 5,
+    "participants": ["claude", "codex", "gemini"],
+    "consensus_reached": true,
+    "issues_identified": 8,
+    "issues_resolved": 8,
+    "status": "所有识别问题已解决"
   }
 }

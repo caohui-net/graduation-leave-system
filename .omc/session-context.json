@@ -1,5 +1,5 @@
 {
-  "last_updated": "2026-06-07T14:44:00Z",
+  "last_updated": "2026-06-07T14:49:00Z",
   "completed": [
     "登录设计修复：移除角色选择器，实现用户名/密码真实登录",
     "三方审计（Claude-Codex-Gemini）：验证登录设计修复代码正确性（3轮讨论）",
@@ -8,24 +8,27 @@
     "修复登录失败状态清理：apiLogin失败时清除token/user",
     "确认admin角色处理：demo-web仅支持4个演示角色，admin不在范围",
     "后端API集成验证：curl测试学生登录成功",
+    "Task #18: 实现动态时间线渲染 - 基于application.status显示完整workflow",
     "更新PROJECT-SUMMARY.md：登录设计修复及审计章节"
   ],
   "pending": [
     "浏览器手动测试登录流程（4个角色）",
     "验证不同角色登录后显示正确UI",
-    "Task #18: 实现动态时间线渲染",
+    "验证动态时间线显示完整workflow步骤",
     "端到端集成测试",
     "用户验收测试（UAT）"
   ],
   "evidence": [
     "三方讨论artifact: .omc/collaboration/artifacts/DISCUSS-审计登录设计修复代码-*",
     "git commit: fix(demo-web): 修复登录流程DOM索引冲突和状态清理问题",
-    "demo-web/index.html: login-screen class替换screen, CSS新增",
+    "git commit: feat(demo-web): 实现动态审批时间轴渲染",
+    "demo-web/index.html: login-screen class, dynamic timeline, application fetch",
     "demo-web/js/api.js: apiLogin失败分支清除状态",
     "curl测试: POST /api/auth/login 返回token和user.role=student",
+    "generateTimeline: 根据application.status渲染所有3个审批步骤",
     "PROJECT-SUMMARY.md: 新增'登录设计修复及审计'章节"
   ],
-  "next_focus": "登录设计修复已完成并通过三方审计。下一步需浏览器测试验证4个角色的登录流程和UI显示正确性。",
+  "next_focus": "登录流程和动态时间线已完成。下一步需浏览器测试验证：4个角色登录、UI显示、完整workflow时间轴。",
   "artifacts": {
     "login_audit": ".omc/collaboration/artifacts/DISCUSS-审计登录设计修复代码-验证DEMO-WEB-1780842596-discuss-r3-codex-20260607-143642.md",
     "login_fix_summary": ".omc/artifacts/login-design-fix-summary-2026-06-07.md",

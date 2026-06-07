@@ -1,5 +1,5 @@
 {
-  "last_updated": "2026-06-06T19:13:00Z",
+  "last_updated": "2026-06-07T02:45:14Z",
   "completed": [
     "Phase 3.1-3.4数据导入（2026-06-06）: 6055用户入库",
     "Phase 3数据验证（2026-06-06）: 发现14人差异+2个P0阻塞",
@@ -23,35 +23,27 @@
     "P1完成（2026-06-06）: ClassMapping废弃（permissions.py/seed_data.py/admin.py改用字段匹配），smoke test+单元测试全部通过",
     "多宿管员协同审批（2026-06-06）: applications/views.py创建多个审批（Line 147-199），approvals/views.py自动完成其他审批（Line 153-168），添加GET /api/approvals/{id}/端点，M003测试用户，test_multi_dorm_manager.sh验证通过",
     "Docker本地部署（2026-06-07）: docker-compose.yml配置验证，PostgreSQL+Django服务启动成功，API可访问（localhost:8001），后台日志显示多宿管员测试正常执行",
-    "系统操作文档（2026-06-07）: 创建docs/SYSTEM-OPERATIONS-GUIDE.md，包含快速开始、用户操作流程、API参考、配置说明、故障排查、日常运维章节"
+    "系统操作文档（2026-06-07）: 创建docs/SYSTEM-OPERATIONS-GUIDE.md，包含快速开始、用户操作流程、API参考、配置说明、故障排查、日常运维章节",
+    "用户操作手册（2026-06-07）: 创建docs/用户操作手册.docx（WORD格式），包含学生/宿管员/辅导员3角色完整操作流程，截图占位符标记，配套截图获取说明文档"
   ],
-  "pending": [],
+  "pending": [
+    "实际UI截图采集（需运行微信小程序或使用API测试工具）",
+    "截图插入DOCX文档（替换占位符）",
+    "SSO集成实施（外部接口已分析，独立业务系统完成后再实施）"
+  ],
   "evidence": [
-    "P0-3修复: apps/approvals/views.py Line 169-173 改用filter().order_by('user_id').first()",
-    "代码改进: 两个文件添加logging.warning()记录多匹配场景",
-    "Smoke test通过: student 2020001→M001审批→T001审批完整流程",
-    "日志验证: WARNING:root:Multiple counselors found for department 计算机学院: 2 matches",
-    "Validation script结果: 6部门无counselor(1957人), 125人无building, 9人无department, 40%路由失败率",
-    "测试账号配置: 2020001(building=1号楼,department=计算机学院), M001(building=1号楼), T001/T002(department=计算机学院)",
-    "Commit: refactor: 添加多匹配日志记录+标准化查询模式",
-    "P0-4修复验证: ✓All student departments have counselors, ✓All 100 students can be routed, 20条辅导员记录updated",
-    "Phase 4.1修改: miniprogram/types/api.ts+frontend/types/api.ts添加admin角色, miniprogram/pages/approvals/approvals.ts允许4角色访问",
-    "Phase 4.2修改: miniprogram/pages/detail/detail.ts添加stepText映射, detail.wxml显示中文审批步骤",
-    "Codex审批流程共识: 后端实际是2级审批(dorm_manager→counselor→approved), smoke_test.sh应移除pending_dean/dean相关断言",
-    "Smoke test修复: tests/smoke_test.sh Line 46更新路径为2020001→M001→T001, Lines 283-335移除dean审批逻辑, Lines 268-269添加head -1修复多通知问题",
-    "H1测试验证通过: 完整2级审批流程验证成功(student login→submit→M001 approve→T001 approve→status:approved), 通知验证通过(12 unread notifications)",
-    "seed_data.py持久化: Lines 28-38添加building/department字段到students, Lines 62-64添加department字段到counselors, Lines 83-84添加building字段到dorm_managers, 使用update_or_create确保可重复执行",
-    "单元测试修复: 14个测试文件添加必需字段, test_application_flow等修复后返回201而非404, 运行101个单元测试全部通过(OK in 26.104s)",
-    "P1-ClassMapping废弃: permissions.py改用building/department匹配, seed_data.py移除ClassMapping创建, admin.py移除ClassMapping注册, SMOKE_RESET=1测试全部通过",
-    "多宿管员审批实现: applications/views.py Line 147-199创建所有匹配宿管员审批（for loop），approvals/views.py Line 153-168首个审批后自动完成其他（update comment='已由XX完成审批'），添加GET endpoint（views.py Line 90-117 + urls.py Line 6），test_multi_dorm_manager.sh验证2审批创建→M001审批→M003自动完成"
+    "用户操作手册DOCX: docs/用户操作手册.docx (39.8K)",
+    "截图获取指南: docs/截图获取说明.md",
+    "转换脚本: scripts/md_to_docx.py (python-docx)",
+    "venv环境: .venv-docx/ (python-docx已安装)"
   ],
-  "next_focus": "多宿管员协同审批功能完成。Phase 4-5完成，smoke test全部通过（H1+H2+N2），单元测试全部通过（101 tests OK），多宿管员测试通过。核心功能全部就绪。",
+  "next_focus": "用户操作手册WORD格式已完成（含截图占位符）。待用户运行小程序采集实际UI截图后插入文档。核心功能全部就绪，可进行SSO集成。",
   "artifacts": {
-    "phase3_data_verification": "Phase 3数据验证结果记录在PROJECT-SUMMARY.md",
-    "p0_fixes": "apps/approvals/views.py + apps/applications/views.py",
-    "counselors_v2": "backend/data/counselors_processed.csv（含department字段）",
-    "smoke_test_evidence": "tests/smoke_test.sh完整审批流程验证通过",
-    "validation_script": "backend/scripts/validate_import.py（数据完整性校验工具）"
+    "user_manual_docx": "docs/用户操作手册.docx",
+    "user_manual_md": "docs/用户操作手册.md",
+    "screenshot_guide": "docs/截图获取说明.md",
+    "system_ops_guide": "docs/SYSTEM-OPERATIONS-GUIDE.md",
+    "conversion_script": "scripts/md_to_docx.py"
   },
-  "suggested_skills": ["claude-codex-gemini-collab"]
+  "suggested_skills": []
 }

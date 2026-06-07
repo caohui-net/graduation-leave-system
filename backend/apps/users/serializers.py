@@ -14,7 +14,7 @@ class AuthUserSerializer(serializers.ModelSerializer):
     """登录响应中的用户摘要（UserDTO子集）"""
     class Meta:
         model = User
-        fields = ['user_id', 'name', 'role', 'class_id']
+        fields = ['user_id', 'name', 'role', 'class_id', 'phone']
 
 
 class LoginSerializer(serializers.Serializer):

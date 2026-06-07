@@ -49,9 +49,6 @@
         }
     }
 
-    let approvalOffset = 0;
-    let approvalHasMore = true;
-
     async function loadApprovals(append = false) {
         console.log('[DEBUG] loadApprovals called, append=', append, 'currentToken=', currentToken);
         if (!currentToken) return;

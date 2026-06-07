@@ -53,14 +53,20 @@
     async function openApproval(id) {
         currentApprovalId = id;
         showScreen(2);
-        
+
         const res = await fetch(API_BASE_URL + '/approvals/' + id + '/', {
             headers: getAuthHeaders()
         });
         if (res.ok) {
             const detail = await res.json();
+
+            const appRes = await fetch(API_BASE_URL + '/applications/' + detail.application_id + '/', {
+                headers: getAuthHeaders()
+            });
+            const appData = appRes.ok ? await appRes.json() : null;
+
             const container = document.querySelector('#screen-2');
-            
+
             const basicInfoHtml = '<div class="card">' +
                 '<div style="font-size: 16px; font-weight: bold; margin-bottom: 10px;">基本信息</div>' +
                 '<div style="display: flex; margin-bottom: 8px;">' +
@@ -80,9 +86,9 @@
                   '<span style="font-size: 14px; color: #333; flex: 1;">' + (detail.reason || '无') + '</span>' +
                 '</div>' +
               '</div>';
-            
+
             // 动态生成审批时间轴
-            const timelineHtml = generateTimeline(detail);
+            const timelineHtml = generateTimeline(detail, appData);
 
             const cards = container.querySelectorAll('.card');
             if (cards.length > 0) {
@@ -94,47 +100,91 @@
         }
     }
 
-    function generateTimeline(detail) {
+    function generateTimeline(detail, appData) {
         const stepNames = {
             'dorm_manager': '宿管员审批',
             'counselor': '辅导员审批',
             'dean': '学工部审批'
         };
-        const decisionTags = {
-            'pending': { text: '待审批', cls: 'tag-pending' },
-            'approved': { text: '已通过', cls: 'tag-approved' },
-            'rejected': { text: '已驳回', cls: 'tag-rejected' }
-        };
 
-        const stepName = stepNames[detail.step] || detail.step;
-        const decisionTag = decisionTags[detail.decision] || decisionTags.pending;
-        const approverText = detail.approver_name || '待分配';
-        const timeText = detail.decided_at || '待审批';
+        const appStatus = appData ? appData.status : detail.step;
+        const workflow = ['dorm_manager', 'counselor', 'dean'];
 
-        return '<div class="card">' +
-            '<div style="font-size: 16px; font-weight: bold; margin-bottom: 10px;">审批记录</div>' +
-            '<div style="position: relative; padding-left: 30px; margin-bottom: 20px;">' +
-              '<div style="position: absolute; left: 10px; top: 4px; width: 10px; height: 10px; border-radius: 50%; background: ' +
-                (detail.decision === 'approved' ? 'var(--status-success)' : detail.decision === 'rejected' ? 'var(--status-error)' : 'white') +
-                '; border: 2px solid ' + (detail.decision === 'pending' ? 'var(--primary-color)' : detail.decision === 'approved' ? 'var(--status-success)' : 'var(--status-error)') + ';"></div>' +
-              '<div style="position: absolute; left: 14px; top: 16px; bottom: -20px; width: 1px; background: #e8e8e8;"></div>' +
-              '<div class="flex-row justify-between align-center" style="margin-bottom: 6px;">' +
+        let html = '<div class="card"><div style="font-size: 16px; font-weight: bold; margin-bottom: 10px;">审批记录</div>';
+
+        for (let i = workflow.length - 1; i >= 0; i--) {
+            const step = workflow[i];
+            const stepName = stepNames[step];
+            const isLast = i === 0;
+
+            let state, tagText, tagCls, dotBg, dotBorder, showConnector;
+            if (appStatus === 'approved' || appStatus === 'pending_' + workflow[i+1] || (i === workflow.length - 1 && appStatus === 'approved')) {
+                state = 'approved';
+                tagText = '已通过';
+                tagCls = 'tag-approved';
+                dotBg = 'var(--status-success)';
+                dotBorder = 'var(--status-success)';
+                showConnector = !isLast;
+            } else if (appStatus === 'pending_' + step) {
+                state = 'pending';
+                tagText = '待审批';
+                tagCls = 'tag-pending';
+                dotBg = 'white';
+                dotBorder = 'var(--primary-color)';
+                showConnector = !isLast;
+            } else if (appStatus === 'rejected' && detail.step === step) {
+                state = 'rejected';
+                tagText = '已驳回';
+                tagCls = 'tag-rejected';
+                dotBg = 'var(--status-error)';
+                dotBorder = 'var(--status-error)';
+                showConnector = !isLast;
+            } else {
+                state = 'future';
+                tagText = '未开始';
+                tagCls = 'tag';
+                dotBg = '#e8e8e8';
+                dotBorder = '#e8e8e8';
+                showConnector = !isLast;
+            }
+
+            html += '<div style="position: relative; padding-left: 30px;' + (isLast ? '' : ' margin-bottom: 20px;') + '">' +
+              '<div style="position: absolute; left: 10px; top: 4px; width: 10px; height: 10px; border-radius: 50%; background: ' + dotBg + '; border: 2px solid ' + dotBorder + ';"></div>';
+
+            if (showConnector) {
+                html += '<div style="position: absolute; left: 14px; top: 16px; bottom: -20px; width: 1px; background: #e8e8e8;"></div>';
+            }
+
+            html += '<div class="flex-row justify-between align-center" style="margin-bottom: 6px;">' +
                 '<span style="font-size: 15px; font-weight: 600;">' + stepName + '</span>' +
-                '<span class="tag ' + decisionTag.cls + '">' + decisionTag.text + '</span>' +
-              '</div>' +
-              '<div style="font-size: 13px; color: #666;">审批人: ' + approverText + '</div>' +
-              (detail.decided_at ? '<div style="font-size: 13px; color: #666;">时间: ' + timeText + '</div>' : '') +
-              (detail.comment ? '<div style="font-size: 13px; color: #666; margin-top: 4px;">意见: ' + detail.comment + '</div>' : '') +
-            '</div>' +
-            '<div style="position: relative; padding-left: 30px;">' +
-              '<div style="position: absolute; left: 10px; top: 4px; width: 10px; height: 10px; border-radius: 50%; background: var(--status-success); border: 2px solid var(--status-success);"></div>' +
-              '<div class="flex-row justify-between align-center" style="margin-bottom: 6px;">' +
-                '<span style="font-size: 15px; font-weight: 600;">提交申请</span>' +
-                '<span class="tag tag-approved">已完成</span>' +
-              '</div>' +
-              '<div style="font-size: 13px; color: #666;">学生已提交</div>' +
-            '</div>' +
-          '</div>';
+                '<span class="tag ' + tagCls + '">' + tagText + '</span>' +
+              '</div>';
+
+            if (state === 'approved' || state === 'pending' || state === 'rejected') {
+                if (detail.step === step) {
+                    html += '<div style="font-size: 13px; color: #666;">审批人: ' + (detail.approver_name || '待分配') + '</div>';
+                    if (detail.decided_at) {
+                        html += '<div style="font-size: 13px; color: #666;">时间: ' + detail.decided_at + '</div>';
+                    }
+                    if (detail.comment) {
+                        html += '<div style="font-size: 13px; color: #666; margin-top: 4px;">意见: ' + detail.comment + '</div>';
+                    }
+                }
+            }
+
+            html += '</div>';
+        }
+
+        html += '<div style="position: relative; padding-left: 30px; margin-top: 20px;">' +
+          '<div style="position: absolute; left: 10px; top: 4px; width: 10px; height: 10px; border-radius: 50%; background: var(--status-success); border: 2px solid var(--status-success);"></div>' +
+          '<div class="flex-row justify-between align-center" style="margin-bottom: 6px;">' +
+            '<span style="font-size: 15px; font-weight: 600;">提交申请</span>' +
+            '<span class="tag tag-approved">已完成</span>' +
+          '</div>' +
+          '<div style="font-size: 13px; color: #666;">学生已提交</div>' +
+        '</div></div>';
+
+        return html;
     }
     
     async function doApprove() {

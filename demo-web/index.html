@@ -45,8 +45,17 @@
         }
     }
 
-    async function loadApprovals() {
+    let currentFilter = 'all';
+    let approvalOffset = 0;
+    let approvalHasMore = true;
+
+    async function loadApprovals(append = false) {
         if (!currentToken) return;
+
+        if (!append) {
+            approvalOffset = 0;
+            approvalHasMore = true;
+        }
 
         // Map currentFilter to API decision parameter
         let decision = 'pending';
@@ -56,8 +65,9 @@
             decision = 'all'; // Get all, then filter for approved/rejected
         }
 
-        const data = await apiGetApprovals(decision);
+        const data = await apiGetApprovals(decision, 20, approvalOffset);
         const listContainer = document.getElementById('approval-list-container');
+        const loadMoreBtn = document.getElementById('load-more-approvals');
 
         // Status map based on backend expectations
         const statusMap = {
@@ -124,9 +134,26 @@
                   '</div>' +
                 '</div>';
             });
-            listContainer.innerHTML = htmlStr;
+
+            if (append) {
+                listContainer.innerHTML += htmlStr;
+            } else {
+                listContainer.innerHTML = htmlStr;
+            }
+
+            approvalOffset += filtered.length;
+            approvalHasMore = data.count > approvalOffset;
+
+            if (loadMoreBtn) {
+                loadMoreBtn.style.display = approvalHasMore ? 'block' : 'none';
+            }
         } else {
-             listContainer.innerHTML = '<div style="text-align:center; padding: 20px; color:#999;">暂无数据</div>';
+            if (!append) {
+                listContainer.innerHTML = '<div style="text-align:center; padding: 20px; color:#999;">暂无数据</div>';
+            }
+            if (loadMoreBtn) {
+                loadMoreBtn.style.display = 'none';
+            }
         }
     }
 
@@ -672,6 +699,9 @@
     <div style="padding: 10px;" id="approval-list-container">
       <!-- 列表项 -->
       <div style="text-align:center; padding: 20px; color:#999;">加载中...</div>
+    </div>
+    <div style="padding: 10px; text-align: center;">
+      <button id="load-more-approvals" onclick="loadApprovals(true)" style="display: none; padding: 10px 20px; border: 1px solid var(--primary-color); background: white; color: var(--primary-color); border-radius: 4px; cursor: pointer;">加载更多</button>
     </div>
   </div>
 

@@ -79,9 +79,9 @@ async function apiGetApplications() {
     return { results: [] };
 }
 
-async function apiGetApprovals(decision = 'pending') {
+async function apiGetApprovals(decision = 'pending', limit = 20, offset = 0) {
     try {
-        const url = API_BASE_URL + '/approvals/?decision=' + decision;
+        const url = API_BASE_URL + '/approvals/?decision=' + decision + '&limit=' + limit + '&offset=' + offset;
         const response = await fetch(url, {
             headers: getAuthHeaders()
         });
@@ -91,7 +91,7 @@ async function apiGetApprovals(decision = 'pending') {
     } catch (e) {
         console.error("Get approvals failed:", e);
     }
-    return { results: [] };
+    return { results: [], count: 0 };
 }
 
 async function apiApprove(approvalId, comment) {

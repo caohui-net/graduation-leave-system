@@ -17,6 +17,18 @@
     <view class="card-title">离校申请</view>
 
     <view class="field">
+      <text class="label">联系电话 <text class="required">*</text></text>
+      <input
+        class="input"
+        type="number"
+        placeholder="请输入手机号码"
+        value="{{contactPhone}}"
+        bindinput="onPhoneInput"
+        maxlength="11"
+      />
+    </view>
+
+    <view class="field">
       <text class="label">离校原因</text>
       <textarea
         class="textarea"
@@ -40,6 +52,14 @@
         <view class="picker">{{leaveDate || '请选择日期'}}</view>
       </picker>
     </view>
+
+    <button
+      class="draft-btn"
+      bindtap="onSaveDraft"
+      disabled="{{savingDraft}}"
+    >
+      {{savingDraft ? '保存中...' : '保存草稿'}}
+    </button>
 
     <button
       class="submit-btn"

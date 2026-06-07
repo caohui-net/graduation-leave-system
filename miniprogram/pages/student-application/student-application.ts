@@ -7,9 +7,12 @@ const apiClient = createDefaultApiClient();
 
 Page({
   data: {
+    contactPhone: '',
     reason: '',
     leaveDate: '',
+    draftId: null as number | null,
     submitting: false,
+    savingDraft: false,
     error: '',
     today: getShanghaiDateString(),
     userName: '',
@@ -32,6 +35,10 @@ Page({
     this.setData({ today: getShanghaiDateString() });
   },
 
+  onPhoneInput(e: any) {
+    this.setData({ contactPhone: e.detail.value });
+  },
+
   onReasonInput(e: any) {
     this.setData({ reason: e.detail.value });
   },
@@ -40,14 +47,56 @@ Page({
     this.setData({ leaveDate: e.detail.value });
   },
 
-  onSubmit() {
-    const { reason, leaveDate } = this.data;
+  async onSaveDraft() {
+    const { contactPhone } = this.data;
 
-    if (!reason || !reason.trim()) {
-      this.setData({ error: '请输入离校原因' });
+    if (!contactPhone || !contactPhone.trim()) {
+      this.setData({ error: '请输入联系电话' });
       return;
     }
-    if (reason.trim().length > 500) {
+    if (!/^1[3-9]\d{9}$/.test(contactPhone.trim())) {
+      this.setData({ error: '请输入有效的手机号码' });
+      return;
+    }
+
+    this.setData({ savingDraft: true, error: '' });
+    wx.showLoading({ title: '保存中', mask: true });
+
+    try {
+      const res = await apiClient.createDraft({
+        contact_phone: this.data.contactPhone.trim(),
+        reason: this.data.reason.trim() || undefined,
+        leave_date: this.data.leaveDate || undefined,
+      });
+
+      wx.hideLoading();
+      wx.showToast({ title: '草稿已保存', icon: 'success', duration: 1500 });
+
+      this.setData({
+        draftId: res.application_id,
+        savingDraft: false
+      });
+    } catch (err: any) {
+      wx.hideLoading();
+      const errorMsg = formatApiError(err, {
+        VALIDATION_ERROR: (d) => typeof d === 'string' ? d : '保存失败，请检查输入',
+      });
+      this.setData({ error: errorMsg, savingDraft: false });
+    }
+  },
+
+  onSubmit() {
+    const { contactPhone, reason, leaveDate } = this.data;
+
+    if (!contactPhone || !contactPhone.trim()) {
+      this.setData({ error: '请输入联系电话' });
+      return;
+    }
+    if (!/^1[3-9]\d{9}$/.test(contactPhone.trim())) {
+      this.setData({ error: '请输入有效的手机号码' });
+      return;
+    }
+    if (reason && reason.trim().length > 500) {
       this.setData({ error: '离校原因不能超过500字' });
       return;
     }
@@ -69,10 +118,17 @@ Page({
     wx.showLoading({ title: '提交中', mask: true });
 
     try {
-      const res = await apiClient.createApplication({
+      const requestData: any = {
+        contact_phone: this.data.contactPhone.trim(),
         reason: this.data.reason.trim(),
         leave_date: this.data.leaveDate
-      });
+      };
+
+      if (this.data.draftId) {
+        requestData.draft_id = this.data.draftId;
+      }
+
+      const res = await apiClient.createApplication(requestData);
 
       wx.hideLoading();
       wx.showToast({ title: '提交成功', icon: 'success', duration: 500, mask: true });

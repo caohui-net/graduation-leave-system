@@ -86,6 +86,13 @@ export class ApiClient {
     });
   }
 
+  async createDraft(req: Partial<ApplicationCreateRequest>): Promise<ApplicationDetail> {
+    return this.request('/api/applications/draft/', {
+      method: 'POST',
+      data: req,
+    });
+  }
+
   async listApplications(
     limit = 20,
     offset = 0

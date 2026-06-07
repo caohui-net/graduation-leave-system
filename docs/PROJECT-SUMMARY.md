@@ -3779,3 +3779,16 @@ python backend/scripts/import_graduates.py graduate_students_supplement.csv --ap
 - ✓ P0-4: 测试更新（7个测试文件，添加contact_phone参数）
 - ✓ P0-5: 并发保护（select_for_update防止竞态条件）
 - ✓ 测试验证：29/29 tests passed
+
+**小程序UI实现（2026-06-07，4/5完成）：**
+- ✓ contact_phone字段：输入框、验证（手机号格式）、必填标记
+- ✓ 草稿保存功能：保存草稿按钮、createDraft API方法、draftId存储
+- ✓ 表单验证更新：reason可选（仅长度验证）、匹配后端API契约
+- ✓ 提交逻辑优化：支持draft_id参数、草稿转换为正式申请
+- ⏳ 附件上传UI：待实现（草稿保存后上传附件）
+
+**变更文件：**
+- miniprogram/pages/student-application/student-application.ts
+- miniprogram/pages/student-application/student-application.wxml
+- miniprogram/pages/student-application/student-application.wxss
+- miniprogram/services/api.ts

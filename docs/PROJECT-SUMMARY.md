@@ -3720,6 +3720,30 @@ python backend/scripts/import_graduates.py graduate_students_supplement.csv --ap
 
 ### 2026-06-07 - Building字段标准化（116人NULL修正）
 
+**背景：** 用户反馈"无楼栋数据应该不止17人"，检查发现116名本科生building=NULL
+
+**问题分析：**
+- 17名研究生：building=''（空字符串）
+- 116名本科生：building=NULL
+- 两种表示导致fallback路由不一致
+
+**实施方案：**
+- 统一标准化：NULL → 空字符串
+- 保留兜底宿管building=NULL（fallback机制）
+
+**标准化结果：**
+- 更新116名本科生：building NULL→''
+- 总计133名学生统一路由到兜底宿管
+- 数据完整性：99.7%→97.8%（发现真实缺失）
+
+**更新文件：**
+- 标准化脚本：backend/scripts/normalize_building_null.py
+- 验证报告：docs/系统就绪验证报告-2026-06-07.md（最终版本）
+
+**Commit:** "fix: building字段标准化-116人NULL修正+统一兜底路由"
+
+### 2026-06-07 - Building字段标准化（116人NULL修正）
+
 **问题发现：** 二次检测发现116名本科生building=NULL，前期仅检查空字符串遗漏
 
 **数据修正：**

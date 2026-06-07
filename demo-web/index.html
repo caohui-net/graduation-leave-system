@@ -10,20 +10,11 @@
     let currentFilter = 'all';
     let approvalOffset = 0;
     let approvalHasMore = true;
-    let applicationOffset = 0;
-    let applicationHasMore = true;
 
-    async function loadMyApplications(append = false) {
+    async function loadMyApplications() {
         if (!currentToken) return;
-
-        if (!append) {
-            applicationOffset = 0;
-            applicationHasMore = true;
-        }
-
-        const data = await apiGetApplications(20, applicationOffset);
+        const data = await apiGetApplications();
         const listContainer = document.getElementById('approval-list-container');
-        const loadMoreBtn = document.getElementById('load-more-approvals');
 
         if (data.results && data.results.length > 0) {
             // Apply filter
@@ -52,26 +43,9 @@
                   '</div>' +
                 '</div>';
             });
-
-            if (append) {
-                listContainer.innerHTML += htmlStr;
-            } else {
-                listContainer.innerHTML = htmlStr;
-            }
-
-            applicationOffset += filtered.length;
-            applicationHasMore = data.count > applicationOffset;
-
-            if (loadMoreBtn) {
-                loadMoreBtn.style.display = applicationHasMore ? 'block' : 'none';
-            }
+            listContainer.innerHTML = htmlStr;
         } else {
-            if (!append) {
-                listContainer.innerHTML = '<div style="text-align:center; padding: 20px; color:#999;">暂无申请记录</div>';
-            }
-            if (loadMoreBtn) {
-                loadMoreBtn.style.display = 'none';
-            }
+            listContainer.innerHTML = '<div style="text-align:center; padding: 20px; color:#999;">暂无申请记录</div>';
         }
     }
 
@@ -731,7 +705,7 @@
       <div style="text-align:center; padding: 20px; color:#999;">加载中...</div>
     </div>
     <div style="padding: 10px; text-align: center;">
-      <button id="load-more-approvals" onclick="if(currentUser && currentUser.role === 'student') loadMyApplications(true); else loadApprovals(true);" style="display: none; padding: 10px 20px; border: 1px solid var(--primary-color); background: white; color: var(--primary-color); border-radius: 4px; cursor: pointer;">加载更多</button>
+      <button id="load-more-approvals" onclick="loadApprovals(true)" style="display: none; padding: 10px 20px; border: 1px solid var(--primary-color); background: white; color: var(--primary-color); border-radius: 4px; cursor: pointer;">加载更多</button>
     </div>
   </div>
 

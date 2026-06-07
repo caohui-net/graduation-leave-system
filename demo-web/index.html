@@ -13,8 +13,16 @@
         const listContainer = document.getElementById('approval-list-container');
 
         if (data.results && data.results.length > 0) {
+            // Apply filter
+            let filtered = data.results;
+            if (currentFilter === 'pending') {
+                filtered = data.results.filter(a => a.status && a.status.startsWith('pending_'));
+            } else if (currentFilter === 'decided') {
+                filtered = data.results.filter(a => a.status === 'approved' || a.status === 'rejected');
+            }
+
             let htmlStr = '';
-            data.results.forEach(app => {
+            filtered.forEach(app => {
                 const statusDisplay = getStatusDisplay(app.status);
                 const appIdDisplay = app.application_id ? app.application_id.substring(0,8) : '未知';
                 htmlStr += '<div class="card" style="cursor: pointer;">' +
@@ -52,8 +60,16 @@
         };
 
         if (data.results && data.results.length > 0) {
+            // Apply filter
+            let filtered = data.results;
+            if (currentFilter === 'pending') {
+                filtered = data.results.filter(a => a.decision === 'pending');
+            } else if (currentFilter === 'decided') {
+                filtered = data.results.filter(a => a.decision === 'approved' || a.decision === 'rejected');
+            }
+
             let htmlStr = '';
-            data.results.forEach(approval => {
+            filtered.forEach(approval => {
                 const application = approval.application || {};
                 const appStatus = application.status || 'unknown';
                 const step = statusMap[appStatus] ? statusMap[appStatus].text : appStatus;
@@ -78,7 +94,30 @@
              listContainer.innerHTML = '<div style="text-align:center; padding: 20px; color:#999;">暂无数据</div>';
         }
     }
-    
+
+    let currentFilter = 'all';
+    function filterApprovals(filter) {
+        currentFilter = filter;
+
+        // Update tab active state
+        const tabs = document.querySelectorAll('#approval-tabs .nav-tab');
+        tabs.forEach((tab, index) => {
+            tab.classList.remove('active');
+            if ((filter === 'all' && index === 0) ||
+                (filter === 'pending' && index === 1) ||
+                (filter === 'decided' && index === 2)) {
+                tab.classList.add('active');
+            }
+        });
+
+        // Reload list with filter
+        if (currentUser && currentUser.role === 'student') {
+            loadMyApplications();
+        } else {
+            loadApprovals();
+        }
+    }
+
     let currentApprovalId = null;
     async function openApproval(id) {
         currentApprovalId = id;
@@ -575,10 +614,10 @@
     </div>
 
     <!-- Tab切换 -->
-    <div style="background: white; display: flex; border-bottom: 1px solid #f0f0f0;">
-      <div class="nav-tab active" style="flex: 1;">全部</div>
-      <div class="nav-tab" style="flex: 1;">待审批</div>
-      <div class="nav-tab" style="flex: 1;">已审批</div>
+    <div style="background: white; display: flex; border-bottom: 1px solid #f0f0f0;" id="approval-tabs">
+      <div class="nav-tab active" style="flex: 1;" onclick="filterApprovals('all')">全部</div>
+      <div class="nav-tab" style="flex: 1;" onclick="filterApprovals('pending')">待审批</div>
+      <div class="nav-tab" style="flex: 1;" onclick="filterApprovals('decided')">已审批</div>
     </div>
 
     <div style="padding: 10px;" id="approval-list-container">
@@ -756,6 +795,12 @@
     function updateUIForRole(role) {
       const isStudent = role === 'student';
       const isDean = role === 'dean';
+
+      // Hide "学生申请" tab for non-students
+      const navTabs = document.querySelectorAll('#navTabs .nav-tab');
+      if (navTabs[0]) {
+        navTabs[0].style.display = isStudent ? 'block' : 'none';
+      }
 
       // Update nav tab text
       document.getElementById('nav-approval-text').textContent = isStudent ? '我的申请' : (isDean ? '备案查询' : '审批列表');

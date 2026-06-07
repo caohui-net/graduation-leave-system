@@ -53,6 +53,24 @@
       </picker>
     </view>
 
+    <view class="field" wx:if="{{draftId}}">
+      <text class="label">附件上传</text>
+      <button
+        class="upload-btn"
+        bindtap="onChooseFile"
+        disabled="{{uploading}}"
+      >
+        {{uploading ? '上传中...' : '选择文件'}}
+      </button>
+
+      <view class="attachments-list" wx:if="{{attachments.length > 0}}">
+        <view class="attachment-item" wx:for="{{attachments}}" wx:key="attachment_id">
+          <text class="attachment-name">{{item.file_name}}</text>
+          <text class="attachment-delete" bindtap="onDeleteAttachment" data-id="{{item.attachment_id}}">删除</text>
+        </view>
+      </view>
+    </view>
+
     <button
       class="draft-btn"
       bindtap="onSaveDraft"

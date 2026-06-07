@@ -11,6 +11,8 @@ Page({
     reason: '',
     leaveDate: '',
     draftId: null as number | null,
+    attachments: [] as any[],
+    uploading: false,
     submitting: false,
     savingDraft: false,
     error: '',
@@ -76,12 +78,86 @@ Page({
         draftId: res.application_id,
         savingDraft: false
       });
+
+      this.loadAttachments();
     } catch (err: any) {
       wx.hideLoading();
       const errorMsg = formatApiError(err, {
         VALIDATION_ERROR: (d) => typeof d === 'string' ? d : '保存失败，请检查输入',
       });
       this.setData({ error: errorMsg, savingDraft: false });
+    }
+  },
+
+  async loadAttachments() {
+    if (!this.data.draftId) return;
+    try {
+      const attachments = await apiClient.listAttachments(String(this.data.draftId));
+      this.setData({ attachments });
+    } catch (err) {
+      console.error('Failed to load attachments:', err);
+    }
+  },
+
+  onChooseFile() {
+    if (!this.data.draftId) {
+      this.setData({ error: '请先保存草稿' });
+      return;
+    }
+
+    wx.chooseMessageFile({
+      count: 1,
+      type: 'file',
+      success: (res) => {
+        const file = res.tempFiles[0];
+        this.uploadFile(file.path, file.name);
+      },
+      fail: (err) => {
+        this.setData({ error: '选择文件失败' });
+      }
+    });
+  },
+
+  async uploadFile(filePath: string, fileName: string) {
+    this.setData({ uploading: true, error: '' });
+    wx.showLoading({ title: '上传中', mask: true });
+
+    try {
+      const attachment = await apiClient.uploadAttachment(
+        String(this.data.draftId),
+        filePath,
+        'other'
+      );
+
+      wx.hideLoading();
+      wx.showToast({ title: '上传成功', icon: 'success' });
+
+      this.setData({
+        attachments: [...this.data.attachments, attachment],
+        uploading: false
+      });
+    } catch (err: any) {
+      wx.hideLoading();
+      const errorMsg = formatApiError(err, {
+        VALIDATION_ERROR: (d) => typeof d === 'string' ? d : '上传失败',
+      });
+      this.setData({ error: errorMsg, uploading: false });
+    }
+  },
+
+  async onDeleteAttachment(e: any) {
+    const attachmentId = e.currentTarget.dataset.id;
+    if (!attachmentId) return;
+
+    try {
+      await apiClient.deleteAttachment(attachmentId);
+      wx.showToast({ title: '删除成功', icon: 'success' });
+
+      this.setData({
+        attachments: this.data.attachments.filter(a => a.attachment_id !== attachmentId)
+      });
+    } catch (err) {
+      this.setData({ error: '删除失败' });
     }
   },
 

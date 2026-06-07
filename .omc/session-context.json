@@ -19,7 +19,11 @@
     "P0安全修复（6个）：DEMO_AUTH_ENABLED移除、HTTPS启用、SECRET_KEY校验、演示账号移除、时间线修复、附件展示",
     "P1高风险修复（4个）：loading状态防抖、throttle限流、token有效期缩短、演示账号隔离",
     "申请提交错误处理：apiSubmitApplication返回详细错误信息，前端显示具体失败原因",
-    "审批时间轴角色过滤：宿管员/辅导员只看自己审批步骤，学工部看全部步骤（demo-web/index.html generateTimeline函数）"
+    "审批时间轴角色过滤：宿管员/辅导员只看自己审批步骤，学工部看全部步骤（demo-web/index.html generateTimeline函数）",
+    "修复审批详情时间轴状态显示：generateTimeline使用approval.decision判断当前步骤状态（已通过/待审批/已驳回）",
+    "修复学工部角色标签：备案查询→审批查询（updateUIForRole函数）",
+    "诊断辅导员列表为空问题：department不匹配（辅导员20020559体育学院 vs 学生新闻与传播学院）",
+    "确定新测试账号：辅导员20200106张兴（新闻与传播学院）替换20020559"
   ],
   "pending": [],
   "user_acceptance_required": [
@@ -46,7 +50,7 @@
     "docs/UAT-CHECKLIST.md: 8个UI测试+1个集成测试",
     "所有代码已提交并推送到远程仓库"
   ],
-  "next_focus": "开发完成100%。审批时间轴角色过滤已完成。所有10个阻塞问题（6P0+4P1）已修复。准备执行UAT用户验收测试。",
+  "next_focus": "3个UI问题已修复（问题1: 审批详情状态✓，问题3: 学工部标签✓）。问题2(辅导员列表为空)已诊断为department不匹配，需使用新测试账号20200106张兴（新闻与传播学院）测试完整流程。",
   "artifacts": {
     "login_audit": ".omc/collaboration/artifacts/DISCUSS-审计登录设计修复代码-验证DEMO-WEB-1780842596-discuss-r3-codex-20260607-143642.md",
     "security_audit": ".omc/artifacts/ask/codex-demo-web-demo-login-1-backend-apps-users-views-py-demo-login-2026-06-07T15-30-27-401Z.md",
@@ -106,7 +110,14 @@
     "student": "2024220220323 / test123 (孙芮)",
     "dorm_manager": "92025040 / test123 (孙凤)",
     "counselor": "20250015 / test123 (胡晓炀)",
-    "admin": "20144020 / test123 (肖延量)"
+    "admin": "20144020 / test123 (肖延量)",
+    "new_test_set_liuyuan4": {
+      "students": ["2020180340301/test123 陈静茹", "2021180240603/test123 丁怡如"],
+      "dorm_managers": ["92021096/test123 戴丽媛", "92025040/test123 孙凤"],
+      "counselor": "20200106/test123 张兴（新闻与传播学院）",
+      "dean": "20144030/test123 陈敏",
+      "note": "柳园4栋+新闻与传播学院，department匹配"
+    }
   },
   "integration_test_results": {
     "total": 8,

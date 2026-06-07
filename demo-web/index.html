@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>毕业离校申请系统 - UI Demo</title>
   <link rel="stylesheet" href="css/global.css">
-  <script src="js/api.js?v=20260607-1908"></script>
+  <script src="js/api.js?v=20260607-2000">
 <script>
     async function loadMyApplications() {
         if (!currentToken) return;
@@ -251,8 +251,29 @@
 
             let state, tagText, tagCls, dotBg, dotBorder, showConnector;
 
-            // Index-based comparison
-            if (i < currentLevel || appStatus === 'approved') {
+            // Check if this is the current approval's step
+            if (step === detail.step) {
+                if (detail.decision === 'approved') {
+                    state = 'approved';
+                    tagText = '已通过';
+                    tagCls = 'tag-approved';
+                    dotBg = 'var(--status-success)';
+                    dotBorder = 'var(--status-success)';
+                } else if (detail.decision === 'rejected') {
+                    state = 'rejected';
+                    tagText = '已驳回';
+                    tagCls = 'tag-rejected';
+                    dotBg = 'var(--status-error)';
+                    dotBorder = 'var(--status-error)';
+                } else {
+                    state = 'pending';
+                    tagText = '待审批';
+                    tagCls = 'tag-pending';
+                    dotBg = 'white';
+                    dotBorder = 'var(--primary-color)';
+                }
+                showConnector = !isLast;
+            } else if (i < currentLevel || appStatus === 'approved') {
                 state = 'approved';
                 tagText = '已通过';
                 tagCls = 'tag-approved';
@@ -265,13 +286,6 @@
                 tagCls = 'tag-pending';
                 dotBg = 'white';
                 dotBorder = 'var(--primary-color)';
-                showConnector = !isLast;
-            } else if (appStatus === 'rejected' && detail.step === step) {
-                state = 'rejected';
-                tagText = '已驳回';
-                tagCls = 'tag-rejected';
-                dotBg = 'var(--status-error)';
-                dotBorder = 'var(--status-error)';
                 showConnector = !isLast;
             } else {
                 state = 'future';
@@ -825,10 +839,10 @@
       }
 
       // Update nav tab text
-      document.getElementById('nav-approval-text').textContent = isStudent ? '我的申请' : (isDean ? '备案查询' : '审批列表');
+      document.getElementById('nav-approval-text').textContent = isStudent ? '我的申请' : (isDean ? '审批查询' : '审批列表');
 
       // Update list page title and role display
-      document.getElementById('list-title').textContent = isStudent ? '我的申请' : (isDean ? '备案查询' : '审批列表');
+      document.getElementById('list-title').textContent = isStudent ? '我的申请' : (isDean ? '审批查询' : '审批列表');
       document.getElementById('role-display').textContent = (isStudent ? '学生' : isDean ? '学工部' : role === 'counselor' ? '辅导员' : '宿管员');
 
       // Show/hide approval section for student/dean

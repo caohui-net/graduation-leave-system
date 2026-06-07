@@ -108,10 +108,34 @@
         const phone = document.getElementById('contactPhone').value;
         const reason = document.getElementById('applicationReason').value;
         const leaveDate = document.getElementById('leaveDate').value;
+
+        // 验证必填字段
         if (!phone || !leaveDate) {
              alert('请输入联系电话和离校日期');
              return;
         }
+
+        // 验证手机号格式（11位，1开头）
+        if (!/^1\d{10}$/.test(phone)) {
+             alert('请输入有效的11位手机号码');
+             return;
+        }
+
+        // 验证原因长度（最多500字符）
+        if (reason && reason.length > 500) {
+             alert('离校原因不能超过500字');
+             return;
+        }
+
+        // 验证离校日期（不能早于今天）
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        const selectedDate = new Date(leaveDate);
+        if (selectedDate < today) {
+             alert('离校日期不能早于今天');
+             return;
+        }
+
         const ok = await apiSubmitApplication(phone, reason, leaveDate, uploadedFiles);
         if (ok) {
             alert('申请提交成功');

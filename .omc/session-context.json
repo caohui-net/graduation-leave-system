@@ -1,34 +1,36 @@
 {
-  "last_updated": "2026-06-07T08:02:00Z",
+  "last_updated": "2026-06-07T08:30:00Z",
   "completed": [
-    "研究生导入完成: 290/290（273在校+17校外）",
-    "辅导员补充: 3名更新",
-    "学院标准化: 1043人解除阻塞（音乐与戏剧、文学院、生命科学）",
-    "Building字段标准化: 116人NULL→空字符串，统一兜底路由",
-    "文档更新完成: 系统就绪验证报告、PROJECT-SUMMARY最终版本",
-    "系统100%覆盖达成: 所有5965学生可完成审批"
+    "提交表单功能增强：添加手机号、离校原因改可选、附件上传前置",
+    "后端模型修改：Application.contact_phone字段、reason字段改为可选",
+    "草稿申请接口：POST /api/applications/draft（获取或创建草稿）",
+    "提交接口优化：支持草稿转换、手机号同步User表、事务一致性保证",
+    "前端类型更新：TypeScript接口定义同步后端变更"
   ],
-  "pending": [],
+  "pending": [
+    "数据库迁移文件生成（python manage.py makemigrations）",
+    "实际微信小程序UI实现（miniprogram目录为空）"
+  ],
   "evidence": [
-    "研究生: 290人（100%）",
-    "辅导员: 20人覆盖20学院（100%）",
-    "学院标准化: 1043人",
-    "Building标准化: 116人NULL修正",
-    "缺building: 133人（116本科+17研究生，2.2%）",
-    "数据完整: 5832/5965（97.8%）",
-    "兜底宿管: 1人（覆盖133人）",
-    "系统可用率: 100%（5965/5965）",
-    "系统就绪: 100%生产就绪，0阻塞风险"
+    "backend/apps/applications/models.py: contact_phone字段已添加，reason改为blank=True",
+    "backend/apps/applications/serializers.py: ApplicationCreateSerializer支持contact_phone必填、reason可选",
+    "backend/apps/applications/views.py: get_or_create_draft接口、create_application支持草稿转换和手机号同步",
+    "frontend/types/api.ts: ApplicationCreateRequest和Application接口已更新"
   ],
-  "next_focus": "系统完全就绪，可立即上线",
+  "next_focus": "生成数据库迁移文件并应用迁移，实现小程序UI",
   "artifacts": {
-    "graduate_import": "backend/scripts/update_offcampus_graduates.py",
-    "counselor_import": "backend/scripts/import_missing_counselors.py",
-    "dept_normalization": "backend/scripts/normalize_department_names.py",
-    "building_normalization": "backend/scripts/normalize_building_null.py",
-    "readiness_report": "docs/系统就绪验证报告-2026-06-07.md"
+    "models": "backend/apps/applications/models.py",
+    "serializers": "backend/apps/applications/serializers.py",
+    "views": "backend/apps/applications/views.py",
+    "types": "frontend/types/api.ts",
+    "summary": "docs/PROJECT-SUMMARY.md"
   },
   "blockers": [],
   "suggested_skills": [],
-  "critical_note": "数据导入与标准化完成：290研究生+1043学院标准化+116 building修正=100%系统覆盖，生产就绪"
+  "technical_decisions": {
+    "attachment_approach": "草稿申请容器方案（复用ApplicationStatus.DRAFT）",
+    "phone_strategy": "Application.contact_phone快照 + User.phone可选同步",
+    "reason_handling": "blank=True, default=''（避免null兼容成本）",
+    "transaction": "transaction.atomic保证一致性"
+  }
 }

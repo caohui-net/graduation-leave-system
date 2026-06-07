@@ -9,7 +9,7 @@ class ApplicationListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Application
         fields = ['application_id', 'student_id', 'student_name', 'class_id',
-                  'reason', 'leave_date', 'status', 'created_at', 'updated_at']
+                  'contact_phone', 'reason', 'leave_date', 'status', 'created_at', 'updated_at']
         read_only_fields = ['application_id', 'student_id', 'student_name',
                             'class_id', 'status', 'created_at', 'updated_at']
 
@@ -21,7 +21,7 @@ class ApplicationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Application
         fields = ['application_id', 'student_id', 'student_name', 'class_id',
-                  'reason', 'leave_date', 'status', 'dorm_checkout_status',
+                  'contact_phone', 'reason', 'leave_date', 'status', 'dorm_checkout_status',
                   'approvals', 'created_at', 'updated_at']
         read_only_fields = ['application_id', 'student_id', 'student_name',
                             'class_id', 'status', 'dorm_checkout_status',
@@ -33,13 +33,9 @@ class ApplicationSerializer(serializers.ModelSerializer):
 
 
 class ApplicationCreateSerializer(serializers.Serializer):
-    reason = serializers.CharField(max_length=500, trim_whitespace=True)
+    contact_phone = serializers.CharField(max_length=20, required=True)
+    reason = serializers.CharField(max_length=500, required=False, allow_blank=True, default='')
     leave_date = serializers.DateField()
-
-    def validate_reason(self, value):
-        if not value or not value.strip():
-            raise serializers.ValidationError('离校原因不能为空')
-        return value
 
     def validate_leave_date(self, value):
         from django.utils import timezone

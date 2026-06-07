@@ -3756,3 +3756,18 @@ python backend/scripts/import_graduates.py graduate_students_supplement.csv --ap
 - 所有133人通过兜底宿管完成审批
 
 **Commit:** "fix: building字段标准化-116人NULL修正"
+
+### 2026-06-07
+
+**功能增强 - 提交表单优化：**
+- ✓ 添加手机号字段（Application.contact_phone快照 + User.phone同步）
+- ✓ 离校原因改为可选（blank=True, default=''）
+- ✓ 附件上传前置（草稿申请容器方案）
+- ✓ 新增草稿申请接口（POST /api/applications/draft）
+- ✓ 修改提交接口（支持草稿转换、手机号同步、事务一致性）
+- ✓ 更新前端TypeScript类型定义
+
+**技术决策：**
+- 采用Codex草稿容器方案（复用ApplicationStatus.DRAFT）
+- 手机号快照机制（contact_phone保存申请时状态）
+- 事务保证一致性（transaction.atomic + User.phone同步）

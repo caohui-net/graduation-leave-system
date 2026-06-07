@@ -35,7 +35,8 @@ export interface LoginResponse {
 
 // Applications
 export interface ApplicationCreateRequest {
-  reason: string;
+  contact_phone: string;
+  reason?: string;
   leave_date: string; // YYYY-MM-DD
 }
 
@@ -44,6 +45,7 @@ export interface Application {
   student_id: string;
   student_name: string;
   class_id: string;
+  contact_phone?: string | null;
   reason: string;
   leave_date: string;
   status: ApplicationStatus;

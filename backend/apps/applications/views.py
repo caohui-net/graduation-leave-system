@@ -113,21 +113,13 @@ def list_applications(request):
 
 
 def create_application(request):
+    from django.db import transaction
+
     user = request.user
 
     if user.role != UserRole.STUDENT:
         return Response({'error': {'code': 'FORBIDDEN', 'message': '只有学生可以提交申请'}},
                         status=status.HTTP_403_FORBIDDEN)
-
-    # Check for existing pending/approved applications
-    existing = Application.objects.filter(
-        student=user,
-        status__in=[ApplicationStatus.PENDING_DORM_MANAGER, ApplicationStatus.PENDING_COUNSELOR, ApplicationStatus.APPROVED]
-    ).first()
-    if existing:
-        return Response({'error': {'code': 'CONFLICT', 'message': '已有待审批或已通过的申请，不能重复提交',
-                                    'details': {'student_id': user.user_id, 'existing_application_id': existing.application_id, 'status': existing.status}}},
-                        status=status.HTTP_409_CONFLICT)
 
     serializer = ApplicationCreateSerializer(data=request.data)
     if not serializer.is_valid():
@@ -135,67 +127,90 @@ def create_application(request):
                                     'details': serializer.errors}},
                         status=status.HTTP_400_BAD_REQUEST)
 
-    provider = MockDormCheckoutProvider()
-    dorm_status = provider.check_status(user.user_id)
+    with transaction.atomic():
+        # Check for existing pending/approved applications
+        existing = Application.objects.filter(
+            student=user,
+            status__in=[ApplicationStatus.PENDING_DORM_MANAGER, ApplicationStatus.PENDING_COUNSELOR, ApplicationStatus.APPROVED]
+        ).first()
+        if existing:
+            return Response({'error': {'code': 'CONFLICT', 'message': '已有待审批或已通过的申请，不能重复提交',
+                                        'details': {'student_id': user.user_id, 'existing_application_id': existing.application_id, 'status': existing.status}}},
+                            status=status.HTTP_409_CONFLICT)
 
-    if dorm_status.status != DormCheckoutStatus.COMPLETED:
-        return Response({'error': {'code': 'DORM_BLOCKED', 'message': '宿舍清退未完成，无法提交申请',
-                                    'details': {'student_id': user.user_id, 'dorm_status': dorm_status.status,
-                                                'blocking_reason': dorm_status.blocking_reason}}},
-                        status=status.HTTP_422_UNPROCESSABLE_ENTITY)
+        provider = MockDormCheckoutProvider()
+        dorm_status = provider.check_status(user.user_id)
 
-    # Find all dorm managers for the building
-    dorm_managers = []
-    building = user.building
+        if dorm_status.status != DormCheckoutStatus.COMPLETED:
+            return Response({'error': {'code': 'DORM_BLOCKED', 'message': '宿舍清退未完成，无法提交申请',
+                                        'details': {'student_id': user.user_id, 'dorm_status': dorm_status.status,
+                                                    'blocking_reason': dorm_status.blocking_reason}}},
+                            status=status.HTTP_422_UNPROCESSABLE_ENTITY)
 
-    # Try to find dorm managers by building
-    if building and building.strip():
-        dorm_managers = list(User.objects.filter(
-            role=UserRole.DORM_MANAGER,
-            building=building,
-            active=True
-        ).order_by('user_id'))
+        # Find dorm managers
+        dorm_managers = []
+        building = user.building
 
-        if len(dorm_managers) > 1:
-            logging.info(
-                f"Multiple dorm managers found for building {building}: "
-                f"{len(dorm_managers)} managers. Creating approval for each."
+        if building and building.strip():
+            dorm_managers = list(User.objects.filter(
+                role=UserRole.DORM_MANAGER,
+                building=building,
+                active=True
+            ).order_by('user_id'))
+
+        if not dorm_managers:
+            from django.conf import settings
+            fallback_id = getattr(settings, 'FALLBACK_DORM_MANAGER_USER_ID', '92008149')
+            try:
+                fallback_manager = User.objects.get(role=UserRole.DORM_MANAGER, user_id=fallback_id, active=True)
+                dorm_managers = [fallback_manager]
+            except User.DoesNotExist:
+                return Response({'error': {'code': 'NOT_FOUND', 'message': '无可用宿管员',
+                                            'details': {'building': building or '未分配', 'fallback_id': fallback_id}}},
+                                status=status.HTTP_404_NOT_FOUND)
+
+        # Check for existing draft, convert if exists
+        draft = Application.objects.filter(student=user, status=ApplicationStatus.DRAFT).first()
+
+        if draft:
+            # Update draft to submitted application
+            draft.contact_phone = serializer.validated_data['contact_phone']
+            draft.reason = serializer.validated_data.get('reason', '')
+            draft.leave_date = serializer.validated_data['leave_date']
+            draft.status = ApplicationStatus.PENDING_DORM_MANAGER
+            draft.dorm_checkout_status = dorm_status.status
+            draft.save()
+            application = draft
+        else:
+            # Create new application
+            application = Application.objects.create(
+                application_id=f'app_{uuid.uuid4().hex[:8]}',
+                student=user,
+                student_name=user.name,
+                class_id=user.class_id,
+                contact_phone=serializer.validated_data['contact_phone'],
+                reason=serializer.validated_data.get('reason', ''),
+                leave_date=serializer.validated_data['leave_date'],
+                status=ApplicationStatus.PENDING_DORM_MANAGER,
+                dorm_checkout_status=dorm_status.status
             )
 
-    # Fallback: use default dorm manager for students without building
-    if not dorm_managers:
-        from django.conf import settings
-        fallback_id = getattr(settings, 'FALLBACK_DORM_MANAGER_USER_ID', '92008149')
-        try:
-            fallback_manager = User.objects.get(role=UserRole.DORM_MANAGER, user_id=fallback_id, active=True)
-            dorm_managers = [fallback_manager]
-        except User.DoesNotExist:
-            return Response({'error': {'code': 'NOT_FOUND', 'message': '无可用宿管员',
-                                        'details': {'building': building or '未分配', 'fallback_id': fallback_id}}},
-                            status=status.HTTP_404_NOT_FOUND)
+        # Create approvals
+        for dorm_manager in dorm_managers:
+            dorm_manager_approval = Approval.objects.create(
+                approval_id=f'apv_{uuid.uuid4().hex[:8]}',
+                application=application,
+                step=ApprovalStep.DORM_MANAGER,
+                approver=dorm_manager,
+                approver_name=dorm_manager.name,
+                decision=ApprovalDecision.PENDING
+            )
+            notify_application_submitted(application, dorm_manager_approval)
 
-    application = Application.objects.create(
-        application_id=f'app_{uuid.uuid4().hex[:8]}',
-        student=user,
-        student_name=user.name,
-        class_id=user.class_id,
-        reason=serializer.validated_data['reason'],
-        leave_date=serializer.validated_data['leave_date'],
-        status=ApplicationStatus.PENDING_DORM_MANAGER,
-        dorm_checkout_status=dorm_status.status
-    )
-
-    # Create approval for each dorm manager
-    for dorm_manager in dorm_managers:
-        dorm_manager_approval = Approval.objects.create(
-            approval_id=f'apv_{uuid.uuid4().hex[:8]}',
-            application=application,
-            step=ApprovalStep.DORM_MANAGER,
-            approver=dorm_manager,
-            approver_name=dorm_manager.name,
-            decision=ApprovalDecision.PENDING
-        )
-        notify_application_submitted(application, dorm_manager_approval)
+        # Sync phone to User table
+        if not user.phone:
+            user.phone = serializer.validated_data['contact_phone']
+            user.save()
 
     return Response(ApplicationSerializer(application).data, status=status.HTTP_201_CREATED)
 
@@ -229,3 +244,41 @@ def get_application(request, application_id):
                         status=status.HTTP_403_FORBIDDEN)
 
     return Response(ApplicationSerializer(application).data)
+
+
+@extend_schema(
+    operation_id='applications_draft',
+    summary='获取或创建草稿申请',
+    description='学生获取或创建草稿申请，用于附件上传前置',
+    responses={
+        200: ApplicationSerializer,
+        201: ApplicationSerializer,
+        403: ErrorResponseSerializer,
+    },
+    tags=['申请']
+)
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def get_or_create_draft(request):
+    user = request.user
+
+    if user.role != UserRole.STUDENT:
+        return Response({'error': {'code': 'FORBIDDEN', 'message': '只有学生可以创建草稿'}},
+                        status=status.HTTP_403_FORBIDDEN)
+
+    # Get existing draft or create new one
+    draft = Application.objects.filter(student=user, status=ApplicationStatus.DRAFT).first()
+
+    if draft:
+        return Response(ApplicationSerializer(draft).data, status=status.HTTP_200_OK)
+
+    # Create new draft
+    draft = Application.objects.create(
+        application_id=f'app_{uuid.uuid4().hex[:8]}',
+        student=user,
+        student_name=user.name,
+        class_id=user.class_id,
+        status=ApplicationStatus.DRAFT
+    )
+
+    return Response(ApplicationSerializer(draft).data, status=status.HTTP_201_CREATED)

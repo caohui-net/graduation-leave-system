@@ -331,7 +331,7 @@ def reject_approval(request, approval_id):
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def export_approvals(request):
-    if request.user.role != UserRole.DEAN:
+    if request.user.role not in [UserRole.DEAN, UserRole.ADMIN]:
         return Response(
             {'error': {'code': 'FORBIDDEN', 'message': '仅学工部可导出数据'}},
             status=status.HTTP_403_FORBIDDEN

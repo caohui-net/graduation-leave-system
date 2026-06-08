@@ -148,19 +148,21 @@ def approve_approval(request, approval_id):
                         status=status.HTTP_404_NOT_FOUND)
 
     user = request.user
-    if approval.step == ApprovalStep.DORM_MANAGER and user.role != UserRole.DORM_MANAGER:
-        return Response({'error': {'code': 'FORBIDDEN', 'message': '无权限执行此操作'}},
-                        status=status.HTTP_403_FORBIDDEN)
-    if approval.step == ApprovalStep.COUNSELOR and user.role != UserRole.COUNSELOR:
-        return Response({'error': {'code': 'FORBIDDEN', 'message': '无权限执行此操作'}},
-                        status=status.HTTP_403_FORBIDDEN)
-    if approval.step == ApprovalStep.DEAN and user.role not in [UserRole.DEAN, UserRole.ADMIN]:
-        return Response({'error': {'code': 'FORBIDDEN', 'message': '无权限执行此操作'}},
-                        status=status.HTTP_403_FORBIDDEN)
+    # Admin can approve/reject any step
+    if user.role != UserRole.ADMIN:
+        if approval.step == ApprovalStep.DORM_MANAGER and user.role != UserRole.DORM_MANAGER:
+            return Response({'error': {'code': 'FORBIDDEN', 'message': '无权限执行此操作'}},
+                            status=status.HTTP_403_FORBIDDEN)
+        if approval.step == ApprovalStep.COUNSELOR and user.role != UserRole.COUNSELOR:
+            return Response({'error': {'code': 'FORBIDDEN', 'message': '无权限执行此操作'}},
+                            status=status.HTTP_403_FORBIDDEN)
+        if approval.step == ApprovalStep.DEAN and user.role != UserRole.DEAN:
+            return Response({'error': {'code': 'FORBIDDEN', 'message': '无权限执行此操作'}},
+                            status=status.HTTP_403_FORBIDDEN)
 
-    if approval.approver_id != user.user_id:
-        return Response({'error': {'code': 'FORBIDDEN', 'message': '无权限执行此操作'}},
-                        status=status.HTTP_403_FORBIDDEN)
+        if approval.approver_id != user.user_id:
+            return Response({'error': {'code': 'FORBIDDEN', 'message': '无权限执行此操作'}},
+                            status=status.HTTP_403_FORBIDDEN)
 
     if approval.decision != ApprovalDecision.PENDING:
         return Response({'error': {'code': 'CONFLICT', 'message': '审批已完成，不能重复操作'}},
@@ -281,19 +283,21 @@ def reject_approval(request, approval_id):
                         status=status.HTTP_404_NOT_FOUND)
 
     user = request.user
-    if approval.step == ApprovalStep.DORM_MANAGER and user.role != UserRole.DORM_MANAGER:
-        return Response({'error': {'code': 'FORBIDDEN', 'message': '无权限执行此操作'}},
-                        status=status.HTTP_403_FORBIDDEN)
-    if approval.step == ApprovalStep.COUNSELOR and user.role != UserRole.COUNSELOR:
-        return Response({'error': {'code': 'FORBIDDEN', 'message': '无权限执行此操作'}},
-                        status=status.HTTP_403_FORBIDDEN)
-    if approval.step == ApprovalStep.DEAN and user.role not in [UserRole.DEAN, UserRole.ADMIN]:
-        return Response({'error': {'code': 'FORBIDDEN', 'message': '无权限执行此操作'}},
-                        status=status.HTTP_403_FORBIDDEN)
+    # Admin can approve/reject any step
+    if user.role != UserRole.ADMIN:
+        if approval.step == ApprovalStep.DORM_MANAGER and user.role != UserRole.DORM_MANAGER:
+            return Response({'error': {'code': 'FORBIDDEN', 'message': '无权限执行此操作'}},
+                            status=status.HTTP_403_FORBIDDEN)
+        if approval.step == ApprovalStep.COUNSELOR and user.role != UserRole.COUNSELOR:
+            return Response({'error': {'code': 'FORBIDDEN', 'message': '无权限执行此操作'}},
+                            status=status.HTTP_403_FORBIDDEN)
+        if approval.step == ApprovalStep.DEAN and user.role != UserRole.DEAN:
+            return Response({'error': {'code': 'FORBIDDEN', 'message': '无权限执行此操作'}},
+                            status=status.HTTP_403_FORBIDDEN)
 
-    if approval.approver_id != user.user_id:
-        return Response({'error': {'code': 'FORBIDDEN', 'message': '无权限执行此操作'}},
-                        status=status.HTTP_403_FORBIDDEN)
+        if approval.approver_id != user.user_id:
+            return Response({'error': {'code': 'FORBIDDEN', 'message': '无权限执行此操作'}},
+                            status=status.HTTP_403_FORBIDDEN)
 
     if approval.decision != ApprovalDecision.PENDING:
         return Response({'error': {'code': 'CONFLICT', 'message': '审批已完成，不能重复操作'}},

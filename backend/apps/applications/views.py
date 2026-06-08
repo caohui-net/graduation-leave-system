@@ -85,12 +85,8 @@ def list_applications(request):
         ).values_list('application', flat=True)
         queryset = Application.objects.filter(pk__in=pending_approvals)
 
-    # Dean: view all approved applications (archiving role, read-only)
-    elif user.role == UserRole.DEAN:
-        queryset = Application.objects.filter(status=ApplicationStatus.APPROVED)
-
-    # Admin: view all applications (management role)
-    elif user.role == UserRole.ADMIN:
+    # Dean/Admin: view all applications
+    elif user.role in [UserRole.DEAN, UserRole.ADMIN]:
         queryset = Application.objects.all()
 
     else:

@@ -21,6 +21,7 @@ class Approval(models.Model):
     step = models.CharField(max_length=20, choices=ApprovalStep.choices)
     approver = models.ForeignKey(User, on_delete=models.PROTECT, related_name='approvals')
     approver_name = models.CharField(max_length=100)
+    decided_by = models.ForeignKey(User, on_delete=models.PROTECT, related_name='decided_approvals', null=True, blank=True, verbose_name='实际审批人')
     decision = models.CharField(max_length=20, choices=ApprovalDecision.choices, default=ApprovalDecision.PENDING)
     comment = models.TextField(null=True, blank=True)
     decided_at = models.DateTimeField(null=True, blank=True)

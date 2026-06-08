@@ -5,6 +5,7 @@ from rest_framework.response import Response
 from django.utils import timezone
 from django.db import transaction
 from django.http import HttpResponse
+from django.db.models import Prefetch
 import logging
 from drf_spectacular.utils import extend_schema, OpenApiParameter
 from openpyxl import Workbook
@@ -18,6 +19,16 @@ from apps.users.models import User, UserRole
 from apps.notifications.services import notify_approval_decided
 from schema import ErrorResponseSerializer
 import uuid
+
+
+def sanitize_excel_formula(value):
+    """Sanitize text to prevent Excel formula injection."""
+    if not value:
+        return value
+    value_str = str(value)
+    if value_str and value_str[0] in ('=', '+', '-', '@'):
+        return "'" + value_str
+    return value_str
 
 
 @extend_schema(
@@ -180,6 +191,7 @@ def approve_approval(request, approval_id):
     approval.decision = ApprovalDecision.APPROVED
     approval.comment = serializer.validated_data.get('comment', '')
     approval.decided_at = timezone.now()
+    approval.decided_by = user
     approval.save()
 
     notify_approval_decided(approval)
@@ -195,14 +207,18 @@ def approve_approval(request, approval_id):
         ).exclude(approval_id=approval.approval_id)
 
         if other_dorm_approvals.exists():
-            other_dorm_approvals.update(
-                decision=ApprovalDecision.APPROVED,
-                comment=f'已由{approval.approver_name}完成审批，无需重复操作',
-                decided_at=timezone.now()
-            )
+            now = timezone.now()
+            actual_approver = approval.decided_by or approval.approver
+            count = other_dorm_approvals.count()
+            for other_approval in other_dorm_approvals:
+                other_approval.decision = ApprovalDecision.APPROVED
+                other_approval.comment = f'已由{approval.approver_name}完成审批，无需重复操作'
+                other_approval.decided_at = now
+                other_approval.decided_by = actual_approver
+                other_approval.save()
             logging.info(
-                f"Auto-completed {other_dorm_approvals.count()} other dorm manager approvals "
-                f"for application {application.application_id} after approval by {approval.approver.user_id}"
+                f"Auto-completed {count} other dorm manager approvals "
+                f"for application {application.application_id} after approval by {actual_approver.user_id}"
             )
 
         # Check for existing counselor approval to prevent duplicates
@@ -315,6 +331,7 @@ def reject_approval(request, approval_id):
     approval.decision = ApprovalDecision.REJECTED
     approval.comment = serializer.validated_data.get('comment', '')
     approval.decided_at = timezone.now()
+    approval.decided_by = user
     approval.save()
 
     notify_approval_decided(approval)
@@ -345,7 +362,24 @@ def export_approvals(request):
             status=status.HTTP_403_FORBIDDEN
         )
 
-    applications = Application.objects.select_related('student').prefetch_related('approvals').order_by('-created_at')
+    # Limit export to 1000 rows max to prevent memory issues
+    MAX_EXPORT_ROWS = 1000
+
+    # Optimize query with Prefetch to avoid N+1
+    dorm_prefetch = Prefetch(
+        'approvals',
+        queryset=Approval.objects.filter(step=ApprovalStep.DORM_MANAGER),
+        to_attr='dorm_approvals_list'
+    )
+    counselor_prefetch = Prefetch(
+        'approvals',
+        queryset=Approval.objects.filter(step=ApprovalStep.COUNSELOR),
+        to_attr='counselor_approvals_list'
+    )
+
+    applications = Application.objects.select_related('student').prefetch_related(
+        dorm_prefetch, counselor_prefetch
+    ).order_by('-created_at')[:MAX_EXPORT_ROWS]
 
     wb = Workbook()
     ws = wb.active
@@ -361,19 +395,19 @@ def export_approvals(request):
         cell.alignment = Alignment(horizontal='center')
 
     for app in applications:
-        dorm_approval = app.approvals.filter(step=ApprovalStep.DORM_MANAGER).first()
-        counselor_approval = app.approvals.filter(step=ApprovalStep.COUNSELOR).first()
+        dorm_approval = app.dorm_approvals_list[0] if app.dorm_approvals_list else None
+        counselor_approval = app.counselor_approvals_list[0] if app.counselor_approvals_list else None
 
         row = [
-            app.application_id,
-            app.student_name,
-            app.contact_phone or '',
+            sanitize_excel_formula(app.application_id),
+            sanitize_excel_formula(app.student_name),
+            sanitize_excel_formula(app.contact_phone or ''),
             app.created_at.strftime('%Y-%m-%d %H:%M:%S'),
             app.get_status_display(),
-            dorm_approval.approver_name if dorm_approval else '',
+            sanitize_excel_formula(dorm_approval.approver_name if dorm_approval else ''),
             dorm_approval.decided_at.strftime('%Y-%m-%d %H:%M:%S') if dorm_approval and dorm_approval.decided_at else '',
             dorm_approval.get_decision_display() if dorm_approval else '',
-            counselor_approval.approver_name if counselor_approval else '',
+            sanitize_excel_formula(counselor_approval.approver_name if counselor_approval else ''),
             counselor_approval.decided_at.strftime('%Y-%m-%d %H:%M:%S') if counselor_approval and counselor_approval.decided_at else '',
             counselor_approval.get_decision_display() if counselor_approval else '',
         ]

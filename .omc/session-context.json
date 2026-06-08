@@ -85,7 +85,17 @@
     "导出字段：申请ID、提交人、手机号、提交时间、审批状态、宿管员/辅导员信息及审批时间",
     "权限控制：仅学工部(DEAN)角色可导出",
     "注册URL路由：GET /api/approvals/export/",
-    "添加openpyxl==3.1.2依赖到requirements.txt"
+    "添加openpyxl==3.1.2依赖到requirements.txt",
+    "三方代码审查（Claude-Codex-Gemini）：识别5个阻塞问题需修复",
+    "修复问题1：添加Approval.decided_by字段记录真实操作人（审计归因）",
+    "修复问题2：添加sanitize_excel_formula()防止公式注入",
+    "修复问题3：Excel导出添加1000行限制，使用Prefetch优化N+1查询",
+    "修复问题4：export_approvals使用to_attr预取，消除N+1",
+    "修复问题5：创建test_admin_and_export.py覆盖ADMIN权限和Excel安全测试",
+    "修改approve_approval/reject_approval保存decided_by字段",
+    "修改通知服务使用decided_by or approver作为actor",
+    "修改自动完成宿管审批也记录decided_by字段",
+    "创建迁移文件0004_add_decided_by_field.py"
   ],
   "pending": [
     "实施Django 3步迁移：Phase 1添加nullable字段(provider/external_uid/provider_data) + RunPython回填",

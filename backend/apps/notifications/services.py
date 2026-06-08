@@ -72,7 +72,7 @@ def notify_approval_decided(approval):
         entity_id=approval.pk,
         type=notification_type,
         defaults={
-            'actor': approval.approver,
+            'actor': approval.decided_by or approval.approver,
             'title': title,
             'message': message
         }

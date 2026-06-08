@@ -63,5 +63,13 @@ class SSOUserMapping(models.Model):
             models.Index(fields=['username'], name='idx_username'),
         ]
 
+    def save(self, *args, **kwargs):
+        """保存前处理：空字符串转为None，避免unique约束冲突"""
+        if self.user_code == '':
+            self.user_code = None
+        if self.username == '':
+            self.username = None
+        super().save(*args, **kwargs)
+
     def __str__(self):
         return f"{self.real_name} ({self.user_type})"

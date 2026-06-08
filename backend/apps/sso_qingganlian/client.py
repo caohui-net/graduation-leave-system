@@ -1,6 +1,7 @@
 import requests
 from django.conf import settings
 from .auth import generate_request_params
+from .exceptions import SSOAPIError, SSOTokenExpiredError, SSOUserInfoError
 
 
 class QingganlanClient:
@@ -48,6 +49,11 @@ class QingganlanClient:
 
         Returns:
             响应JSON
+
+        Raises:
+            SSOAPIError: API业务错误
+            SSOTokenExpiredError: Token过期
+            SSOUserInfoError: 用户信息获取失败
         """
         url = f"{self.base_url}{endpoint}"
         headers = generate_request_params(self.app_key, self.app_secret, encryption_type)
@@ -59,7 +65,23 @@ class QingganlanClient:
                 response = requests.get(url, headers=headers, params=data, timeout=30)
 
             response.raise_for_status()
-            return response.json()
+            result = response.json()
+
+            # 检查业务错误码
+            code = result.get('code')
+            if code != 200:
+                msg = result.get('msg', '未知错误')
+
+                # 根据错误码抛出特定异常
+                if code == 88890006:
+                    raise SSOTokenExpiredError(code, 'TOKEN已使用或已过期', result)
+                elif code == 88890007:
+                    raise SSOUserInfoError(code, '用户信息获取失败', result)
+                else:
+                    raise SSOAPIError(code, msg, result)
+
+            return result
+
         except requests.exceptions.RequestException as e:
             raise Exception(f"API请求失败: {str(e)}")
 

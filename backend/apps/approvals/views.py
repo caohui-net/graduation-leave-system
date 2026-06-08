@@ -62,7 +62,11 @@ def list_approvals(request):
         ).select_related('application', 'application__student', 'approver')
 
     # 学工部: 查看所有审批（存档用）
-    elif user.role in [UserRole.DEAN, UserRole.ADMIN]:
+    elif user.role == UserRole.DEAN:
+        queryset = Approval.objects.all().select_related('application', 'application__student', 'approver')
+
+    # 学工管理员: 查看所有审批（管理用）
+    elif user.role == UserRole.ADMIN:
         queryset = Approval.objects.all().select_related('application', 'application__student', 'approver')
 
     else:
@@ -111,7 +115,7 @@ def get_approval(request, approval_id):
 
     user = request.user
 
-    # Permission check: only the approver or dean can view this approval
+    # Permission check: only the approver or dean/admin can view this approval
     if user.role in [UserRole.DEAN, UserRole.ADMIN] or approval.approver_id == user.user_id:
         return Response(ApprovalSerializer(approval).data)
 
@@ -331,9 +335,9 @@ def reject_approval(request, approval_id):
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def export_approvals(request):
-    if request.user.role not in [UserRole.DEAN, UserRole.ADMIN]:
+    if request.user.role != UserRole.ADMIN:
         return Response(
-            {'error': {'code': 'FORBIDDEN', 'message': '仅学工部可导出数据'}},
+            {'error': {'code': 'FORBIDDEN', 'message': '仅学工管理员可导出数据'}},
             status=status.HTTP_403_FORBIDDEN
         )
 

@@ -14,6 +14,7 @@ from .serializers import (
     AdminLoginResponseSerializer
 )
 from .exceptions import SSOAPIError, SSOTokenExpiredError, SSOUserInfoError
+from . import settings as sso_settings
 
 
 @api_view(['POST'])
@@ -42,11 +43,10 @@ def mobile_login(request):
 
     try:
         # 2. 初始化客户端并获取user_code
-        # TODO: 从配置获取app_key和app_secret
         client = QingganlanClient(
-            app_key='abc0a32aa8dd94d1f765841abaafd8ba',
-            app_secret='b1d2efa9587446d80ce6388e0c0b25131b8dea59',
-            env='prod',
+            app_key=sso_settings.QGL_MOBILE_APP_KEY,
+            app_secret=sso_settings.QGL_MOBILE_APP_SECRET,
+            env=sso_settings.QGL_ENV,
             api_type='mobile'
         )
 
@@ -153,11 +153,10 @@ def admin_login(request):
 
     try:
         # 2. 初始化客户端并验证管理员用户
-        # TODO: 从配置获取app_key和app_secret
         client = QingganlanClient(
-            app_key='APPKEY_TBD',  # 待获取
-            app_secret='APPSECRET_TBD',  # 待获取
-            env='prod',
+            app_key=sso_settings.QGL_ADMIN_APP_KEY,
+            app_secret=sso_settings.QGL_ADMIN_APP_SECRET,
+            env=sso_settings.QGL_ENV,
             api_type='admin'
         )
 

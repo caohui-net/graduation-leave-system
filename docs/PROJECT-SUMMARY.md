@@ -4323,9 +4323,33 @@ python backend/scripts/import_graduates.py graduate_students_supplement.csv --ap
 - .omc/artifacts/ask/codex-* (安全审计artifacts)
 - .omc/artifacts/ask/gemini-* (UX审计artifacts)
 
+### 青橄榄平台SSO对接设计（2026-06-08）
+
+**需求分析：**
+- ✓ 分析两份对接文档（移动端用户信息获取接口、后台管理端单点登录接口）
+- ✓ 评估独立对接模块可行性
+
+**三方讨论（Claude-Codex-Gemini）：**
+- 讨论ID：DISCUSS-青橄榄平台SSO对接模块设计-1780906038
+- 轮次：3轮，Gemini达成共识，Codex未参与（技术故障）
+
+**Gemini审核意见：**
+1. ✅ 创建独立Django应用：backend/apps/sso_qingganlian/
+2. ✅ 用户映射表：青橄榄user_code/username → 本地User ID
+3. ✅ Token交换模式：SSO token → 本地JWT（非middleware拦截）
+4. ✅ 双端统一架构：移动端+管理端共用SSO模块
+
+**技术设计文档：**
+- 路径：docs/design/2026-06-08-sso-qingganlian-integration.md
+- 内容：架构设计、模型、API端点、认证流程、数据映射、安全、测试策略
+- 实施计划：4个Phase，预计4-6天完成
+
+**协作产物：**
+- .omc/collaboration/artifacts/DISCUSS-青橄榄平台SSO对接模块设计-*-r1/r2/r3-gemini-*.md
+
 ---
 
-**项目状态更新：** 生产就绪（Production Ready）  
+**项目状态更新：** 生产就绪（Production Ready） + SSO对接设计完成  
 **最后更新：** 2026-06-08  
 **更新人：** Claude Opus 4.7
 

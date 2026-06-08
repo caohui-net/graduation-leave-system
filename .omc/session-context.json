@@ -5,6 +5,12 @@
     "总结三方协作审计：识别3个阻塞问题，Gemini在Round 2改变立场达成共识",
     "更新PROJECT-SUMMARY.md：添加生产就绪代码审计章节和最终状态",
     "更新项目状态：从70%→100%生产就绪",
+    "LibreOffice转换Word文档为txt：两份青橄榄平台对接文档",
+    "读取青橄榄平台对接文档：移动端用户信息获取接口、后台管理端单点登录接口",
+    "分析SSO对接需求：可创建独立Django应用backend/apps/sso_qingganlian/",
+    "启动三方讨论（Claude-Codex-Gemini）：青橄榄SSO对接模块设计方案",
+    "Gemini达成共识（3轮）：同意独立模块、用户映射表、Token交换JWT模式",
+    "创建技术设计文档：docs/design/2026-06-08-sso-qingganlian-integration.md",
     "登录设计修复：移除角色选择器，实现用户名/密码真实登录",
     "三方审计（Claude-Codex-Gemini）：验证登录设计修复代码正确性（3轮讨论）",
     "识别3个问题并完成2个修复（1个判定为不在scope）",
@@ -74,7 +80,11 @@
     "login_fix_summary": ".omc/artifacts/login-design-fix-summary-2026-06-07.md",
     "integration_tests": "demo-web/test-integration.sh",
     "uat_checklist": "docs/UAT-CHECKLIST.md",
-    "project_summary": "docs/PROJECT-SUMMARY.md"
+    "project_summary": "docs/PROJECT-SUMMARY.md",
+    "sso_design": "docs/design/2026-06-08-sso-qingganlian-integration.md",
+    "sso_discussion_r1": ".omc/collaboration/artifacts/DISCUSS-青橄榄平台SSO对接模块设计-用户需求-分析两份对接文档-1780906038-discuss-r1-gemini-20260608-080819.md",
+    "sso_discussion_r2": ".omc/collaboration/artifacts/DISCUSS-青橄榄平台SSO对接模块设计-用户需求-分析两份对接文档-1780906038-discuss-r2-gemini-20260608-080849.md",
+    "sso_discussion_r3": ".omc/collaboration/artifacts/DISCUSS-青橄榄平台SSO对接模块设计-用户需求-分析两份对接文档-1780906038-discuss-r3-gemini-20260608-080918.md"
   },
   "code_audit_results": {
     "codex_security": {

@@ -1,5 +1,5 @@
 {
-  "last_updated": "2026-06-08T10:49:13Z",
+  "last_updated": "2026-06-08T17:00:00Z",
   "completed": [
     "Session恢复：检查taolun讨论记录（登录设计修复三方审计）",
     "总结三方协作审计：识别3个阻塞问题，Gemini在Round 2改变立场达成共识",
@@ -68,26 +68,36 @@
     "阻塞问题1：缺乏青橄榄平台真实联调测试报告（E2E验证证据）",
     "阻塞问题2：appKey/appSecret未获取真实配置",
     "阻塞问题3：README.md需更新Phase 4状态和联调前提条件",
-    "修复阻塞问题3：更新README.md生产部署前提条件章节"
+    "修复阻塞问题3：更新README.md生产部署前提条件章节",
+    "创建青橄榄SSO对接技术方案文档（docs/青橄榄SSO对接技术方案.md）供平台审核",
+    "修复数据库文档不一致：docs/design/2026-05-27-system-design.md PostgreSQL/MySQL→PostgreSQL",
+    "创建SSO模块通讯架构说明文档（docs/SSO对接框架通讯架构说明.md）11章节详细分析",
+    "启动SSO模块通用化可行性分析讨论1（task 1780927522）：Codex失败3轮，Gemini达成共识",
+    "启动SSO模块通用化可行性分析讨论2（task 1780928421）：包含Claude独立分析，Codex失败3轮，Gemini确认轻量级解耦方案",
+    "创建SSO模块通用化可行性分析报告（docs/SSO模块通用化可行性分析报告.md）基于Gemini共识",
+    "实施轻量级解耦方案Phase 1：创建BaseSSOProvider抽象接口",
+    "创建backend/apps/sso_qingganlian/providers/__init__.py（模块exports）",
+    "创建backend/apps/sso_qingganlian/providers/base.py（38行，BaseSSOProvider ABC）",
+    "创建backend/apps/sso_qingganlian/providers/qingganlian.py（109行，QingganlanProvider实现）",
+    "启动SSO模块BaseSSOProvider接口实现验证讨论3（task 1780929314）：Codex失败3轮，Gemini验证接口设计通过",
+    "Gemini第3次讨论共识：接口未over-fit青橄榄，credentials Dict充分抽象，provider_data符合最佳实践",
+    "实现管理员审批数据Excel导出功能：添加export_approvals视图函数",
+    "导出字段：申请ID、提交人、手机号、提交时间、审批状态、宿管员/辅导员信息及审批时间",
+    "权限控制：仅学工部(DEAN)角色可导出",
+    "注册URL路由：GET /api/approvals/export/",
+    "添加openpyxl==3.1.2依赖到requirements.txt"
   ],
   "pending": [
+    "实施Django 3步迁移：Phase 1添加nullable字段(provider/external_uid/provider_data) + RunPython回填",
+    "实施Django 3步迁移：Phase 2更新应用逻辑读写新字段",
+    "实施Django 3步迁移：Phase 3删除旧字段(tenant_code/user_code)",
+    "创建单元测试：mock QingganlanClient测试views.py",
+    "创建单元测试：覆盖mobile/admin登录分支",
+    "更新views.py：使用QingganlanProvider实例替代直接调用client",
     "获取青橄榄平台真实appKey/appSecret（联系平台管理员）",
     "配置真实环境变量（替换.env默认值）",
     "执行端到端联调测试（移动端+管理端）",
     "记录联调测试日志作为验证证据"
-  ],
-  "user_acceptance_required": [
-    "执行docs/UAT-CHECKLIST.md中的8个浏览器UI测试",
-    "验证4个角色登录流程（测试1-4）",
-    "验证登录失败处理（测试5）",
-    "验证动态时间轴显示（测试6）",
-    "验证退出登录（测试7）",
-    "验证完整审批流程（测试8）",
-    "验证附件展示功能（新增）",
-    "验证loading状态和防重复提交（新增）",
-    "验证申请提交失败时显示具体错误原因（新增）",
-    "验证审批时间轴角色过滤（新增）",
-    "填写UAT检查清单验收结果并签字确认"
   ],
   "evidence": [
     "三方讨论artifact: .omc/collaboration/artifacts/DISCUSS-审计登录设计修复代码-*",
@@ -95,157 +105,49 @@
     "Gemini UX审计: .omc/artifacts/ask/gemini-demo-web-*.md",
     "git commit d36e7ae: fix: P0阻塞问题修复 - 安全加固与功能修复",
     "git commit 495ff8d: fix: P1高风险问题修复 - UX改进与安全加固",
-    "git commit [latest]: fix(demo-web): add detailed error messages for application submission",
     "demo-web/test-integration.sh: 8/8集成测试通过",
     "docs/UAT-CHECKLIST.md: 8个UI测试+1个集成测试",
-    "所有代码已提交并推送到远程仓库"
+    "所有代码已提交并推送到远程仓库",
+    "SSO通用化讨论1 (1780927522): Gemini 3轮共识，Codex 3轮失败",
+    "SSO通用化讨论2 (1780928421): Claude独立分析+Gemini共识，Codex 3轮失败",
+    "SSO通用化讨论3 (1780929314): Gemini验证接口设计通过，Codex 3轮失败",
+    "Gemini一致结论：采用轻量级Strategy Pattern，3步Django迁移，推迟完整多平台架构",
+    "BaseSSOProvider接口已创建：authenticate抽象方法+provider_name属性",
+    "QingganlanProvider实现已创建：包装QingganlanClient，双端支持"
   ],
-  "next_focus": "SSO模块代码开发完成（Phase 1-4），待真实环境联调验证。Gemini正确指出：代码完成≠生产就绪，需外部系统集成测试。13个commit待手动推送。",
+  "next_focus": "SSO模块轻量级解耦实施中：BaseSSOProvider接口已完成并通过Gemini验证（未over-fit青橄榄），待完成Django 3步迁移和单元测试。Codex连续9轮讨论失败(json_parse_failed)，由Gemini接管技术验证和实施指导。",
   "artifacts": {
-    "login_audit": ".omc/collaboration/artifacts/DISCUSS-审计登录设计修复代码-验证DEMO-WEB-1780842596-discuss-r3-codex-20260607-143642.md",
-    "security_audit": ".omc/artifacts/ask/codex-demo-web-demo-login-1-backend-apps-users-views-py-demo-login-2026-06-07T15-30-27-401Z.md",
-    "ux_audit": ".omc/artifacts/ask/gemini-demo-web-demo-web-index-html-1000-1-2-3-4-token-ui-5-2-task--2026-06-07T15-30-34-812Z.md",
-    "login_fix_summary": ".omc/artifacts/login-design-fix-summary-2026-06-07.md",
-    "integration_tests": "demo-web/test-integration.sh",
-    "uat_checklist": "docs/UAT-CHECKLIST.md",
-    "project_summary": "docs/PROJECT-SUMMARY.md",
-    "sso_design": "docs/design/2026-06-08-sso-qingganlian-integration.md",
-    "sso_discussion_r1": ".omc/collaboration/artifacts/DISCUSS-青橄榄平台SSO对接模块设计-用户需求-分析两份对接文档-1780906038-discuss-r1-gemini-20260608-080819.md",
-    "sso_discussion_r2": ".omc/collaboration/artifacts/DISCUSS-青橄榄平台SSO对接模块设计-用户需求-分析两份对接文档-1780906038-discuss-r2-gemini-20260608-080849.md",
-    "sso_discussion_r3": ".omc/collaboration/artifacts/DISCUSS-青橄榄平台SSO对接模块设计-用户需求-分析两份对接文档-1780906038-discuss-r3-gemini-20260608-080918.md",
-    "sso_next_steps_discussion_r1": ".omc/collaboration/artifacts/DISCUSS-青橄榄SSO模块下一步工作决策-当前状态-SSO模块PHASE-1780908374-discuss-r1-gemini-20260608-084855.md",
-    "sso_next_steps_discussion_r2": ".omc/collaboration/artifacts/DISCUSS-青橄榄SSO模块下一步工作决策-当前状态-SSO模块PHASE-1780908374-discuss-r2-gemini-20260608-084931.md",
-    "sso_readme": "backend/apps/sso_qingganlian/README.md",
-    "sso_final_verification": ".omc/collaboration/artifacts/DISCUSS-SSO模块最终验证和项目完成确认-实施完成状态-PHASE-1780915532-discuss-r0-claude-20260608-104532.md"
+    "sso_technical_proposal": "docs/青橄榄SSO对接技术方案.md",
+    "sso_communication_architecture": "docs/SSO对接框架通讯架构说明.md",
+    "sso_generalization_feasibility": "docs/SSO模块通用化可行性分析报告.md",
+    "sso_generalization_discussion1_r0": ".omc/collaboration/artifacts/DISCUSS-SSO模块通用化改造可行性分析-背景-当前实现了青橄榄平台专用SSO对接模块-1780927522-discuss-r0-claude-20260608-140522.md",
+    "sso_generalization_discussion1_r1": ".omc/collaboration/artifacts/DISCUSS-SSO模块通用化改造可行性分析-背景-当前实现了青橄榄平台专用SSO对接模块-1780927522-discuss-r1-gemini-20260608-140617.md",
+    "sso_generalization_discussion1_r3": ".omc/collaboration/artifacts/DISCUSS-SSO模块通用化改造可行性分析-背景-当前实现了青橄榄平台专用SSO对接模块-1780927522-discuss-r3-gemini-20260608-140732.md",
+    "sso_generalization_discussion2_r0": ".omc/collaboration/artifacts/DISCUSS-SSO模块通用化改造-二次讨论-包含CLAUDE独立分析-1780928421-discuss-r0-claude-20260608-142021.md",
+    "sso_generalization_discussion2_r1": ".omc/collaboration/artifacts/DISCUSS-SSO模块通用化改造-二次讨论-包含CLAUDE独立分析-1780928421-discuss-r1-gemini-20260608-142109.md",
+    "sso_generalization_discussion2_r3": ".omc/collaboration/artifacts/DISCUSS-SSO模块通用化改造-二次讨论-包含CLAUDE独立分析-1780928421-discuss-r3-gemini-20260608-142233.md",
+    "sso_interface_validation_discussion3_r1": ".omc/collaboration/artifacts/DISCUSS-SSO模块BASESSOPROVIDER接口实现验证-背景-已完成初步实现-1780929314-discuss-r1-gemini-20260608-143557.md",
+    "sso_providers_base": "backend/apps/sso_qingganlian/providers/base.py",
+    "sso_providers_qingganlian": "backend/apps/sso_qingganlian/providers/qingganlian.py",
+    "sso_providers_init": "backend/apps/sso_qingganlian/providers/__init__.py"
   },
-  "code_audit_results": {
-    "codex_security": {
-      "p0_issues": 4,
-      "p1_issues": 4,
-      "focus": "DEMO_AUTH_ENABLED、SECRET_KEY、HTTPS、演示账号暴露、throttle、token lifetime、演示账号隔离"
-    },
-    "gemini_ux": {
-      "p0_issues": 2,
-      "p1_issues": 0,
-      "focus": "时间线渲染逻辑、附件展示、loading状态"
-    },
-    "total_p0_fixed": 6,
-    "total_p1_fixed": 4,
-    "total_p1_remaining": 0
-  },
-  "p1_issues_status": {
-    "completed": [
-      "P1-1: 演示账号映射真实业务账号（添加is_demo标记隔离）",
-      "P1-2: login/demo-login端点添加throttle限流（5次/分钟）",
-      "P1-3: Token有效期从24h缩短至1h",
-      "P1-4: 核心按钮添加loading状态防止重复提交"
-    ],
-    "remaining": []
-  },
-  "three_party_collaboration": {
-    "topic": "审计登录设计修复代码",
-    "rounds": 3,
-    "participants": [
-      "claude",
-      "codex",
-      "gemini"
-    ],
-    "consensus_reached": true,
-    "issues_identified": 3,
-    "issues_resolved": 2,
-    "issues_out_of_scope": 1,
-    "blocking_issues": [
-      "showScreen索引冲突",
-      "登录失败状态清理"
-    ],
-    "status": "所有阻塞问题已修复"
-  },
-  "production_readiness_audit": {
-    "date": "2026-06-07",
-    "auditors": [
-      "codex",
-      "gemini"
-    ],
-    "scope": "demo-web登录+动态时间线+后端demo-login端点",
-    "p0_blocking_issues": 6,
-    "p0_fixed": 6,
-    "p1_high_risk": 4,
-    "p1_fixed": 4,
-    "p1_remaining": 0,
-    "status": "所有P0和P1问题已修复"
-  },
-  "test_accounts": {
-    "student": "2024220220323 / test123 (孙芮)",
-    "dorm_manager": "92025040 / test123 (孙凤)",
-    "counselor": "20200106 / test123 (张兴，新闻与传播学院) - 已更正，原20250015不匹配",
-    "admin": "20144020 / test123 (肖延量)",
-    "new_test_set_liuyuan4": {
-      "students": [
-        "2020180340301/test123 陈静茹",
-        "2021180240603/test123 丁怡如"
-      ],
-      "dorm_managers": [
-        "92021096/test123 戴丽媛",
-        "92025040/test123 孙凤"
-      ],
-      "counselor": "20200106/test123 张兴（新闻与传播学院）",
-      "dean": "20144030/test123 陈敏",
-      "note": "柳园4栋+新闻与传播学院，department匹配"
-    }
-  },
-  "integration_test_results": {
-    "total": 8,
-    "passed": 8,
-    "failed": 0,
-    "tests": [
-      "Student login (2020001)",
-      "Dorm manager login (M001)",
-      "Counselor login (T001)",
-      "Dean login (D001)",
-      "Get approval list",
-      "Get approval detail with student_name",
-      "Get application list",
-      "Get application detail with status"
+  "sso_generalization_status": {
+    "discussions_launched": 3,
+    "total_rounds": 9,
+    "codex_failures": 9,
+    "gemini_consensus": true,
+    "decision": "轻量级Strategy Pattern解耦",
+    "interface_created": true,
+    "interface_validated": true,
+    "migrations_pending": true,
+    "testing_pending": true,
+    "gemini_key_findings": [
+      "接口未over-fit青橄榄3步流程",
+      "credentials: Dict充分抽象",
+      "provider_data JSONField符合OIDC/OAuth2最佳实践",
+      "推荐3步零停机迁移：添加字段→回填数据→删除旧字段",
+      "推荐mock测试策略：patch QingganlanClient模拟网络响应"
     ]
   },
-  "development_status": {
-    "code_complete": true,
-    "automated_tests_complete": true,
-    "integration_tests_passed": true,
-    "p0_security_fixes_complete": true,
-    "p1_fixes_complete": true,
-    "p1_fixes_percentage": 100,
-    "error_handling_complete": true,
-    "uat_prepared": true,
-    "documentation_complete": true,
-    "all_commits_pushed": true,
-    "code_review_complete": true,
-    "production_ready": true
-  },
-  "project_status": "SSO Module Code Complete - Pending Integration Testing",
-  "completion_note": "代码审计发现10个阻塞问题（6P0+4P1），已全部修复。Codex三方审核达成生产就绪共识（r10 consensus=true, blocking_issues=[]）。修复分页offset计算错误和decided_at字段缺失两个关键阻塞问题。开发完成度：100%。代码层面生产就绪，可选择性执行UAT或直接部署。",
-  "test_preparation": {
-    "reset_command_created": true,
-    "test_data_reset": "删除3条申请+7条审批记录",
-    "test_document_generated": "docs/测试文档-完整流程测试.docx (12KB)",
-    "test_groups": 5,
-    "test_groups_details": "物理与电信学院+荷园2栋, 商学院+兰园4栋, 商学院+荷园2栋, 政法学院+柳园3栋, 旅游文化与地理科学学院+荷园3栋"
-  },
-  "sso_module_status": {
-    "phase1_complete": true,
-    "phase2_complete": true,
-    "phase3_complete": true,
-    "phase4_complete": true,
-    "production_ready": false,
-    "documentation_complete": true,
-    "commits_local": 13,
-    "commits_pushed": 0,
-    "code_complete": true,
-    "integration_tested": false,
-    "gemini_blocking_issues": [
-      "缺乏真实青橄榄平台对接联调测试报告",
-      "appKey/appSecret未获取真实值",
-      "需E2E验证证据"
-    ]
-  }
+  "project_status": "SSO Module Generalization In Progress - Interface Complete, Migrations Pending"
 }

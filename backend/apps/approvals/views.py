@@ -4,8 +4,11 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from django.utils import timezone
 from django.db import transaction
+from django.http import HttpResponse
 import logging
 from drf_spectacular.utils import extend_schema, OpenApiParameter
+from openpyxl import Workbook
+from openpyxl.styles import Font, Alignment
 from .models import Approval, ApprovalDecision, ApprovalStep
 from .serializers import ApprovalSerializer, ApprovalActionSerializer, ApprovalListSerializer, ApprovalListResponseSerializer
 from .pagination import ApprovalLimitOffsetPagination
@@ -313,3 +316,73 @@ def reject_approval(request, approval_id):
     application.save()
 
     return Response(ApprovalSerializer(approval).data)
+
+
+@extend_schema(
+    operation_id='approvals_export',
+    summary='导出审批数据',
+    description='导出所有审批数据到Excel（仅学工部）',
+    responses={
+        200: {'description': 'Excel文件'},
+        403: ErrorResponseSerializer,
+    },
+    tags=['审批']
+)
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def export_approvals(request):
+    if request.user.role != UserRole.DEAN:
+        return Response(
+            {'error': {'code': 'FORBIDDEN', 'message': '仅学工部可导出数据'}},
+            status=status.HTTP_403_FORBIDDEN
+        )
+
+    applications = Application.objects.select_related('student').prefetch_related('approvals').order_by('-created_at')
+
+    wb = Workbook()
+    ws = wb.active
+    ws.title = '审批数据'
+
+    headers = ['申请ID', '提交人', '手机号', '提交时间', '审批状态',
+               '宿管员', '宿管审批时间', '宿管审批结果',
+               '辅导员', '辅导员审批时间', '辅导员审批结果']
+    ws.append(headers)
+
+    for cell in ws[1]:
+        cell.font = Font(bold=True)
+        cell.alignment = Alignment(horizontal='center')
+
+    for app in applications:
+        dorm_approval = app.approvals.filter(step=ApprovalStep.DORM_MANAGER).first()
+        counselor_approval = app.approvals.filter(step=ApprovalStep.COUNSELOR).first()
+
+        row = [
+            app.application_id,
+            app.student_name,
+            app.contact_phone or '',
+            app.created_at.strftime('%Y-%m-%d %H:%M:%S'),
+            app.get_status_display(),
+            dorm_approval.approver_name if dorm_approval else '',
+            dorm_approval.decided_at.strftime('%Y-%m-%d %H:%M:%S') if dorm_approval and dorm_approval.decided_at else '',
+            dorm_approval.get_decision_display() if dorm_approval else '',
+            counselor_approval.approver_name if counselor_approval else '',
+            counselor_approval.decided_at.strftime('%Y-%m-%d %H:%M:%S') if counselor_approval and counselor_approval.decided_at else '',
+            counselor_approval.get_decision_display() if counselor_approval else '',
+        ]
+        ws.append(row)
+
+    for column in ws.columns:
+        max_length = 0
+        column_letter = column[0].column_letter
+        for cell in column:
+            if cell.value:
+                max_length = max(max_length, len(str(cell.value)))
+        ws.column_dimensions[column_letter].width = min(max_length + 2, 50)
+
+    response = HttpResponse(
+        content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+    )
+    response['Content-Disposition'] = f'attachment; filename="approvals_{timezone.now().strftime("%Y%m%d_%H%M%S")}.xlsx"'
+    wb.save(response)
+
+    return response

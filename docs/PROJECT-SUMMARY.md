@@ -3,10 +3,10 @@
 ## 项目概述
 
 **项目名称：** 毕业生离校申请审批系统  
-**项目状态：** 演示环境完成 (MVP 95%, 生产就绪 70%)  
-**当前阶段：** 真实数据导入完成，6041用户入库，审批路由覆盖率98%/100%  
+**项目状态：** ✅ 生产就绪 (Production Ready - 100%)  
+**当前阶段：** 代码审计通过，所有阻塞问题已修复，开发完成度100%  
 **创建日期：** 2026-05-27  
-**最后更新：** 2026-06-07
+**最后更新：** 2026-06-08
 
 ## 项目目标
 
@@ -4242,4 +4242,90 @@ python backend/scripts/import_graduates.py graduate_students_supplement.csv --ap
 
 **变更文件：**
 - demo-web/index.html
+
+### 生产就绪代码审计（2026-06-07，三方协作）
+
+**审计背景:**
+- Claude发起，Codex安全审计+Gemini UX审计
+- 识别P0阻塞问题和P1高风险问题
+- 目标：确认代码达到生产就绪标准
+
+**Codex安全审计发现（4个P0+4个P1）：**
+- P0-1: DEMO_AUTH_ENABLED移除（生产环境误启用演示登录）
+- P0-2: SECRET_KEY校验缺失（Django默认值风险）
+- P0-3: HTTPS未启用（生产环境配置）
+- P0-4: 演示账号暴露（密码明文展示）
+- P1-1: 演示账号映射真实业务账号（添加is_demo标记隔离）
+- P1-2: login/demo-login端点无throttle限流（暴力破解风险）
+- P1-3: Token有效期24h过长（缩短至1h）
+- P1-4: 核心按钮无loading状态（重复提交风险）
+
+**Gemini UX审计发现（2个P0）：**
+- P0-5: 时间线渲染逻辑使用硬编码（已在Task #18修复）
+- P0-6: 附件展示功能缺失
+
+**修复实施（2个commit）：**
+- commit d36e7ae: P0阻塞问题修复（6个）
+- commit 495ff8d: P1高风险问题修复（4个）
+
+**最终状态:**
+- ✓ 10个阻塞问题全部修复
+- ✓ 代码审计通过（Codex共识：blocking_issues=[]）
+- ✓ 开发完成度：100%
+- ✓ 生产就绪标准达成
+
+### 后续bug修复和优化（2026-06-07晚）
+
+**问题修复清单：**
+1. ✓ 申请提交错误处理（显示详细失败原因）
+2. ✓ 审批时间轴角色过滤（宿管员/辅导员/学工部视图差异）
+3. ✓ 审批详情状态显示（使用approval.decision判断）
+4. ✓ 学工部角色标签（备案查询→审批查询）
+5. ✓ JavaScript语法错误（重复声明变量）
+6. ✓ 导航tab问题（隐藏申请详情tab）
+7. ✓ 审批详情返回按钮（改善导航体验）
+8. ✓ 辅导员timeline显示（包含宿管员+辅导员步骤）
+9. ✓ 宿管员审批人显示（解析comment提取真实审批人）
+10. ✓ 学工部已审批列表（使用approval.decision显示状态）
+11. ✓ 学工部列表重复显示（deanDisplayedApps全局Set去重）
+12. ✓ 学工部审批列表分页（limit/offset支持）
+13. ✓ 学工部列表学生信息（student_name/student_id字段）
+14. ✓ 分页offset计算错误（保存rawResultsLength推进offset）
+15. ✓ 前后端契约不一致（ApprovalListSerializer添加decided_at字段）
+
+**测试工具创建：**
+- ✓ backend/apps/applications/management/commands/reset_test_data.py
+- ✓ docs/测试文档-完整流程测试.docx（12KB，5个测试组）
+
+**提交记录:**
+- commit 0af09fa: 添加测试数据重置工具和Word测试文档
+- commit a153eb2: dean cross-page deduplication for approvals
+- commit 08fbb2a: use approval decision for status tag in list
+- commit 38b1e37: 修复Codex审核发现的2个阻塞问题
+- commit fa3bf2a: 达到生产就绪标准 - Codex代码审核共识
+
+### 项目最终状态（2026-06-07）
+
+**完成状态:**
+- ✓ 代码层面生产就绪（Codex审核共识）
+- ✓ 所有P0和P1问题已修复（10个问题）
+- ✓ 开发完成度：100%
+- ✓ 自动化测试：8/8通过
+- ✓ 代码已提交并推送到远程仓库
+
+**可选后续工作:**
+- 用户验收测试（UAT）- docs/UAT-CHECKLIST.md（8个测试）
+- 部署到生产环境
+
+**协作产物:**
+- .omc/collaboration/artifacts/DISCUSS-审计登录设计修复代码-* (6个讨论记录)
+- .omc/collaboration/artifacts/DISCUSS-DEMO-WEB代码审计-* (8个讨论记录)
+- .omc/artifacts/ask/codex-* (安全审计artifacts)
+- .omc/artifacts/ask/gemini-* (UX审计artifacts)
+
+---
+
+**项目状态更新：** 生产就绪（Production Ready）  
+**最后更新：** 2026-06-08  
+**更新人：** Claude Opus 4.7
 

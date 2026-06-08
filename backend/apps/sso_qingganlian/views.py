@@ -7,7 +7,12 @@ from rest_framework_simplejwt.tokens import RefreshToken
 
 from .client import QingganlanClient
 from .models import SSOUserMapping
-from .serializers import MobileLoginRequestSerializer, MobileLoginResponseSerializer
+from .serializers import (
+    MobileLoginRequestSerializer,
+    MobileLoginResponseSerializer,
+    AdminLoginRequestSerializer,
+    AdminLoginResponseSerializer
+)
 from .exceptions import SSOAPIError, SSOTokenExpiredError, SSOUserInfoError
 
 
@@ -117,6 +122,98 @@ def mobile_login(request):
     except SSOUserInfoError as e:
         return Response({'error': '用户信息获取失败，请重新登录'},
                        status=status.HTTP_401_UNAUTHORIZED)
+    except SSOAPIError as e:
+        return Response({'error': f'登录失败: {e.message}'},
+                       status=status.HTTP_400_BAD_REQUEST)
+    except Exception as e:
+        return Response({'error': f'登录失败: {str(e)}'},
+                       status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+@api_view(['POST'])
+def admin_login(request):
+    """
+    管理端登录端点
+
+    流程：
+    1. 验证请求参数（authorization token）
+    2. 调用青橄榄API: verify-user
+    3. 查询/创建本地管理员User
+    4. 查询/创建SSOUserMapping
+    5. 生成JWT token
+    6. 返回token和用户信息
+    """
+    # 1. 验证请求参数
+    serializer = AdminLoginRequestSerializer(data=request.data)
+    if not serializer.is_valid():
+        return Response({'error': '参数错误', 'details': serializer.errors},
+                       status=status.HTTP_400_BAD_REQUEST)
+
+    authorization = serializer.validated_data['authorization']
+
+    try:
+        # 2. 初始化客户端并验证管理员用户
+        # TODO: 从配置获取app_key和app_secret
+        client = QingganlanClient(
+            app_key='APPKEY_TBD',  # 待获取
+            app_secret='APPSECRET_TBD',  # 待获取
+            env='prod',
+            api_type='admin'
+        )
+
+        admin_result = client.verify_admin_user(authorization)
+        admin_data = admin_result['data']
+
+        # 3. 获取管理员信息
+        username = admin_data.get('username', '')
+        name = admin_data.get('name', '')
+        tenant_code = admin_data.get('tenant_code', '')
+        role_name = admin_data.get('role_name', '')
+        phone = admin_data.get('phone', '')
+
+        # 4. 查询或创建本地管理员User
+        user, created = User.objects.get_or_create(
+            username=username,
+            defaults={
+                'first_name': name[:30],
+                'is_staff': True,
+                'is_active': True
+            }
+        )
+
+        # 5. 创建或更新SSOUserMapping
+        mapping, _ = SSOUserMapping.objects.update_or_create(
+            username=username,
+            defaults={
+                'user': user,
+                'tenant_code': tenant_code,
+                'user_type': 'admin',
+                'real_name': name,
+                'phone': phone,
+                'identity_name': '管理员',
+                'role_name': role_name,
+                'last_login_at': timezone.now()
+            }
+        )
+
+        # 6. 生成JWT token
+        refresh = RefreshToken.for_user(user)
+        access_token = str(refresh.access_token)
+
+        # 7. 返回响应
+        response_data = {
+            'token': access_token,
+            'user': {
+                'id': user.id,
+                'username': user.username,
+                'real_name': name,
+                'role': 'admin',
+                'phone': phone
+            }
+        }
+
+        return Response(response_data, status=status.HTTP_200_OK)
+
     except SSOAPIError as e:
         return Response({'error': f'登录失败: {e.message}'},
                        status=status.HTTP_400_BAD_REQUEST)

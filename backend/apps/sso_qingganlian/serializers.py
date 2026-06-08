@@ -21,3 +21,14 @@ class MobileLoginResponseSerializer(serializers.Serializer):
     """移动端登录响应序列化器"""
     token = serializers.CharField(read_only=True, help_text='本地JWT token')
     user = UserInfoSerializer(read_only=True)
+
+
+class AdminLoginRequestSerializer(serializers.Serializer):
+    """管理端登录请求序列化器"""
+    authorization = serializers.CharField(max_length=1000, required=True, help_text='Authorization token')
+
+
+class AdminLoginResponseSerializer(serializers.Serializer):
+    """管理端登录响应序列化器"""
+    token = serializers.CharField(read_only=True, help_text='本地JWT token')
+    user = UserInfoSerializer(read_only=True)

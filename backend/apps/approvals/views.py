@@ -62,7 +62,7 @@ def list_approvals(request):
         ).select_related('application', 'application__student', 'approver')
 
     # 学工部: 查看所有审批（存档用）
-    elif user.role == UserRole.DEAN:
+    elif user.role in [UserRole.DEAN, UserRole.ADMIN]:
         queryset = Approval.objects.all().select_related('application', 'application__student', 'approver')
 
     else:
@@ -112,7 +112,7 @@ def get_approval(request, approval_id):
     user = request.user
 
     # Permission check: only the approver or dean can view this approval
-    if user.role == UserRole.DEAN or approval.approver_id == user.user_id:
+    if user.role in [UserRole.DEAN, UserRole.ADMIN] or approval.approver_id == user.user_id:
         return Response(ApprovalSerializer(approval).data)
 
     return Response({'error': {'code': 'FORBIDDEN', 'message': '无权限访问此资源'}},
@@ -150,7 +150,7 @@ def approve_approval(request, approval_id):
     if approval.step == ApprovalStep.COUNSELOR and user.role != UserRole.COUNSELOR:
         return Response({'error': {'code': 'FORBIDDEN', 'message': '无权限执行此操作'}},
                         status=status.HTTP_403_FORBIDDEN)
-    if approval.step == ApprovalStep.DEAN and user.role != UserRole.DEAN:
+    if approval.step == ApprovalStep.DEAN and user.role not in [UserRole.DEAN, UserRole.ADMIN]:
         return Response({'error': {'code': 'FORBIDDEN', 'message': '无权限执行此操作'}},
                         status=status.HTTP_403_FORBIDDEN)
 
@@ -283,7 +283,7 @@ def reject_approval(request, approval_id):
     if approval.step == ApprovalStep.COUNSELOR and user.role != UserRole.COUNSELOR:
         return Response({'error': {'code': 'FORBIDDEN', 'message': '无权限执行此操作'}},
                         status=status.HTTP_403_FORBIDDEN)
-    if approval.step == ApprovalStep.DEAN and user.role != UserRole.DEAN:
+    if approval.step == ApprovalStep.DEAN and user.role not in [UserRole.DEAN, UserRole.ADMIN]:
         return Response({'error': {'code': 'FORBIDDEN', 'message': '无权限执行此操作'}},
                         status=status.HTTP_403_FORBIDDEN)
 

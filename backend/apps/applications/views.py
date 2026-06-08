@@ -1,5 +1,6 @@
 from rest_framework import status
-from rest_framework.decorators import api_view, permission_classes
+from rest_framework.decorators import api_view, permission_classes, parser_classes
+from rest_framework.parsers import JSONParser, MultiPartParser, FormParser
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from django.utils import timezone
@@ -51,6 +52,7 @@ import logging
 )
 @api_view(['GET', 'POST'])
 @permission_classes([IsAuthenticated])
+@parser_classes([JSONParser, MultiPartParser, FormParser])
 def applications_view(request):
     if request.method == 'GET':
         return list_applications(request)

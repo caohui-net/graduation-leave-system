@@ -1,3 +1,4 @@
+import logging
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
@@ -15,6 +16,8 @@ from .serializers import (
 )
 from .exceptions import SSOAPIError, SSOTokenExpiredError, SSOUserInfoError
 from . import settings as sso_settings
+
+logger = logging.getLogger(__name__)
 
 
 @api_view(['POST'])
@@ -40,6 +43,8 @@ def mobile_login(request):
     tenant_code = serializer.validated_data['tenant_code']
     appid = serializer.validated_data['appid']
     saas_wap_token = serializer.validated_data['saas_wap_token']
+
+    logger.info(f"Mobile login attempt: tenant={tenant_code}, appid={appid}")
 
     try:
         # 2. 初始化客户端并获取user_code
@@ -114,18 +119,23 @@ def mobile_login(request):
             }
         }
 
+        logger.info(f"Mobile login success: user={user.username}, role={role}")
         return Response(response_data, status=status.HTTP_200_OK)
 
     except SSOTokenExpiredError as e:
+        logger.warning(f"Mobile login failed: token expired, tenant={tenant_code}")
         return Response({'error': 'TOKEN已过期，请重新登录'},
                        status=status.HTTP_401_UNAUTHORIZED)
     except SSOUserInfoError as e:
+        logger.warning(f"Mobile login failed: user info error, tenant={tenant_code}")
         return Response({'error': '用户信息获取失败，请重新登录'},
                        status=status.HTTP_401_UNAUTHORIZED)
     except SSOAPIError as e:
+        logger.error(f"Mobile login failed: SSO API error {e.code}, tenant={tenant_code}")
         return Response({'error': f'登录失败: {e.message}'},
                        status=status.HTTP_400_BAD_REQUEST)
     except Exception as e:
+        logger.exception(f"Mobile login failed: unexpected error, tenant={tenant_code}")
         return Response({'error': f'登录失败: {str(e)}'},
                        status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
@@ -150,6 +160,8 @@ def admin_login(request):
                        status=status.HTTP_400_BAD_REQUEST)
 
     authorization = serializer.validated_data['authorization']
+
+    logger.info("Admin login attempt")
 
     try:
         # 2. 初始化客户端并验证管理员用户
@@ -211,11 +223,14 @@ def admin_login(request):
             }
         }
 
+        logger.info(f"Admin login success: user={user.username}")
         return Response(response_data, status=status.HTTP_200_OK)
 
     except SSOAPIError as e:
+        logger.error(f"Admin login failed: SSO API error {e.code}")
         return Response({'error': f'登录失败: {e.message}'},
                        status=status.HTTP_400_BAD_REQUEST)
     except Exception as e:
+        logger.exception("Admin login failed: unexpected error")
         return Response({'error': f'登录失败: {str(e)}'},
                        status=status.HTTP_500_INTERNAL_SERVER_ERROR)

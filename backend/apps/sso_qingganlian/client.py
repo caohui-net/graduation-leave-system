@@ -37,6 +37,8 @@ class QingganlanClient:
         else:
             self.base_url = self.ADMIN_API_BASE[env]
 
+        self.session = requests.Session()
+
     def _make_request(self, method, endpoint, data=None, encryption_type='sha1'):
         """
         发起HTTP请求
@@ -60,9 +62,9 @@ class QingganlanClient:
 
         try:
             if method.upper() == 'POST':
-                response = requests.post(url, headers=headers, data=data, timeout=30)
+                response = self.session.post(url, headers=headers, data=data, timeout=30)
             else:
-                response = requests.get(url, headers=headers, params=data, timeout=30)
+                response = self.session.get(url, headers=headers, params=data, timeout=30)
 
             response.raise_for_status()
             result = response.json()

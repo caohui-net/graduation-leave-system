@@ -1,5 +1,5 @@
 from django.db import models
-from django.contrib.auth.models import User
+from django.conf import settings
 
 
 class SSOUserMapping(models.Model):
@@ -13,13 +13,18 @@ class SSOUserMapping(models.Model):
 
     # 本地用户
     user = models.OneToOneField(
-        User,
+        settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
         related_name='sso_mapping',
         verbose_name='本地用户'
     )
 
-    # 青橄榄标识
+    # 通用SSO字段
+    provider = models.CharField(max_length=50, null=True, blank=True, verbose_name='SSO提供商')
+    external_uid = models.CharField(max_length=200, null=True, blank=True, verbose_name='外部用户ID')
+    provider_data = models.JSONField(null=True, blank=True, verbose_name='提供商数据')
+
+    # 青橄榄标识（待废弃）
     tenant_code = models.CharField(max_length=50, verbose_name='租户Code')
     user_code = models.CharField(
         max_length=200,

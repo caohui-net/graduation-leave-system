@@ -15,6 +15,9 @@ django-cors-headers==4.3.1
 # 认证
 djangorestframework-simplejwt==5.3.1
 
+# HTTP客户端
+requests==2.31.0
+
 # 时间处理
 python-dateutil==2.9.0
 

@@ -10,6 +10,7 @@ urlpatterns = [
     path('api/applications/', include('apps.applications.urls')),
     path('api/approvals/', include('apps.approvals.urls')),
     path('api/notifications/', include('apps.notifications.urls')),
+    path('api/sso/qingganlian/', include('apps.sso_qingganlian.urls')),
 
     # API Documentation
     path('api/schema/', SpectacularAPIView.as_view(), name='schema'),

@@ -36,6 +36,7 @@ INSTALLED_APPS = [
     'apps.approvals',
     'apps.attachments',
     'apps.notifications',
+    'apps.sso_qingganlian',
 ]
 
 MIDDLEWARE = [

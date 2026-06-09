@@ -62,7 +62,7 @@ class QingganlanClient:
 
         try:
             if method.upper() == 'POST':
-                response = self.session.post(url, headers=headers, data=data, timeout=30)
+                response = self.session.post(url, headers=headers, json=data, timeout=30)
             else:
                 response = self.session.get(url, headers=headers, params=data, timeout=30)
 
@@ -99,7 +99,7 @@ class QingganlanClient:
         Returns:
             dict: 包含user_code等信息
         """
-        endpoint = '/open-api/user-center/user-code-by-token'
+        endpoint = '/saas_api/open-api/user-center/user-code-by-token'
         data = {
             'tenant_code': tenant_code,
             'appid': appid,

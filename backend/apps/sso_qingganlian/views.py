@@ -69,6 +69,12 @@ def mobile_login(request):
         identity_name = user_data.get('identity_name', '')
         phone = user_data.get('phone', '')
 
+        # 安全检查：拒绝空标识符
+        if not number:
+            logger.error(f"Mobile login failed: missing user number, tenant={tenant_code}")
+            return Response({'error': '用户标识缺失，无法登录'},
+                           status=status.HTTP_400_BAD_REQUEST)
+
         user, created = User.objects.get_or_create(
             username=number,
             defaults={
@@ -181,6 +187,12 @@ def admin_login(request):
         tenant_code = admin_data.get('tenant_code', '')
         role_name = admin_data.get('role_name', '')
         phone = admin_data.get('phone', '')
+
+        # 安全检查：拒绝空标识符
+        if not username:
+            logger.error("Admin login failed: missing username")
+            return Response({'error': '管理员标识缺失，无法登录'},
+                           status=status.HTTP_400_BAD_REQUEST)
 
         # 4. 查询或创建本地管理员User
         user, created = User.objects.get_or_create(

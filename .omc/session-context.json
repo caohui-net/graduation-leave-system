@@ -1,55 +1,44 @@
 {
-  "last_updated": "2026-06-08T18:49:00Z",
+  "last_updated": "2026-06-09T03:30:00Z",
   "completed": [
-    "修复5个代码审查阻塞问题（decided_by字段、Excel公式注入防护、N+1查询优化、测试覆盖）",
-    "创建并应用数据库迁移0004_add_decided_by_field.py",
-    "更新approve_approval/reject_approval/自动完成宿管审批记录decided_by",
-    "更新通知服务使用decided_by作为actor",
-    "创建test_admin_and_export.py测试文件（6个测试，5个通过）",
-    "提交修复到git（commit d2fd68f）并推送到远程",
-    "诊断用户20144030登录失败：CORS配置问题",
-    "添加http://172.17.12.199:7788到CORS_ALLOWED_ORIGINS",
-    "添加http://127.0.0.1:7788到CORS_ALLOWED_ORIGINS",
-    "诊断根本原因：系统网络栈阻止从172.17.12.199接口访问同IP不同端口（非防火墙问题）",
-    "测试验证：Django绑定0.0.0.0:7787和172.17.12.199:7787均无法从172.17.12.199访问",
-    "测试验证：从127.0.0.1可以正常访问Django API（用户20144030存在，密码正确，返回JWT token）"
+    "重置所有用户密码（6080个用户，密码统一为123456）",
+    "验证Docker环境（29.1.3）和Django环境（4.2.13）",
+    "确认backend容器运行状态（graduation-leave-system-backend-1，端口7787）",
+    "查看已安装Django apps（applications/approvals/attachments/users等）",
+    "创建青橄榄SSO对接材料文档（docs/青橄榄平台对接材料-提交版.md）",
+    "验证SSO测试凭证（AppKey/AppSecret/TenantCode: S10405/AppId: c6qgh2）",
+    "创建SSO app基础文件（apps/sso_qingganlian/apps.py和__init__.py）",
+    "分析青橄榄SSO对接需求（移动端+管理端两个登录接口）"
   ],
   "pending": [
-    "解决网络访问问题（需要nginx反向代理或修改前端API配置）",
-    "用户从其他机器172.17.12.200访问http://172.17.12.199:7788测试登录",
-    "修复1个失败的测试：test_admin_can_approve_dorm_manager_step返回404",
-    "应用2个sso_qingganlian迁移（非阻塞）",
-    "实施SSO模块Django 3步迁移：Phase 1添加nullable字段+回填",
-    "实施SSO模块Django 3步迁移：Phase 2更新应用逻辑",
-    "实施SSO模块Django 3步迁移：Phase 3删除旧字段",
-    "创建SSO模块单元测试：mock QingganlanClient",
-    "更新views.py使用QingganlanProvider实例",
-    "获取青橄榄平台真实appKey/appSecret",
-    "执行端到端联调测试"
+    "完成青橄榄SSO技术方案讨论（使用CCG三方协作分析）",
+    "明确青橄榄API调用方式和签名验证方法",
+    "实现SSO models.py（SSOUserMapping用户映射模型）",
+    "实现青橄榄API客户端（QingganlanClient调用验证token）",
+    "实现移动端登录接口（POST /api/sso/qingganlian/mobile/login）",
+    "实现管理端登录接口（POST /api/sso/qingganlian/admin/login）",
+    "配置URL路由和Django settings",
+    "编写测试脚本验证对接流程",
+    "获取青橄榄平台管理端appKey/appSecret",
+    "获取青橄榄平台测试账号和token",
+    "执行完整的端到端联调测试"
   ],
   "evidence": [
-    "git commit d2fd68f: fix: 修复审批Excel导出和ADMIN权限的5个阻塞问题",
-    "数据库迁移0004已应用：decided_by字段添加成功",
-    "测试结果：5/6通过（test_admin_and_export.py）",
-    "curl测试：用户20144030登录成功返回JWT token（从127.0.0.1:7787）",
-    "网络诊断：curl从172.17.12.199连接172.17.12.199:7787失败（连接被拒绝）",
-    "网络诊断：lsof显示Django监听*:7787，ss显示0.0.0.0:7787 LISTEN",
-    "防火墙状态：ufw/firewalld/iptables均未启用",
-    "用户确认：从其他机器172.17.12.200访问，浏览器日志显示CORS预检失败"
+    "Docker版本：29.1.3",
+    "Django版本：4.2.13",
+    "backend容器状态：graduation-leave-system-backend-1运行中，端口7787→8000",
+    "已安装Django apps：applications/approvals/attachments/users等",
+    "密码重置输出：6080/6080用户密码重置完成",
+    "SSO测试凭证已验证：AppKey/AppSecret/TenantCode(S10405)/AppId(c6qgh2)",
+    "SSO app基础文件已创建：apps/sso_qingganlian/apps.py和__init__.py",
+    "对接材料文档状态：docs/青橄榄平台对接材料-提交版.md（待补充联系人信息）"
   ],
-  "next_focus": "系统网络配置阻止从172.17.12.199接口访问同IP不同端口。需要实施nginx反向代理（方案A）或修改前端API配置（方案B）来解决跨端口访问问题。当前服务状态：Django在172.17.12.199:7787，前端在0.0.0.0:7788，但网络不通无法完成登录功能测试。",
-  "blocking_issue": {
-    "description": "系统网络栈限制：从172.17.12.199接口无法访问同一IP的不同端口",
-    "impact": "用户从其他机器访问前端时，前端JavaScript无法向后端API发送请求（CORS预检失败）",
-    "root_cause": "系统级网络配置问题（非防火墙、非Django配置），可能是内核参数、网络命名空间或安全策略",
-    "proposed_solution": "nginx反向代理：前后端统一在7788端口，/api/路径代理到127.0.0.1:7787",
-    "alternatives": ["修改前端API配置使用代理", "深入诊断系统网络配置（复杂且耗时）"]
-  },
+  "next_focus": "完成青橄榄SSO对接技术方案讨论和确认。当前正在使用CCG三方协作分析需求，需要明确：1）青橄榄API调用方式和签名验证；2）用户映射策略；3）JWT token管理；4）测试方案（mock vs真实API）。技术方案确认后再开始完整代码实现。",
   "artifacts": {
-    "migration": "backend/apps/approvals/migrations/0004_add_decided_by_field.py",
-    "test_file": "backend/apps/approvals/tests/test_admin_and_export.py",
-    "cors_config": "backend/config/settings/base.py:161-165",
-    "frontend_api": "demo-web/js/api.js:2（API_BASE_URL配置）"
+    "sso_对接材料": "docs/青橄榄平台对接材料-提交版.md",
+    "sso_app_config": "backend/apps/sso_qingganlian/apps.py",
+    "sso_app_init": "backend/apps/sso_qingganlian/__init__.py"
   },
-  "project_status": "Excel导出功能和ADMIN权限已修复并测试通过。遇到网络配置阻塞问题需要nginx反向代理解决。"
+  "suggested_skills": ["oh-my-claudecode:ccg"],
+  "project_status": "开始实施青橄榄SSO对接。已完成环境验证、测试凭证确认和对接材料文档准备。当前处于技术方案讨论阶段，使用CCG三方协作分析需求和实施方案。"
 }

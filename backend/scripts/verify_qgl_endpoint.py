@@ -34,7 +34,7 @@ def test_endpoint(path):
     }
 
     data = {
-        'tenantCode': 'C10026',
+        'tenantCode': 'S10405',
         'userCode': 'test_user',
         'userType': '1'
     }
@@ -56,8 +56,8 @@ def test_endpoint(path):
 
 if __name__ == '__main__':
     paths = [
-        '/saas_api/open-api/user-center/user-info',
-        '/open-api/user-center/user-info'
+        '/open-api/user-center/user-code-by-token',
+        '/saas_api/open-api/user-center/user-info'
     ]
 
     print("验证青橄榄API endpoint路径...")

@@ -4377,3 +4377,27 @@ python backend/scripts/import_graduates.py graduate_students_supplement.csv --ap
 **最后更新：** 2026-06-08  
 **更新人：** Claude Opus 4.7
 
+
+### 青橄榄SSO API结构修复（2026-06-09）
+
+**问题发现：**
+- ✓ 用户指出API endpoint地址不正确
+- ✓ 重新分析官方接口文档（.docx转文本）
+
+**API结构分析：**
+- ✓ 读取 docs/移动端 - 用户信息获取接口文档.docx
+- ✓ 读取 docs/后台管理端-单点登录对接接口文档.docx
+- ✓ 发现移动端使用两种不同的endpoint前缀
+
+**代码修复：**
+- ✓ client.py:102 - 移除错误的/saas_api前缀
+- ✓ 正确的移动端API结构：
+  - Token换取: `/open-api/user-center/user-code-by-token`
+  - 用户信息: `/saas_api/open-api/user-center/user-info`
+
+**提交记录：**
+- 待提交: fix(sso): 修正青橄榄移动端API endpoint结构
+
+**下一步：**
+- 使用真实青橄榄token进行端到端测试
+- 验证API调用是否成功

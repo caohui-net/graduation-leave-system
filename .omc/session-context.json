@@ -1,44 +1,39 @@
 {
-  "last_updated": "2026-06-09T03:30:00Z",
+  "last_updated": "2026-06-09T04:22:00Z",
   "completed": [
-    "重置所有用户密码（6080个用户，密码统一为123456）",
-    "验证Docker环境（29.1.3）和Django环境（4.2.13）",
-    "确认backend容器运行状态（graduation-leave-system-backend-1，端口7787）",
-    "查看已安装Django apps（applications/approvals/attachments/users等）",
-    "创建青橄榄SSO对接材料文档（docs/青橄榄平台对接材料-提交版.md）",
-    "验证SSO测试凭证（AppKey/AppSecret/TenantCode: S10405/AppId: c6qgh2）",
-    "创建SSO app基础文件（apps/sso_qingganlian/apps.py和__init__.py）",
-    "分析青橄榄SSO对接需求（移动端+管理端两个登录接口）"
+    "重置所有用户密码（6080个用户）",
+    "验证Docker和Django环境",
+    "创建青橄榄SSO对接材料文档",
+    "验证SSO测试凭证",
+    "创建SSO app基础文件",
+    "完成青橄榄SSO技术方案讨论（CCG三方协作）",
+    "青橄榄SSO代码审计第1轮（Gemini识别4个critical bugs）",
+    "修复4个critical bugs：空用户名安全漏洞、payload格式错误、API路径前缀不一致、prod URL配置",
+    "青橄榄SSO代码审计第2轮（Gemini验证修复通过，达成共识）",
+    "提交SSO bug修复commit并push到remote",
+    "重新分析青橄榄API接口文档（读取官方.docx文件）",
+    "修复API endpoint结构错误：移动端使用两种不同前缀"
   ],
   "pending": [
-    "完成青橄榄SSO技术方案讨论（使用CCG三方协作分析）",
-    "明确青橄榄API调用方式和签名验证方法",
-    "实现SSO models.py（SSOUserMapping用户映射模型）",
-    "实现青橄榄API客户端（QingganlanClient调用验证token）",
-    "实现移动端登录接口（POST /api/sso/qingganlian/mobile/login）",
-    "实现管理端登录接口（POST /api/sso/qingganlian/admin/login）",
-    "配置URL路由和Django settings",
-    "编写测试脚本验证对接流程",
-    "获取青橄榄平台管理端appKey/appSecret",
-    "获取青橄榄平台测试账号和token",
-    "执行完整的端到端联调测试"
+    "使用真实青橄榄token进行端到端测试",
+    "从青橄榄团队获取移动端生产环境URL",
+    "获取青橄榄平台管理端appKey/appSecret"
   ],
   "evidence": [
-    "Docker版本：29.1.3",
-    "Django版本：4.2.13",
-    "backend容器状态：graduation-leave-system-backend-1运行中，端口7787→8000",
-    "已安装Django apps：applications/approvals/attachments/users等",
-    "密码重置输出：6080/6080用户密码重置完成",
-    "SSO测试凭证已验证：AppKey/AppSecret/TenantCode(S10405)/AppId(c6qgh2)",
-    "SSO app基础文件已创建：apps/sso_qingganlian/apps.py和__init__.py",
-    "对接材料文档状态：docs/青橄榄平台对接材料-提交版.md（待补充联系人信息）"
+    "SSO migrations已应用：0001_initial, 0002_add_provider_fields",
+    "Bug修复commit: fix(sso): 修复青橄榄SSO对接4个critical bugs",
+    "Gemini Round 3共识：所有修复正确，无新问题",
+    "API文档分析：读取官方docx文件并转换为文本",
+    "API endpoint修复：client.py:102 移除错误的/saas_api前缀"
   ],
-  "next_focus": "完成青橄榄SSO对接技术方案讨论和确认。当前正在使用CCG三方协作分析需求，需要明确：1）青橄榄API调用方式和签名验证；2）用户映射策略；3）JWT token管理；4）测试方案（mock vs真实API）。技术方案确认后再开始完整代码实现。",
+  "next_focus": "青橄榄SSO对接API结构已修正。移动端使用两种endpoint前缀：(1) /open-api/user-center/user-code-by-token (2) /saas_api/open-api/user-center/user-info。下一步需要使用真实token进行端到端测试验证修复。",
   "artifacts": {
-    "sso_对接材料": "docs/青橄榄平台对接材料-提交版.md",
-    "sso_app_config": "backend/apps/sso_qingganlian/apps.py",
-    "sso_app_init": "backend/apps/sso_qingganlian/__init__.py"
+    "bug_fixes": "docs/qingganlian-bug-fixes-20260609.md",
+    "api_structure_fix": "docs/qingganlian-api-structure-fix-20260609.md",
+    "endpoint_verification": "docs/qingganlian-endpoint-verification-results.md",
+    "sso_design": "docs/design/2026-06-08-sso-qingganlian-integration.md",
+    "mobile_api_doc": "/tmp/移动端 - 用户信息获取接口文档.txt",
+    "admin_api_doc": "/tmp/后台管理端-单点登录对接接口文档.txt"
   },
-  "suggested_skills": ["oh-my-claudecode:ccg"],
-  "project_status": "开始实施青橄榄SSO对接。已完成环境验证、测试凭证确认和对接材料文档准备。当前处于技术方案讨论阶段，使用CCG三方协作分析需求和实施方案。"
+  "project_status": "青橄榄SSO对接API结构修复完成。通过重新分析官方接口文档，发现移动端使用两种不同的endpoint前缀结构。代码已修正。待真实token验证。"
 }

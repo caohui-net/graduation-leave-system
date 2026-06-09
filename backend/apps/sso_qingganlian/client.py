@@ -99,7 +99,7 @@ class QingganlanClient:
         Returns:
             dict: 包含user_code等信息
         """
-        endpoint = '/saas_api/open-api/user-center/user-code-by-token'
+        endpoint = '/open-api/user-center/user-code-by-token'
         data = {
             'tenant_code': tenant_code,
             'appid': appid,

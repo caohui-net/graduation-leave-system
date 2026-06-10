@@ -129,7 +129,7 @@ def mobile_login(request):
             }
         }
 
-        logger.info(f"Mobile login success: user={user.username}, role={role}")
+        logger.info(f"Mobile login success: user={user.user_id}, role={role}")
         return Response(response_data, status=status.HTTP_200_OK)
 
     except SSOTokenExpiredError as e:

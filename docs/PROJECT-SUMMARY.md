@@ -4432,3 +4432,52 @@ python backend/scripts/import_graduates.py graduate_students_supplement.csv --ap
 - 三方审查报告：docs/青橄榄SSO对接-三方技术审查.md
 - 提交清单：docs/青橄榄SSO对接-提交清单-简版.md
 
+
+### 2026-06-10
+
+**青橄榄平台SSO对接（完成）：**
+
+✅ **管理端SSO集成**
+- 实现简化流程：直接接收Authorization + username
+- 回调页面：admin-sso-callback.html
+- API端点：POST /api/sso/qingganlian/admin/login
+- 适配青橄榄实际回调参数（Authorization大小写兼容）
+- 测试状态：完整流程验证通过
+
+✅ **移动端SSO集成**
+- 实现简化流程：接收Authorization + user_id + real_name + identity_name
+- 回调页面：mobile-sso-callback.html
+- API端点：POST /api/sso/qingganlian/mobile/login
+- 应用凭证配置：APP_KEY、TENANT_CODE(S10405)、APPID(8uonta)
+- 测试状态：完整流程验证通过
+
+✅ **Token自动恢复功能**
+- js/api.js增强：页面加载时从localStorage恢复token
+- UI自动初始化：DOMContentLoaded后自动显示业务界面
+- 免二次登录：token有效期内（7天）刷新页面保持登录状态
+- 适用范围：管理端和移动端
+
+✅ **移动端响应式优化**
+- 3层响应式适配：桌面(≥1024px)、平板(≤768px)、手机(≤480px)
+- 触摸体验优化：按钮最小44px、输入框16px字体防iOS缩放
+- 布局优化：导航换行、按钮全宽、表单垂直堆叠、表格横向滚动
+- 测试覆盖：iPhone SE(375px)、iPhone 12(390px)、iPad(768px)
+
+**技术亮点：**
+- 流程简化：去除OAuth token exchange，直接创建用户
+- 兼容处理：Authorization参数大小写兼容
+- 持久化登录：localStorage + 自动恢复机制
+- 跨端一致：管理端和移动端共用token恢复逻辑
+- 响应式设计：全设备适配，触摸友好
+
+**对接配置：**
+- 管理端回调URL：http://218.75.196.218:7788/admin-sso-callback.html
+- 移动端回调URL：http://218.75.196.218:7788/mobile-sso-callback.html
+- 后端API基础地址：http://218.75.196.218:7787/api
+
+**文档更新：**
+- 代码提交：SSO对接功能完整实现（views.py、client.py、回调页面、UI增强）
+- 配置更新：移动端credentials配置到backend/.env
+- 测试记录：管理端和移动端完整流程验证通过
+
+**当前状态：** SSO对接完成，已集成到生产就绪状态

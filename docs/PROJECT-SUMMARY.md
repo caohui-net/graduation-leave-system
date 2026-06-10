@@ -4401,3 +4401,34 @@ python backend/scripts/import_graduates.py graduate_students_supplement.csv --ap
 **下一步：**
 - 使用真实青橄榄token进行端到端测试
 - 验证API调用是否成功
+
+### 青橄榄SSO集成完成（2026-06-10）
+
+**完成内容：**
+- ✓ 修复user_code字段映射（统一使用user_code替代username）
+- ✓ 三方技术审查（Claude架构+Codex代码质量+Gemini运维，综合报告）
+- ✓ 修复mobile_login日志bug（user.username→user.user_id）
+- ✓ P1生产改进：事务保护（防并发竞态）、API超时30s、DEBUG=False
+- ✓ e2e测试全部通过（backend/test_sso_e2e.py）
+- ✓ 生产环境就绪
+
+**关键Commits：**
+- b07a592: fix(sso): 修正admin_login使用user_code而非username
+- f736be0: refactor(sso): 使用AllowAny明确权限豁免意图
+- 1a7cd4d: fix(sso): 修复mobile_login日志user.username bug
+- faf9298: feat(sso): 生产就绪 - P1改进
+
+**技术审查结论：**
+- ✓ 技术实现正确（user_code映射、JWT有效期1天/7天合理）
+- ✓ 安全机制完善（AllowAny明确、API验证、空值检查、事务保护）
+- ✓ 部署配置合理（Docker volume、环境变量、DEBUG=False）
+- ✓ 可投产
+
+**待青橄榄方：**
+- 配置回调地址：http://218.75.196.218:7788/admin-sso-callback.html
+- 联调测试
+
+**文档：**
+- 三方审查报告：docs/青橄榄SSO对接-三方技术审查.md
+- 提交清单：docs/青橄榄SSO对接-提交清单-简版.md
+

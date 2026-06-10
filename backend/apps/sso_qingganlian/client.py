@@ -66,6 +66,11 @@ class QingganlanClient:
             else:
                 response = self.session.get(url, headers=headers, params=data, timeout=30)
 
+            # Log full response for debugging
+            print(f"[SSO API] {method} {url}")
+            print(f"[SSO API] Status: {response.status_code}")
+            print(f"[SSO API] Response: {response.text[:500]}")
+
             response.raise_for_status()
             result = response.json()
 

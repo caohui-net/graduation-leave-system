@@ -4,6 +4,60 @@ const API_BASE_URL = `http://${window.location.hostname}:7787/api`;
 let currentToken = null;
 let currentUser = null;
 
+// 页面加载时自动恢复登录状态
+function restoreAuthState() {
+    const savedToken = localStorage.getItem('auth_token');
+    const savedUser = localStorage.getItem('user_info');
+
+    if (savedToken) {
+        currentToken = savedToken;
+        if (savedUser) {
+            try {
+                currentUser = JSON.parse(savedUser);
+                console.log('Auth state restored from localStorage', currentUser);
+            } catch (e) {
+                console.error('Failed to parse user info:', e);
+            }
+        }
+    }
+}
+
+// 恢复登录后初始化UI
+function initializeUIAfterRestore(user) {
+    // 隐藏登录界面
+    const loginScreen = document.getElementById('screen-login');
+    if (loginScreen && loginScreen.classList.contains('active')) {
+        loginScreen.classList.remove('active');
+
+        // 显示导航栏和用户栏
+        const navTabs = document.getElementById('navTabs');
+        const userBar = document.getElementById('userBar');
+        if (navTabs) navTabs.style.display = 'flex';
+        if (userBar) userBar.style.display = 'flex';
+
+        // 显示用户信息
+        const userNameEl = document.getElementById('currentUserName');
+        const userRoleEl = document.getElementById('currentUserRole');
+        if (userNameEl && user.real_name) userNameEl.textContent = user.real_name;
+        if (userRoleEl && user.role) {
+            const roleMap = { 'student': '学生', 'dorm_manager': '宿管', 'counselor': '辅导员', 'dean': '学工部', 'admin': '管理员' };
+            userRoleEl.textContent = '(' + (roleMap[user.role] || user.role) + ')';
+        }
+
+        // 根据角色显示对应界面
+        if (user.role === 'student') {
+            if (typeof showScreen === 'function') showScreen(0);
+        } else {
+            if (typeof showScreen === 'function') showScreen(2); // 审批界面
+        }
+
+        console.log('UI initialized for user:', user.username);
+    }
+}
+
+// 页面加载时立即执行
+restoreAuthState();
+
 async function apiLogin(userId, password) {
     try {
         const response = await fetch(API_BASE_URL + '/auth/login', {
@@ -167,4 +221,14 @@ async function apiDeleteAttachment(applicationId, attachmentId) {
         console.error("Delete attachment failed:", e);
         return false;
     }
+}
+
+// DOM加载完成后，如果有token则自动初始化UI
+if (typeof document !== 'undefined') {
+    document.addEventListener('DOMContentLoaded', function() {
+        if (currentToken && currentUser) {
+            console.log('Initializing UI after token restore');
+            initializeUIAfterRestore(currentUser);
+        }
+    });
 }

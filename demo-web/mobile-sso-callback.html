@@ -52,19 +52,21 @@
     function getParamsFromURL() {
       const params = new URLSearchParams(window.location.search);
       const authorization = params.get('authorization') || params.get('Authorization');
-      const username = params.get('username');
-      return { authorization, username };
+      const user_id = params.get('user_id') || params.get('userId');
+      const real_name = params.get('real_name') || params.get('realName') || '';
+      const identity_name = params.get('identity_name') || params.get('identityName') || '学生';
+      return { authorization, user_id, real_name, identity_name };
     }
 
     // 调用后端验证token
-    async function verifyToken(authorization, username) {
+    async function verifyToken(authorization, user_id, real_name, identity_name) {
       try {
-        const response = await fetch(`${API_BASE_URL}/api/sso/qingganlian/admin/login`, {
+        const response = await fetch(`${API_BASE_URL}/api/sso/qingganlian/mobile/login`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
           },
-          body: JSON.stringify({ authorization, username })
+          body: JSON.stringify({ authorization, user_id, real_name, identity_name })
         });
 
         const data = await response.json();
@@ -94,20 +96,20 @@
 
     // 页面加载时自动执行
     window.onload = function() {
-      const { authorization, username } = getParamsFromURL();
+      const { authorization, user_id, real_name, identity_name } = getParamsFromURL();
 
-      if (!authorization || !username) {
+      if (!authorization || !user_id) {
         document.querySelector('.loading').innerHTML =
           `<div class="error">
             <h3>缺少认证信息</h3>
-            <p>未找到authorization或username参数</p>
+            <p>未找到authorization或user_id参数</p>
             <button onclick="window.location.href='/'">返回首页</button>
           </div>`;
         return;
       }
 
       // 验证token
-      verifyToken(authorization, username);
+      verifyToken(authorization, user_id, real_name, identity_name);
     };
   </script>
 </body>

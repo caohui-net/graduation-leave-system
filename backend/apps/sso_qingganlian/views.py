@@ -1,11 +1,12 @@
 import logging
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework import status
-from django.contrib.auth.models import User
 from django.utils import timezone
 from rest_framework_simplejwt.tokens import RefreshToken
 
+from apps.users.models import User
 from .client import QingganlanClient
 from .models import SSOUserMapping
 from .serializers import (
@@ -21,6 +22,7 @@ logger = logging.getLogger(__name__)
 
 
 @api_view(['POST'])
+@permission_classes([])
 def mobile_login(request):
     """
     移动端登录端点
@@ -76,10 +78,12 @@ def mobile_login(request):
                            status=status.HTTP_400_BAD_REQUEST)
 
         user, created = User.objects.get_or_create(
-            username=number,
+            user_id=number,
             defaults={
-                'first_name': real_name[:30],  # Django限制
-                'is_active': True
+                'name': real_name,
+                'role': 'student' if identity_name == '学生' else 'counselor',
+                'is_staff': False,
+                'active': True
             }
         )
 
@@ -117,8 +121,8 @@ def mobile_login(request):
         response_data = {
             'token': access_token,
             'user': {
-                'id': user.id,
-                'username': user.username,
+                'id': user.user_id,
+                'username': user.user_id,
                 'real_name': real_name,
                 'role': role,
                 'phone': phone
@@ -147,6 +151,7 @@ def mobile_login(request):
 
 
 @api_view(['POST'])
+@permission_classes([])
 def admin_login(request):
     """
     管理端登录端点
@@ -182,31 +187,32 @@ def admin_login(request):
         admin_data = admin_result['data']
 
         # 3. 获取管理员信息
-        username = admin_data.get('username', '')
+        user_code = admin_data.get('user_code', '')
         name = admin_data.get('name', '')
         tenant_code = admin_data.get('tenant_code', '')
         role_name = admin_data.get('role_name', '')
         phone = admin_data.get('phone', '')
 
         # 安全检查：拒绝空标识符
-        if not username:
-            logger.error("Admin login failed: missing username")
+        if not user_code:
+            logger.error("Admin login failed: missing user_code")
             return Response({'error': '管理员标识缺失，无法登录'},
                            status=status.HTTP_400_BAD_REQUEST)
 
         # 4. 查询或创建本地管理员User
         user, created = User.objects.get_or_create(
-            username=username,
+            user_id=user_code,
             defaults={
-                'first_name': name[:30],
+                'name': name,
+                'role': 'admin',
                 'is_staff': True,
-                'is_active': True
+                'active': True
             }
         )
 
         # 5. 创建或更新SSOUserMapping
         mapping, _ = SSOUserMapping.objects.update_or_create(
-            username=username,
+            user_code=user_code,
             defaults={
                 'user': user,
                 'tenant_code': tenant_code,
@@ -227,15 +233,15 @@ def admin_login(request):
         response_data = {
             'token': access_token,
             'user': {
-                'id': user.id,
-                'username': user.username,
+                'id': user.user_id,
+                'username': user.user_id,
                 'real_name': name,
                 'role': 'admin',
                 'phone': phone
             }
         }
 
-        logger.info(f"Admin login success: user={user.username}")
+        logger.info(f"Admin login success: user={user.user_id}")
         return Response(response_data, status=status.HTTP_200_OK)
 
     except SSOAPIError as e:

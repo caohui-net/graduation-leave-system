@@ -4,6 +4,7 @@ from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework import status
 from django.utils import timezone
+from django.db import transaction
 from rest_framework_simplejwt.tokens import RefreshToken
 
 from apps.users.models import User
@@ -77,15 +78,17 @@ def mobile_login(request):
             return Response({'error': '用户标识缺失，无法登录'},
                            status=status.HTTP_400_BAD_REQUEST)
 
-        user, created = User.objects.get_or_create(
-            user_id=number,
-            defaults={
-                'name': real_name,
-                'role': 'student' if identity_name == '学生' else 'counselor',
-                'is_staff': False,
-                'active': True
-            }
-        )
+        # 4. 创建用户和映射（事务保护防竞态）
+        with transaction.atomic():
+            user, created = User.objects.select_for_update().get_or_create(
+                user_id=number,
+                defaults={
+                    'name': real_name,
+                    'role': 'student' if identity_name == '学生' else 'counselor',
+                    'is_staff': False,
+                    'active': True
+                }
+            )
 
         # 5. 确定用户类型
         if identity_name == '学生':
@@ -199,31 +202,32 @@ def admin_login(request):
             return Response({'error': '管理员标识缺失，无法登录'},
                            status=status.HTTP_400_BAD_REQUEST)
 
-        # 4. 查询或创建本地管理员User
-        user, created = User.objects.get_or_create(
-            user_id=user_code,
-            defaults={
-                'name': name,
-                'role': 'admin',
-                'is_staff': True,
-                'active': True
-            }
-        )
+        # 4. 创建用户和映射（事务保护防竞态）
+        with transaction.atomic():
+            user, created = User.objects.select_for_update().get_or_create(
+                user_id=user_code,
+                defaults={
+                    'name': name,
+                    'role': 'admin',
+                    'is_staff': True,
+                    'active': True
+                }
+            )
 
-        # 5. 创建或更新SSOUserMapping
-        mapping, _ = SSOUserMapping.objects.update_or_create(
-            user_code=user_code,
-            defaults={
-                'user': user,
-                'tenant_code': tenant_code,
-                'user_type': 'admin',
-                'real_name': name,
-                'phone': phone,
-                'identity_name': '管理员',
-                'role_name': role_name,
-                'last_login_at': timezone.now()
-            }
-        )
+            # 5. 创建或更新SSOUserMapping
+            mapping, _ = SSOUserMapping.objects.update_or_create(
+                user_code=user_code,
+                defaults={
+                    'user': user,
+                    'tenant_code': tenant_code,
+                    'user_type': 'admin',
+                    'real_name': name,
+                    'phone': phone,
+                    'identity_name': '管理员',
+                    'role_name': role_name,
+                    'last_login_at': timezone.now()
+                }
+            )
 
         # 6. 生成JWT token
         refresh = RefreshToken.for_user(user)

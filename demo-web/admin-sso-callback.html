@@ -48,10 +48,10 @@
   <script>
     const API_BASE_URL = 'http://218.75.196.218:7787';
 
-    // 从URL提取authorization参数
+    // 从URL提取authorization参数（兼容大小写）
     function getAuthorizationFromURL() {
       const params = new URLSearchParams(window.location.search);
-      return params.get('authorization');
+      return params.get('authorization') || params.get('Authorization');
     }
 
     // 调用后端验证token

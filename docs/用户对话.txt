@@ -1,0 +1,11 @@
+按我们接口对接就行，域名和参数我都写给你了
+用户信息对接用这个接口
+所有师生数据同步
+
+https://xuegongmj.hgnu.edu.cn/api/open-api/user-center/tenant/auth-user-info
+AppId：c6qgh2
+AppKey：abc0a32aa8dd94d1f765841abaafd8ba
+AppSecret：b1d2efa9587446d80ce6388e0c0b25131b8dea59
+
+https://interface-doc.goliveplus.cn/web/#/25/3203
+密码：golive617

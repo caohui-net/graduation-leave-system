@@ -1,6 +1,6 @@
 {
   "version": "1.0.0",
-  "lastScanned": 1780819128299,
+  "lastScanned": 1780999981957,
   "projectRoot": "/home/caohui/projects/graduation-leave-system",
   "techStack": {
     "languages": [],
@@ -10,7 +10,7 @@
   },
   "build": {
     "buildCommand": null,
-    "testCommand": "lowfat git commit -m \"$(cat <<'EOF'\ndocs: 创建README部署文档 - MVP完成标志\n\n新增内容：\n1. README.md：项目介绍、技术栈、功能特性列表\n2. 快速开始：Docker部署步骤（docker-compose up -d）\n3. 开发环境：后端开发配置、pytest测试运行\n4. 项目状态：MVP v1.0，完成度95%\n\n文档结构：\n- 前置要求：Docker 20.10+\n- 部署步骤：5步快速启动（clone、配置、启动、初始化、访问）\n- 开发环境：venv虚拟环境 + pytest测试\n- 项目状态：已完成功能列表 + 待完成事项\n\nMVP完成标志：\n- 后端API：19个端点全部实现\n- 单元测试：29/29全部通过\n- 小程序UI：5/5功能完成（contact_phone、草稿、验证、提交、附件）\n- 部署文档：Docker快速开始指南\n\nCo-Authored-By: Claude Opus 4.7 (1M context) <noreply@anthropic.com>\nEOF\n)\"",
+    "testCommand": null,
     "lintCommand": null,
     "devCommand": null,
     "scripts": {}
@@ -37,15 +37,16 @@
       "path": "PRD",
       "purpose": null,
       "fileCount": 0,
-      "lastAccessed": 1780819128285,
+      "lastAccessed": 1780999981944,
       "keyFiles": []
     },
     "backend": {
       "path": "backend",
       "purpose": null,
-      "fileCount": 6,
-      "lastAccessed": 1780819128287,
+      "fileCount": 13,
+      "lastAccessed": 1780999981945,
       "keyFiles": [
+        "API接口清单.md",
         "Dockerfile",
         "manage.py",
         "requirements.txt",
@@ -55,44 +56,46 @@
     "demo-web": {
       "path": "demo-web",
       "purpose": null,
-      "fileCount": 1,
-      "lastAccessed": 1780819128288,
+      "fileCount": 3,
+      "lastAccessed": 1780999981947,
       "keyFiles": [
-        "index.html"
+        "IMPLEMENTATION_NOTES.md",
+        "index.html",
+        "test-integration.sh"
       ]
     },
     "docker": {
       "path": "docker",
       "purpose": null,
       "fileCount": 0,
-      "lastAccessed": 1780819128288,
+      "lastAccessed": 1780999981948,
       "keyFiles": []
     },
     "docs": {
       "path": "docs",
       "purpose": "Documentation",
-      "fileCount": 74,
-      "lastAccessed": 1780819128289,
+      "fileCount": 97,
+      "lastAccessed": 1780999981949,
       "keyFiles": [
         "1-5830名毕业生（含研究生）.xls",
         "1-无入住信息.xls",
-        "17名研究生学院归属.csv",
-        "17名研究生学院归属.xlsx",
-        "19名额外研究生待确认清单.md"
+        "172.17.12.199-1780885835820.log",
+        "172.17.12.199-1780942037547.log",
+        "172.17.12.199-1780942346419.log"
       ]
     },
     "frontend": {
       "path": "frontend",
       "purpose": null,
       "fileCount": 0,
-      "lastAccessed": 1780819128289,
+      "lastAccessed": 1780999981949,
       "keyFiles": []
     },
     "miniprogram": {
       "path": "miniprogram",
       "purpose": null,
       "fileCount": 5,
-      "lastAccessed": 1780819128289,
+      "lastAccessed": 1780999981950,
       "keyFiles": [
         "app.json",
         "app.ts",
@@ -105,14 +108,14 @@
       "path": "plans",
       "purpose": null,
       "fileCount": 0,
-      "lastAccessed": 1780819128290,
+      "lastAccessed": 1780999981950,
       "keyFiles": []
     },
     "scripts": {
       "path": "scripts",
       "purpose": "Build/utility scripts",
       "fileCount": 3,
-      "lastAccessed": 1780819128290,
+      "lastAccessed": 1780999981950,
       "keyFiles": [
         "analyze_excel_data.py",
         "md_to_docx.py",
@@ -122,38 +125,28 @@
     "tests": {
       "path": "tests",
       "purpose": "Test files",
-      "fileCount": 4,
-      "lastAccessed": 1780819128291,
+      "fileCount": 7,
+      "lastAccessed": 1780999981951,
       "keyFiles": [
         "api_data_samples.sh",
-        "smoke_test.sh",
-        "test_multi_dorm_manager.sh",
-        "test_p0_fixes.sh"
-      ]
-    },
-    "backend/config": {
-      "path": "backend/config",
-      "purpose": "Configuration files",
-      "fileCount": 3,
-      "lastAccessed": 1780819128293,
-      "keyFiles": [
-        "__init__.py",
-        "urls.py",
-        "wsgi.py"
+        "approval_workflow_test.py",
+        "full_workflow_test.py",
+        "multi_role_test.py",
+        "smoke_test.sh"
       ]
     },
     "docker/scripts": {
       "path": "docker/scripts",
       "purpose": "Build/utility scripts",
       "fileCount": 0,
-      "lastAccessed": 1780819128293,
+      "lastAccessed": 1780999981951,
       "keyFiles": []
     },
     "frontend/services": {
       "path": "frontend/services",
       "purpose": "Business logic services",
       "fileCount": 2,
-      "lastAccessed": 1780819128296,
+      "lastAccessed": 1780999981952,
       "keyFiles": [
         "api.ts",
         "mock.ts"
@@ -163,7 +156,7 @@
       "path": "frontend/types",
       "purpose": "Type definitions",
       "fileCount": 1,
-      "lastAccessed": 1780819128296,
+      "lastAccessed": 1780999981953,
       "keyFiles": [
         "api.ts"
       ]
@@ -172,14 +165,14 @@
       "path": "miniprogram/pages",
       "purpose": "Page components",
       "fileCount": 0,
-      "lastAccessed": 1780819128297,
+      "lastAccessed": 1780999981957,
       "keyFiles": []
     },
     "miniprogram/services": {
       "path": "miniprogram/services",
       "purpose": "Business logic services",
       "fileCount": 1,
-      "lastAccessed": 1780819128297,
+      "lastAccessed": 1780999981957,
       "keyFiles": [
         "api.ts"
       ]
@@ -188,7 +181,7 @@
       "path": "miniprogram/types",
       "purpose": "Type definitions",
       "fileCount": 1,
-      "lastAccessed": 1780819128298,
+      "lastAccessed": 1780999981957,
       "keyFiles": [
         "api.ts"
       ]
@@ -197,7 +190,7 @@
       "path": "miniprogram/utils",
       "purpose": "Utility functions",
       "fileCount": 2,
-      "lastAccessed": 1780819128299,
+      "lastAccessed": 1780999981957,
       "keyFiles": [
         "date.ts",
         "role-guard.ts"
@@ -207,20 +200,20 @@
   "hotPaths": [
     {
       "path": "docs/PROJECT-SUMMARY.md",
-      "accessCount": 310,
-      "lastAccessed": 1780830930574,
+      "accessCount": 355,
+      "lastAccessed": 1781072427775,
       "type": "file"
     },
     {
       "path": "docs/design/2026-05-27-system-design.md",
-      "accessCount": 119,
-      "lastAccessed": 1780810920753,
+      "accessCount": 120,
+      "lastAccessed": 1780926413007,
       "type": "file"
     },
     {
       "path": "docs/数据对接说明文档.md",
-      "accessCount": 42,
-      "lastAccessed": 1780764187401,
+      "accessCount": 43,
+      "lastAccessed": 1781063857097,
       "type": "file"
     },
     {
@@ -237,8 +230,8 @@
     },
     {
       "path": "backend/requirements/base.txt",
-      "accessCount": 8,
-      "lastAccessed": 1780335089214,
+      "accessCount": 10,
+      "lastAccessed": 1780945408398,
       "type": "file"
     },
     {

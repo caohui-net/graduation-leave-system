@@ -1,0 +1,95 @@
+# Discussion Context
+
+**Task:** DISCUSS-青橄榄平台SSO对接模块设计-用户需求-分析两份对接文档-1780906038
+**Round:** 1
+
+## Topic
+
+青橄榄平台SSO对接模块设计
+
+**用户需求：**
+分析两份对接文档，能否新建一个功能独立的对接模块完成对接。
+
+**文档概要：**
+
+1. **移动端用户信息获取接口**（学生/教师）
+   - Token换取user_code接口
+   - 通过user_code获取用户信息（姓名、工号/学号、身份、手机号）
+   - 签名校验：appKey + timestamp + randStr + SHA1/MD5
+
+2. **后台管理端单点登录接口**（管理员）
+   - 从一站式管理平台跳转携带Authorization token
+   - verify-user接口验证token
+   - 返回管理员信息（用户名、角色、租户）
+   - 同样使用签名校验
+
+**初步分析：**
+
+✅ 可以创建独立对接模块，理由：
+- 接口清晰独立，与现有系统解耦
+- 双端支持完整（移动端C端 + 管理端B端）
+- 标准OAuth流程，可封装为独立认证源
+- 签名机制独立，可单独模块化
+
+**设计草案：**
+
+创建 backend/apps/sso_qingganlian/ Django应用：
+- auth.py: 签名生成、token验证
+- client.py: API封装（移动端+管理端接口）
+- middleware.py: 请求拦截，自动处理青橄榄token
+- models.py: 青橄榄user_code ↔ 本地User映射表
+- views.py: 回调端点，处理跳转
+- settings.py: appKey/appSecret配置
+
+**核心流程：**
+
+移动端：
+1. 前端从青橄榄获取saas_wap_token
+2. POST到 /api/sso/qgl/mobile/login
+3. 后端：token → user_code → 用户信息 → 匹配/创建本地User → 返回JWT
+
+管理端：
+1. 一站式平台跳转携带Authorization参数
+2. 后端拦截或回调接口解析token
+3. 调用verify-user → 管理员信息 → 匹配/创建本地User → 返回JWT或Session
+
+**讨论要点：**
+
+1. 是否需要用户映射表？还是每次实时验证？
+2. Token过期处理策略？
+3. 如何与现有demo-login/login端点集成？
+4. 移动端和管理端是否共用一套映射逻辑？
+5. 错误处理：青橄榄接口不可用时的降级方案？
+
+请Codex和Gemini审核方案可行性，提出改进建议。
+
+## Pre-Discuss Initial Analysis
+
+Response ID: DISCUSS-青橄榄平台SSO对接模块设计-用户需求-分析两份对接文档-1780906038-r0-claude
+Artifact: .omc/collaboration/artifacts/DISCUSS-青橄榄平台SSO对接模块设计-用户需求-分析两份对接文档-1780906038-discuss-r0-claude-20260608-080718.md
+
+Claude initial framing: clarify scope, challenge assumptions, preserve compatibility, and require evidence.
+
+## Previous Discussion
+
+[claude]: Pre-discuss initial analysis prepared
+[claude]: Round 1 started
+
+## Previous Responses
+
+### DISCUSS-青橄榄平台SSO对接模块设计-用户需求-分析两份对接文档-1780906038-r0-claude (claude)
+
+Decision: Claude initial framing: clarify scope, challenge assumptions, preserve compatibility, and require evidence.
+
+Reasoning: Initial framing for the discussion.
+
+## Open Questions
+
+- What assumptions in Claude's initial framing are weakest?
+- Which compatibility contracts must remain stable?
+- What evidence or tests are required before concluding?
+
+## Referenced Artifacts
+
+- .omc/collaboration/artifacts/DISCUSS-青橄榄平台SSO对接模块设计-用户需求-分析两份对接文档-1780906038-discuss-r0-claude-20260608-080718.md
+

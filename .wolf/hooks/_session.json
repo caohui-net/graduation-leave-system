@@ -1,61 +1,165 @@
 {
-  "session_id": "session-2026-06-07-1914",
-  "started": "2026-06-07T11:14:29.930Z",
+  "session_id": "session-2026-06-10-1331",
+  "started": "2026-06-10T05:31:29.919Z",
   "files_read": {
-    "/home/caohui/projects/graduation-leave-system/docs/PROJECT-SUMMARY.md": {
+    "/home/caohui/projects/graduation-leave-system/backend/apps/sso_qingganlian/views.py": {
+      "count": 4,
+      "tokens": 2438,
+      "first_read": "2026-06-10T05:37:16.604Z"
+    },
+    "/tmp/claude-1000/-home-caohui-projects-graduation-leave-system/60cdae76-a26f-4a8e-b614-137cc704545b/tasks/bfcm33d5x.output": {
       "count": 1,
-      "tokens": 25303,
-      "first_read": "2026-06-07T11:15:29.252Z"
+      "tokens": 0,
+      "first_read": "2026-06-10T05:42:39.781Z"
+    },
+    "/home/caohui/projects/graduation-leave-system/.collab/artifacts/DISCUSS-青橄榄SSO对接方案技术审查-1-技术实现正确性-1781070033-discuss-r0-claude-20260610-054033.md": {
+      "count": 1,
+      "tokens": 0,
+      "first_read": "2026-06-10T05:43:25.666Z"
+    },
+    "/home/caohui/projects/graduation-leave-system/.collab/artifacts/DISCUSS-青橄榄SSO对接方案技术审查-1-技术实现正确性-1781070033-discuss-r1-codex-20260610-054331.md": {
+      "count": 1,
+      "tokens": 0,
+      "first_read": "2026-06-10T05:43:59.668Z"
+    },
+    "/tmp/claude-1000/-home-caohui-projects-graduation-leave-system/60cdae76-a26f-4a8e-b614-137cc704545b/tasks/bt2142vz5.output": {
+      "count": 1,
+      "tokens": 0,
+      "first_read": "2026-06-10T05:51:33.725Z"
+    },
+    "/home/caohui/projects/graduation-leave-system/.env.docker": {
+      "count": 1,
+      "tokens": 0,
+      "first_read": "2026-06-10T05:56:00.451Z"
+    },
+    "/tmp/claude-1000/-home-caohui-projects-graduation-leave-system/60cdae76-a26f-4a8e-b614-137cc704545b/tasks/byr0m81o3.output": {
+      "count": 1,
+      "tokens": 0,
+      "first_read": "2026-06-10T06:00:01.014Z"
+    },
+    "/home/caohui/projects/graduation-leave-system/backend/apps/sso_qingganlian/client.py": {
+      "count": 2,
+      "tokens": 1142,
+      "first_read": "2026-06-10T06:04:02.104Z"
     },
     "/home/caohui/projects/graduation-leave-system/.omc/session-context.json": {
       "count": 1,
-      "tokens": 1756,
-      "first_read": "2026-06-07T11:15:29.870Z"
+      "tokens": 428,
+      "first_read": "2026-06-10T06:11:48.363Z"
     },
-    "/home/caohui/projects/graduation-leave-system/backend/apps/approvals/tests/test_rejection_flow.py": {
-      "count": 2,
-      "tokens": 1400,
-      "first_read": "2026-06-07T11:19:25.884Z"
+    "/home/caohui/projects/graduation-leave-system/docs/PROJECT-SUMMARY.md": {
+      "count": 3,
+      "tokens": 29257,
+      "first_read": "2026-06-10T06:12:14.117Z"
     },
-    "/home/caohui/projects/graduation-leave-system/backend/config/urls.py": {
+    "/home/caohui/.claude/rules/tools.md": {
       "count": 1,
       "tokens": 0,
-      "first_read": "2026-06-07T11:20:39.199Z"
-    },
-    "/home/caohui/projects/graduation-leave-system/backend/apps/notifications/tests/test_auto_notifications_api.py": {
-      "count": 1,
-      "tokens": 3028,
-      "first_read": "2026-06-07T11:23:45.107Z"
+      "first_read": "2026-06-10T06:18:02.851Z"
     }
   },
   "files_written": [
     {
-      "file": "/home/caohui/projects/graduation-leave-system/backend/config/urls.py",
+      "file": "/home/caohui/projects/graduation-leave-system/backend/apps/sso_qingganlian/views.py",
       "action": "edit",
-      "tokens": 76,
-      "at": "2026-06-07T11:20:53.536Z"
+      "tokens": 363,
+      "at": "2026-06-10T05:37:28.463Z"
     },
     {
-      "file": "/home/caohui/projects/graduation-leave-system/backend/apps/approvals/tests/test_rejection_flow.py",
+      "file": "/home/caohui/projects/graduation-leave-system/backend/test_sso_e2e.py",
       "action": "edit",
-      "tokens": 87,
-      "at": "2026-06-07T11:23:27.109Z"
+      "tokens": 73,
+      "at": "2026-06-10T05:37:36.426Z"
     },
     {
-      "file": "/home/caohui/projects/graduation-leave-system/backend/apps/notifications/tests/test_auto_notifications_api.py",
+      "file": "/home/caohui/projects/graduation-leave-system/backend/apps/sso_qingganlian/views.py",
       "action": "edit",
-      "tokens": 50,
-      "at": "2026-06-07T11:23:55.449Z"
+      "tokens": 19,
+      "at": "2026-06-10T05:38:19.027Z"
+    },
+    {
+      "file": "/home/caohui/projects/graduation-leave-system/backend/test_sso_e2e.py",
+      "action": "edit",
+      "tokens": 66,
+      "at": "2026-06-10T05:38:33.223Z"
+    },
+    {
+      "file": "/home/caohui/projects/graduation-leave-system/backend/apps/sso_qingganlian/views.py",
+      "action": "edit",
+      "tokens": 23,
+      "at": "2026-06-10T05:55:21.214Z"
+    },
+    {
+      "file": "/home/caohui/projects/graduation-leave-system/backend/apps/sso_qingganlian/views.py",
+      "action": "edit",
+      "tokens": 22,
+      "at": "2026-06-10T05:55:30.075Z"
+    },
+    {
+      "file": "/home/caohui/projects/graduation-leave-system/docs/青橄榄SSO对接-三方技术审查.md",
+      "action": "create",
+      "tokens": 992,
+      "at": "2026-06-10T06:01:12.556Z"
+    },
+    {
+      "file": "/home/caohui/projects/graduation-leave-system/backend/apps/sso_qingganlian/views.py",
+      "action": "edit",
+      "tokens": 23,
+      "at": "2026-06-10T06:01:19.892Z"
+    },
+    {
+      "file": "/home/caohui/projects/graduation-leave-system/backend/apps/sso_qingganlian/views.py",
+      "action": "edit",
+      "tokens": 96,
+      "at": "2026-06-10T06:02:55.566Z"
+    },
+    {
+      "file": "/home/caohui/projects/graduation-leave-system/backend/apps/sso_qingganlian/views.py",
+      "action": "edit",
+      "tokens": 195,
+      "at": "2026-06-10T06:03:05.809Z"
+    },
+    {
+      "file": "/home/caohui/projects/graduation-leave-system/backend/apps/sso_qingganlian/views.py",
+      "action": "edit",
+      "tokens": 256,
+      "at": "2026-06-10T06:03:18.839Z"
+    },
+    {
+      "file": "/home/caohui/projects/graduation-leave-system/backend/apps/sso_qingganlian/views.py",
+      "action": "edit",
+      "tokens": 240,
+      "at": "2026-06-10T06:03:29.670Z"
+    },
+    {
+      "file": "/home/caohui/projects/graduation-leave-system/backend/apps/sso_qingganlian/views.py",
+      "action": "edit",
+      "tokens": 329,
+      "at": "2026-06-10T06:03:43.297Z"
+    },
+    {
+      "file": "/home/caohui/projects/graduation-leave-system/.omc/session-context.json",
+      "action": "create",
+      "tokens": 320,
+      "at": "2026-06-10T06:12:06.075Z"
+    },
+    {
+      "file": "/home/caohui/projects/graduation-leave-system/docs/PROJECT-SUMMARY.md",
+      "action": "edit",
+      "tokens": 235,
+      "at": "2026-06-10T06:12:49.096Z"
     }
   ],
   "edit_counts": {
-    "backend/config/urls.py": 1,
-    "backend/apps/approvals/tests/test_rejection_flow.py": 1,
-    "backend/apps/notifications/tests/test_auto_notifications_api.py": 1
+    "backend/apps/sso_qingganlian/views.py": 10,
+    "backend/test_sso_e2e.py": 2,
+    "docs/青橄榄SSO对接-三方技术审查.md": 1,
+    ".omc/session-context.json": 1,
+    "docs/PROJECT-SUMMARY.md": 1
   },
-  "anatomy_hits": 3,
-  "anatomy_misses": 1,
-  "repeated_reads_warned": 1,
+  "anatomy_hits": 4,
+  "anatomy_misses": 7,
+  "repeated_reads_warned": 6,
   "cerebrum_warnings": 0,
-  "stop_count": 2
+  "stop_count": 8
 }

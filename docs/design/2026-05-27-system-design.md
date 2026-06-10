@@ -113,10 +113,7 @@
 - django-filter（过滤查询）
 
 **数据库驱动：**
-- mysqlclient（MySQL）
 - psycopg2（PostgreSQL）
-- mssql-django（SQL Server）
-- cx_Oracle（Oracle）
 
 **认证授权：**
 - djangorestframework-simplejwt（JWT令牌）

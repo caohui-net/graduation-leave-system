@@ -436,7 +436,43 @@
             btn.textContent = originalText;
         }
     }
-    
+
+    async function exportApprovals() {
+        const btn = document.getElementById('export-btn');
+        const originalText = btn.textContent;
+        btn.disabled = true;
+        btn.textContent = '导出中...';
+
+        try {
+            const res = await fetch(API_BASE_URL + '/approvals/export/', {
+                method: 'GET',
+                headers: getAuthHeaders()
+            });
+
+            if (res.ok) {
+                const blob = await res.blob();
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = '审批数据_' + new Date().toISOString().split('T')[0] + '.xlsx';
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                window.URL.revokeObjectURL(url);
+                showToast('导出成功', 'success');
+            } else {
+                const error = await res.json();
+                showToast(error.error?.message || '导出失败', 'error');
+            }
+        } catch (err) {
+            console.error('Export failed:', err);
+            showToast('导出失败', 'error');
+        } finally {
+            btn.disabled = false;
+            btn.textContent = originalText;
+        }
+    }
+
     async function doSubmitApplication() {
         const phone = document.getElementById('contactPhone').value;
         const reason = document.getElementById('applicationReason').value;
@@ -710,7 +746,10 @@
   <div class="screen" id="screen-1">
     <div style="background: white; padding: 16px; display: flex; justify-content: space-between; align-items: center;">
       <div style="font-size: 18px; font-weight: bold;" id="list-title">审批列表</div>
-      <div style="font-size: 12px; color: #999;" id="role-display">宿管员</div>
+      <div style="display: flex; align-items: center; gap: 12px;">
+        <button id="export-btn" onclick="exportApprovals()" style="display: none; padding: 8px 16px; background: var(--primary-color); color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 14px;">导出Excel</button>
+        <div style="font-size: 12px; color: #999;" id="role-display">宿管员</div>
+      </div>
     </div>
 
     <!-- Tab切换 -->
@@ -917,6 +956,12 @@
       const approvalSection = document.getElementById('approval-section');
       if (approvalSection) {
         approvalSection.style.display = (isStudent || isDean) ? 'none' : 'block';
+      }
+
+      // Show export button for dean and admin roles
+      const exportBtn = document.getElementById('export-btn');
+      if (exportBtn) {
+        exportBtn.style.display = (isDean || role === 'admin') ? 'block' : 'none';
       }
     }
 

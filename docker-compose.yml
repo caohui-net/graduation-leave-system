@@ -23,7 +23,7 @@ services:
       dockerfile: Dockerfile
     command: python manage.py runserver 0.0.0.0:8000
     volumes:
-      - ./backend:/app
+      - ./backend:/app  # 开发模式：启用代码热更新
       - media_data:/app/media
     ports:
       - "7787:8000"

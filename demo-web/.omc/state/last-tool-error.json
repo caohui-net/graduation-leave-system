@@ -1,0 +1,7 @@
+{
+  "tool_name": "Bash",
+  "tool_input_preview": "{\"command\":\"cd ../backend && python3 manage.py startapp sso_qingganlian apps/sso_qingganlian\",\"description\":\"在apps目录下创建SSO app\"}",
+  "error": "Exit code 1\nTraceback (most recent call last):\n  File \"/home/caohui/projects/graduation-leave-system/backend/manage.py\", line 11, in main\n    from django.core.management import execute_from_command_line\nModuleNotFoundError: No module named 'django'\n\nThe above exception was the direct cause of the following exception:\n\nTraceback (most recent call last):\n  File \"/home/caohui/projects/graduation-leave-system/backend/manage.py\", line 22, in <module>\n    main()\n    ~~~~^^\n  File \"/home/caohui/project...",
+  "timestamp": "2026-06-09T03:00:18.111Z",
+  "retry_count": 3
+}

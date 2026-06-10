@@ -1,4 +1,4 @@
-from django.test import TestCase
+from rest_framework.test import APITestCase
 from django.contrib.auth import get_user_model
 from apps.approvals.models import Approval, ApprovalStep, ApprovalDecision
 from apps.applications.models import Application, ApplicationStatus
@@ -7,20 +7,20 @@ from apps.approvals.views import sanitize_excel_formula
 User = get_user_model()
 
 
-class AdminSuperuserTest(TestCase):
+class AdminSuperuserTest(APITestCase):
     """Test ADMIN role can approve/reject any step and decided_by is recorded."""
 
     def setUp(self):
         self.student = User.objects.create_user(
-            user_id='20200001', username='20200001', name='测试学生',
+            user_id='20200001', name='测试学生',
             role='student', department='计算机学院', building='1号楼'
         )
         self.dorm_manager = User.objects.create_user(
-            user_id='M001', username='M001', name='宿管员1',
+            user_id='M001', name='宿管员1',
             role='dorm_manager', building='1号楼'
         )
         self.admin = User.objects.create_user(
-            user_id='A001', username='A001', name='管理员',
+            user_id='A001', name='管理员',
             role='admin'
         )
 
@@ -68,20 +68,20 @@ class AdminSuperuserTest(TestCase):
         self.assertEqual(self.approval.decided_by, self.admin)
 
 
-class ExcelExportTest(TestCase):
+class ExcelExportTest(APITestCase):
     """Test Excel export permissions and formula injection prevention."""
 
     def setUp(self):
         self.student = User.objects.create_user(
-            user_id='20200002', username='20200002', name='学生',
+            user_id='20200002', name='学生',
             role='student'
         )
         self.dean = User.objects.create_user(
-            user_id='D001', username='D001', name='学工部',
+            user_id='D001', name='学工部',
             role='dean'
         )
         self.admin = User.objects.create_user(
-            user_id='A002', username='A002', name='管理员',
+            user_id='A002', name='管理员',
             role='admin'
         )
 

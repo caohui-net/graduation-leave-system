@@ -34,6 +34,7 @@ pytz==2024.1
 
 # File Processing
 python-magic==0.4.27
+openpyxl==3.1.2
 
 # Work Day Calculation
 chinese-calendar==1.9.0

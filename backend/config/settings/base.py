@@ -160,9 +160,18 @@ SIMPLE_JWT = {
 # CORS Settings
 CORS_ALLOWED_ORIGINS = config(
     'CORS_ALLOWED_ORIGINS',
-    default='http://localhost:3000,http://127.0.0.1:3000',
+    default='http://localhost:3000,http://127.0.0.1:3000,http://127.0.0.1:7788,http://172.17.12.199:7788',
     cast=lambda v: [s.strip() for s in v.split(',')]
 )
 
 # Fallback dorm manager for students without building assignment
 FALLBACK_DORM_MANAGER_USER_ID = '92008149'
+
+# 青橄榄SSO配置
+QGL_MOBILE_APP_KEY = config('QGL_MOBILE_APP_KEY', default='abc0a32aa8dd94d1f765841abaafd8ba')
+QGL_MOBILE_APP_SECRET = config('QGL_MOBILE_APP_SECRET', default='b1d2efa9587446d80ce6388e0c0b25131b8dea59')
+QGL_MOBILE_TENANT_CODE = config('QGL_MOBILE_TENANT_CODE', default='C10026')
+QGL_MOBILE_APPID = config('QGL_MOBILE_APPID', default='c6qgh2')
+
+QGL_ADMIN_APP_KEY = config('QGL_ADMIN_APP_KEY', default='APPKEY_TBD')
+QGL_ADMIN_APP_SECRET = config('QGL_ADMIN_APP_SECRET', default='APPSECRET_TBD')

@@ -1,8 +1,8 @@
 {
-  "last_event_id": 180,
-  "status": "needs_repair",
-  "current_task": "task-20260607-demo-web-ui-fix",
-  "active_agent": "claude",
+  "last_event_id": 529,
+  "status": "completed",
+  "current_task": null,
+  "active_agent": "none",
   "workflow_id": "claude-codex-gemini-collab",
-  "updated_at": "2026-06-07T11:57:27.051113Z"
+  "updated_at": "2026-06-10T05:52:08.789768Z"
 }

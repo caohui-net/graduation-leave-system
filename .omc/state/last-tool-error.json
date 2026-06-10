@@ -1,7 +1,7 @@
 {
   "tool_name": "Bash",
-  "tool_input_preview": "{\"command\":\"docker compose exec backend python -c \\\"\\nfrom django.test import TestCase, Client\\nfrom django.utils import timezone\\nfrom datetime import timedelta\\nimport json\\n\\nclient = Client()\\n# L...",
-  "error": "Exit code 1\ntime=\"2026-06-07T19:19:57+08:00\" level=warning msg=\"/home/caohui/projects/graduation-leave-system/docker-compose.yml: the attribute `version` is obsolete, it will be ignored, please remove it to avoid potential confusion\"\nTraceback (most recent call last):\n  File \"<string>\", line 9, in <module>\n  File \"/usr/local/lib/python3.11/site-packages/django/test/client.py\", line 948, in post\n    response = super().post(\n               ^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.11/site-packa...",
-  "timestamp": "2026-06-07T11:19:57.846Z",
+  "tool_input_preview": "{\"command\":\"echo \\\"=== 1. 服务状态 ===\\\" && docker compose ps --format \\\"{{.Service}}: {{.Status}}\\\" && echo -e \\\"\\\\n=== 2. SSO测试 ===\\\" && docker compose exec backend python test_sso_e2e.py 2>&1 | grep -E...",
+  "error": "Exit code 1\n=== 1. 服务状态 ===\ntime=\"2026-06-10T14:16:57+08:00\" level=warning msg=\"/home/caohui/projects/graduation-leave-system/docker-compose.yml: the attribute `version` is obsolete, it will be ignored, please remove it to avoid potential confusion\"\nbackend: Up 8 minutes\ndb: Up 57 minutes (healthy)\n\n=== 2. SSO测试 ===\n=== SSO端到端流程测试 ===\n1. API响应状态: 200\n3. 用户信息: {'id': 'test_admin_001', 'username': 'test_admin_001', 'real_name': '测试管理员', 'role': 'admin', 'phone': '13800138000'}\n4. 数据库用户创建: test_adm...",
+  "timestamp": "2026-06-10T06:16:58.756Z",
   "retry_count": 1
 }

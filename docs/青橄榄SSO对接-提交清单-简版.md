@@ -14,9 +14,22 @@
 - APPID: `8uonta`
 
 ### 2. 回调地址（必须配置）
+
+**基础URL:**
 ```
 http://218.75.196.218:7788/admin-sso-callback.html
 ```
+
+**完整URL格式（含参数）:**
+```
+http://218.75.196.218:7788/admin-sso-callback.html?authorization=<TOKEN>
+```
+
+**参数说明:**
+- `authorization`: 青橄榄平台跳转时携带的token参数（必需）
+- 示例: `authorization=bearer%20xxxxx`
+
+**注意:** 青橄榄平台配置时只需填写基础URL，跳转时自动附加`authorization`参数即可。
 
 ### 3. 应用信息
 - 应用名称：毕业生离校申请审批系统

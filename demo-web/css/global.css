@@ -172,3 +172,143 @@ body {
     transform: translateY(0);
   }
 }
+
+/* 移动端适配 - 平板设备 */
+@media (max-width: 768px) {
+  body {
+    padding: 10px;
+  }
+
+  .container {
+    padding: 15px;
+    margin: 10px;
+  }
+
+  .card {
+    padding: 12px;
+    margin-bottom: 12px;
+  }
+
+  /* 按钮触摸优化 */
+  .btn, button {
+    min-height: 44px;
+    padding: 12px 16px;
+    font-size: 16px;
+  }
+
+  /* 表单输入框 */
+  input[type="text"],
+  input[type="password"],
+  input[type="date"],
+  textarea {
+    min-height: 44px;
+    font-size: 16px;
+    padding: 12px;
+  }
+}
+
+/* 移动端适配 - 手机设备 */
+@media (max-width: 480px) {
+  body {
+    padding: 5px;
+    font-size: 14px;
+  }
+
+  .container {
+    padding: 10px;
+    margin: 5px;
+  }
+
+  .card {
+    padding: 10px;
+  }
+
+  /* 标题字体缩小 */
+  h1 { font-size: 20px; }
+  h2 { font-size: 18px; }
+  h3 { font-size: 16px; }
+
+  /* 导航栏适配 */
+  .nav-tabs {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .nav-tab {
+    flex: 1 1 45%;
+    min-width: 45%;
+    font-size: 14px;
+    padding: 10px 8px;
+  }
+
+  /* 表格横向滚动 */
+  table {
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+    font-size: 14px;
+  }
+
+  /* 按钮全宽 */
+  .btn-primary,
+  .btn-danger {
+    width: 100%;
+    margin-bottom: 10px;
+  }
+
+  /* 用户栏适配 */
+  .user-bar {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+}
+
+/* 移动端表单优化 */
+@media (max-width: 480px) {
+  /* 文件上传区域 */
+  .upload-area {
+    padding: 20px 10px;
+    font-size: 14px;
+  }
+
+  /* 标签和输入框堆叠 */
+  .form-group {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .form-group label {
+    width: 100%;
+    margin-bottom: 5px;
+  }
+
+  .form-group input,
+  .form-group textarea,
+  .form-group select {
+    width: 100%;
+  }
+
+  /* 列表卡片优化 */
+  .flex-row {
+    flex-direction: column;
+    align-items: flex-start !important;
+    gap: 8px;
+  }
+
+  .justify-between {
+    width: 100%;
+  }
+
+  /* 标签适配 */
+  .tag {
+    font-size: 12px;
+    padding: 4px 8px;
+  }
+
+  /* 滚动优化 */
+  .screen {
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+}

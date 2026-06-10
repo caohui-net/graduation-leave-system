@@ -22,7 +22,7 @@ logger = logging.getLogger(__name__)
 
 
 @api_view(['POST'])
-@permission_classes([])
+@permission_classes([AllowAny])
 def mobile_login(request):
     """
     移动端登录端点
@@ -151,7 +151,7 @@ def mobile_login(request):
 
 
 @api_view(['POST'])
-@permission_classes([])
+@permission_classes([AllowAny])
 def admin_login(request):
     """
     管理端登录端点

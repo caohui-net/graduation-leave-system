@@ -385,7 +385,7 @@ def export_approvals(request):
     ws = wb.active
     ws.title = '审批数据'
 
-    headers = ['申请ID', '提交人', '手机号', '提交时间', '审批状态',
+    headers = ['申请ID', '提交人', '学号', '手机号', '离校日期', '楼栋号', '房间号', '提交时间', '审批状态',
                '宿管员', '宿管审批时间', '宿管审批结果',
                '辅导员', '辅导员审批时间', '辅导员审批结果']
     ws.append(headers)
@@ -401,7 +401,11 @@ def export_approvals(request):
         row = [
             sanitize_excel_formula(app.application_id),
             sanitize_excel_formula(app.student_name),
+            sanitize_excel_formula(app.student.user_id if app.student else ''),
             sanitize_excel_formula(app.contact_phone or ''),
+            app.leave_date.strftime('%Y-%m-%d') if app.leave_date else '',
+            sanitize_excel_formula(app.student.building or '') if app.student else '',
+            sanitize_excel_formula(app.student.room_number or '') if app.student else '',
             app.created_at.strftime('%Y-%m-%d %H:%M:%S'),
             app.get_status_display(),
             sanitize_excel_formula(dorm_approval.approver_name if dorm_approval else ''),

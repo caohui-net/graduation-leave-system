@@ -756,6 +756,14 @@
           <span style="font-size: 14px; color: #666; width: 80px;">学号</span>
           <span id="studentId" style="font-size: 14px; color: #333;">-</span>
         </div>
+        <div style="display: flex; align-items: center; padding: 10px 0;">
+          <span style="font-size: 14px; color: #666; width: 80px;">楼栋号</span>
+          <span id="studentBuilding" style="font-size: 14px; color: #333;">-</span>
+        </div>
+        <div style="display: flex; align-items: center; padding: 10px 0;">
+          <span style="font-size: 14px; color: #666; width: 80px;">房间号</span>
+          <span id="studentRoom" style="font-size: 14px; color: #333;">-</span>
+        </div>
       </div>
 
       <!-- 表单卡片 -->
@@ -959,6 +967,8 @@
           if (result.user.role === 'student') {
             document.getElementById('studentName').textContent = result.user.name;
             document.getElementById('studentId').textContent = result.user.user_id;
+            document.getElementById('studentBuilding').textContent = result.user.building || '-';
+            document.getElementById('studentRoom').textContent = result.user.room_number || '-';
 
             // Pre-fill phone if available
             if (result.user.phone) {

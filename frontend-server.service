@@ -1,0 +1,16 @@
+[Unit]
+Description=Graduation Leave System Frontend Server
+After=network.target
+
+[Service]
+Type=simple
+User=caohui
+WorkingDirectory=/home/caohui/projects/graduation-leave-system/demo-web
+ExecStart=/usr/bin/python3 -m http.server 7788
+Restart=always
+RestartSec=5
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target

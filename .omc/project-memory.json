@@ -1,6 +1,6 @@
 {
   "version": "1.0.0",
-  "lastScanned": 1780999981957,
+  "lastScanned": 1781150277160,
   "projectRoot": "/home/caohui/projects/graduation-leave-system",
   "techStack": {
     "languages": [],
@@ -37,30 +37,32 @@
       "path": "PRD",
       "purpose": null,
       "fileCount": 0,
-      "lastAccessed": 1780999981944,
+      "lastAccessed": 1781150277146,
       "keyFiles": []
     },
     "backend": {
       "path": "backend",
       "purpose": null,
-      "fileCount": 13,
-      "lastAccessed": 1780999981945,
+      "fileCount": 17,
+      "lastAccessed": 1781150277148,
       "keyFiles": [
         "API接口清单.md",
         "Dockerfile",
+        "export_admins_for_qgl.py",
         "manage.py",
-        "requirements.txt",
-        "schema.py"
+        "requirements.txt"
       ]
     },
     "demo-web": {
       "path": "demo-web",
       "purpose": null,
-      "fileCount": 3,
-      "lastAccessed": 1780999981947,
+      "fileCount": 5,
+      "lastAccessed": 1781150277148,
       "keyFiles": [
         "IMPLEMENTATION_NOTES.md",
+        "admin-sso-callback.html",
         "index.html",
+        "mobile-sso-callback.html",
         "test-integration.sh"
       ]
     },
@@ -68,14 +70,14 @@
       "path": "docker",
       "purpose": null,
       "fileCount": 0,
-      "lastAccessed": 1780999981948,
+      "lastAccessed": 1781150277149,
       "keyFiles": []
     },
     "docs": {
       "path": "docs",
       "purpose": "Documentation",
-      "fileCount": 97,
-      "lastAccessed": 1780999981949,
+      "fileCount": 117,
+      "lastAccessed": 1781150277150,
       "keyFiles": [
         "1-5830名毕业生（含研究生）.xls",
         "1-无入住信息.xls",
@@ -88,14 +90,23 @@
       "path": "frontend",
       "purpose": null,
       "fileCount": 0,
-      "lastAccessed": 1780999981949,
+      "lastAccessed": 1781150277150,
       "keyFiles": []
+    },
+    "logs": {
+      "path": "logs",
+      "purpose": null,
+      "fileCount": 1,
+      "lastAccessed": 1781150277150,
+      "keyFiles": [
+        "frontend.log"
+      ]
     },
     "miniprogram": {
       "path": "miniprogram",
       "purpose": null,
       "fileCount": 5,
-      "lastAccessed": 1780999981950,
+      "lastAccessed": 1781150277150,
       "keyFiles": [
         "app.json",
         "app.ts",
@@ -108,25 +119,27 @@
       "path": "plans",
       "purpose": null,
       "fileCount": 0,
-      "lastAccessed": 1780999981950,
+      "lastAccessed": 1781150277150,
       "keyFiles": []
     },
     "scripts": {
       "path": "scripts",
       "purpose": "Build/utility scripts",
-      "fileCount": 3,
-      "lastAccessed": 1780999981950,
+      "fileCount": 5,
+      "lastAccessed": 1781150277151,
       "keyFiles": [
         "analyze_excel_data.py",
         "md_to_docx.py",
-        "merge_admin_guide.py"
+        "merge_admin_guide.py",
+        "setup-systemd.sh",
+        "start-services.sh"
       ]
     },
     "tests": {
       "path": "tests",
       "purpose": "Test files",
       "fileCount": 7,
-      "lastAccessed": 1780999981951,
+      "lastAccessed": 1781150277151,
       "keyFiles": [
         "api_data_samples.sh",
         "approval_workflow_test.py",
@@ -139,16 +152,26 @@
       "path": "docker/scripts",
       "purpose": "Build/utility scripts",
       "fileCount": 0,
-      "lastAccessed": 1780999981951,
+      "lastAccessed": 1781150277152,
       "keyFiles": []
+    },
+    "frontend/components": {
+      "path": "frontend/components",
+      "purpose": "UI components",
+      "fileCount": 1,
+      "lastAccessed": 1781150277152,
+      "keyFiles": [
+        "ApprovalDetail.tsx"
+      ]
     },
     "frontend/services": {
       "path": "frontend/services",
       "purpose": "Business logic services",
-      "fileCount": 2,
-      "lastAccessed": 1780999981952,
+      "fileCount": 3,
+      "lastAccessed": 1781150277157,
       "keyFiles": [
         "api.ts",
+        "attachment.ts",
         "mock.ts"
       ]
     },
@@ -156,7 +179,7 @@
       "path": "frontend/types",
       "purpose": "Type definitions",
       "fileCount": 1,
-      "lastAccessed": 1780999981953,
+      "lastAccessed": 1781150277157,
       "keyFiles": [
         "api.ts"
       ]
@@ -165,14 +188,14 @@
       "path": "miniprogram/pages",
       "purpose": "Page components",
       "fileCount": 0,
-      "lastAccessed": 1780999981957,
+      "lastAccessed": 1781150277157,
       "keyFiles": []
     },
     "miniprogram/services": {
       "path": "miniprogram/services",
       "purpose": "Business logic services",
       "fileCount": 1,
-      "lastAccessed": 1780999981957,
+      "lastAccessed": 1781150277159,
       "keyFiles": [
         "api.ts"
       ]
@@ -181,7 +204,7 @@
       "path": "miniprogram/types",
       "purpose": "Type definitions",
       "fileCount": 1,
-      "lastAccessed": 1780999981957,
+      "lastAccessed": 1781150277159,
       "keyFiles": [
         "api.ts"
       ]
@@ -190,7 +213,7 @@
       "path": "miniprogram/utils",
       "purpose": "Utility functions",
       "fileCount": 2,
-      "lastAccessed": 1780999981957,
+      "lastAccessed": 1781150277159,
       "keyFiles": [
         "date.ts",
         "role-guard.ts"
@@ -199,303 +222,63 @@
   },
   "hotPaths": [
     {
+      "path": "frontend/types/api.ts",
+      "accessCount": 3,
+      "lastAccessed": 1781151180890,
+      "type": "file"
+    },
+    {
+      "path": "frontend/services/api.ts",
+      "accessCount": 3,
+      "lastAccessed": 1781151544852,
+      "type": "file"
+    },
+    {
+      "path": "backend/apps/approvals/serializers.py",
+      "accessCount": 3,
+      "lastAccessed": 1781151593700,
+      "type": "file"
+    },
+    {
+      "path": "frontend/components/ApprovalDetail.tsx",
+      "accessCount": 2,
+      "lastAccessed": 1781150326035,
+      "type": "file"
+    },
+    {
       "path": "docs/PROJECT-SUMMARY.md",
-      "accessCount": 355,
-      "lastAccessed": 1781072427775,
+      "accessCount": 2,
+      "lastAccessed": 1781150633361,
       "type": "file"
     },
     {
-      "path": "docs/design/2026-05-27-system-design.md",
-      "accessCount": 120,
-      "lastAccessed": 1780926413007,
+      "path": "backend/apps/attachments/views.py",
+      "accessCount": 2,
+      "lastAccessed": 1781151373435,
       "type": "file"
     },
     {
-      "path": "docs/数据对接说明文档.md",
-      "accessCount": 43,
-      "lastAccessed": 1781063857097,
+      "path": "backend/apps/applications/serializers.py",
+      "accessCount": 2,
+      "lastAccessed": 1781151632884,
       "type": "file"
     },
     {
-      "path": "docs/discussions/codex-review-2026-05-27/33-response-to-codex-data-review.md",
-      "accessCount": 15,
-      "lastAccessed": 1779852726155,
-      "type": "file"
-    },
-    {
-      "path": "docs/用户设计说明书.md",
-      "accessCount": 13,
-      "lastAccessed": 1779872177652,
-      "type": "file"
-    },
-    {
-      "path": "backend/requirements/base.txt",
-      "accessCount": 10,
-      "lastAccessed": 1780945408398,
-      "type": "file"
-    },
-    {
-      "path": "docs/discussions/codex-review-2026-05-27/31-data-source-requirements-consensus-v2.md",
-      "accessCount": 7,
-      "lastAccessed": 1779870781917,
-      "type": "file"
-    },
-    {
-      "path": "docs/discussions/codex-review-2026-05-27/23-class-bed-field-codex-response.md",
-      "accessCount": 5,
-      "lastAccessed": 1779848049956,
-      "type": "file"
-    },
-    {
-      "path": "docs/discussions/codex-review-2026-05-27/35-response-to-codex-critical-issues.md",
-      "accessCount": 5,
-      "lastAccessed": 1779870519956,
-      "type": "file"
-    },
-    {
-      "path": "docs/superpowers/plans/2026-05-27-implementation-plan.md",
-      "accessCount": 4,
-      "lastAccessed": 1779843049427,
-      "type": "file"
-    },
-    {
-      "path": "docs/discussions/codex-review-2026-05-27/02-architecture-response.md",
-      "accessCount": 3,
-      "lastAccessed": 1779847081989,
-      "type": "file"
-    },
-    {
-      "path": "docs/discussions/codex-review-2026-05-27/01-architecture-review.md",
-      "accessCount": 3,
-      "lastAccessed": 1779847499249,
-      "type": "file"
-    },
-    {
-      "path": "docs/templates/宿舍清退数据模板.csv",
-      "accessCount": 3,
-      "lastAccessed": 1779849344873,
-      "type": "file"
-    },
-    {
-      "path": "docs/templates/学生基本信息导入模板.csv",
-      "accessCount": 3,
-      "lastAccessed": 1779872374587,
-      "type": "file"
-    },
-    {
-      "path": "docs/templates/辅导员基本信息导入模板.csv",
-      "accessCount": 3,
-      "lastAccessed": 1779872383598,
-      "type": "file"
-    },
-    {
-      "path": "docs/templates/班级辅导员对应关系导入模板.csv",
-      "accessCount": 3,
-      "lastAccessed": 1779872391859,
-      "type": "file"
-    },
-    {
-      "path": ".claude/skills/codex-review-dialogue.md",
-      "accessCount": 3,
-      "lastAccessed": 1779939188311,
-      "type": "file"
-    },
-    {
-      "path": "backend/requirements/dev.txt",
+      "path": "backend/apps/approvals/models.py",
       "accessCount": 1,
-      "lastAccessed": 1779833425589,
+      "lastAccessed": 1781150698553,
       "type": "file"
     },
     {
-      "path": "backend/requirements/prod.txt",
+      "path": "backend/apps/attachments/serializers.py",
       "accessCount": 1,
-      "lastAccessed": 1779833427034,
+      "lastAccessed": 1781151016793,
       "type": "file"
     },
     {
-      "path": "docs/discussions/codex-review-2026-05-27/03-auth-review-round3.md",
+      "path": "frontend/services/attachment.ts",
       "accessCount": 1,
-      "lastAccessed": 1779834290724,
-      "type": "file"
-    },
-    {
-      "path": "docs/discussions/codex-review-2026-05-27/04-database-review.md",
-      "accessCount": 1,
-      "lastAccessed": 1779834461110,
-      "type": "file"
-    },
-    {
-      "path": "docs/discussions/codex-review-2026-05-27/05-database-response-part1.md",
-      "accessCount": 1,
-      "lastAccessed": 1779834490556,
-      "type": "file"
-    },
-    {
-      "path": "docs/discussions/codex-review-2026-05-27/06-database-response-part2.md",
-      "accessCount": 1,
-      "lastAccessed": 1779834523598,
-      "type": "file"
-    },
-    {
-      "path": "docs/discussions/codex-review-2026-05-27/07-database-response-part3.md",
-      "accessCount": 1,
-      "lastAccessed": 1779834558129,
-      "type": "file"
-    },
-    {
-      "path": "docs/discussions/codex-review-2026-05-27/08-database-confirmation.md",
-      "accessCount": 1,
-      "lastAccessed": 1779834616967,
-      "type": "file"
-    },
-    {
-      "path": "docs/discussions/codex-review-2026-05-27/09-multi-db-clarification.md",
-      "accessCount": 1,
-      "lastAccessed": 1779834869018,
-      "type": "file"
-    },
-    {
-      "path": "docs/discussions/codex-review-2026-05-27/00-CONSENSUS-SUMMARY.md",
-      "accessCount": 1,
-      "lastAccessed": 1779834925585,
-      "type": "file"
-    },
-    {
-      "path": "docs/discussions/codex-review-2026-05-27/10-remaining-sections-review.md",
-      "accessCount": 1,
-      "lastAccessed": 1779836320855,
-      "type": "file"
-    },
-    {
-      "path": "docs/discussions/codex-review-2026-05-27/11-remaining-sections-response.md",
-      "accessCount": 1,
-      "lastAccessed": 1779836380831,
-      "type": "file"
-    },
-    {
-      "path": "docs/discussions/codex-review-2026-05-27/12-remaining-sections-consensus.md",
-      "accessCount": 1,
-      "lastAccessed": 1779836449801,
-      "type": "file"
-    },
-    {
-      "path": "docs/discussions/codex-review-2026-05-27/13-round3-analysis-request.md",
-      "accessCount": 1,
-      "lastAccessed": 1779838108006,
-      "type": "file"
-    },
-    {
-      "path": "docs/discussions/codex-review-2026-05-27/14-claude-analysis-part1-architecture-database.md",
-      "accessCount": 1,
-      "lastAccessed": 1779838276341,
-      "type": "file"
-    },
-    {
-      "path": "docs/discussions/codex-review-2026-05-27/15-claude-analysis-part2-api-auth.md",
-      "accessCount": 1,
-      "lastAccessed": 1779838327469,
-      "type": "file"
-    },
-    {
-      "path": "docs/discussions/codex-review-2026-05-27/16-claude-analysis-part3-workflow-integration.md",
-      "accessCount": 1,
-      "lastAccessed": 1779838374648,
-      "type": "file"
-    },
-    {
-      "path": "docs/discussions/codex-review-2026-05-27/17-claude-analysis-part4-deployment-security.md",
-      "accessCount": 1,
-      "lastAccessed": 1779838414014,
-      "type": "file"
-    },
-    {
-      "path": "docs/discussions/codex-review-2026-05-27/18-claude-analysis-part5-performance-testing.md",
-      "accessCount": 1,
-      "lastAccessed": 1779838460219,
-      "type": "file"
-    },
-    {
-      "path": "docs/discussions/codex-review-2026-05-27/19-claude-analysis-part6-summary.md",
-      "accessCount": 1,
-      "lastAccessed": 1779838523846,
-      "type": "file"
-    },
-    {
-      "path": "docs/discussions/codex-review-2026-05-27/17-completed-work-only-analysis.md",
-      "accessCount": 1,
-      "lastAccessed": 1779838650397,
-      "type": "file"
-    },
-    {
-      "path": "docs/discussions/codex-review-2026-05-27/20-claude-codex-comparison.md",
-      "accessCount": 1,
-      "lastAccessed": 1779838716405,
-      "type": "file"
-    },
-    {
-      "path": "docs/discussions/codex-review-2026-05-27/21-final-consensus.md",
-      "accessCount": 1,
-      "lastAccessed": 1779838807640,
-      "type": "file"
-    },
-    {
-      "path": "docs/discussions/codex-review-2026-05-27/22-class-bed-field-review-request.md",
-      "accessCount": 1,
-      "lastAccessed": 1779846659434,
-      "type": "file"
-    },
-    {
-      "path": "docs/discussions/codex-review-2026-05-27/24-class-bed-field-claude-response.md",
-      "accessCount": 1,
-      "lastAccessed": 1779848127754,
-      "type": "file"
-    },
-    {
-      "path": "docs/discussions/codex-review-2026-05-27/25-class-bed-field-consensus.md",
-      "accessCount": 1,
-      "lastAccessed": 1779848220090,
-      "type": "file"
-    },
-    {
-      "path": "docs/discussions/codex-review-2026-05-27/26-user-docs-codex-response.md",
-      "accessCount": 1,
-      "lastAccessed": 1779849754710,
-      "type": "file"
-    },
-    {
-      "path": "docs/discussions/codex-review-2026-05-27/27-user-docs-claude-response.md",
-      "accessCount": 1,
-      "lastAccessed": 1779849801043,
-      "type": "file"
-    },
-    {
-      "path": "docs/discussions/codex-review-2026-05-27/28-user-docs-consensus.md",
-      "accessCount": 1,
-      "lastAccessed": 1779850141377,
-      "type": "file"
-    },
-    {
-      "path": "docs/discussions/codex-review-2026-05-27/29-data-source-analysis.md",
-      "accessCount": 1,
-      "lastAccessed": 1779850662976,
-      "type": "file"
-    },
-    {
-      "path": "docs/discussions/codex-review-2026-05-27/31-data-source-requirements-consensus.md",
-      "accessCount": 1,
-      "lastAccessed": 1779851794157,
-      "type": "file"
-    },
-    {
-      "path": "docs/discussions/codex-review-2026-05-27/32-codex-data-requirements-review.md",
-      "accessCount": 1,
-      "lastAccessed": 1779852287285,
-      "type": "file"
-    },
-    {
-      "path": "docs/discussions/codex-review-2026-05-27/34-codex-second-review-response.md",
-      "accessCount": 1,
-      "lastAccessed": 1779869643264,
+      "lastAccessed": 1781151344057,
       "type": "file"
     }
   ],

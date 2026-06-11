@@ -148,7 +148,20 @@ def download_attachment(request, attachment_id):
 
     # Return file
     try:
-        return FileResponse(attachment.file.open('rb'), as_attachment=True, filename=attachment.file_name, content_type=attachment.content_type)
+        # Check if preview mode (query param: ?preview=true)
+        preview_mode = request.GET.get('preview', 'false').lower() == 'true'
+
+        # Restrict preview to safe MIME types
+        ALLOWED_PREVIEW_TYPES = ['image/jpeg', 'image/png', 'image/gif', 'application/pdf']
+        if preview_mode and attachment.content_type not in ALLOWED_PREVIEW_TYPES:
+            preview_mode = False
+
+        return FileResponse(
+            attachment.file.open('rb'),
+            as_attachment=not preview_mode,
+            filename=attachment.file_name,
+            content_type=attachment.content_type
+        )
     except FileNotFoundError:
         return Response({'error': {'code': 'NOT_FOUND', 'message': '文件不存在'}},
                         status=status.HTTP_404_NOT_FOUND)

@@ -824,3 +824,173 @@
 | 14:13 | Session end: 15 writes across 5 files (views.py, test_sso_e2e.py, 青橄榄SSO对接-三方技术审查.md, session-context.json, PROJECT-SUMMARY.md) | 10 reads | ~36205 tok |
 | 14:17 | Session end: 15 writes across 5 files (views.py, test_sso_e2e.py, 青橄榄SSO对接-三方技术审查.md, session-context.json, PROJECT-SUMMARY.md) | 10 reads | ~36205 tok |
 | 14:18 | Session end: 15 writes across 5 files (views.py, test_sso_e2e.py, 青橄榄SSO对接-三方技术审查.md, session-context.json, PROJECT-SUMMARY.md) | 11 reads | ~36205 tok |
+| 14:21 | Session end: 15 writes across 5 files (views.py, test_sso_e2e.py, 青橄榄SSO对接-三方技术审查.md, session-context.json, PROJECT-SUMMARY.md) | 11 reads | ~36517 tok |
+| 14:27 | Created docs/SSO部署和验收文档.md | — | ~1136 |
+| 14:28 | Session end: 16 writes across 6 files (views.py, test_sso_e2e.py, 青橄榄SSO对接-三方技术审查.md, session-context.json, PROJECT-SUMMARY.md) | 11 reads | ~37735 tok |
+| 14:30 | Edited docs/青橄榄SSO对接-提交清单-简版.md | expanded (+58 lines) | ~581 |
+| 14:31 | Session end: 17 writes across 7 files (views.py, test_sso_e2e.py, 青橄榄SSO对接-三方技术审查.md, session-context.json, PROJECT-SUMMARY.md) | 12 reads | ~38646 tok |
+| 14:32 | Session end: 17 writes across 7 files (views.py, test_sso_e2e.py, 青橄榄SSO对接-三方技术审查.md, session-context.json, PROJECT-SUMMARY.md) | 13 reads | ~39440 tok |
+| 14:32 | Edited docs/青橄榄SSO对接-提交清单-简版.md | expanded (+13 lines) | ~89 |
+| 14:33 | Session end: 18 writes across 7 files (views.py, test_sso_e2e.py, 青橄榄SSO对接-三方技术审查.md, session-context.json, PROJECT-SUMMARY.md) | 13 reads | ~39536 tok |
+| 15:08 | Session end: 18 writes across 7 files (views.py, test_sso_e2e.py, 青橄榄SSO对接-三方技术审查.md, session-context.json, PROJECT-SUMMARY.md) | 13 reads | ~39536 tok |
+| 15:16 | Edited demo-web/admin-sso-callback.html | modified getAuthorizationFromURL() | ~59 |
+| 15:17 | Session end: 19 writes across 8 files (views.py, test_sso_e2e.py, 青橄榄SSO对接-三方技术审查.md, session-context.json, PROJECT-SUMMARY.md) | 13 reads | ~39600 tok |
+| 15:18 | Created .omc/session-context.json | — | ~403 |
+| 15:18 | Created docs/SSO集成进度快照-20260610.md | — | ~588 |
+| 15:19 | Session end: 21 writes across 9 files (views.py, test_sso_e2e.py, 青橄榄SSO对接-三方技术审查.md, session-context.json, PROJECT-SUMMARY.md) | 13 reads | ~40633 tok |
+
+## Session: 2026-06-10 15:24
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-06-10 15:26
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 15:39 | Edited backend/apps/sso_qingganlian/client.py | 8→13 lines | ~158 |
+| 15:40 | Session end: 1 writes across 1 files (client.py) | 3 reads | ~1300 tok |
+| 15:41 | Edited demo-web/admin-sso-callback.html | getAuthorizationFromURL() → getParamsFromURL() | ~178 |
+| 15:41 | Edited demo-web/admin-sso-callback.html | getAuthorizationFromURL() → getParamsFromURL() | ~132 |
+| 15:42 | Edited backend/apps/sso_qingganlian/views.py | reduced (-11 lines) | ~160 |
+| 15:42 | Edited backend/apps/sso_qingganlian/views.py | removed 7 lines | ~9 |
+| 15:42 | Edited backend/apps/sso_qingganlian/views.py | 5 → 4 | ~11 |
+| 15:42 | Session end: 6 writes across 3 files (client.py, admin-sso-callback.html, views.py) | 5 reads | ~5141 tok |
+| 15:43 | Session end: 6 writes across 3 files (client.py, admin-sso-callback.html, views.py) | 5 reads | ~5141 tok |
+| 15:44 | Session end: 6 writes across 3 files (client.py, admin-sso-callback.html, views.py) | 6 reads | ~5141 tok |
+| 15:46 | Session end: 6 writes across 3 files (client.py, admin-sso-callback.html, views.py) | 6 reads | ~5141 tok |
+| 15:49 | Created demo-web/admin/dashboard.html | — | ~1201 |
+| 15:49 | Session end: 7 writes across 4 files (client.py, admin-sso-callback.html, views.py, dashboard.html) | 6 reads | ~6428 tok |
+| 15:50 | Session end: 7 writes across 4 files (client.py, admin-sso-callback.html, views.py, dashboard.html) | 6 reads | ~6428 tok |
+| 15:51 | Edited demo-web/admin-sso-callback.html | modified if() | ~668 |
+| 15:52 | Session end: 8 writes across 4 files (client.py, admin-sso-callback.html, views.py, dashboard.html) | 6 reads | ~7143 tok |
+| 15:52 | Edited demo-web/admin-sso-callback.html | removed 40 lines | ~128 |
+| 15:52 | Session end: 9 writes across 4 files (client.py, admin-sso-callback.html, views.py, dashboard.html) | 6 reads | ~7280 tok |
+| 15:57 | Session end: 9 writes across 4 files (client.py, admin-sso-callback.html, views.py, dashboard.html) | 8 reads | ~20849 tok |
+| 16:01 | Session end: 9 writes across 4 files (client.py, admin-sso-callback.html, views.py, dashboard.html) | 8 reads | ~20849 tok |
+| 16:14 | Session end: 9 writes across 4 files (client.py, admin-sso-callback.html, views.py, dashboard.html) | 8 reads | ~20661 tok |
+| 16:17 | Session end: 9 writes across 4 files (client.py, admin-sso-callback.html, views.py, dashboard.html) | 9 reads | ~22570 tok |
+| 16:21 | Session end: 9 writes across 4 files (client.py, admin-sso-callback.html, views.py, dashboard.html) | 9 reads | ~22570 tok |
+| 16:24 | Session end: 9 writes across 4 files (client.py, admin-sso-callback.html, views.py, dashboard.html) | 9 reads | ~22633 tok |
+| 16:25 | Session end: 9 writes across 4 files (client.py, admin-sso-callback.html, views.py, dashboard.html) | 9 reads | ~22633 tok |
+| 16:26 | Edited backend/apps/sso_qingganlian/views.py | modified mobile_login() | ~826 |
+| 16:27 | Session end: 10 writes across 4 files (client.py, admin-sso-callback.html, views.py, dashboard.html) | 9 reads | ~23459 tok |
+| 16:27 | Created demo-web/mobile-sso-callback.html | — | ~926 |
+| 16:28 | Session end: 11 writes across 5 files (client.py, admin-sso-callback.html, views.py, dashboard.html, mobile-sso-callback.html) | 9 reads | ~24451 tok |
+| 16:29 | Session end: 11 writes across 5 files (client.py, admin-sso-callback.html, views.py, dashboard.html, mobile-sso-callback.html) | 9 reads | ~24451 tok |
+| 16:29 | Session end: 11 writes across 5 files (client.py, admin-sso-callback.html, views.py, dashboard.html, mobile-sso-callback.html) | 10 reads | ~24451 tok |
+| 16:30 | Edited demo-web/js/api.js | added error handling | ~238 |
+| 16:30 | Session end: 12 writes across 6 files (client.py, admin-sso-callback.html, views.py, dashboard.html, mobile-sso-callback.html) | 10 reads | ~24689 tok |
+| 16:32 | Session end: 12 writes across 6 files (client.py, admin-sso-callback.html, views.py, dashboard.html, mobile-sso-callback.html) | 10 reads | ~24689 tok |
+| 16:34 | Edited demo-web/js/api.js | added 9 condition(s) | ~600 |
+| 16:35 | Session end: 13 writes across 6 files (client.py, admin-sso-callback.html, views.py, dashboard.html, mobile-sso-callback.html) | 10 reads | ~25289 tok |
+| 16:36 | Edited demo-web/js/api.js | modified restoreAuthState() | ~149 |
+| 16:37 | Session end: 14 writes across 6 files (client.py, admin-sso-callback.html, views.py, dashboard.html, mobile-sso-callback.html) | 10 reads | ~25438 tok |
+| 16:39 | Session end: 14 writes across 6 files (client.py, admin-sso-callback.html, views.py, dashboard.html, mobile-sso-callback.html) | 10 reads | ~25438 tok |
+| 16:40 | Session end: 14 writes across 6 files (client.py, admin-sso-callback.html, views.py, dashboard.html, mobile-sso-callback.html) | 10 reads | ~25438 tok |
+| 16:43 | Session end: 14 writes across 6 files (client.py, admin-sso-callback.html, views.py, dashboard.html, mobile-sso-callback.html) | 10 reads | ~25438 tok |
+| 16:45 | Session end: 14 writes across 6 files (client.py, admin-sso-callback.html, views.py, dashboard.html, mobile-sso-callback.html) | 10 reads | ~25438 tok |
+| 16:47 | Created docs/青橄榄SSO对接完成报告-2026-06-10.md | — | ~1445 |
+| 16:48 | Session end: 15 writes across 7 files (client.py, admin-sso-callback.html, views.py, dashboard.html, mobile-sso-callback.html) | 11 reads | ~56243 tok |
+| 17:03 | Session end: 15 writes across 7 files (client.py, admin-sso-callback.html, views.py, dashboard.html, mobile-sso-callback.html) | 11 reads | ~56243 tok |
+| 17:05 | Edited demo-web/mobile-sso-callback.html | modified if() | ~234 |
+| 17:05 | Session end: 16 writes across 7 files (client.py, admin-sso-callback.html, views.py, dashboard.html, mobile-sso-callback.html) | 11 reads | ~56494 tok |
+| 17:14 | Edited demo-web/mobile-sso-callback.html | modified if() | ~293 |
+| 17:14 | Session end: 17 writes across 7 files (client.py, admin-sso-callback.html, views.py, dashboard.html, mobile-sso-callback.html) | 11 reads | ~56808 tok |
+| 17:19 | Session end: 17 writes across 7 files (client.py, admin-sso-callback.html, views.py, dashboard.html, mobile-sso-callback.html) | 12 reads | ~57943 tok |
+| 17:20 | Edited demo-web/mobile-sso-callback.html | modified getParamsFromURL() | ~183 |
+
+## Session: 2026-06-10 17:21
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 17:23 | Edited demo-web/mobile-sso-callback.html | modified function() | ~91 |
+| 17:23 | Session end: 1 writes across 1 files (mobile-sso-callback.html) | 2 reads | ~1340 tok |
+| 17:25 | Session end: 1 writes across 1 files (mobile-sso-callback.html) | 2 reads | ~1340 tok |
+| 17:26 | Session end: 1 writes across 1 files (mobile-sso-callback.html) | 3 reads | ~1340 tok |
+| 17:27 | Edited demo-web/mobile-sso-callback.html | modified function() | ~102 |
+| 17:27 | Session end: 2 writes across 1 files (mobile-sso-callback.html) | 4 reads | ~1449 tok |
+| 17:30 | Edited demo-web/js/api.js | modified if() | ~65 |
+| 17:30 | Session end: 3 writes across 2 files (mobile-sso-callback.html, api.js) | 5 reads | ~3338 tok |
+| 17:31 | Session end: 3 writes across 2 files (mobile-sso-callback.html, api.js) | 5 reads | ~3338 tok |
+| 17:32 | Session end: 3 writes across 2 files (mobile-sso-callback.html, api.js) | 5 reads | ~3338 tok |
+| 17:35 | Edited demo-web/mobile-sso-callback.html | added 1 condition(s) | ~844 |
+| 17:35 | Edited demo-web/mobile-sso-callback.html | added 1 condition(s) | ~416 |
+| 17:35 | Edited backend/apps/sso_qingganlian/views.py | modified mobile_saas_login() | ~940 |
+| 17:36 | Edited backend/apps/sso_qingganlian/urls.py | 4→5 lines | ~66 |
+| 17:37 | Edited backend/apps/sso_qingganlian/views.py | expanded (+13 lines) | ~231 |
+| 17:37 | Edited backend/apps/sso_qingganlian/settings.py | 22→22 lines | ~176 |
+| 17:38 | Session end: 9 writes across 5 files (mobile-sso-callback.html, api.js, views.py, urls.py, settings.py) | 8 reads | ~7556 tok |
+| 17:41 | Session end: 9 writes across 5 files (mobile-sso-callback.html, api.js, views.py, urls.py, settings.py) | 8 reads | ~7556 tok |
+| 17:43 | Edited backend/apps/sso_qingganlian/client.py | modified _make_request() | ~297 |
+| 17:44 | Edited backend/apps/sso_qingganlian/client.py | modified get_user_code_by_token() | ~162 |
+| 17:44 | Edited backend/apps/sso_qingganlian/client.py | modified get_user_info() | ~152 |
+| 17:44 | Session end: 12 writes across 6 files (mobile-sso-callback.html, api.js, views.py, urls.py, settings.py) | 8 reads | ~8167 tok |
+| 17:47 | Session end: 12 writes across 6 files (mobile-sso-callback.html, api.js, views.py, urls.py, settings.py) | 8 reads | ~8167 tok |
+| 17:48 | Edited docker-compose.yml | 3→4 lines | ~21 |
+| 17:48 | Edited docker-compose.yml | 5→6 lines | ~43 |
+| 17:49 | Created frontend-server.service | — | ~92 |
+| 17:49 | Created scripts/start-services.sh | — | ~131 |
+| 17:49 | Created scripts/setup-systemd.sh | — | ~119 |
+| 17:49 | Session end: 17 writes across 10 files (mobile-sso-callback.html, api.js, views.py, urls.py, settings.py) | 9 reads | ~8818 tok |
+| 17:51 | Edited backend/apps/sso_qingganlian/client.py | expanded (+9 lines) | ~318 |
+| 17:52 | Session end: 18 writes across 10 files (mobile-sso-callback.html, api.js, views.py, urls.py, settings.py) | 10 reads | ~9527 tok |
+| 17:53 | Session end: 18 writes across 10 files (mobile-sso-callback.html, api.js, views.py, urls.py, settings.py) | 10 reads | ~9527 tok |
+| 17:59 | Session end: 18 writes across 10 files (mobile-sso-callback.html, api.js, views.py, urls.py, settings.py) | 10 reads | ~9527 tok |
+| 18:02 | Edited backend/apps/sso_qingganlian/settings.py | 11→11 lines | ~99 |
+| 18:03 | Session end: 19 writes across 10 files (mobile-sso-callback.html, api.js, views.py, urls.py, settings.py) | 11 reads | ~9626 tok |
+| 18:04 | Session end: 19 writes across 10 files (mobile-sso-callback.html, api.js, views.py, urls.py, settings.py) | 11 reads | ~9626 tok |
+
+## Session: 2026-06-10 18:06
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 10:46 | Edited frontend/services/api.ts | modified if() | ~72 |
+| 10:47 | Edited frontend/services/api.ts | added 2 condition(s) | ~147 |
+| 10:47 | Session end: 2 writes across 1 files (api.ts) | 10 reads | ~35284 tok |
+| 10:48 | Edited frontend/services/api.ts | added 1 condition(s) | ~277 |
+| 10:49 | Session end: 3 writes across 1 files (api.ts) | 10 reads | ~35561 tok |
+| 10:54 | Session end: 3 writes across 1 files (api.ts) | 11 reads | ~40425 tok |
+| 11:07 | Edited backend/apps/approvals/serializers.py | modified ApplicationBriefSerializer() | ~106 |
+| 11:07 | Edited backend/apps/approvals/serializers.py | modified get_attachments() | ~458 |
+| 11:07 | Session end: 5 writes across 2 files (api.ts, serializers.py) | 12 reads | ~41730 tok |
+| 11:11 | Edited backend/apps/attachments/views.py | expanded (+7 lines) | ~156 |
+| 11:12 | Session end: 6 writes across 3 files (api.ts, serializers.py, views.py) | 12 reads | ~41886 tok |
+| 11:13 | Session end: 6 writes across 3 files (api.ts, serializers.py, views.py) | 12 reads | ~41886 tok |
+| 11:14 | Session end: 6 writes across 3 files (api.ts, serializers.py, views.py) | 12 reads | ~41886 tok |
+| 11:16 | Created frontend/components/ApprovalDetail.tsx | — | ~758 |
+| 11:16 | Session end: 7 writes across 4 files (api.ts, serializers.py, views.py, ApprovalDetail.tsx) | 12 reads | ~42644 tok |
+| 11:18 | Created frontend/mobile/ApprovalDetail.tsx | — | ~1525 |
+| 11:18 | Created frontend/miniprogram/pages/approval-detail/index.wxml | — | ~517 |
+| 11:18 | Created frontend/miniprogram/pages/approval-detail/index.js | — | ~1026 |
+| 11:18 | Session end: 10 writes across 6 files (api.ts, serializers.py, views.py, ApprovalDetail.tsx, index.wxml) | 12 reads | ~45749 tok |
+| 11:19 | Created frontend/services/attachment.ts | — | ~241 |
+| 11:20 | Created frontend/hooks/useAttachment.ts | — | ~190 |
+| 11:21 | Edited frontend/components/ApprovalDetail.tsx | open() → useAttachment() | ~100 |
+| 11:21 | Session end: 13 writes across 8 files (api.ts, serializers.py, views.py, ApprovalDetail.tsx, index.wxml) | 12 reads | ~46280 tok |
+| 11:27 | Session end: 13 writes across 8 files (api.ts, serializers.py, views.py, ApprovalDetail.tsx, index.wxml) | 12 reads | ~46280 tok |
+| 11:27 | Session end: 13 writes across 8 files (api.ts, serializers.py, views.py, ApprovalDetail.tsx, index.wxml) | 12 reads | ~46280 tok |
+| 11:35 | Session end: 13 writes across 8 files (api.ts, serializers.py, views.py, ApprovalDetail.tsx, index.wxml) | 13 reads | ~49352 tok |
+| 11:50 | Session end: 13 writes across 8 files (api.ts, serializers.py, views.py, ApprovalDetail.tsx, index.wxml) | 16 reads | ~49352 tok |
+| 11:53 | Session end: 13 writes across 8 files (api.ts, serializers.py, views.py, ApprovalDetail.tsx, index.wxml) | 17 reads | ~49352 tok |
+| 11:55 | Edited frontend/services/attachment.ts | added error handling | ~641 |
+| 11:56 | Edited frontend/hooks/useAttachment.ts | added error handling | ~313 |
+| 11:57 | Edited frontend/components/ApprovalDetail.tsx | added error handling | ~227 |
+
+## Session: 2026-06-11 11:57
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 11:58 | Edited frontend/components/ApprovalDetail.tsx | 13→15 lines | ~179 |
+| 12:00 | Session end: 1 writes across 1 files (ApprovalDetail.tsx) | 1 reads | ~1069 tok |
+| 12:04 | Session end: 1 writes across 1 files (ApprovalDetail.tsx) | 2 reads | ~30326 tok |
+| 12:05 | Session end: 1 writes across 1 files (ApprovalDetail.tsx) | 4 reads | ~30712 tok |
+| 12:10 | Edited frontend/types/api.ts | expanded (+16 lines) | ~168 |
+| 12:12 | Edited backend/apps/approvals/serializers.py | modified ApprovalSerializer() | ~467 |
+| 12:13 | Edited frontend/types/api.ts | 27→29 lines | ~187 |
+| 12:14 | Session end: 4 writes across 3 files (ApprovalDetail.tsx, api.ts, serializers.py) | 6 reads | ~32415 tok |
+| 12:16 | Edited backend/apps/attachments/views.py | expanded (+6 lines) | ~182 |
+| 12:18 | Edited frontend/services/api.ts | modified constructor() | ~173 |
+| 12:19 | Edited frontend/services/api.ts | Error() → ApiClientError() | ~64 |
+| 12:19 | Edited backend/apps/approvals/serializers.py | modified ApprovalBriefSerializer() | ~211 |
+| 12:20 | Edited backend/apps/applications/serializers.py | ApprovalSerializer() → ApprovalBriefSerializer() | ~52 |

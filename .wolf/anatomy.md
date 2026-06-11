@@ -1,7 +1,7 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-06-10T06:12:49.084Z
-> Files: 622 tracked | Anatomy hits: 0 | Misses: 0
+> Auto-maintained by OpenWolf. Last scanned: 2026-06-11T04:20:32.788Z
+> Files: 640 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../../../tmp/
 
@@ -33,7 +33,8 @@
 - `CHANGELOG.md` — Changelog (~3244 tok)
 - `CLAUDE.md` — OpenWolf (~57 tok)
 - `discussion_ux_proposal.md` — 三方直接讨论交互 UX 设计方案 (~960 tok)
-- `docker-compose.yml` — Docker Compose services (~221 tok)
+- `docker-compose.yml` — Docker Compose services (~232 tok)
+- `frontend-server.service` (~92 tok)
 - `PRODUCTION-READY.md` — claude-codex-gemini-collab - PRODUCTION READY (~1835 tok)
 - `pyproject.toml` — Claude-Codex-Gemini Collaboration Framework (~185 tok)
 - `README.md` — Project documentation (~2788 tok)
@@ -53,7 +54,7 @@
 
 - `daemon-audit.log` (~125609 tok)
 - `project-memory.json` (~2513 tok)
-- `session-context.json` (~320 tok)
+- `session-context.json` (~403 tok)
 
 ## .omc/artifacts/ask/
 
@@ -595,6 +596,7 @@
 
 - `permissions.py` — can_view_application (~273 tok)
 - `providers.py` — from: check_status (~1187 tok)
+- `serializers.py` — ApplicationListSerializer: get_approvals, validate_leave_date (~640 tok)
 - `views.py` — applications_view, list_applications, create_application, get_application (~3181 tok)
 
 ## backend/apps/applications/management/
@@ -609,7 +611,7 @@
 ## backend/apps/approvals/
 
 - `models.py` — Model: Approval, 11 fields (~386 tok)
-- `serializers.py` — Declares ApplicationBriefSerializer (~741 tok)
+- `serializers.py` — ApplicationBriefSerializer: get_attachments (~1156 tok)
 - `urls.py` (~128 tok)
 - `views.py` — sanitize_excel_formula, list_approvals, get_approval, approve_approval (~4864 tok)
 
@@ -621,6 +623,10 @@
 
 - `test_admin_and_export.py` — AdminSuperuserTest: setUp, test_admin_can_approve_dorm_manager_step, test_admin_can_reject_any_step, (~1317 tok)
 
+## backend/apps/attachments/
+
+- `views.py` — attachments_view, upload_attachment, list_attachments, download_attachment (~2168 tok)
+
 ## backend/apps/notifications/
 
 - `services.py` — notify_application_submitted, notify_approval_decided, create_approval_timeout_warnings (~1331 tok)
@@ -630,14 +636,14 @@
 - `__init__.py` — 青橄榄平台SSO对接模块 (~26 tok)
 - `apps.py` — Declares SsoQingganlianConfig (~57 tok)
 - `auth.py` — generate_rand_str, generate_signature, generate_request_params (~391 tok)
-- `client.py` — QingganlanClient: get_user_code_by_token, get_user_info, verify_admin_user (~1142 tok)
+- `client.py` — QingganlanClient: get_user_code_by_token, get_user_info, verify_admin_user (~1422 tok)
 - `exceptions.py` — 青橄榄SSO异常类 (~123 tok)
 - `models.py` — Model: SSOUserMapping, 16 fields (~715 tok)
 - `README.md` — Project documentation (~639 tok)
 - `serializers.py` — Declares MobileLoginRequestSerializer (~382 tok)
-- `settings.py` — 青橄榄SSO配置管理 (~184 tok)
-- `urls.py` (~66 tok)
-- `views.py` — mobile_login, admin_login (~2525 tok)
+- `settings.py` — 青橄榄SSO配置管理 (~174 tok)
+- `urls.py` (~89 tok)
+- `views.py` — mobile_saas_login, mobile_login, admin_login (~2867 tok)
 
 ## backend/apps/sso_qingganlian/migrations/
 
@@ -702,13 +708,18 @@
 
 ## demo-web/
 
-- `admin-sso-callback.html` — SSO登录中... (~794 tok)
+- `admin-sso-callback.html` — SSO登录中... (~840 tok)
 - `index.html` — 毕业离校申请系统 - UI Demo (~12029 tok)
+- `mobile-sso-callback.html` — SSO登录中... (~1562 tok)
 - `test-integration.sh` — Integration Test Script for Graduation Leave System (~1144 tok)
+
+## demo-web/admin/
+
+- `dashboard.html` — 管理后台 (~1201 tok)
 
 ## demo-web/js/
 
-- `api.js` — API Integration Layer (~1540 tok)
+- `api.js` — API Integration Layer (~2159 tok)
 
 ## docs/
 
@@ -716,9 +727,10 @@
 - `青橄榄平台对接材料-提交版.md` — 青橄榄平台SSO对接材料 (~1055 tok)
 - `青橄榄租号号对接材料-2026-06-10.md` — 青橄榄平台SSO对接材料（租号号管理端） (~952 tok)
 - `青橄榄SSO对接-三方技术审查.md` — 青橄榄SSO对接 - 三方技术审查报告 (~868 tok)
-- `青橄榄SSO对接-提交清单-简版.md` — 青橄榄SSO对接 - 提交清单 (~289 tok)
+- `青橄榄SSO对接-提交清单-简版.md` — 青橄榄SSO对接 - 提交清单 (~609 tok)
 - `青橄榄SSO对接测试清单-2026-06-10.md` — 青橄榄租号号SSO对接测试清单 (~848 tok)
 - `青橄榄SSO对接技术方案.md` — 青橄榄平台SSO对接技术方案 (~1909 tok)
+- `青橄榄SSO对接完成报告-2026-06-10.md` — 青橄榄平台SSO对接完成报告 (~1354 tok)
 - `agentmemory-integration-progress.md` — agentmemory Integration Progress (~1168 tok)
 - `architecture-integration-consensus.md` — 多智能体协作架构整合共识 (~1514 tok)
 - `PROJECT-SUMMARY.md` — 毕业生离校申请审批系统 - 项目总结 (~29257 tok)
@@ -726,7 +738,9 @@
 - `qingganlian-bug-fixes-20260609.md` — 青橄榄SSO代码审计 - Bug修复记录 (~300 tok)
 - `qingganlian-endpoint-verification-results.md` — 青橄榄API Endpoint验证结果 (~209 tok)
 - `qingganlian-verification-status-20260609.md` — 青橄榄SSO对接验证状态 (~143 tok)
+- `SSO部署和验收文档.md` — 青橄榄SSO集成 - 部署文档 (~1065 tok)
 - `SSO对接框架通讯架构说明.md` — SSO对接框架与本系统通讯架构说明 (~3586 tok)
+- `SSO集成进度快照-20260610.md` — SSO集成进度快照 - 2026-06-10 15:18 (~551 tok)
 - `SSO模块通用化可行性分析报告.md` — SSO模块通用化改造可行性分析报告 (~2291 tok)
 - `UAT-CHECKLIST.md` — 用户验收测试（UAT）检查清单 (~787 tok)
 
@@ -735,9 +749,37 @@
 - `2026-05-27-system-design.md` — 毕业生离校申请审批系统 - 系统设计文档 (~15276 tok)
 - `2026-06-08-sso-qingganlian-integration.md` — 青橄榄平台SSO对接模块技术设计 (~2262 tok)
 
+## frontend/components/
+
+- `ApprovalDetail.tsx` — 审批详情组件 - 包含附件预览功能 (~946 tok)
+
+## frontend/hooks/
+
+- `useAttachment.ts` — 附件操作Hook - 跨平台复用 (~313 tok)
+
+## frontend/miniprogram/pages/approval-detail/
+
+- `index.js` — 小程序审批详情页面逻辑 (~1026 tok)
+- `index.wxml` (~517 tok)
+
+## frontend/mobile/
+
+- `ApprovalDetail.tsx` — 移动端审批详情组件 - React Native (~1525 tok)
+
+## frontend/services/
+
+- `api.ts` — API Client for v0.2 Contract (~1182 tok)
+- `attachment.ts` — 附件服务 - 跨平台复用 (~675 tok)
+
+## frontend/types/
+
+- `api.ts` — API Types based on v0.2 Contract (~717 tok)
+
 ## scripts/
 
 - `install_skill.py` — Install claude-codex-gemini-collab skill with all dependencies. (~514 tok)
+- `setup-systemd.sh` — 配置systemd服务（需要sudo权限） (~119 tok)
+- `start-services.sh` — 启动毕业离校系统所有服务 (~131 tok)
 
 ## tests/
 

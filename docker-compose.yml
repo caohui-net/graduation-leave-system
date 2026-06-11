@@ -3,6 +3,7 @@ version: '3.8'
 services:
   db:
     image: postgres:15-alpine
+    restart: always
     environment:
       POSTGRES_DB: graduation_leave
       POSTGRES_USER: postgres
@@ -21,6 +22,7 @@ services:
     build:
       context: ./backend
       dockerfile: Dockerfile
+    restart: always
     command: python manage.py runserver 0.0.0.0:8000
     volumes:
       - ./backend:/app  # 开发模式：启用代码热更新

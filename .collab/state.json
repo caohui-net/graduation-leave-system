@@ -1,0 +1,8 @@
+{
+  "workflow_id": "claude-codex-gemini-collab",
+  "current_task": null,
+  "active_agent": "none",
+  "status": "initialized",
+  "last_event_id": 0,
+  "updated_at": "2026-06-10T05:40:25.690350+00:00"
+}

@@ -39,7 +39,7 @@ class QingganlanClient:
 
         self.session = requests.Session()
 
-    def _make_request(self, method, endpoint, data=None, encryption_type='sha1'):
+    def _make_request(self, method, endpoint, data=None, encryption_type='sha1', use_form_data=False):
         """
         发起HTTP请求
 
@@ -48,6 +48,7 @@ class QingganlanClient:
             endpoint: API端点
             data: 请求数据
             encryption_type: 加密类型
+            use_form_data: 是否使用form-data (默认False，使用JSON)
 
         Returns:
             响应JSON
@@ -62,12 +63,24 @@ class QingganlanClient:
 
         try:
             if method.upper() == 'POST':
-                response = self.session.post(url, headers=headers, json=data, timeout=30)
+                if use_form_data:
+                    # 使用form-data
+                    print(f"[SSO API] POST {url} (form-data)")
+                    print(f"[SSO API] Headers: {headers}")
+                    print(f"[SSO API] Data: {data}")
+                    response = self.session.post(url, headers=headers, data=data, timeout=30)
+                else:
+                    print(f"[SSO API] POST {url} (json)")
+                    print(f"[SSO API] Headers: {headers}")
+                    print(f"[SSO API] Data: {data}")
+                    response = self.session.post(url, headers=headers, json=data, timeout=30)
             else:
+                print(f"[SSO API] GET {url}")
+                print(f"[SSO API] Headers: {headers}")
+                print(f"[SSO API] Params: {data}")
                 response = self.session.get(url, headers=headers, params=data, timeout=30)
 
             # Log full response for debugging
-            print(f"[SSO API] {method} {url}")
             print(f"[SSO API] Status: {response.status_code}")
             print(f"[SSO API] Response: {response.text[:500]}")
 
@@ -110,7 +123,7 @@ class QingganlanClient:
             'appid': appid,
             'saas_wap_token': saas_wap_token
         }
-        return self._make_request('POST', endpoint, data)
+        return self._make_request('POST', endpoint, data, use_form_data=True)
 
     def get_user_info(self, tenant_code, user_code, user_type):
         """
@@ -130,7 +143,7 @@ class QingganlanClient:
             'userCode': user_code,
             'userType': user_type
         }
-        return self._make_request('POST', endpoint, data)
+        return self._make_request('POST', endpoint, data, use_form_data=True)
 
     def verify_admin_user(self, token):
         """

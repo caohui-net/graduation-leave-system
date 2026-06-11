@@ -48,7 +48,7 @@ function initializeUIAfterRestore(user) {
         if (user.role === 'student') {
             if (typeof showScreen === 'function') showScreen(0);
         } else {
-            if (typeof showScreen === 'function') showScreen(2); // 审批界面
+            if (typeof showScreen === 'function') showScreen(1); // 审批列表
         }
 
         console.log('UI initialized for user:', user.username);

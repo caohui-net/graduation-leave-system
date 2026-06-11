@@ -48,18 +48,58 @@
   <script>
     const API_BASE_URL = 'http://218.75.196.218:7787';
 
-    // 从URL提取参数（兼容大小写）
+    // 从URL提取参数（兼容两种格式）
     function getParamsFromURL() {
       const params = new URLSearchParams(window.location.search);
+
+      // 格式1：青橄榄SAAS平台（saas_wap_token + tenantCode）
+      const saas_wap_token = params.get('saas_wap_token');
+      const tenantCode = params.get('tenantCode');
+
+      // 格式2：直接参数（authorization + user_id）
       const authorization = params.get('authorization') || params.get('Authorization');
-      const user_id = params.get('user_id') || params.get('userId');
+      const user_id = params.get('user_id') || params.get('userId') || params.get('username');
       const real_name = params.get('real_name') || params.get('realName') || '';
       const identity_name = params.get('identity_name') || params.get('identityName') || '学生';
-      return { authorization, user_id, real_name, identity_name };
+
+      return { saas_wap_token, tenantCode, authorization, user_id, real_name, identity_name, params };
     }
 
-    // 调用后端验证token
-    async function verifyToken(authorization, user_id, real_name, identity_name) {
+    // 青橄榄SAAS登录（saas_wap_token流程）
+    async function saasLogin(saas_wap_token, tenantCode) {
+      try {
+        const response = await fetch(`${API_BASE_URL}/api/sso/qingganlian/mobile/saas-login`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ saas_wap_token, tenant_code: tenantCode })
+        });
+
+        const data = await response.json();
+
+        if (response.ok && data.token) {
+          localStorage.setItem('auth_token', data.token);
+          localStorage.setItem('user_info', JSON.stringify(data.user));
+          document.getElementById('message').textContent = '登录成功，跳转中...';
+          setTimeout(() => {
+            window.location.href = '/index.html';
+          }, 500);
+        } else {
+          throw new Error(data.error || '登录失败');
+        }
+      } catch (error) {
+        document.querySelector('.loading').innerHTML =
+          `<div class="error">
+            <h3>登录失败</h3>
+            <p>${error.message}</p>
+            <button onclick="window.location.href='/'">返回首页</button>
+          </div>`;
+      }
+    }
+
+    // 直接参数登录（authorization + user_id流程）
+    async function directLogin(authorization, user_id, real_name, identity_name) {
       try {
         const response = await fetch(`${API_BASE_URL}/api/sso/qingganlian/mobile/login`, {
           method: 'POST',
@@ -72,11 +112,8 @@
         const data = await response.json();
 
         if (response.ok && data.token) {
-          // 保存JWT token到localStorage
           localStorage.setItem('auth_token', data.token);
           localStorage.setItem('user_info', JSON.stringify(data.user));
-
-          // 跳转到系统首页
           document.getElementById('message').textContent = '登录成功，跳转中...';
           setTimeout(() => {
             window.location.href = '/index.html';
@@ -96,20 +133,38 @@
 
     // 页面加载时自动执行
     window.onload = function() {
-      const { authorization, user_id, real_name, identity_name } = getParamsFromURL();
+      const { saas_wap_token, tenantCode, authorization, user_id, real_name, identity_name, params } = getParamsFromURL();
 
-      if (!authorization || !user_id) {
+      // 判断使用哪种登录流程
+      if (saas_wap_token && tenantCode) {
+        // 青橄榄SAAS平台登录
+        console.log('SAAS登录:', { saas_wap_token, tenantCode });
+        saasLogin(saas_wap_token, tenantCode);
+      } else if (authorization && user_id) {
+        // 直接参数登录
+        console.log('直接登录:', { authorization, user_id, real_name, identity_name });
+        directLogin(authorization, user_id, real_name, identity_name);
+      } else {
+        // 参数错误
+        const allParams = {};
+        for (const [key, value] of params.entries()) {
+          allParams[key] = value;
+        }
+        const paramsDisplay = Object.keys(allParams).length > 0
+          ? Object.entries(allParams).map(([k, v]) => `${k}: ${v}`).join('<br>')
+          : '(URL中无任何参数)';
+
         document.querySelector('.loading').innerHTML =
           `<div class="error">
             <h3>缺少认证信息</h3>
-            <p>未找到authorization或user_id参数</p>
+            <p style="color: #e74c3c; margin-bottom: 15px;">未找到saas_wap_token或authorization参数</p>
+            <div style="background: #f8f9fa; padding: 12px; border-radius: 4px; margin: 15px 0; text-align: left;">
+              <strong style="display: block; margin-bottom: 8px;">实际接收到的参数：</strong>
+              <div style="font-size: 12px; word-break: break-all; color: #555;">${paramsDisplay}</div>
+            </div>
             <button onclick="window.location.href='/'">返回首页</button>
           </div>`;
-        return;
       }
-
-      // 验证token
-      verifyToken(authorization, user_id, real_name, identity_name);
     };
   </script>
 </body>

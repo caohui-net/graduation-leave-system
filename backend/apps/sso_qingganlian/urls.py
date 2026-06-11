@@ -5,5 +5,6 @@ app_name = 'sso_qingganlian'
 
 urlpatterns = [
     path('mobile/login', views.mobile_login, name='mobile_login'),
+    path('mobile/saas-login', views.mobile_saas_login, name='mobile_saas_login'),
     path('admin/login', views.admin_login, name='admin_login'),
 ]

@@ -1,7 +1,7 @@
 {
   "tool_name": "Bash",
-  "tool_input_preview": "{\"command\":\"echo \\\"=== 1. 服务状态 ===\\\" && docker compose ps --format \\\"{{.Service}}: {{.Status}}\\\" && echo -e \\\"\\\\n=== 2. SSO测试 ===\\\" && docker compose exec backend python test_sso_e2e.py 2>&1 | grep -E...",
-  "error": "Exit code 1\n=== 1. 服务状态 ===\ntime=\"2026-06-10T14:16:57+08:00\" level=warning msg=\"/home/caohui/projects/graduation-leave-system/docker-compose.yml: the attribute `version` is obsolete, it will be ignored, please remove it to avoid potential confusion\"\nbackend: Up 8 minutes\ndb: Up 57 minutes (healthy)\n\n=== 2. SSO测试 ===\n=== SSO端到端流程测试 ===\n1. API响应状态: 200\n3. 用户信息: {'id': 'test_admin_001', 'username': 'test_admin_001', 'real_name': '测试管理员', 'role': 'admin', 'phone': '13800138000'}\n4. 数据库用户创建: test_adm...",
-  "timestamp": "2026-06-10T06:16:58.756Z",
+  "tool_input_preview": "{\"command\":\"rtk git add backend/apps/approvals/serializers.py frontend/types/api.ts && rtk git commit -m \\\"feat(api): 扩展审批流程字段 - 支持代审功能\\n\\n后端变更：\\n- ApprovalSerializer添加decided_by_id和decided_by_name字段\\...",
+  "error": "Exit code 128\nok 2 files changed, 34 insertions(+), 4 deletions(-)\nok\nFAILED: git push\n致命错误：无法访问 'https://github.com/caohui-net/graduation-leave-system.git/'：Failed to connect to github.com port 443 via 127.0.0.1 after 0 ms: Could not connect to server",
+  "timestamp": "2026-06-11T04:13:22.776Z",
   "retry_count": 1
 }

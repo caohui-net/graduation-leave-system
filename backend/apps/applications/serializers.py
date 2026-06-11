@@ -28,8 +28,8 @@ class ApplicationSerializer(serializers.ModelSerializer):
                             'created_at', 'updated_at']
 
     def get_approvals(self, obj):
-        from apps.approvals.serializers import ApprovalSerializer
-        return ApprovalSerializer(obj.approvals.all(), many=True).data
+        from apps.approvals.serializers import ApprovalBriefSerializer
+        return ApprovalBriefSerializer(obj.approvals.all(), many=True).data
 
 
 class ApplicationCreateSerializer(serializers.Serializer):

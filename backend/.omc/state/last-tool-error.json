@@ -1,7 +1,7 @@
 {
   "tool_name": "Bash",
-  "tool_input_preview": "{\"command\":\"source venv/bin/activate && python manage.py shell -c \\\"from django.contrib.auth.models import User; admins = User.objects.filter(is_staff=True); print(f'管理员账号数量: {admins.count()}'); [prin...",
+  "tool_input_preview": "{\"command\":\"source venv/bin/activate && python manage.py shell -c \\\"\\nfrom apps.applications.models import Application\\nfrom django.db.models import Count\\n\\ntotal = Application.objects.count()\\nstatu...",
   "error": "Exit code 1\nTraceback (most recent call last):\n  File \"/home/caohui/projects/graduation-leave-system/backend/manage.py\", line 22, in <module>\n    main()\n    ~~~~^^\n  File \"/home/caohui/projects/graduation-leave-system/backend/manage.py\", line 18, in main\n    execute_from_command_line(sys.argv)\n    ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^\n  File \"/home/caohui/projects/graduation-leave-system/backend/venv/lib/python3.14/site-packages/django/core/management/__init__.py\", line 442, in execute_from_comman...",
-  "timestamp": "2026-06-10T04:57:13.884Z",
+  "timestamp": "2026-06-11T02:33:36.792Z",
   "retry_count": 1
 }

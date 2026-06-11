@@ -25,6 +25,19 @@ class ApprovalListSerializer(serializers.ModelSerializer):
                             'approver_name', 'decision', 'comment', 'decided_at', 'created_at']
 
 
+class ApprovalBriefSerializer(serializers.ModelSerializer):
+    """Brief approval info without attachments - for nested use in ApplicationSerializer"""
+    approver_id = serializers.CharField(source='approver.user_id', read_only=True)
+    decided_by_id = serializers.CharField(source='decided_by.user_id', read_only=True, allow_null=True)
+    decided_by_name = serializers.CharField(source='decided_by.name', read_only=True, allow_null=True)
+
+    class Meta:
+        model = Approval
+        fields = ['approval_id', 'step', 'approver_id', 'approver_name',
+                  'decided_by_id', 'decided_by_name', 'decision', 'comment', 'decided_at']
+        read_only_fields = fields
+
+
 class ApprovalSerializer(serializers.ModelSerializer):
     """Full approval detail with nested application info"""
     application_id = serializers.CharField(source='application.application_id', read_only=True)

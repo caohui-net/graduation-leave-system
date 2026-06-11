@@ -24,6 +24,119 @@ logger = logging.getLogger(__name__)
 
 @api_view(['POST'])
 @permission_classes([AllowAny])
+def mobile_saas_login(request):
+    """
+    移动端SAAS登录（saas_wap_token流程）
+
+    流程：
+    1. 接收saas_wap_token + tenant_code
+    2. 调用青橄榄API换取user_code
+    3. 调用青橄榄API获取用户信息
+    4. 创建本地User
+    5. 返回JWT token
+    """
+    saas_wap_token = request.data.get('saas_wap_token')
+    tenant_code = request.data.get('tenant_code', 'S10405')
+
+    if not saas_wap_token:
+        return Response({'error': '缺少saas_wap_token参数'},
+                       status=status.HTTP_400_BAD_REQUEST)
+
+    logger.info(f"Mobile SAAS login attempt: token={saas_wap_token[:20]}...")
+
+    try:
+        client = QingganlanClient(
+            app_key=sso_settings.MOBILE_APP_KEY,
+            app_secret=sso_settings.MOBILE_APP_SECRET,
+            env='prod',
+            api_type='mobile'
+        )
+
+        # 1. 换取user_code
+        token_response = client.get_user_code_by_token(
+            tenant_code=tenant_code,
+            appid=sso_settings.MOBILE_APPID,
+            saas_wap_token=saas_wap_token
+        )
+        user_code = token_response.get('data', {}).get('user_code')
+        user_type = token_response.get('data', {}).get('user_type', 'weChat')
+
+        if not user_code:
+            raise Exception('未能获取user_code')
+
+        # 2. 获取用户信息
+        user_info_response = client.get_user_info(tenant_code, user_code, user_type)
+        user_info = user_info_response.get('data', {})
+
+        real_name = user_info.get('real_name', '')
+        identity_name = user_info.get('identity_name', '学生')
+        phone = user_info.get('phone', '')
+        user_id_str = user_info.get('number', user_code)
+
+        # 3. 创建用户
+        with transaction.atomic():
+            user, created = User.objects.select_for_update().get_or_create(
+                user_id=user_id_str,
+                defaults={
+                    'name': real_name or user_id_str,
+                    'role': 'student' if identity_name == '学生' else 'teacher',
+                    'is_staff': False,
+                    'active': True
+                }
+            )
+
+        # 4. 确定角色
+        if identity_name == '学生':
+            sso_user_type = 'mobile_student'
+            role = 'student'
+        elif identity_name in ['教师', '教职工']:
+            sso_user_type = 'mobile_teacher'
+            role = 'teacher'
+        else:
+            sso_user_type = 'mobile_student'
+            role = 'student'
+
+        # 5. 更新SSOUserMapping
+        SSOUserMapping.objects.update_or_create(
+            user_code=user_code,
+            defaults={
+                'user': user,
+                'tenant_code': tenant_code,
+                'user_type': sso_user_type,
+                'real_name': real_name,
+                'phone': phone,
+                'identity_name': identity_name,
+                'role_name': identity_name,
+                'last_login_at': timezone.now()
+            }
+        )
+
+        # 6. 生成JWT
+        refresh = RefreshToken.for_user(user)
+        access_token = str(refresh.access_token)
+
+        response_data = {
+            'token': access_token,
+            'user': {
+                'id': user.user_id,
+                'username': user.user_id,
+                'real_name': real_name,
+                'role': role,
+                'phone': phone
+            }
+        }
+
+        logger.info(f"Mobile SAAS login success: user={user.user_id}, role={role}")
+        return Response(response_data, status=status.HTTP_200_OK)
+
+    except Exception as e:
+        logger.exception(f"Mobile SAAS login failed: {str(e)}")
+        return Response({'error': f'登录失败: {str(e)}'},
+                       status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+@api_view(['POST'])
+@permission_classes([AllowAny])
 def mobile_login(request):
     """
     移动端登录端点（简化流程）

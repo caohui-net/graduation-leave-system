@@ -1,0 +1,7 @@
+{
+  "tool_name": "Bash",
+  "tool_input_preview": "{\"command\":\"kill 353766 && sleep 2 && sudo rtk systemctl status graduation-frontend --no-pager\",\"description\":\"Kill old process and check systemd service\"}",
+  "error": "Exit code 1\nsudo: 'rtk': command not found",
+  "timestamp": "2026-06-10T09:58:37.535Z",
+  "retry_count": 1
+}

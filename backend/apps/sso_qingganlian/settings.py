@@ -3,20 +3,20 @@ from decouple import config
 
 
 # 移动端配置
-QGL_MOBILE_APP_KEY = config(
+MOBILE_APP_KEY = config(
     'QGL_MOBILE_APP_KEY',
-    default='abc0a32aa8dd94d1f765841abaafd8ba'
+    default='cb6f276a42042179e90cd79c4126e075'
 )
-QGL_MOBILE_APP_SECRET = config(
+MOBILE_APP_SECRET = config(
     'QGL_MOBILE_APP_SECRET',
-    default='b1d2efa9587446d80ce6388e0c0b25131b8dea59'
+    default='da02720febcf47071ee5db78c2b068ec'
 )
-QGL_MOBILE_TENANT_CODE = config('QGL_MOBILE_TENANT_CODE', default='S10405')
-QGL_MOBILE_APPID = config('QGL_MOBILE_APPID', default='c6qgh2')
+MOBILE_TENANT_CODE = config('QGL_MOBILE_TENANT_CODE', default='S10405')
+MOBILE_APPID = config('QGL_MOBILE_APPID', default='8uonta')
 
 # 管理端配置
-QGL_ADMIN_APP_KEY = config('QGL_ADMIN_APP_KEY', default='APPKEY_TBD')
-QGL_ADMIN_APP_SECRET = config('QGL_ADMIN_APP_SECRET', default='APPSECRET_TBD')
+ADMIN_APP_KEY = config('QGL_ADMIN_APP_KEY', default='APPKEY_TBD')
+ADMIN_APP_SECRET = config('QGL_ADMIN_APP_SECRET', default='APPSECRET_TBD')
 
 # 环境配置
-QGL_ENV = config('QGL_ENV', default='prod')  # dev or prod
+ENV = config('QGL_ENV', default='prod')  # dev or prod

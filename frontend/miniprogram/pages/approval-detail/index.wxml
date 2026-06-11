@@ -1,0 +1,69 @@
+<!-- 小程序审批详情页面 -->
+<view class="container">
+  <!-- 基本信息 -->
+  <view class="section">
+    <view class="section-title">申请信息</view>
+
+    <view class="info-row">
+      <text class="label">学生姓名：</text>
+      <text class="value">{{approval.student_name}}</text>
+    </view>
+
+    <view class="info-row">
+      <text class="label">学号：</text>
+      <text class="value">{{approval.student_id}}</text>
+    </view>
+
+    <view class="info-row">
+      <text class="label">联系电话：</text>
+      <text class="value">{{approval.contact_phone}}</text>
+    </view>
+
+    <view class="info-row">
+      <text class="label">离校日期：</text>
+      <text class="value">{{approval.leave_date}}</text>
+    </view>
+
+    <view class="info-row">
+      <text class="label">离校原因：</text>
+      <text class="value">{{approval.reason}}</text>
+    </view>
+  </view>
+
+  <!-- 附件列表 -->
+  <view class="section" wx:if="{{approval.attachments && approval.attachments.length > 0}}">
+    <view class="section-title">附件材料</view>
+
+    <view class="attachment-item" wx:for="{{approval.attachments}}" wx:key="attachment_id">
+      <view class="file-info">
+        <text class="file-name">{{item.file_name}}</text>
+        <text class="file-size">({{item.file_size / 1024}}KB)</text>
+      </view>
+
+      <view class="attachment-actions">
+        <!-- 附件预览按钮 -->
+        <button
+          class="btn btn-preview"
+          bindtap="handlePreview"
+          data-id="{{item.attachment_id}}"
+        >
+          附件预览
+        </button>
+
+        <button
+          class="btn btn-download"
+          bindtap="handleDownload"
+          data-id="{{item.attachment_id}}"
+        >
+          下载
+        </button>
+      </view>
+    </view>
+  </view>
+
+  <!-- 审批操作 -->
+  <view class="action-section" wx:if="{{approval.decision === 'pending'}}">
+    <button class="btn btn-approve" bindtap="handleApprove">通过</button>
+    <button class="btn btn-reject" bindtap="handleReject">驳回</button>
+  </view>
+</view>

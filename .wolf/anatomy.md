@@ -1,7 +1,7 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-06-11T16:01:24.606Z
-> Files: 653 tracked | Anatomy hits: 0 | Misses: 0
+> Auto-maintained by OpenWolf. Last scanned: 2026-06-11T16:12:08.938Z
+> Files: 654 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../../../tmp/
 
@@ -649,11 +649,12 @@
 - `client.py` — QingganlanClient: get_user_code_by_token, get_user_info, verify_admin_user (~1422 tok)
 - `exceptions.py` — 青橄榄SSO异常类 (~123 tok)
 - `models.py` — Model: SSOUserMapping, 16 fields (~715 tok)
+- `README_SECURITY.md` — SSO安全配置说明 (~216 tok)
 - `README.md` — Project documentation (~639 tok)
 - `serializers.py` — Declares MobileLoginRequestSerializer (~431 tok)
-- `settings.py` — 青橄榄SSO配置管理 (~174 tok)
+- `settings.py` — 青橄榄SSO配置管理 (~214 tok)
 - `urls.py` (~124 tok)
-- `views.py` — mobile_saas_login, mobile_login, admin_login (~3248 tok)
+- `views.py` — mobile_saas_login, mobile_login, admin_login (~3317 tok)
 
 ## backend/apps/sso_qingganlian/migrations/
 

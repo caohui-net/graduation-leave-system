@@ -1204,3 +1204,9 @@
 | 23:57 | Edited backend/apps/sso_qingganlian/callback_views.py | 5→7 lines | ~106 |
 | 00:01 | Edited backend/apps/sso_qingganlian/views.py | expanded (+16 lines) | ~246 |
 | 00:01 | Edited backend/apps/sso_qingganlian/views.py | modified mobile_login() | ~92 |
+| 00:02 | Session end: 12 writes across 7 files (debug-login-19970545.md, check_user_19970545.py, views.py, check_all_users_fields.py, serializers.py) | 6 reads | ~10424 tok |
+| 00:03 | Session end: 12 writes across 7 files (debug-login-19970545.md, check_user_19970545.py, views.py, check_all_users_fields.py, serializers.py) | 6 reads | ~10424 tok |
+| 00:07 | Session end: 12 writes across 7 files (debug-login-19970545.md, check_user_19970545.py, views.py, check_all_users_fields.py, serializers.py) | 6 reads | ~10424 tok |
+| 00:11 | Edited backend/apps/sso_qingganlian/settings.py | 2→6 lines | ~58 |
+| 00:11 | Edited backend/apps/sso_qingganlian/views.py | 20→23 lines | ~278 |
+| 00:12 | Created backend/apps/sso_qingganlian/README_SECURITY.md | — | ~231 |

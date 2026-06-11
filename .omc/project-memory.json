@@ -229,8 +229,8 @@
     },
     {
       "path": "backend/apps/sso_qingganlian/views.py",
-      "accessCount": 20,
-      "lastAccessed": 1781193684677,
+      "accessCount": 21,
+      "lastAccessed": 1781194310705,
       "type": "file"
     },
     {
@@ -360,6 +360,12 @@
       "type": "file"
     },
     {
+      "path": "backend/apps/sso_qingganlian/settings.py",
+      "accessCount": 2,
+      "lastAccessed": 1781194297654,
+      "type": "file"
+    },
+    {
       "path": "backend/apps/approvals/models.py",
       "accessCount": 1,
       "lastAccessed": 1781150698553,
@@ -471,6 +477,12 @@
       "path": "backend/check_all_users_fields.py",
       "accessCount": 1,
       "lastAccessed": 1781191629844,
+      "type": "file"
+    },
+    {
+      "path": "backend/apps/sso_qingganlian/README_SECURITY.md",
+      "accessCount": 1,
+      "lastAccessed": 1781194328987,
       "type": "file"
     }
   ],

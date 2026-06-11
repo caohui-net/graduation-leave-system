@@ -20,3 +20,7 @@ ADMIN_APP_SECRET = config('QGL_ADMIN_APP_SECRET', default='APPSECRET_TBD')
 
 # 环境配置
 ENV = config('QGL_ENV', default='prod')  # dev or prod
+
+# 安全配置
+# admin_login是否验证authorization token（默认开启，对接失败时可临时关闭）
+VERIFY_ADMIN_TOKEN = config('QGL_VERIFY_ADMIN_TOKEN', default=True, cast=bool)

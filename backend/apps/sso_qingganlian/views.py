@@ -265,21 +265,24 @@ def admin_login(request):
     logger.info(f"Admin login attempt: username={username}")
 
     try:
-        # 2. 验证authorization token
-        client = QingganlanClient(
-            app_key=sso_settings.ADMIN_APP_KEY,
-            app_secret=sso_settings.ADMIN_APP_SECRET,
-            env='prod',
-            api_type='admin'
-        )
+        # 2. 可选的authorization token验证（可通过QGL_VERIFY_ADMIN_TOKEN环境变量控制）
+        if sso_settings.VERIFY_ADMIN_TOKEN:
+            client = QingganlanClient(
+                app_key=sso_settings.ADMIN_APP_KEY,
+                app_secret=sso_settings.ADMIN_APP_SECRET,
+                env='prod',
+                api_type='admin'
+            )
 
-        try:
-            verify_result = client.verify_admin_user(authorization)
-            logger.info(f"Admin token verified: {verify_result}")
-        except SSOAPIError as e:
-            logger.error(f"Admin token verification failed: {e.code} - {e.message}")
-            return Response({'error': f'认证失败: {e.message}'},
-                          status=status.HTTP_401_UNAUTHORIZED)
+            try:
+                verify_result = client.verify_admin_user(authorization)
+                logger.info(f"Admin token verified: {verify_result}")
+            except SSOAPIError as e:
+                logger.error(f"Admin token verification failed: {e.code} - {e.message}")
+                return Response({'error': f'认证失败: {e.message}'},
+                              status=status.HTTP_401_UNAUTHORIZED)
+        else:
+            logger.warning(f"Admin token verification SKIPPED (QGL_VERIFY_ADMIN_TOKEN=False)")
 
         # 3. 使用username作为user_code
         user_code = username

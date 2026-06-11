@@ -31,6 +31,11 @@
       "count": 1,
       "tokens": 1422,
       "first_read": "2026-06-11T15:57:45.280Z"
+    },
+    "/home/caohui/projects/graduation-leave-system/backend/apps/sso_qingganlian/settings.py": {
+      "count": 1,
+      "tokens": 174,
+      "first_read": "2026-06-11T16:11:28.252Z"
     }
   },
   "files_written": [
@@ -105,20 +110,40 @@
       "action": "edit",
       "tokens": 92,
       "at": "2026-06-11T16:01:24.617Z"
+    },
+    {
+      "file": "/home/caohui/projects/graduation-leave-system/backend/apps/sso_qingganlian/settings.py",
+      "action": "edit",
+      "tokens": 58,
+      "at": "2026-06-11T16:11:37.620Z"
+    },
+    {
+      "file": "/home/caohui/projects/graduation-leave-system/backend/apps/sso_qingganlian/views.py",
+      "action": "edit",
+      "tokens": 278,
+      "at": "2026-06-11T16:11:50.662Z"
+    },
+    {
+      "file": "/home/caohui/projects/graduation-leave-system/backend/apps/sso_qingganlian/README_SECURITY.md",
+      "action": "create",
+      "tokens": 247,
+      "at": "2026-06-11T16:12:08.949Z"
     }
   ],
   "edit_counts": {
     "debug-login-19970545.md": 1,
     "backend/check_user_19970545.py": 1,
-    "backend/apps/sso_qingganlian/views.py": 5,
+    "backend/apps/sso_qingganlian/views.py": 6,
     "backend/check_all_users_fields.py": 1,
     "backend/apps/sso_qingganlian/serializers.py": 2,
     "../../../../tmp/sso-fix-review.md": 1,
-    "backend/apps/sso_qingganlian/callback_views.py": 1
+    "backend/apps/sso_qingganlian/callback_views.py": 1,
+    "backend/apps/sso_qingganlian/settings.py": 1,
+    "backend/apps/sso_qingganlian/README_SECURITY.md": 1
   },
-  "anatomy_hits": 6,
+  "anatomy_hits": 7,
   "anatomy_misses": 0,
   "repeated_reads_warned": 10,
   "cerebrum_warnings": 0,
-  "stop_count": 7
+  "stop_count": 10
 }

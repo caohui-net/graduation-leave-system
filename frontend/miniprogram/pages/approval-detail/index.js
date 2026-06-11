@@ -1,4 +1,7 @@
 // 小程序审批详情页面逻辑
+import { wxRequest, wxDownloadFile } from '../../utils/request';
+import { buildPreviewUrl, buildDownloadUrl } from '../../utils/attachment';
+
 const app = getApp();
 
 Page({
@@ -15,7 +18,7 @@ Page({
   async loadApprovalDetail(approvalId) {
     wx.showLoading({ title: '加载中...' });
     try {
-      const res = await wx.request({
+      const res = await wxRequest({
         url: `${app.globalData.apiBase}/api/approvals/${approvalId}/`,
         method: 'GET',
         header: {
@@ -31,63 +34,60 @@ Page({
   },
 
   // 附件预览
-  handlePreview(e) {
+  async handlePreview(e) {
     const attachmentId = e.currentTarget.dataset.id;
-    const url = `${app.globalData.apiBase}/api/attachments/${attachmentId}/download/?preview=true`;
+    const url = buildPreviewUrl(app.globalData.apiBase, attachmentId);
 
-    // 下载文件到临时路径
-    wx.downloadFile({
-      url: url,
-      header: {
-        'Authorization': `Bearer ${app.globalData.token}`
-      },
-      success: (res) => {
-        const filePath = res.tempFilePath;
-        const fileType = this.getFileType(filePath);
-
-        // 根据文件类型预览
-        if (fileType === 'image') {
-          wx.previewImage({
-            urls: [filePath],
-            current: filePath
-          });
-        } else if (fileType === 'pdf' || fileType === 'doc') {
-          wx.openDocument({
-            filePath: filePath,
-            showMenu: true
-          });
-        } else {
-          wx.showToast({ title: '不支持预览此文件类型', icon: 'none' });
+    try {
+      const res = await wxDownloadFile({
+        url: url,
+        header: {
+          'Authorization': `Bearer ${app.globalData.token}`
         }
-      },
-      fail: () => {
-        wx.showToast({ title: '预览失败', icon: 'none' });
+      });
+      const filePath = res.tempFilePath;
+      const fileType = this.getFileType(filePath);
+
+      // 根据文件类型预览
+      if (fileType === 'image') {
+        wx.previewImage({
+          urls: [filePath],
+          current: filePath
+        });
+      } else if (fileType === 'pdf' || fileType === 'doc') {
+        wx.openDocument({
+          filePath: filePath,
+          showMenu: true
+        });
+      } else {
+        wx.showToast({ title: '不支持预览此文件类型', icon: 'none' });
       }
-    });
+    } catch (error) {
+      wx.showToast({ title: '预览失败', icon: 'none' });
+    }
   },
 
   // 下载附件
-  handleDownload(e) {
+  async handleDownload(e) {
     const attachmentId = e.currentTarget.dataset.id;
-    const url = `${app.globalData.apiBase}/api/attachments/${attachmentId}/download/`;
+    const url = buildDownloadUrl(app.globalData.apiBase, attachmentId);
 
-    wx.downloadFile({
-      url: url,
-      header: {
-        'Authorization': `Bearer ${app.globalData.token}`
-      },
-      success: (res) => {
-        wx.saveFile({
-          tempFilePath: res.tempFilePath,
-          success: () => {
-            wx.showToast({ title: '下载成功', icon: 'success' });
-          }
-        });
-      },
-      fail: () => {
-        wx.showToast({ title: '下载失败', icon: 'none' });
-      }
-    });
+    try {
+      const res = await wxDownloadFile({
+        url: url,
+        header: {
+          'Authorization': `Bearer ${app.globalData.token}`
+        }
+      });
+      wx.saveFile({
+        tempFilePath: res.tempFilePath,
+        success: () => {
+          wx.showToast({ title: '下载成功', icon: 'success' });
+        }
+      });
+    } catch (error) {
+      wx.showToast({ title: '下载失败', icon: 'none' });
+    }
   },
 
   // 判断文件类型
@@ -129,7 +129,7 @@ Page({
   async submitApproval(action) {
     wx.showLoading({ title: '提交中...' });
     try {
-      await wx.request({
+      await wxRequest({
         url: `${app.globalData.apiBase}/api/approvals/${this.data.approval.approval_id}/${action}/`,
         method: 'POST',
         header: {

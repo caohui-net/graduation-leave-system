@@ -1,6 +1,9 @@
 // 移动端审批详情组件 - React Native
 import React from 'react';
 import { View, Text, TouchableOpacity, Linking, StyleSheet } from 'react-native';
+import { buildPreviewUrl, buildDownloadUrl } from '../utils/attachment';
+
+const API_BASE_URL = process.env.API_BASE_URL || 'http://localhost:8000';
 
 interface Attachment {
   attachment_id: string;
@@ -26,12 +29,12 @@ interface Props {
 
 export const ApprovalDetailView: React.FC<Props> = ({ approval, onApprove, onReject }) => {
   const handlePreview = (attachmentId: string) => {
-    const url = `${API_BASE_URL}/api/attachments/${attachmentId}/download/?preview=true`;
+    const url = buildPreviewUrl(API_BASE_URL, attachmentId);
     Linking.openURL(url);
   };
 
   const handleDownload = (attachmentId: string) => {
-    const url = `${API_BASE_URL}/api/attachments/${attachmentId}/download/`;
+    const url = buildDownloadUrl(API_BASE_URL, attachmentId);
     Linking.openURL(url);
   };
 
@@ -208,5 +211,3 @@ const styles = StyleSheet.create({
     backgroundColor: '#ff4d4f',
   },
 });
-
-const API_BASE_URL = process.env.API_BASE_URL || 'http://localhost:8000';

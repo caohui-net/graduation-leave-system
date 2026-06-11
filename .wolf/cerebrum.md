@@ -2,11 +2,13 @@
 
 > OpenWolf's learning memory. Updated automatically as the AI learns from interactions.
 > Do not edit manually unless correcting an error.
-> Last updated: 2026-06-06
+> Last updated: 2026-06-11
 
 ## User Preferences
 
-<!-- How the user likes things done. Code style, tools, patterns, communication. -->
+- **Session Start Protocol**: ALWAYS read `PROJECT-QUICK-REF.md` first before any other action
+- **Reason**: Avoids wasting time/tokens on repeated lookups of env config, directory structure, deployment info
+- **File location**: `/home/caohui/projects/graduation-leave-system/PROJECT-QUICK-REF.md`
 
 ## Key Learnings
 

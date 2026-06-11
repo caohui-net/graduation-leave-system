@@ -1,5 +1,10 @@
 {
-  "last_updated": "2026-06-11T04:55:37Z",
+  "last_updated": "2026-06-11T16:18:00Z",
+  "session_start_checklist": [
+    "⚠️ MANDATORY: Read PROJECT-QUICK-REF.md FIRST (env/ports/deploy/config)",
+    "Read .wolf/cerebrum.md (user preferences, do-not-repeat)",
+    "Read .wolf/anatomy.md if accessing files"
+  ],
   "completed": [
     "学生宿舍信息字段添加（room_number, campus, gender, major, level）",
     "数据库迁移创建并执行（0008_add_room_and_student_info.py）",

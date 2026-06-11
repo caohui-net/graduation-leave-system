@@ -39,7 +39,7 @@
             filtered.forEach(app => {
                 const statusDisplay = getStatusDisplay(app.status);
                 const appIdDisplay = app.application_id ? app.application_id.substring(0,8) : '未知';
-                htmlStr += '<div class="card" style="cursor: pointer;">' +
+                htmlStr += '<div class="card" style="cursor: pointer;" onclick="showApplicationDetail(\'' + app.application_id + '\')">' +
                   '<div class="flex-row justify-between align-center" style="margin-bottom: 8px;">' +
                     '<span style="font-size: 16px; font-weight: bold;">申请 ' + appIdDisplay + '</span>' +
                     '<span class="tag ' + statusDisplay.class + '">' + statusDisplay.text + '</span>' +
@@ -143,6 +143,17 @@
         // Render accumulated results (up to TARGET_COUNT)
         const displayRecords = accumulatedResults.slice(0, TARGET_COUNT);
         console.log('[DEBUG] Displaying', displayRecords.length, 'records, accumulated', accumulatedResults.length);
+
+        // CRITICAL: Only mark as displayed AFTER rendering, not before
+        // This fixes data loss bug where records beyond TARGET_COUNT were marked displayed but never shown
+        if (currentUser && (currentUser.role === 'dean' || currentUser.role === 'admin')) {
+            displayRecords.forEach(approval => {
+                const appId = approval.application?.id;
+                if (appId && !deanDisplayedApps.has(appId)) {
+                    deanDisplayedApps.add(appId);
+                }
+            });
+        }
 
         // Status map based on backend expectations
         const statusMap = {
@@ -263,6 +274,141 @@
     }
 
     let currentApprovalId = null;
+    async function showApplicationDetail(applicationId) {
+        // Student view: show application detail with approval history
+        showScreen(2);
+
+        const appRes = await fetch(API_BASE_URL + '/applications/' + applicationId + '/', {
+            headers: getAuthHeaders()
+        });
+
+        if (!appRes.ok) {
+            document.querySelector('#screen-2').innerHTML = '<div class="card"><p style="color: #ff4d4f;">加载失败</p></div>';
+            return;
+        }
+
+        const appData = await appRes.json();
+        const attachments = await apiGetAttachments(applicationId);
+
+        // Fetch approval records
+        const approvalsRes = await fetch(API_BASE_URL + '/approvals/?application_id=' + applicationId, {
+            headers: getAuthHeaders()
+        });
+        const approvalsData = approvalsRes.ok ? await approvalsRes.json() : { results: [] };
+
+        const container = document.querySelector('#screen-2');
+
+        const basicInfoHtml = '<div class="card">' +
+            '<div style="font-size: 16px; font-weight: bold; margin-bottom: 10px;">基本信息</div>' +
+            '<div style="display: flex; margin-bottom: 8px;">' +
+              '<span style="font-size: 14px; color: #999; width: 80px;">申请ID:</span>' +
+              '<span style="font-size: 14px; color: #333;">' + escapeHtml(appData.application_id || '-') + '</span>' +
+            '</div>' +
+            '<div style="display: flex; margin-bottom: 8px;">' +
+              '<span style="font-size: 14px; color: #999; width: 80px;">学生姓名:</span>' +
+              '<span style="font-size: 14px; color: #333;">' + escapeHtml(appData.student_name || '-') + '</span>' +
+            '</div>' +
+            '<div style="display: flex; margin-bottom: 8px;">' +
+              '<span style="font-size: 14px; color: #999; width: 80px;">联系电话:</span>' +
+              '<span style="font-size: 14px; color: #333;">' + escapeHtml(appData.contact_phone || '-') + '</span>' +
+            '</div>' +
+            '<div style="display: flex; margin-bottom: 8px;">' +
+              '<span style="font-size: 14px; color: #999; width: 80px;">离校日期:</span>' +
+              '<span style="font-size: 14px; color: #333;">' + escapeHtml(appData.leave_date || '-') + '</span>' +
+            '</div>' +
+            '<div style="display: flex; margin-bottom: 8px;">' +
+              '<span style="font-size: 14px; color: #999; width: 80px;">离校原因:</span>' +
+              '<span style="font-size: 14px; color: #333;">' + escapeHtml(appData.reason || '-') + '</span>' +
+            '</div>' +
+          '</div>';
+
+        const attachmentsHtml = '<div class="card">' +
+            '<div style="font-size: 16px; font-weight: bold; margin-bottom: 10px;">附件材料</div>' +
+            (attachments && attachments.length > 0
+                ? attachments.map(att =>
+                    '<div style="display: flex; align-items: center; padding: 8px 0; border-bottom: 1px solid #f0f0f0;">' +
+                      '<span style="flex: 1; font-size: 14px; color: #333;">' + escapeHtml(att.filename) + '</span>' +
+                      '<button class="btn-outline" style="padding: 4px 12px; font-size: 13px;" onclick="previewAttachment(\'' + encodeURIComponent(att.attachment_id) + '\')">预览</button>' +
+                    '</div>'
+                  ).join('')
+                : '<div style="color: #999; font-size: 14px;">无附件</div>') +
+          '</div>';
+
+        const approvalProgressHtml = renderStudentApprovalProgress(appData, approvalsData.results);
+
+        container.innerHTML = basicInfoHtml + attachmentsHtml + approvalProgressHtml +
+            '<div style="padding: 20px;"><button class="btn-outline" onclick="showScreen(1); loadMyApplications();" style="width: 100%;">返回</button></div>';
+    }
+
+    function renderStudentApprovalProgress(appData, approvals) {
+        const stepNames = {
+            'dorm_manager': '宿管员审批',
+            'counselor': '辅导员审批',
+            'dean': '学工部审批'
+        };
+
+        const workflow = ['dorm_manager', 'counselor', 'dean'];
+        const appStatus = appData.status;
+
+        let html = '<div class="card"><div style="font-size: 16px; font-weight: bold; margin-bottom: 10px;">审批进度</div>';
+
+        for (let i = workflow.length - 1; i >= 0; i--) {
+            const step = workflow[i];
+            const stepName = stepNames[step];
+            const approval = approvals.find(a => a.step === step);
+
+            let state, tagText, tagCls, dotBg, dotBorder;
+
+            if (appStatus === 'rejected' && approval && approval.decision === 'rejected') {
+                state = 'rejected';
+                tagText = '已驳回';
+                tagCls = 'tag-rejected';
+                dotBg = 'var(--status-error)';
+                dotBorder = 'var(--status-error)';
+            } else if (approval && approval.decision === 'approved') {
+                state = 'approved';
+                tagText = '已通过';
+                tagCls = 'tag-approved';
+                dotBg = 'var(--status-success)';
+                dotBorder = 'var(--status-success)';
+            } else if (appStatus === 'pending_' + step) {
+                state = 'pending';
+                tagText = '待审批';
+                tagCls = 'tag-pending';
+                dotBg = 'white';
+                dotBorder = 'var(--primary-color)';
+            } else {
+                state = 'future';
+                tagText = '未开始';
+                tagCls = 'tag';
+                dotBg = '#e8e8e8';
+                dotBorder = '#e8e8e8';
+            }
+
+            html += '<div style="position: relative; padding-left: 30px; margin-bottom: 20px;">' +
+                '<div style="position: absolute; left: 10px; top: 4px; width: 10px; height: 10px; border-radius: 50%; background: ' + dotBg + '; border: 2px solid ' + dotBorder + ';"></div>' +
+                '<div style="margin-bottom: 6px;"><span style="font-size: 15px; font-weight: 600;">' + stepName + '</span> <span class="tag ' + tagCls + '">' + tagText + '</span></div>';
+
+            if (approval) {
+                html += '<div style="font-size: 13px; color: #666;">审批人: ' + (approval.approver_name || '待分配') + '</div>';
+                if (approval.decided_at) {
+                    html += '<div style="font-size: 13px; color: #666;">时间: ' + new Date(approval.decided_at).toLocaleString() + '</div>';
+                }
+                if (state === 'rejected') {
+                    const comment = approval.comment && approval.comment.trim() ? approval.comment : '审批人未填写驳回原因';
+                    html += '<div style="font-size: 13px; color: #ff4d4f; margin-top: 4px; font-weight: 600;">驳回原因: ' + comment + '</div>';
+                } else if (approval.comment && approval.comment.trim()) {
+                    html += '<div style="font-size: 13px; color: #666; margin-top: 4px;">意见: ' + approval.comment + '</div>';
+                }
+            }
+
+            html += '</div>';
+        }
+
+        html += '</div>';
+        return html;
+    }
+
     async function openApproval(id) {
         currentApprovalId = id;
         showScreen(2);
@@ -633,21 +779,21 @@
             };
 
             return `<tr>
-                <td style="padding: 8px; border: 1px solid #ddd;">${app.id?.substring(0,8) || '-'}</td>
-                <td style="padding: 8px; border: 1px solid #ddd;">${app.student_name || '-'}</td>
-                <td style="padding: 8px; border: 1px solid #ddd;">${app.student_id || '-'}</td>
-                <td style="padding: 8px; border: 1px solid #ddd;">${app.contact_phone || '-'}</td>
-                <td style="padding: 8px; border: 1px solid #ddd;">${app.leave_date || '-'}</td>
-                <td style="padding: 8px; border: 1px solid #ddd;">${app.building || '-'}</td>
-                <td style="padding: 8px; border: 1px solid #ddd;">${app.room_number || '-'}</td>
+                <td style="padding: 8px; border: 1px solid #ddd;">${escapeHtml(app.id?.substring(0,8) || '-')}</td>
+                <td style="padding: 8px; border: 1px solid #ddd;">${escapeHtml(app.student_name || '-')}</td>
+                <td style="padding: 8px; border: 1px solid #ddd;">${escapeHtml(app.student_id || '-')}</td>
+                <td style="padding: 8px; border: 1px solid #ddd;">${escapeHtml(app.contact_phone || '-')}</td>
+                <td style="padding: 8px; border: 1px solid #ddd;">${escapeHtml(app.leave_date || '-')}</td>
+                <td style="padding: 8px; border: 1px solid #ddd;">${escapeHtml(app.building || '-')}</td>
+                <td style="padding: 8px; border: 1px solid #ddd;">${escapeHtml(app.room_number || '-')}</td>
                 <td style="padding: 8px; border: 1px solid #ddd;">${formatDate(app.created_at)}</td>
-                <td style="padding: 8px; border: 1px solid #ddd;">${statusMap[app.status] || app.status || '-'}</td>
-                <td style="padding: 8px; border: 1px solid #ddd;">${dorm?.approver_name || '-'}</td>
+                <td style="padding: 8px; border: 1px solid #ddd;">${statusMap[app.status] || escapeHtml(app.status) || '-'}</td>
+                <td style="padding: 8px; border: 1px solid #ddd;">${escapeHtml(dorm?.approver_name || '-')}</td>
                 <td style="padding: 8px; border: 1px solid #ddd;">${formatDate(dorm?.decided_at)}</td>
-                <td style="padding: 8px; border: 1px solid #ddd;">${dorm?.decision ? decisionMap[dorm.decision] || dorm.decision : '-'}</td>
-                <td style="padding: 8px; border: 1px solid #ddd;">${counselor?.approver_name || '-'}</td>
+                <td style="padding: 8px; border: 1px solid #ddd;">${dorm?.decision ? decisionMap[dorm.decision] || escapeHtml(dorm.decision) : '-'}</td>
+                <td style="padding: 8px; border: 1px solid #ddd;">${escapeHtml(counselor?.approver_name || '-')}</td>
                 <td style="padding: 8px; border: 1px solid #ddd;">${formatDate(counselor?.decided_at)}</td>
-                <td style="padding: 8px; border: 1px solid #ddd;">${counselor?.decision ? decisionMap[counselor.decision] || counselor.decision : '-'}</td>
+                <td style="padding: 8px; border: 1px solid #ddd;">${counselor?.decision ? decisionMap[counselor.decision] || escapeHtml(counselor.decision) : '-'}</td>
             </tr>`;
         }).join('');
 
@@ -685,6 +831,31 @@
         } catch (err) {
             console.error('Download failed:', err);
             showToast('下载失败', 'error');
+        }
+    }
+
+    function showRejectedApplicationBanner() {
+        const existingBanner = document.getElementById('rejected-banner');
+        if (existingBanner) return;
+
+        const banner = document.createElement('div');
+        banner.id = 'rejected-banner';
+        banner.className = 'card';
+        banner.style.cssText = 'margin: 20px; margin-bottom: 20px; padding: 16px; background: #fffbe6; border-left: 4px solid #faad14;';
+        banner.innerHTML = `
+          <div style="display: flex; align-items: center; gap: 12px;">
+            <span style="font-size: 20px;">⚠️</span>
+            <div style="flex: 1;">
+              <div style="font-size: 14px; font-weight: 600; color: #333; margin-bottom: 4px;">您的申请已被驳回</div>
+              <div style="font-size: 13px; color: #666;">请查看驳回原因后重新提交申请</div>
+            </div>
+            <button class="btn-outline" onclick="showScreen(1); loadMyApplications();" style="padding: 8px 16px; font-size: 13px;">查看驳回原因</button>
+          </div>
+        `;
+        const screen0 = document.getElementById('screen-0');
+        const firstChild = screen0.querySelector('div[style*="padding: 20px"]');
+        if (firstChild) {
+            firstChild.insertBefore(banner, firstChild.firstChild);
         }
     }
 
@@ -896,7 +1067,7 @@
         </div>
         <div style="margin-bottom: 24px;">
           <label style="display: block; font-size: 14px; margin-bottom: 8px; font-weight: 500;">密码</label>
-          <input id="loginPassword" type="password" style="width: 100%; padding: 12px; border: 1px solid #d9d9d9; border-radius: 4px; font-size: 14px;" placeholder="请输入密码" required>
+          <input id="loginPassword" type="password" autocomplete="new-password" style="width: 100%; padding: 12px; border: 1px solid #d9d9d9; border-radius: 4px; font-size: 14px;" placeholder="请输入密码" required>
         </div>
         <div id="loginError" style="display: none; padding: 10px; background: #fff2f0; border: 1px solid #ffccc7; border-radius: 4px; color: #cf1322; font-size: 14px; margin-bottom: 16px;"></div>
         <button class="btn-primary" onclick="doLogin()">登录</button>
@@ -1144,11 +1315,20 @@
 
             // Check if student has applications
             const applications = await apiGetApplications();
-            if (applications.results && applications.results.length > 0) {
+            const hasApplications = applications.results && applications.results.length > 0;
+            const hasActiveApplication = hasApplications && applications.results.some(app =>
+              app.status.startsWith('pending_') || app.status === 'approved'
+            );
+
+            if (hasActiveApplication) {
               showScreen(1); // Show application progress
               loadMyApplications();
             } else {
-              showScreen(0); // Show application form
+              showScreen(0); // Show application form (allow submit if no active application)
+              if (hasApplications) {
+                // Show info banner if has rejected applications
+                showRejectedApplicationBanner();
+              }
             }
           } else {
             showScreen(1); // Approval list screen
@@ -1201,10 +1381,15 @@
       deanDisplayedApps.clear(); // Clear deduplication memory on logout
       approvalOffset = 0;
       approvalHasMore = true;
+      uploadedFiles = [];
+      // Clear persistent login state to prevent auto-login on refresh
+      localStorage.removeItem('auth_token');
+      localStorage.removeItem('user_info');
       document.getElementById('navTabs').style.display = 'none';
       document.getElementById('userBar').style.display = 'none';
       document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
       document.getElementById('screen-login').classList.add('active');
+      renderFileList();
     }
 
     // File upload management

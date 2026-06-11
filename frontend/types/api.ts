@@ -58,13 +58,31 @@ export interface ApplicationDetail extends Application {
   approvals: ApprovalDetail[];
 }
 
+// Attachments
+export interface Attachment {
+  attachment_id: string;
+  file_name: string;
+  file_size: number;
+  content_type: string;
+  attachment_type: string;
+  uploaded_at: string;
+}
+
 // Approvals
 export interface ApprovalDetail {
   approval_id: string;
   application_id: string;
+  student_name: string;
+  student_id: string;
+  contact_phone: string | null;
+  reason: string;
+  leave_date: string;
+  attachments: Attachment[];
   step: ApprovalStep;
   approver_id: string;
   approver_name: string;
+  decided_by_id: string | null;
+  decided_by_name: string | null;
   decision: ApprovalDecision;
   comment: string | null;
   decided_at: string | null;

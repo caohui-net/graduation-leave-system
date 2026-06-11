@@ -8,6 +8,7 @@ class ApplicationBriefSerializer(serializers.Serializer):
     status = serializers.CharField()
     student_name = serializers.CharField(source='student.name')
     student_id = serializers.CharField(source='student.user_id')
+    leave_date = serializers.DateField()
 
 
 class ApprovalListSerializer(serializers.ModelSerializer):
@@ -31,16 +32,27 @@ class ApprovalSerializer(serializers.ModelSerializer):
     student_id = serializers.CharField(source='application.student.user_id', read_only=True)
     contact_phone = serializers.CharField(source='application.contact_phone', read_only=True)
     reason = serializers.CharField(source='application.reason', read_only=True)
+    leave_date = serializers.DateField(source='application.leave_date', read_only=True)
+    attachments = serializers.SerializerMethodField()
     approver_id = serializers.CharField(source='approver.user_id', read_only=True)
+    decided_by_id = serializers.CharField(source='decided_by.user_id', read_only=True, allow_null=True)
+    decided_by_name = serializers.CharField(source='decided_by.name', read_only=True, allow_null=True)
 
     class Meta:
         model = Approval
         fields = ['approval_id', 'application_id', 'student_name', 'student_id',
-                  'contact_phone', 'reason', 'step', 'approver_id',
-                  'approver_name', 'decision', 'comment', 'decided_at']
+                  'contact_phone', 'reason', 'leave_date', 'attachments', 'step', 'approver_id',
+                  'approver_name', 'decided_by_id', 'decided_by_name', 'decision', 'comment', 'decided_at']
         read_only_fields = ['approval_id', 'application_id', 'student_name', 'student_id',
-                            'contact_phone', 'reason', 'step',
-                            'approver_id', 'approver_name', 'decision', 'decided_at']
+                            'contact_phone', 'reason', 'leave_date', 'attachments', 'step',
+                            'approver_id', 'approver_name', 'decided_by_id', 'decided_by_name', 'decision', 'decided_at']
+
+    def get_attachments(self, obj):
+        from apps.attachments.serializers import AttachmentSerializer
+        return AttachmentSerializer(
+            obj.application.attachments.filter(is_deleted=False),
+            many=True
+        ).data
 
 
 class ApprovalActionSerializer(serializers.Serializer):

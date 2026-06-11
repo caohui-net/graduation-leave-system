@@ -5,6 +5,8 @@ from rest_framework.response import Response
 from rest_framework import status
 from django.utils import timezone
 from django.db import transaction
+from django.shortcuts import redirect
+from django.http import HttpResponse
 from rest_framework_simplejwt.tokens import RefreshToken
 
 from apps.users.models import User
@@ -227,7 +229,7 @@ def mobile_login(request):
                        status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
-@api_view(['POST'])
+@api_view(['POST', 'GET'])
 @permission_classes([AllowAny])
 def admin_login(request):
     """
@@ -241,9 +243,13 @@ def admin_login(request):
     5. 生成JWT token
     6. 返回token和用户信息
     """
-    # 1. 验证请求参数
-    authorization = request.data.get('authorization')
-    username = request.data.get('username')
+    # 1. 验证请求参数 - 兼容GET/POST和大小写
+    if request.method == 'GET':
+        authorization = request.GET.get('authorization') or request.GET.get('Authorization')
+        username = request.GET.get('username') or request.GET.get('user_id')
+    else:
+        authorization = request.data.get('authorization') or request.data.get('Authorization')
+        username = request.data.get('username') or request.data.get('user_id')
 
     if not authorization or not username:
         return Response({'error': '缺少authorization或username参数'},

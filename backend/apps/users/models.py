@@ -41,6 +41,15 @@ class User(AbstractBaseUser, PermissionsMixin):
     department = models.CharField(max_length=100, null=True, blank=True)
     building = models.CharField(max_length=100, null=True, blank=True)
 
+    # 宿舍信息
+    campus = models.CharField(max_length=50, null=True, blank=True)
+    room_number = models.CharField(max_length=50, null=True, blank=True)
+
+    # 学生详细信息
+    gender = models.CharField(max_length=10, null=True, blank=True)
+    major = models.CharField(max_length=100, null=True, blank=True)
+    level = models.CharField(max_length=50, null=True, blank=True)
+
     is_demo = models.BooleanField(default=False)
     is_staff = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)

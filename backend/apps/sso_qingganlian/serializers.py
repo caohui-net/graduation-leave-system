@@ -10,7 +10,7 @@ class MobileLoginRequestSerializer(serializers.Serializer):
 
 class UserInfoSerializer(serializers.Serializer):
     """用户信息序列化器"""
-    id = serializers.IntegerField(read_only=True)
+    id = serializers.CharField(read_only=True)
     username = serializers.CharField(read_only=True)
     real_name = serializers.CharField(read_only=True)
     role = serializers.CharField(read_only=True)

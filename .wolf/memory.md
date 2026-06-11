@@ -994,3 +994,213 @@
 | 12:19 | Edited frontend/services/api.ts | Error() → ApiClientError() | ~64 |
 | 12:19 | Edited backend/apps/approvals/serializers.py | modified ApprovalBriefSerializer() | ~211 |
 | 12:20 | Edited backend/apps/applications/serializers.py | ApprovalSerializer() → ApprovalBriefSerializer() | ~52 |
+| 12:21 | Session end: 9 writes across 4 files (ApprovalDetail.tsx, api.ts, serializers.py, views.py) | 10 reads | ~36967 tok |
+| 12:22 | Edited docs/PROJECT-SUMMARY.md | 5→5 lines | ~41 |
+| 12:23 | Created .omc/session-context.json | — | ~351 |
+| 12:23 | Session end: 11 writes across 6 files (ApprovalDetail.tsx, api.ts, serializers.py, views.py, PROJECT-SUMMARY.md) | 11 reads | ~37765 tok |
+| 12:25 | Session end: 11 writes across 6 files (ApprovalDetail.tsx, api.ts, serializers.py, views.py, PROJECT-SUMMARY.md) | 11 reads | ~37765 tok |
+| 12:25 | Session end: 11 writes across 6 files (ApprovalDetail.tsx, api.ts, serializers.py, views.py, PROJECT-SUMMARY.md) | 11 reads | ~37765 tok |
+
+## Session: 2026-06-11 12:26
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 12:28 | Created .omc/session-context.json | — | ~697 |
+| 12:28 | Session end: 1 writes across 1 files (session-context.json) | 0 reads | ~697 tok |
+| 12:32 | Created frontend/miniprogram/utils/request.js | — | ~118 |
+| 12:33 | Created frontend/miniprogram/utils/attachment.js | — | ~154 |
+| 12:33 | Session end: 3 writes across 3 files (session-context.json, request.js, attachment.js) | 2 reads | ~2605 tok |
+| 12:33 | Edited frontend/miniprogram/pages/approval-detail/index.js | added 2 import(s) | ~658 |
+| 12:33 | Session end: 4 writes across 4 files (session-context.json, request.js, attachment.js, index.js) | 2 reads | ~3263 tok |
+| 12:33 | Edited frontend/miniprogram/pages/approval-detail/index.js | request() → wxRequest() | ~172 |
+| 12:35 | Session end: 5 writes across 4 files (session-context.json, request.js, attachment.js, index.js) | 3 reads | ~4960 tok |
+| 12:35 | Edited backend/apps/users/models.py | expanded (+9 lines) | ~187 |
+| 12:36 | Created frontend/utils/attachment.ts | — | ~171 |
+| 12:36 | Created backend/import_students.py | — | ~931 |
+| 12:36 | Edited frontend/mobile/ApprovalDetail.tsx | CSS: http, localhost | ~82 |
+| 12:37 | Session end: 9 writes across 8 files (session-context.json, request.js, attachment.js, index.js, models.py) | 3 reads | ~6331 tok |
+| 12:38 | Edited frontend/mobile/ApprovalDetail.tsx | 10→10 lines | ~110 |
+| 12:38 | Edited backend/import_students.py | modified import_students() | ~703 |
+| 12:38 | Edited frontend/mobile/ApprovalDetail.tsx | 6→4 lines | ~17 |
+| 12:39 | Edited backend/import_students.py | modified input() | ~180 |
+| 12:40 | Session end: 13 writes across 8 files (session-context.json, request.js, attachment.js, index.js, models.py) | 3 reads | ~7341 tok |
+| 12:40 | Session end: 13 writes across 8 files (session-context.json, request.js, attachment.js, index.js, models.py) | 3 reads | ~7341 tok |
+| 12:42 | Session end: 13 writes across 8 files (session-context.json, request.js, attachment.js, index.js, models.py) | 4 reads | ~7614 tok |
+| 12:43 | Session end: 13 writes across 8 files (session-context.json, request.js, attachment.js, index.js, models.py) | 4 reads | ~7614 tok |
+| 12:45 | Edited demo-web/index.html | modified if() | ~383 |
+| 12:45 | Edited demo-web/index.html | added error handling | ~607 |
+| 12:46 | Session end: 15 writes across 9 files (session-context.json, request.js, attachment.js, index.js, models.py) | 7 reads | ~22963 tok |
+| 12:48 | Edited backend/apps/approvals/serializers.py | modified ApprovalSerializer() | ~560 |
+| 12:49 | Edited frontend/types/api.ts | 19→21 lines | ~150 |
+| 12:49 | Edited frontend/components/ApprovalDetail.tsx | expanded (+8 lines) | ~283 |
+| 12:50 | Session end: 18 writes across 11 files (session-context.json, request.js, attachment.js, index.js, models.py) | 9 reads | ~28491 tok |
+| 12:51 | Session end: 18 writes across 11 files (session-context.json, request.js, attachment.js, index.js, models.py) | 9 reads | ~28491 tok |
+| 12:52 | Session end: 18 writes across 11 files (session-context.json, request.js, attachment.js, index.js, models.py) | 9 reads | ~28491 tok |
+| 12:54 | Edited demo-web/mobile-sso-callback.html | reduced (-12 lines) | ~73 |
+| 12:54 | Edited demo-web/mobile-sso-callback.html | modified if() | ~71 |
+| 12:55 | Session end: 20 writes across 12 files (session-context.json, request.js, attachment.js, index.js, models.py) | 10 reads | ~29900 tok |
+| 12:55 | Edited demo-web/index.html | modified if() | ~1002 |
+| 12:55 | Created .omc/session-context.json | — | ~389 |
+| 12:56 | Session end: 22 writes across 12 files (session-context.json, request.js, attachment.js, index.js, models.py) | 11 reads | ~32060 tok |
+| 12:56 | Session end: 22 writes across 12 files (session-context.json, request.js, attachment.js, index.js, models.py) | 11 reads | ~32060 tok |
+| 12:57 | Edited backend/apps/approvals/views.py | 31→35 lines | ~528 |
+| 12:57 | Created backend/test_student_room_info.py | — | ~1360 |
+| 12:59 | Session end: 24 writes across 14 files (session-context.json, request.js, attachment.js, index.js, models.py) | 12 reads | ~38812 tok |
+| 13:00 | Edited demo-web/index.html | expanded (+8 lines) | ~340 |
+| 13:01 | Edited demo-web/index.html | modified if() | ~171 |
+| 13:01 | Session end: 26 writes across 14 files (session-context.json, request.js, attachment.js, index.js, models.py) | 12 reads | ~39722 tok |
+| 13:03 | Session end: 26 writes across 14 files (session-context.json, request.js, attachment.js, index.js, models.py) | 12 reads | ~39722 tok |
+| 13:04 | Session end: 26 writes across 14 files (session-context.json, request.js, attachment.js, index.js, models.py) | 12 reads | ~39722 tok |
+| 13:05 | Session end: 26 writes across 14 files (session-context.json, request.js, attachment.js, index.js, models.py) | 12 reads | ~39722 tok |
+| 13:06 | Session end: 26 writes across 14 files (session-context.json, request.js, attachment.js, index.js, models.py) | 12 reads | ~39722 tok |
+| 13:10 | Edited demo-web/index.html | 5→6 lines | ~67 |
+| 13:11 | Edited demo-web/index.html | 10→14 lines | ~163 |
+| 13:11 | Session end: 28 writes across 14 files (session-context.json, request.js, attachment.js, index.js, models.py) | 12 reads | ~40035 tok |
+
+## Session: 2026-06-11 13:14
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 13:24 | Edited demo-web/index.html | modified updateUIForRole() | ~357 |
+| 13:24 | Session end: 1 writes across 1 files (index.html) | 5 reads | ~18666 tok |
+| 13:26 | Edited demo-web/index.html | 4→6 lines | ~117 |
+| 13:26 | Session end: 2 writes across 1 files (index.html) | 5 reads | ~18816 tok |
+| 13:27 | Edited demo-web/index.html | 5→5 lines | ~61 |
+| 13:27 | Session end: 3 writes across 1 files (index.html) | 5 reads | ~18920 tok |
+| 13:29 | Edited demo-web/index.html | 14→14 lines | ~188 |
+| 13:30 | Session end: 4 writes across 1 files (index.html) | 5 reads | ~19128 tok |
+| 13:35 | Session end: 4 writes across 1 files (index.html) | 5 reads | ~19128 tok |
+| 13:37 | Edited demo-web/index.html | modified if() | ~346 |
+| 13:37 | Session end: 5 writes across 1 files (index.html) | 5 reads | ~19499 tok |
+| 13:38 | Edited demo-web/index.html | added 1 condition(s) | ~333 |
+| 13:38 | Session end: 6 writes across 1 files (index.html) | 5 reads | ~19856 tok |
+| 13:45 | Session end: 6 writes across 1 files (index.html) | 5 reads | ~19856 tok |
+| 13:49 | Created backend/check_approvals.py | — | ~345 |
+| 13:51 | Edited backend/check_approvals.py | 7→11 lines | ~82 |
+| 13:52 | Session end: 8 writes across 2 files (index.html, check_approvals.py) | 5 reads | ~20283 tok |
+| 13:54 | Session end: 8 writes across 2 files (index.html, check_approvals.py) | 5 reads | ~20458 tok |
+| 13:56 | Edited demo-web/index.html | added optional chaining | ~888 |
+| 13:56 | Edited demo-web/index.html | modified if() | ~1309 |
+| 13:57 | Session end: 10 writes across 2 files (index.html, check_approvals.py) | 5 reads | ~22811 tok |
+| 14:02 | Edited demo-web/index.html | expanded (+20 lines) | ~376 |
+| 14:02 | Edited demo-web/index.html | added 5 condition(s) | ~1408 |
+| 14:03 | Session end: 12 writes across 2 files (index.html, check_approvals.py) | 5 reads | ~24979 tok |
+| 14:04 | Session end: 12 writes across 2 files (index.html, check_approvals.py) | 5 reads | ~24979 tok |
+| 14:06 | Session end: 12 writes across 2 files (index.html, check_approvals.py) | 5 reads | ~24979 tok |
+| 14:08 | Edited demo-web/index.html | modified showExcelPreview() | ~1030 |
+| 14:09 | Session end: 13 writes across 2 files (index.html, check_approvals.py) | 5 reads | ~27502 tok |
+| 14:11 | Edited demo-web/index.html | added 1 condition(s) | ~580 |
+| 14:12 | Session end: 14 writes across 2 files (index.html, check_approvals.py) | 5 reads | ~28124 tok |
+| 14:13 | Edited backend/apps/approvals/serializers.py | modified ApplicationBriefSerializer() | ~184 |
+| 14:14 | Session end: 15 writes across 3 files (index.html, check_approvals.py, serializers.py) | 6 reads | ~29556 tok |
+
+## Session: 2026-06-11 14:17
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-06-11 14:52
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 18:21 | Edited demo-web/index.html | modified while() | ~148 |
+| 18:22 | Edited demo-web/index.html | added 1 condition(s) | ~123 |
+| 18:22 | Edited demo-web/index.html | modified if() | ~643 |
+| 18:22 | Edited demo-web/index.html | modified logout() | ~134 |
+| 18:23 | Session end: 4 writes across 1 files (index.html) | 4 reads | ~48068 tok |
+| 18:24 | Session end: 4 writes across 1 files (index.html) | 4 reads | ~48068 tok |
+| 18:24 | Edited demo-web/index.html | inline fix | ~56 |
+| 18:24 | Session end: 5 writes across 1 files (index.html) | 4 reads | ~48128 tok |
+| 18:31 | Edited demo-web/mobile-sso-callback.html | modified catch() | ~72 |
+| 18:31 | Session end: 6 writes across 2 files (index.html, mobile-sso-callback.html) | 6 reads | ~49627 tok |
+| 18:32 | Edited demo-web/mobile-sso-callback.html | querySelector() → error() | ~40 |
+| 18:32 | Session end: 7 writes across 2 files (index.html, mobile-sso-callback.html) | 6 reads | ~49670 tok |
+| 18:33 | Session end: 7 writes across 2 files (index.html, mobile-sso-callback.html) | 6 reads | ~49670 tok |
+
+## Session: 2026-06-11 18:37
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 18:42 | Edited demo-web/index.html | added 1 condition(s) | ~216 |
+| 18:43 | Edited demo-web/index.html | added 2 condition(s) | ~348 |
+| 18:43 | Session end: 2 writes across 1 files (index.html) | 1 reads | ~16096 tok |
+| 18:44 | Session end: 2 writes across 1 files (index.html) | 1 reads | ~16096 tok |
+| 18:45 | Session end: 2 writes across 1 files (index.html) | 1 reads | ~16096 tok |
+| 18:50 | Session end: 2 writes across 1 files (index.html) | 2 reads | ~16096 tok |
+| 18:50 | Created backend/test_student_interface.py | — | ~678 |
+| 18:51 | Session end: 3 writes across 2 files (index.html, test_student_interface.py) | 2 reads | ~16774 tok |
+| 18:53 | Session end: 3 writes across 2 files (index.html, test_student_interface.py) | 3 reads | ~17735 tok |
+| 18:54 | Session end: 3 writes across 2 files (index.html, test_student_interface.py) | 3 reads | ~18014 tok |
+| 18:55 | Session end: 3 writes across 2 files (index.html, test_student_interface.py) | 3 reads | ~18014 tok |
+| 19:00 | Edited demo-web/index.html | modified if() | ~219 |
+| 19:00 | Edited demo-web/index.html | modified showRejectedApplicationBanner() | ~293 |
+| 19:00 | Session end: 5 writes across 2 files (index.html, test_student_interface.py) | 3 reads | ~18562 tok |
+| 19:03 | Edited demo-web/index.html | modified showRejectedApplicationBanner() | ~332 |
+| 19:04 | Edited demo-web/index.html | modified substring() | ~361 |
+| 19:04 | Edited demo-web/index.html | added 1 condition(s) | ~970 |
+| 19:05 | Session end: 8 writes across 2 files (index.html, test_student_interface.py) | 3 reads | ~20416 tok |
+| 19:05 | Session end: 8 writes across 2 files (index.html, test_student_interface.py) | 3 reads | ~20416 tok |
+| 19:08 | Edited demo-web/index.html | added 6 condition(s) | ~1774 |
+| 19:08 | Session end: 9 writes across 2 files (index.html, test_student_interface.py) | 3 reads | ~23253 tok |
+| 20:55 | Created backend/test_api_response.py | — | ~572 |
+| 20:57 | Edited demo-web/index.html | added 1 condition(s) | ~138 |
+| 20:57 | Session end: 11 writes across 3 files (index.html, test_student_interface.py, test_api_response.py) | 3 reads | ~23973 tok |
+| 21:10 | Edited backend/apps/users/serializers.py | modified AuthUserSerializer() | ~62 |
+| 21:10 | Session end: 12 writes across 4 files (index.html, test_student_interface.py, test_api_response.py, serializers.py) | 4 reads | ~24831 tok |
+| 21:14 | Session end: 12 writes across 4 files (index.html, test_student_interface.py, test_api_response.py, serializers.py) | 4 reads | ~24831 tok |
+| 21:15 | Session end: 12 writes across 4 files (index.html, test_student_interface.py, test_api_response.py, serializers.py) | 5 reads | ~24831 tok |
+| 21:15 | Session end: 12 writes across 4 files (index.html, test_student_interface.py, test_api_response.py, serializers.py) | 5 reads | ~24831 tok |
+| 21:18 | Session end: 12 writes across 4 files (index.html, test_student_interface.py, test_api_response.py, serializers.py) | 5 reads | ~24831 tok |
+| 21:19 | Session end: 12 writes across 4 files (index.html, test_student_interface.py, test_api_response.py, serializers.py) | 5 reads | ~24831 tok |
+| 21:22 | Session end: 12 writes across 4 files (index.html, test_student_interface.py, test_api_response.py, serializers.py) | 5 reads | ~24831 tok |
+| 21:23 | Session end: 12 writes across 4 files (index.html, test_student_interface.py, test_api_response.py, serializers.py) | 5 reads | ~24831 tok |
+| 21:26 | Session end: 12 writes across 4 files (index.html, test_student_interface.py, test_api_response.py, serializers.py) | 5 reads | ~24831 tok |
+| 21:48 | Session end: 12 writes across 4 files (index.html, test_student_interface.py, test_api_response.py, serializers.py) | 5 reads | ~25727 tok |
+| 22:05 | Edited demo-web/index.html | added optional chaining | ~209 |
+| 22:05 | Edited demo-web/index.html | 23→23 lines | ~435 |
+| 22:05 | Edited demo-web/index.html | modified join() | ~216 |
+| 22:06 | Edited demo-web/index.html | modified escapeHtml() | ~482 |
+| 22:06 | Edited demo-web/index.html | modified logout() | ~190 |
+| 22:07 | Session end: 17 writes across 4 files (index.html, test_student_interface.py, test_api_response.py, serializers.py) | 8 reads | ~27532 tok |
+| 22:25 | Session end: 17 writes across 4 files (index.html, test_student_interface.py, test_api_response.py, serializers.py) | 9 reads | ~29786 tok |
+| 22:27 | Session end: 17 writes across 4 files (index.html, test_student_interface.py, test_api_response.py, serializers.py) | 9 reads | ~29786 tok |
+| 22:35 | Session end: 17 writes across 4 files (index.html, test_student_interface.py, test_api_response.py, serializers.py) | 9 reads | ~29786 tok |
+| 22:36 | Session end: 17 writes across 4 files (index.html, test_student_interface.py, test_api_response.py, serializers.py) | 9 reads | ~29786 tok |
+| 22:36 | Session end: 17 writes across 4 files (index.html, test_student_interface.py, test_api_response.py, serializers.py) | 9 reads | ~29786 tok |
+| 22:48 | Edited backend/apps/sso_qingganlian/views.py | modified admin_login() | ~246 |
+| 22:49 | Edited backend/apps/sso_qingganlian/views.py | added 2 import(s) | ~238 |
+| 22:49 | Created backend/apps/sso_qingganlian/callback_views.py | — | ~1088 |
+| 22:49 | Edited backend/apps/sso_qingganlian/urls.py | added 1 import(s) | ~123 |
+| 22:51 | Session end: 21 writes across 7 files (index.html, test_student_interface.py, test_api_response.py, serializers.py, views.py) | 11 reads | ~34437 tok |
+| 23:01 | Session end: 21 writes across 7 files (index.html, test_student_interface.py, test_api_response.py, serializers.py, views.py) | 12 reads | ~35712 tok |
+| 23:05 | Session end: 21 writes across 7 files (index.html, test_student_interface.py, test_api_response.py, serializers.py, views.py) | 12 reads | ~35712 tok |
+| 23:08 | Edited backend/apps/sso_qingganlian/callback_views.py | 6→7 lines | ~85 |
+| 23:09 | Edited backend/apps/sso_qingganlian/callback_views.py | modified atomic() | ~200 |
+| 23:09 | Edited backend/apps/sso_qingganlian/callback_views.py | 13→13 lines | ~127 |
+| 23:10 | Session end: 24 writes across 7 files (index.html, test_student_interface.py, test_api_response.py, serializers.py, views.py) | 13 reads | ~37323 tok |
+| 23:10 | Session end: 24 writes across 7 files (index.html, test_student_interface.py, test_api_response.py, serializers.py, views.py) | 13 reads | ~37323 tok |
+| 23:13 | Session end: 24 writes across 7 files (index.html, test_student_interface.py, test_api_response.py, serializers.py, views.py) | 13 reads | ~37323 tok |
+| 23:14 | Session end: 24 writes across 7 files (index.html, test_student_interface.py, test_api_response.py, serializers.py, views.py) | 13 reads | ~37323 tok |
+| 23:16 | Session end: 24 writes across 7 files (index.html, test_student_interface.py, test_api_response.py, serializers.py, views.py) | 14 reads | ~38163 tok |
+
+## Session: 2026-06-11 23:17
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 23:22 | Created debug-login-19970545.md | — | ~261 |
+| 23:22 | Session end: 1 writes across 1 files (debug-login-19970545.md) | 1 reads | ~1554 tok |
+| 23:24 | Created backend/check_user_19970545.py | — | ~229 |
+| 23:25 | Edited backend/apps/sso_qingganlian/views.py | 10→12 lines | ~108 |
+| 23:25 | Edited backend/apps/sso_qingganlian/views.py | 11→13 lines | ~116 |
+| 23:25 | Edited backend/apps/sso_qingganlian/views.py | 11→13 lines | ~113 |
+| 23:26 | Session end: 5 writes across 3 files (debug-login-19970545.md, check_user_19970545.py, views.py) | 2 reads | ~5150 tok |
+| 23:27 | Created backend/check_all_users_fields.py | — | ~350 |
+| 23:28 | Session end: 6 writes across 4 files (debug-login-19970545.md, check_user_19970545.py, views.py, check_all_users_fields.py) | 2 reads | ~5500 tok |
+| 23:29 | Session end: 6 writes across 4 files (debug-login-19970545.md, check_user_19970545.py, views.py, check_all_users_fields.py) | 2 reads | ~5500 tok |
+| 23:39 | Edited backend/apps/sso_qingganlian/serializers.py | modified UserInfoSerializer() | ~148 |
+| 23:41 | Session end: 7 writes across 5 files (debug-login-19970545.md, check_user_19970545.py, views.py, check_all_users_fields.py, serializers.py) | 3 reads | ~6056 tok |
+| 23:42 | Created ../../../../tmp/sso-fix-review.md | — | ~507 |
+| 23:54 | Edited backend/apps/sso_qingganlian/serializers.py | modified UserInfoSerializer() | ~48 |
+| 23:57 | Edited backend/apps/sso_qingganlian/callback_views.py | 5→7 lines | ~106 |
+| 00:01 | Edited backend/apps/sso_qingganlian/views.py | expanded (+16 lines) | ~246 |
+| 00:01 | Edited backend/apps/sso_qingganlian/views.py | modified mobile_login() | ~92 |

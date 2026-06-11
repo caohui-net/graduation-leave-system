@@ -1,7 +1,7 @@
 {
   "tool_name": "Bash",
-  "tool_input_preview": "{\"command\":\"cd /home/caohui/projects/graduation-leave-system/docs && libreoffice --headless --convert-to docx \\\"测试文档-完整流程测试.html\\\" --outdir .\",\"timeout\":60000,\"description\":\"将HTML转换为Word文档\"}",
-  "error": "Exit code 1\nError: no export filter for /home/caohui/projects/graduation-leave-system/docs/测试文档-完整流程测试.docx found, aborting.\nError: no export filter",
-  "timestamp": "2026-06-07T21:22:14.775Z",
+  "tool_input_preview": "{\"command\":\"cd backend && rtk ls -la | rtk grep -E \\\"^d\\\"\",\"description\":\"查看backend目录结构\"}",
+  "error": "Exit code 1\n/bin/bash: 第 13 行： cd: backend: 没有那个文件或目录",
+  "timestamp": "2026-06-11T05:50:42.402Z",
   "retry_count": 1
 }

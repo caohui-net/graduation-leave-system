@@ -1,11 +1,12 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-06-11T04:20:32.788Z
-> Files: 640 tracked | Anatomy hits: 0 | Misses: 0
+> Auto-maintained by OpenWolf. Last scanned: 2026-06-11T16:01:24.606Z
+> Files: 653 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../../../tmp/
 
 - `golive-integration-revised-plan.md` — 青橄榄平台对接方案（修订版） (~2529 tok)
+- `sso-fix-review.md` — SSO登录修复代码审查 (~475 tok)
 
 ## ../../.claude/
 
@@ -32,6 +33,7 @@
 - `.gitignore` — Git ignore rules (~224 tok)
 - `CHANGELOG.md` — Changelog (~3244 tok)
 - `CLAUDE.md` — OpenWolf (~57 tok)
+- `debug-login-19970545.md` — 用户19970545登录问题排查 (~244 tok)
 - `discussion_ux_proposal.md` — 三方直接讨论交互 UX 设计方案 (~960 tok)
 - `docker-compose.yml` — Docker Compose services (~232 tok)
 - `frontend-server.service` (~92 tok)
@@ -54,7 +56,7 @@
 
 - `daemon-audit.log` (~125609 tok)
 - `project-memory.json` (~2513 tok)
-- `session-context.json` (~403 tok)
+- `session-context.json` (~389 tok)
 
 ## .omc/artifacts/ask/
 
@@ -582,13 +584,20 @@
 
 - `接口测试分析报告.md` — 青橄榄SSO接口测试分析报告 (~191 tok)
 - `API接口清单.md` — 青橄榄SSO接口清单 (~339 tok)
+- `check_all_users_fields.py` — 检查所有用户的building和room_number字段情况 (~350 tok)
+- `check_approvals.py` — 查询已审批的Application和Approval详情 (~375 tok)
+- `check_user_19970545.py` (~229 tok)
 - `export_admins_for_qgl.py` — 导出管理员账号列表供青橿榄同步 (~419 tok)
+- `import_students.py` — 导入学生宿舍数据 (~961 tok)
 - `requirements.txt` — Python dependencies (~87 tok)
 - `test_admin_apis.py` — 测试现有SSO管理端接口 (~376 tok)
 - `test_admin_sso_mock.py` — 管理端SSO Mock测试 - 验证凭证配置 (~856 tok)
 - `test_admin_sso.py` — 管理端SSO对接测试脚本 (~550 tok)
+- `test_api_response.py` — 测试API返回数据 (~572 tok)
 - `test_mobile_apis.py` — 测试现有SSO移动端接口 (~510 tok)
 - `test_sso_e2e.py` — SSO端到端集成测试 (~753 tok)
+- `test_student_interface.py` — 测试学生界面逻辑 (~678 tok)
+- `test_student_room_info.py` — 测试学生宿舍信息功能 (~1360 tok)
 - `test_xuegong_api_full.py` — 测试学工系统用户数据接口 - 全面测试版 (~1215 tok)
 - `test_xuegong_api.py` — 测试学工系统用户数据接口 (~811 tok)
 
@@ -611,9 +620,9 @@
 ## backend/apps/approvals/
 
 - `models.py` — Model: Approval, 11 fields (~386 tok)
-- `serializers.py` — ApplicationBriefSerializer: get_attachments (~1156 tok)
+- `serializers.py` — ApplicationBriefSerializer: get_attachments (~1326 tok)
 - `urls.py` (~128 tok)
-- `views.py` — sanitize_excel_formula, list_approvals, get_approval, approve_approval (~4864 tok)
+- `views.py` — sanitize_excel_formula, list_approvals, get_approval, approve_approval (~4967 tok)
 
 ## backend/apps/approvals/migrations/
 
@@ -636,14 +645,15 @@
 - `__init__.py` — 青橄榄平台SSO对接模块 (~26 tok)
 - `apps.py` — Declares SsoQingganlianConfig (~57 tok)
 - `auth.py` — generate_rand_str, generate_signature, generate_request_params (~391 tok)
+- `callback_views.py` — SSO HTML Callback Views - 直接跳转业务页面 (~1232 tok)
 - `client.py` — QingganlanClient: get_user_code_by_token, get_user_info, verify_admin_user (~1422 tok)
 - `exceptions.py` — 青橄榄SSO异常类 (~123 tok)
 - `models.py` — Model: SSOUserMapping, 16 fields (~715 tok)
 - `README.md` — Project documentation (~639 tok)
-- `serializers.py` — Declares MobileLoginRequestSerializer (~382 tok)
+- `serializers.py` — Declares MobileLoginRequestSerializer (~431 tok)
 - `settings.py` — 青橄榄SSO配置管理 (~174 tok)
-- `urls.py` (~89 tok)
-- `views.py` — mobile_saas_login, mobile_login, admin_login (~2867 tok)
+- `urls.py` (~124 tok)
+- `views.py` — mobile_saas_login, mobile_login, admin_login (~3248 tok)
 
 ## backend/apps/sso_qingganlian/migrations/
 
@@ -663,8 +673,8 @@
 
 ## backend/apps/users/
 
-- `models.py` — UserRole: create_user, create_superuser (~610 tok)
-- `serializers.py` — UserSerializer: validate, validate (~796 tok)
+- `models.py` — UserRole: create_user, create_superuser (~716 tok)
+- `serializers.py` — UserSerializer: validate, validate (~803 tok)
 - `views.py` — LoginRateThrottle: login, demo_login (~712 tok)
 
 ## backend/backend/apps/sso_qingganlian/
@@ -709,8 +719,8 @@
 ## demo-web/
 
 - `admin-sso-callback.html` — SSO登录中... (~840 tok)
-- `index.html` — 毕业离校申请系统 - UI Demo (~12029 tok)
-- `mobile-sso-callback.html` — SSO登录中... (~1562 tok)
+- `index.html` — 毕业离校申请系统 - UI Demo (~17935 tok)
+- `mobile-sso-callback.html` — SSO登录中... (~1275 tok)
 - `test-integration.sh` — Integration Test Script for Graduation Leave System (~1144 tok)
 
 ## demo-web/admin/
@@ -733,7 +743,7 @@
 - `青橄榄SSO对接完成报告-2026-06-10.md` — 青橄榄平台SSO对接完成报告 (~1354 tok)
 - `agentmemory-integration-progress.md` — agentmemory Integration Progress (~1168 tok)
 - `architecture-integration-consensus.md` — 多智能体协作架构整合共识 (~1514 tok)
-- `PROJECT-SUMMARY.md` — 毕业生离校申请审批系统 - 项目总结 (~29257 tok)
+- `PROJECT-SUMMARY.md` — 毕业生离校申请审批系统 - 项目总结 (~29851 tok)
 - `qingganlian-api-structure-fix-20260609.md` — 青橄榄SSO API结构修复记录 (~478 tok)
 - `qingganlian-bug-fixes-20260609.md` — 青橄榄SSO代码审计 - Bug修复记录 (~300 tok)
 - `qingganlian-endpoint-verification-results.md` — 青橄榄API Endpoint验证结果 (~209 tok)
@@ -751,7 +761,7 @@
 
 ## frontend/components/
 
-- `ApprovalDetail.tsx` — 审批详情组件 - 包含附件预览功能 (~946 tok)
+- `ApprovalDetail.tsx` — 审批详情组件 - 包含附件预览功能 (~1021 tok)
 
 ## frontend/hooks/
 
@@ -759,12 +769,17 @@
 
 ## frontend/miniprogram/pages/approval-detail/
 
-- `index.js` — 小程序审批详情页面逻辑 (~1026 tok)
+- `index.js` — 小程序审批详情页面逻辑 (~1040 tok)
 - `index.wxml` (~517 tok)
+
+## frontend/miniprogram/utils/
+
+- `attachment.js` — 构建附件预览URL (~154 tok)
+- `request.js` — 微信API Promise化工具 (~118 tok)
 
 ## frontend/mobile/
 
-- `ApprovalDetail.tsx` — 移动端审批详情组件 - React Native (~1525 tok)
+- `ApprovalDetail.tsx` — 移动端审批详情组件 - React Native (~1534 tok)
 
 ## frontend/services/
 
@@ -773,7 +788,11 @@
 
 ## frontend/types/
 
-- `api.ts` — API Types based on v0.2 Contract (~717 tok)
+- `api.ts` — API Types based on v0.2 Contract (~733 tok)
+
+## frontend/utils/
+
+- `attachment.ts` — 构建附件预览URL (~171 tok)
 
 ## scripts/
 

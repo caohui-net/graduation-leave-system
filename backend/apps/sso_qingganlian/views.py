@@ -145,9 +145,12 @@ def mobile_login(request):
     """
     移动端登录端点（简化流程）
 
+    安全假设：此接口信任青橄榄平台已完成用户认证，仅接收回调参数。
+    生产部署建议：配置nginx/防火墙限制只允许青橄榄IP访问此接口。
+
     流程：
     1. 验证请求参数（authorization + user_id）
-    2. 直接使用user_id创建本地User（无需API调用）
+    2. 直接使用user_id创建本地User（青橄榄移动端无token验证API）
     3. 生成JWT token
     4. 返回token和用户信息
     """
@@ -262,9 +265,25 @@ def admin_login(request):
     logger.info(f"Admin login attempt: username={username}")
 
     try:
-        # 2. 直接使用username作为user_code（青橄榄新流程）
+        # 2. 验证authorization token
+        client = QingganlanClient(
+            app_key=sso_settings.ADMIN_APP_KEY,
+            app_secret=sso_settings.ADMIN_APP_SECRET,
+            env='prod',
+            api_type='admin'
+        )
+
+        try:
+            verify_result = client.verify_admin_user(authorization)
+            logger.info(f"Admin token verified: {verify_result}")
+        except SSOAPIError as e:
+            logger.error(f"Admin token verification failed: {e.code} - {e.message}")
+            return Response({'error': f'认证失败: {e.message}'},
+                          status=status.HTTP_401_UNAUTHORIZED)
+
+        # 3. 使用username作为user_code
         user_code = username
-        name = username  # 默认使用username，后续可通过其他接口补充真实姓名
+        name = username
         tenant_code = 'default'
         role_name = '管理员'
         phone = ''

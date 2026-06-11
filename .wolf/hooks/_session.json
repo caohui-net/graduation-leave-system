@@ -1,125 +1,124 @@
 {
-  "session_id": "session-2026-06-11-1157",
-  "started": "2026-06-11T03:57:57.051Z",
+  "session_id": "session-2026-06-11-2317",
+  "started": "2026-06-11T15:17:41.347Z",
   "files_read": {
-    "/home/caohui/projects/graduation-leave-system/frontend/components/ApprovalDetail.tsx": {
+    "/home/caohui/projects/graduation-leave-system/demo-web/mobile-sso-callback.html": {
       "count": 1,
-      "tokens": 890,
-      "first_read": "2026-06-11T03:58:26.458Z"
+      "tokens": 1275,
+      "first_read": "2026-06-11T15:22:20.910Z"
     },
-    "/home/caohui/projects/graduation-leave-system/docs/PROJECT-SUMMARY.md": {
+    "/home/caohui/projects/graduation-leave-system/backend/apps/sso_qingganlian/views.py": {
+      "count": 10,
+      "tokens": 3056,
+      "first_read": "2026-06-11T15:25:14.652Z"
+    },
+    "/home/caohui/projects/graduation-leave-system/backend/apps/sso_qingganlian/serializers.py": {
+      "count": 1,
+      "tokens": 382,
+      "first_read": "2026-06-11T15:38:51.471Z"
+    },
+    "/home/caohui/projects/graduation-leave-system/backend/apps/users/models.py": {
+      "count": 1,
+      "tokens": 716,
+      "first_read": "2026-06-11T15:42:40.607Z"
+    },
+    "/home/caohui/projects/graduation-leave-system/backend/apps/sso_qingganlian/callback_views.py": {
       "count": 2,
-      "tokens": 29257,
-      "first_read": "2026-06-11T04:02:13.054Z"
+      "tokens": 1195,
+      "first_read": "2026-06-11T15:53:16.900Z"
     },
-    "/home/caohui/projects/graduation-leave-system/backend/apps/approvals/models.py": {
+    "/home/caohui/projects/graduation-leave-system/backend/apps/sso_qingganlian/client.py": {
       "count": 1,
-      "tokens": 386,
-      "first_read": "2026-06-11T04:04:57.660Z"
-    },
-    "/home/caohui/projects/graduation-leave-system/frontend/types/api.ts": {
-      "count": 1,
-      "tokens": 0,
-      "first_read": "2026-06-11T04:05:07.589Z"
-    },
-    "/home/caohui/projects/graduation-leave-system/backend/apps/approvals/serializers.py": {
-      "count": 1,
-      "tokens": 881,
-      "first_read": "2026-06-11T04:09:00.790Z"
-    },
-    "/home/caohui/projects/graduation-leave-system/backend/apps/attachments/serializers.py": {
-      "count": 1,
-      "tokens": 0,
-      "first_read": "2026-06-11T04:10:16.245Z"
-    },
-    "/home/caohui/projects/graduation-leave-system/frontend/services/attachment.ts": {
-      "count": 1,
-      "tokens": 675,
-      "first_read": "2026-06-11T04:15:43.439Z"
-    },
-    "/home/caohui/projects/graduation-leave-system/backend/apps/attachments/views.py": {
-      "count": 1,
-      "tokens": 2095,
-      "first_read": "2026-06-11T04:15:57.398Z"
-    },
-    "/home/caohui/projects/graduation-leave-system/frontend/services/api.ts": {
-      "count": 1,
-      "tokens": 1100,
-      "first_read": "2026-06-11T04:18:45.121Z"
-    },
-    "/home/caohui/projects/graduation-leave-system/backend/apps/applications/serializers.py": {
-      "count": 1,
-      "tokens": 0,
-      "first_read": "2026-06-11T04:19:22.269Z"
+      "tokens": 1422,
+      "first_read": "2026-06-11T15:57:45.280Z"
     }
   },
   "files_written": [
     {
-      "file": "/home/caohui/projects/graduation-leave-system/frontend/components/ApprovalDetail.tsx",
-      "action": "edit",
-      "tokens": 179,
-      "at": "2026-06-11T03:58:46.001Z"
+      "file": "/home/caohui/projects/graduation-leave-system/debug-login-19970545.md",
+      "action": "create",
+      "tokens": 279,
+      "at": "2026-06-11T15:22:39.527Z"
     },
     {
-      "file": "/home/caohui/projects/graduation-leave-system/frontend/types/api.ts",
-      "action": "edit",
-      "tokens": 168,
-      "at": "2026-06-11T04:10:52.230Z"
+      "file": "/home/caohui/projects/graduation-leave-system/backend/check_user_19970545.py",
+      "action": "create",
+      "tokens": 229,
+      "at": "2026-06-11T15:24:44.381Z"
     },
     {
-      "file": "/home/caohui/projects/graduation-leave-system/backend/apps/approvals/serializers.py",
+      "file": "/home/caohui/projects/graduation-leave-system/backend/apps/sso_qingganlian/views.py",
       "action": "edit",
-      "tokens": 467,
-      "at": "2026-06-11T04:12:18.863Z"
+      "tokens": 108,
+      "at": "2026-06-11T15:25:35.170Z"
     },
     {
-      "file": "/home/caohui/projects/graduation-leave-system/frontend/types/api.ts",
+      "file": "/home/caohui/projects/graduation-leave-system/backend/apps/sso_qingganlian/views.py",
       "action": "edit",
-      "tokens": 187,
-      "at": "2026-06-11T04:13:00.861Z"
+      "tokens": 116,
+      "at": "2026-06-11T15:25:43.561Z"
     },
     {
-      "file": "/home/caohui/projects/graduation-leave-system/backend/apps/attachments/views.py",
+      "file": "/home/caohui/projects/graduation-leave-system/backend/apps/sso_qingganlian/views.py",
       "action": "edit",
-      "tokens": 182,
-      "at": "2026-06-11T04:16:13.404Z"
+      "tokens": 113,
+      "at": "2026-06-11T15:25:59.924Z"
     },
     {
-      "file": "/home/caohui/projects/graduation-leave-system/frontend/services/api.ts",
-      "action": "edit",
-      "tokens": 173,
-      "at": "2026-06-11T04:18:54.900Z"
+      "file": "/home/caohui/projects/graduation-leave-system/backend/check_all_users_fields.py",
+      "action": "create",
+      "tokens": 350,
+      "at": "2026-06-11T15:27:09.802Z"
     },
     {
-      "file": "/home/caohui/projects/graduation-leave-system/frontend/services/api.ts",
+      "file": "/home/caohui/projects/graduation-leave-system/backend/apps/sso_qingganlian/serializers.py",
       "action": "edit",
-      "tokens": 64,
-      "at": "2026-06-11T04:19:04.808Z"
+      "tokens": 148,
+      "at": "2026-06-11T15:39:02.896Z"
     },
     {
-      "file": "/home/caohui/projects/graduation-leave-system/backend/apps/approvals/serializers.py",
-      "action": "edit",
-      "tokens": 211,
-      "at": "2026-06-11T04:19:53.648Z"
+      "file": "/tmp/sso-fix-review.md",
+      "action": "create",
+      "tokens": 543,
+      "at": "2026-06-11T15:42:14.401Z"
     },
     {
-      "file": "/home/caohui/projects/graduation-leave-system/backend/apps/applications/serializers.py",
+      "file": "/home/caohui/projects/graduation-leave-system/backend/apps/sso_qingganlian/serializers.py",
       "action": "edit",
-      "tokens": 52,
-      "at": "2026-06-11T04:20:32.808Z"
+      "tokens": 48,
+      "at": "2026-06-11T15:54:11.638Z"
+    },
+    {
+      "file": "/home/caohui/projects/graduation-leave-system/backend/apps/sso_qingganlian/callback_views.py",
+      "action": "edit",
+      "tokens": 106,
+      "at": "2026-06-11T15:57:11.514Z"
+    },
+    {
+      "file": "/home/caohui/projects/graduation-leave-system/backend/apps/sso_qingganlian/views.py",
+      "action": "edit",
+      "tokens": 246,
+      "at": "2026-06-11T16:01:01.042Z"
+    },
+    {
+      "file": "/home/caohui/projects/graduation-leave-system/backend/apps/sso_qingganlian/views.py",
+      "action": "edit",
+      "tokens": 92,
+      "at": "2026-06-11T16:01:24.617Z"
     }
   ],
   "edit_counts": {
-    "frontend/components/ApprovalDetail.tsx": 1,
-    "frontend/types/api.ts": 2,
-    "backend/apps/approvals/serializers.py": 2,
-    "backend/apps/attachments/views.py": 1,
-    "frontend/services/api.ts": 2,
-    "backend/apps/applications/serializers.py": 1
+    "debug-login-19970545.md": 1,
+    "backend/check_user_19970545.py": 1,
+    "backend/apps/sso_qingganlian/views.py": 5,
+    "backend/check_all_users_fields.py": 1,
+    "backend/apps/sso_qingganlian/serializers.py": 2,
+    "../../../../tmp/sso-fix-review.md": 1,
+    "backend/apps/sso_qingganlian/callback_views.py": 1
   },
-  "anatomy_hits": 7,
-  "anatomy_misses": 3,
-  "repeated_reads_warned": 1,
+  "anatomy_hits": 6,
+  "anatomy_misses": 0,
+  "repeated_reads_warned": 10,
   "cerebrum_warnings": 0,
-  "stop_count": 4
+  "stop_count": 7
 }

@@ -101,7 +101,9 @@ def sso_callback(request):
                     localStorage.setItem('user_info', JSON.stringify({{
                         'user_id': '{user.user_id}',
                         'name': '{user.name}',
-                        'role': '{user.role}'
+                        'role': '{user.role}',
+                        'building': '{user.building or ""}',
+                        'room_number': '{user.room_number or ""}'
                     }}));
                     // 直接跳转到业务页面
                     window.location.href = '/';

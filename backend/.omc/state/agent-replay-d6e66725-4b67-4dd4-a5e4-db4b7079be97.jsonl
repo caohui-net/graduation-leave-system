@@ -1,0 +1,7 @@
+{"t":0,"agent":"ab93a09","agent_type":"unknown","event":"agent_stop","success":true}
+{"t":0,"agent":"system","event":"skill_invoked","skill_name":"claude-codex-gemini-collab"}
+{"t":0,"agent":"a8c25c4","agent_type":"codex:codex-rescue","event":"agent_start","parent_mode":"none"}
+{"t":0,"agent":"a127470","agent_type":"general-purpose","event":"agent_start","parent_mode":"none"}
+{"t":0,"agent":"a127470","agent_type":"general-purpose","event":"agent_stop","success":true,"duration_ms":52040}
+{"t":0,"agent":"a8c25c4","agent_type":"codex:codex-rescue","event":"agent_stop","success":true,"duration_ms":580817}
+{"t":0,"agent":"system","event":"skill_invoked","skill_name":"liteparse"}

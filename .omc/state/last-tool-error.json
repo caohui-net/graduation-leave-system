@@ -1,7 +1,7 @@
 {
   "tool_name": "Bash",
-  "tool_input_preview": "{\"command\":\"rtk git add backend/apps/approvals/serializers.py frontend/types/api.ts && rtk git commit -m \\\"feat(api): 扩展审批流程字段 - 支持代审功能\\n\\n后端变更：\\n- ApprovalSerializer添加decided_by_id和decided_by_name字段\\...",
-  "error": "Exit code 128\nok 2 files changed, 34 insertions(+), 4 deletions(-)\nok\nFAILED: git push\n致命错误：无法访问 'https://github.com/caohui-net/graduation-leave-system.git/'：Failed to connect to github.com port 443 via 127.0.0.1 after 0 ms: Could not connect to server",
-  "timestamp": "2026-06-11T04:13:22.776Z",
-  "retry_count": 1
+  "tool_input_preview": "{\"command\":\"cd /home/caohui/projects/graduation-leave-system/backend && source venv/bin/activate && python3 manage.py shell -c \\\"\\nfrom apps.users.models import User\\n\\nusers = User.objects.all()\\ntot...",
+  "error": "Exit code 1\n总用户数: 6081\nbuilding为NULL: 28 (0%)\nroom_number为NULL: 269 (4%)\n两者都为NULL: 28 (0%)\n\n用户19970545: building=None, room=None\n\n最近5个用户:\nTraceback (most recent call last):\n  File \"/home/caohui/projects/graduation-leave-system/backend/manage.py\", line 22, in <module>\n    main()\n    ~~~~^^\n  File \"/home/caohui/projects/graduation-leave-system/backend/manage.py\", line 18, in main\n    execute_from_command_line(sys.argv)\n    ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^\n  File \"/home/caohui/projects/graduatio...",
+  "timestamp": "2026-06-11T15:27:32.559Z",
+  "retry_count": 2
 }

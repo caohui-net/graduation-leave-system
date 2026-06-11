@@ -1,7 +1,26 @@
 {
-  "agents": [],
-  "total_spawned": 0,
-  "total_completed": 0,
+  "agents": [
+    {
+      "agent_id": "a8c25c4b923d5251d",
+      "agent_type": "codex:codex-rescue",
+      "started_at": "2026-06-11T15:42:34.751Z",
+      "parent_mode": "none",
+      "status": "completed",
+      "completed_at": "2026-06-11T15:52:15.568Z",
+      "duration_ms": 580817
+    },
+    {
+      "agent_id": "a1274708024c993e5",
+      "agent_type": "general-purpose",
+      "started_at": "2026-06-11T15:42:34.768Z",
+      "parent_mode": "none",
+      "status": "completed",
+      "completed_at": "2026-06-11T15:43:26.808Z",
+      "duration_ms": 52040
+    }
+  ],
+  "total_spawned": 1,
+  "total_completed": 2,
   "total_failed": 0,
-  "last_updated": "2026-06-09T03:17:43.866Z"
+  "last_updated": "2026-06-11T15:52:15.670Z"
 }

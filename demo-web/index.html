@@ -250,9 +250,12 @@
             if (attachments && attachments.length > 0) {
                 attachmentHtml = '<div class="card"><div style="font-size: 16px; font-weight: bold; margin-bottom: 10px;">附件材料</div>';
                 attachments.forEach(att => {
+                    const previewUrl = API_BASE_URL + '/api/attachments/' + att.attachment_id + '/download/?preview=true';
+                    const downloadUrl = API_BASE_URL + '/api/attachments/' + att.attachment_id + '/download/';
                     attachmentHtml += '<div style="display: flex; align-items: center; padding: 8px 0; border-bottom: 1px solid #f0f0f0;">' +
-                        '<span style="font-size: 14px; color: #333; flex: 1;">' + (att.original_filename || att.file) + '</span>' +
-                        '<a href="' + att.file + '" download style="font-size: 14px; color: var(--primary-color); text-decoration: none;">下载</a>' +
+                        '<span style="font-size: 14px; color: #333; flex: 1;">' + att.file_name + ' (' + (att.file_size / 1024).toFixed(2) + ' KB)</span>' +
+                        '<button onclick="handleAttachmentPreview(\'' + att.attachment_id + '\')" style="font-size: 14px; color: var(--primary-color); background: none; border: none; cursor: pointer; margin-right: 12px;">预览</button>' +
+                        '<button onclick="handleAttachmentDownload(\'' + att.attachment_id + '\', \'' + att.file_name + '\')" style="font-size: 14px; color: var(--primary-color); background: none; border: none; cursor: pointer;">下载</button>' +
                     '</div>';
                 });
                 attachmentHtml += '</div>';
@@ -434,6 +437,44 @@
         } finally {
             btn.disabled = false;
             btn.textContent = originalText;
+        }
+    }
+
+    async function handleAttachmentPreview(attachmentId) {
+        try {
+            const url = API_BASE_URL + '/api/attachments/' + attachmentId + '/download/?preview=true';
+            const response = await fetch(url, {
+                headers: { 'Authorization': 'Bearer ' + currentToken }
+            });
+            if (!response.ok) throw new Error('预览失败');
+            const blob = await response.blob();
+            const blobUrl = URL.createObjectURL(blob);
+            window.open(blobUrl, '_blank');
+            setTimeout(() => URL.revokeObjectURL(blobUrl), 100);
+        } catch (error) {
+            showToast('预览失败: ' + error.message, 'error');
+        }
+    }
+
+    async function handleAttachmentDownload(attachmentId, fileName) {
+        try {
+            const url = API_BASE_URL + '/api/attachments/' + attachmentId + '/download/';
+            const response = await fetch(url, {
+                headers: { 'Authorization': 'Bearer ' + currentToken }
+            });
+            if (!response.ok) throw new Error('下载失败');
+            const blob = await response.blob();
+            const blobUrl = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = blobUrl;
+            a.download = fileName;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(blobUrl);
+            showToast('下载成功', 'success');
+        } catch (error) {
+            showToast('下载失败: ' + error.message, 'error');
         }
     }
 

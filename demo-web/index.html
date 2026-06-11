@@ -69,12 +69,69 @@
             decision = 'all'; // Get all, then filter for approved/rejected
         }
 
-        const data = await apiGetApprovals(decision, 20, approvalOffset);
-        console.log('[DEBUG] apiGetApprovals returned:', data);
-        console.log('[DEBUG] currentUser:', currentUser);
-        console.log('[DEBUG] currentFilter:', currentFilter, 'decision:', decision);
         const listContainer = document.getElementById('approval-list-container');
         const loadMoreBtn = document.getElementById('load-more-approvals');
+
+        const TARGET_COUNT = 20; // Target number of deduplicated records to display
+        const BATCH_SIZE = 20;   // API request batch size
+        let accumulatedResults = [];
+        let currentOffset = approvalOffset;
+        let totalCount = 0;
+
+        // Loop until we have TARGET_COUNT deduplicated records or no more data
+        while (accumulatedResults.length < TARGET_COUNT) {
+            const data = await apiGetApprovals(decision, BATCH_SIZE, currentOffset);
+            console.log('[DEBUG] apiGetApprovals returned:', data, 'offset:', currentOffset);
+
+            if (!data || !data.results || data.results.length === 0) {
+                // No more data from API
+                break;
+            }
+
+            totalCount = data.count;
+
+            // Apply front-end filter only for 'decided' (approved or rejected)
+            let filtered = data.results;
+            if (currentFilter === 'decided') {
+                filtered = data.results.filter(a => a.decision === 'approved' || a.decision === 'rejected');
+                console.log('[DEBUG] Filtered decided count:', filtered.length);
+            }
+
+            // For dean/admin: deduplicate by application_id
+            if (currentUser && (currentUser.role === 'dean' || currentUser.role === 'admin')) {
+                const beforeCount = filtered.length;
+                const newUniqueRecords = [];
+                const orphanApprovals = [];
+
+                filtered.forEach(approval => {
+                    const appId = approval.application?.id;
+                    if (appId) {
+                        if (!deanDisplayedApps.has(appId)) {
+                            newUniqueRecords.push(approval);
+                            deanDisplayedApps.add(appId); // Track globally across pages
+                        }
+                    } else {
+                        // Keep approvals without application link
+                        orphanApprovals.push(approval);
+                    }
+                });
+
+                filtered = newUniqueRecords.concat(orphanApprovals);
+                console.log('[DEBUG] Dedup: before', beforeCount, '→ after', filtered.length, 'deanDisplayedApps size:', deanDisplayedApps.size);
+            }
+
+            accumulatedResults = accumulatedResults.concat(filtered);
+            currentOffset += BATCH_SIZE;
+
+            // Stop if we've reached the end of available data
+            if (currentOffset >= totalCount) {
+                break;
+            }
+        }
+
+        // Render accumulated results (up to TARGET_COUNT)
+        const displayRecords = accumulatedResults.slice(0, TARGET_COUNT);
+        console.log('[DEBUG] Displaying', displayRecords.length, 'records, accumulated', accumulatedResults.length);
 
         // Status map based on backend expectations
         const statusMap = {
@@ -91,41 +148,10 @@
             'rejected': { text: '已拒绝', cls: 'tag-rejected' }
         };
 
-        if (data.results && data.results.length > 0) {
-            // Save raw page size before filtering for pagination offset
-            const rawResultsLength = data.results.length;
-
-            // Apply front-end filter only for 'decided' (approved or rejected)
-            let filtered = data.results;
-            if (currentFilter === 'decided') {
-                filtered = data.results.filter(a => a.decision === 'approved' || a.decision === 'rejected');
-                console.log('[DEBUG] Filtered decided count:', filtered.length);
-            }
-
+        if (displayRecords.length > 0) {
             let htmlStr = '';
 
-            // For dean/admin: group by application_id to avoid duplicates (cross-page deduplication)
-            if (currentUser && (currentUser.role === 'dean' || currentUser.role === 'admin')) {
-                console.log('[DEBUG] Before dedup:', filtered.length, 'deanDisplayedApps size:', deanDisplayedApps.size);
-                const appMap = new Map();
-                const orphanApprovals = []; // Approvals without application link
-                filtered.forEach(approval => {
-                    const appId = approval.application?.id;
-                    if (appId) {
-                        if (!deanDisplayedApps.has(appId) && !appMap.has(appId)) {
-                            appMap.set(appId, approval);
-                            deanDisplayedApps.add(appId); // Track globally
-                        }
-                    } else {
-                        // Keep approvals without application link
-                        orphanApprovals.push(approval);
-                    }
-                });
-                filtered = Array.from(appMap.values()).concat(orphanApprovals);
-                console.log('[DEBUG] After dedup:', filtered.length, 'unique apps:', appMap.size, 'orphans:', orphanApprovals.length);
-            }
-
-            filtered.forEach(approval => {
+            displayRecords.forEach(approval => {
                 const application = approval.application || {};
 
                 // Use approval decision for status tag (more accurate for dean/approval views)
@@ -178,8 +204,12 @@
                 listContainer.innerHTML = htmlStr;
             }
 
-            approvalOffset += rawResultsLength;
-            approvalHasMore = data.count > approvalOffset;
+            // Update offset to current position
+            approvalOffset = currentOffset;
+
+            // Check if there's more data to load
+            // Has more if: we haven't displayed all accumulated results, or there's more data in API
+            approvalHasMore = (accumulatedResults.length > TARGET_COUNT) || (currentOffset < totalCount);
 
             if (loadMoreBtn) {
                 loadMoreBtn.style.display = approvalHasMore ? 'block' : 'none';

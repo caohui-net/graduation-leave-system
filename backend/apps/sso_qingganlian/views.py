@@ -124,7 +124,9 @@ def mobile_saas_login(request):
                 'username': user.user_id,
                 'real_name': real_name,
                 'role': role,
-                'phone': phone
+                'phone': phone,
+                'building': user.building,
+                'room_number': user.room_number
             }
         }
 
@@ -216,7 +218,9 @@ def mobile_login(request):
                 'username': user.user_id,
                 'real_name': real_name or user_id,
                 'role': role,
-                'phone': phone
+                'phone': phone,
+                'building': user.building,
+                'room_number': user.room_number
             }
         }
 
@@ -304,7 +308,9 @@ def admin_login(request):
                 'username': user.user_id,
                 'real_name': name,
                 'role': 'admin',
-                'phone': phone
+                'phone': phone,
+                'building': user.building,
+                'room_number': user.room_number
             }
         }
 

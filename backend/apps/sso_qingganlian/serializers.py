@@ -15,6 +15,8 @@ class UserInfoSerializer(serializers.Serializer):
     real_name = serializers.CharField(read_only=True)
     role = serializers.CharField(read_only=True)
     phone = serializers.CharField(read_only=True, required=False)
+    building = serializers.CharField(read_only=True, required=False, allow_null=True)
+    room_number = serializers.CharField(read_only=True, required=False, allow_null=True)
 
 
 class MobileLoginResponseSerializer(serializers.Serializer):

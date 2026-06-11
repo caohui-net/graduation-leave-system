@@ -138,30 +138,16 @@
       // 判断使用哪种登录流程
       if (saas_wap_token && tenantCode) {
         // 青橄榄SAAS平台登录
-        console.log('SAAS登录:', { saas_wap_token, tenantCode });
         saasLogin(saas_wap_token, tenantCode);
       } else if (authorization && user_id) {
         // 直接参数登录
-        console.log('直接登录:', { authorization, user_id, real_name, identity_name });
         directLogin(authorization, user_id, real_name, identity_name);
       } else {
         // 参数错误
-        const allParams = {};
-        for (const [key, value] of params.entries()) {
-          allParams[key] = value;
-        }
-        const paramsDisplay = Object.keys(allParams).length > 0
-          ? Object.entries(allParams).map(([k, v]) => `${k}: ${v}`).join('<br>')
-          : '(URL中无任何参数)';
-
         document.querySelector('.loading').innerHTML =
           `<div class="error">
-            <h3>缺少认证信息</h3>
-            <p style="color: #e74c3c; margin-bottom: 15px;">未找到saas_wap_token或authorization参数</p>
-            <div style="background: #f8f9fa; padding: 12px; border-radius: 4px; margin: 15px 0; text-align: left;">
-              <strong style="display: block; margin-bottom: 8px;">实际接收到的参数：</strong>
-              <div style="font-size: 12px; word-break: break-all; color: #555;">${paramsDisplay}</div>
-            </div>
+            <h3>登录失败</h3>
+            <p>缺少必要的认证参数，请重新登录</p>
             <button onclick="window.location.href='/'">返回首页</button>
           </div>`;
       }

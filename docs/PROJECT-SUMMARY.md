@@ -6,7 +6,7 @@
 **项目状态：** ✅ 生产就绪 (Production Ready - 100%)  
 **当前阶段：** 代码审计通过，所有阻塞问题已修复，开发完成度100%  
 **创建日期：** 2026-05-27  
-**最后更新：** 2026-06-08
+**最后更新：** 2026-06-11
 
 ## 项目目标
 
@@ -4481,3 +4481,54 @@ python backend/scripts/import_graduates.py graduate_students_supplement.csv --ap
 - 测试记录：管理端和移动端完整流程验证通过
 
 **当前状态：** SSO对接完成，已集成到生产就绪状态
+
+### 2026-06-11
+
+**代码审计与质量修复：**
+
+✅ **附件预览功能修复（3个提交）**
+- 修复附件按钮调用逻辑：使用wrapper函数处理loading状态
+- 添加disabled状态防止重复点击
+- 添加加载中文本反馈（"加载中..."、"下载中..."）
+- 提交：fix(frontend): 修复附件按钮调用和加载状态显示
+
+✅ **审批流程字段扩展**
+- 后端API：添加decided_by_id和decided_by_name字段支持代审
+- 前端类型：补全ApprovalDetail字段（student_name、attachments等）
+- 新增Attachment接口定义
+- 字段对齐：前端类型完全匹配后端API响应
+- 提交：feat(api): 扩展审批流程字段 - 支持代审功能
+
+✅ **安全性修复**
+- 限制preview模式MIME类型（仅允许image/jpeg、image/png、image/gif、application/pdf）
+- 防止任意文件类型通过preview参数执行
+- 影响：attachments/views.py下载端点
+
+✅ **性能优化**
+- 新增ApprovalBriefSerializer避免N+1查询
+- ApplicationSerializer使用简化序列化器（不含attachments）
+- 减少嵌套序列化器的数据库查询次数
+
+✅ **错误处理增强**
+- 新增ApiClientError类保留完整错误信息
+- 保留code和details字段供上层精细处理
+- 替换通用Error，支持结构化错误处理
+- 提交：fix: 修复附件和审批相关安全性与性能问题
+
+**审计覆盖范围（8项问题）：**
+1. ✅ 附件预览鉴权 - fetch + Authorization + Blob URL
+2. ✅ 前端类型定义 - 补全所有缺失字段
+3. ✅ 附件权限统一 - 使用can_view_application
+4. ✅ preview模式MIME限制 - 安全加固
+5. ✅ 错误处理结构化 - ApiClientError
+6. ✅ N+1查询优化 - ApprovalBriefSerializer
+7. ⏸️ 小程序API - 待Phase 4-6实施
+8. ⏸️ 代码复用完善 - 待移动端开发
+
+**技术改进：**
+- 类型安全：前端类型定义完整性100%
+- 安全加固：MIME类型白名单保护
+- 性能提升：减少数据库查询次数
+- 错误处理：结构化错误信息传递
+
+**当前状态：** 核心问题已修复，移动端问题待后续Phase实施

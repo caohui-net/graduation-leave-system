@@ -77,6 +77,8 @@ export interface ApprovalDetail {
   contact_phone: string | null;
   reason: string;
   leave_date: string;
+  building: string | null;
+  room_number: string | null;
   attachments: Attachment[];
   step: ApprovalStep;
   approver_id: string;

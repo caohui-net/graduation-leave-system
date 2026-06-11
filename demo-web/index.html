@@ -240,22 +240,33 @@
                   '<span style="font-size: 14px; color: #333; flex: 1;">' + (detail.contact_phone || '-') + '</span>' +
                 '</div>' +
                 '<div style="display: flex; margin-bottom: 8px;">' +
+                  '<span style="font-size: 14px; color: #999; width: 80px;">离校日期:</span>' +
+                  '<span style="font-size: 14px; color: #333; flex: 1;">' + (detail.leave_date || '-') + '</span>' +
+                '</div>' +
+                '<div style="display: flex; margin-bottom: 8px;">' +
+                  '<span style="font-size: 14px; color: #999; width: 80px;">楼栋号:</span>' +
+                  '<span style="font-size: 14px; color: #333; flex: 1;">' + (detail.building || '-') + '</span>' +
+                '</div>' +
+                '<div style="display: flex; margin-bottom: 8px;">' +
+                  '<span style="font-size: 14px; color: #999; width: 80px;">房间号:</span>' +
+                  '<span style="font-size: 14px; color: #333; flex: 1;">' + (detail.room_number || '-') + '</span>' +
+                '</div>' +
+                '<div style="display: flex; margin-bottom: 8px;">' +
                   '<span style="font-size: 14px; color: #999; width: 80px;">申请原因:</span>' +
                   '<span style="font-size: 14px; color: #333; flex: 1;">' + (detail.reason || '无') + '</span>' +
                 '</div>' +
               '</div>';
 
-            // Generate attachment HTML
+            // Generate attachment HTML - hide download for counselor/dorm_manager
             let attachmentHtml = '';
             if (attachments && attachments.length > 0) {
+                const showDownload = currentUser && (currentUser.role === 'dean' || currentUser.role === 'admin');
                 attachmentHtml = '<div class="card"><div style="font-size: 16px; font-weight: bold; margin-bottom: 10px;">附件材料</div>';
                 attachments.forEach(att => {
-                    const previewUrl = API_BASE_URL + '/api/attachments/' + att.attachment_id + '/download/?preview=true';
-                    const downloadUrl = API_BASE_URL + '/api/attachments/' + att.attachment_id + '/download/';
                     attachmentHtml += '<div style="display: flex; align-items: center; padding: 8px 0; border-bottom: 1px solid #f0f0f0;">' +
                         '<span style="font-size: 14px; color: #333; flex: 1;">' + att.file_name + ' (' + (att.file_size / 1024).toFixed(2) + ' KB)</span>' +
                         '<button onclick="handleAttachmentPreview(\'' + att.attachment_id + '\')" style="font-size: 14px; color: var(--primary-color); background: none; border: none; cursor: pointer; margin-right: 12px;">预览</button>' +
-                        '<button onclick="handleAttachmentDownload(\'' + att.attachment_id + '\', \'' + att.file_name + '\')" style="font-size: 14px; color: var(--primary-color); background: none; border: none; cursor: pointer;">下载</button>' +
+                        (showDownload ? '<button onclick="handleAttachmentDownload(\'' + att.attachment_id + '\', \'' + att.file_name + '\')" style="font-size: 14px; color: var(--primary-color); background: none; border: none; cursor: pointer;">下载</button>' : '') +
                     '</div>';
                 });
                 attachmentHtml += '</div>';

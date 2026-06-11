@@ -55,6 +55,14 @@ export const ApprovalDetailView: React.FC<Props> = ({ approval }) => {
           <span>{approval.leave_date}</span>
         </div>
         <div className="info-item">
+          <label>楼栋号：</label>
+          <span>{approval.building || '-'}</span>
+        </div>
+        <div className="info-item">
+          <label>房间号：</label>
+          <span>{approval.room_number || '-'}</span>
+        </div>
+        <div className="info-item">
           <label>离校原因：</label>
           <span>{approval.reason}</span>
         </div>

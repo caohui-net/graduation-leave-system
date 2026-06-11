@@ -46,6 +46,8 @@ class ApprovalSerializer(serializers.ModelSerializer):
     contact_phone = serializers.CharField(source='application.contact_phone', read_only=True)
     reason = serializers.CharField(source='application.reason', read_only=True)
     leave_date = serializers.DateField(source='application.leave_date', read_only=True)
+    building = serializers.CharField(source='application.student.building', read_only=True, allow_null=True)
+    room_number = serializers.CharField(source='application.student.room_number', read_only=True, allow_null=True)
     attachments = serializers.SerializerMethodField()
     approver_id = serializers.CharField(source='approver.user_id', read_only=True)
     decided_by_id = serializers.CharField(source='decided_by.user_id', read_only=True, allow_null=True)
@@ -54,10 +56,12 @@ class ApprovalSerializer(serializers.ModelSerializer):
     class Meta:
         model = Approval
         fields = ['approval_id', 'application_id', 'student_name', 'student_id',
-                  'contact_phone', 'reason', 'leave_date', 'attachments', 'step', 'approver_id',
+                  'contact_phone', 'reason', 'leave_date', 'building', 'room_number',
+                  'attachments', 'step', 'approver_id',
                   'approver_name', 'decided_by_id', 'decided_by_name', 'decision', 'comment', 'decided_at']
         read_only_fields = ['approval_id', 'application_id', 'student_name', 'student_id',
-                            'contact_phone', 'reason', 'leave_date', 'attachments', 'step',
+                            'contact_phone', 'reason', 'leave_date', 'building', 'room_number',
+                            'attachments', 'step',
                             'approver_id', 'approver_name', 'decided_by_id', 'decided_by_name', 'decision', 'decided_at']
 
     def get_attachments(self, obj):

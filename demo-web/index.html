@@ -11,7 +11,7 @@
     let approvalOffset = 0;
     let approvalHasMore = true;
     let deanDisplayedApps = new Set(); // Track displayed application IDs for dean deduplication
-    let currentUser = null; // Current logged-in user
+    // currentUser is declared in api.js
 
     async function loadMyApplications() {
         if (!currentToken) return;
@@ -71,6 +71,8 @@
 
         const data = await apiGetApprovals(decision, 20, approvalOffset);
         console.log('[DEBUG] apiGetApprovals returned:', data);
+        console.log('[DEBUG] currentUser:', currentUser);
+        console.log('[DEBUG] currentFilter:', currentFilter, 'decision:', decision);
         const listContainer = document.getElementById('approval-list-container');
         const loadMoreBtn = document.getElementById('load-more-approvals');
 
@@ -97,21 +99,30 @@
             let filtered = data.results;
             if (currentFilter === 'decided') {
                 filtered = data.results.filter(a => a.decision === 'approved' || a.decision === 'rejected');
+                console.log('[DEBUG] Filtered decided count:', filtered.length);
             }
 
             let htmlStr = '';
 
-            // For dean: group by application_id to avoid duplicates (cross-page deduplication)
-            if (currentUser && currentUser.role === 'dean') {
+            // For dean/admin: group by application_id to avoid duplicates (cross-page deduplication)
+            if (currentUser && (currentUser.role === 'dean' || currentUser.role === 'admin')) {
+                console.log('[DEBUG] Before dedup:', filtered.length, 'deanDisplayedApps size:', deanDisplayedApps.size);
                 const appMap = new Map();
+                const orphanApprovals = []; // Approvals without application link
                 filtered.forEach(approval => {
                     const appId = approval.application?.id;
-                    if (appId && !deanDisplayedApps.has(appId) && !appMap.has(appId)) {
-                        appMap.set(appId, approval);
-                        deanDisplayedApps.add(appId); // Track globally
+                    if (appId) {
+                        if (!deanDisplayedApps.has(appId) && !appMap.has(appId)) {
+                            appMap.set(appId, approval);
+                            deanDisplayedApps.add(appId); // Track globally
+                        }
+                    } else {
+                        // Keep approvals without application link
+                        orphanApprovals.push(approval);
                     }
                 });
-                filtered = Array.from(appMap.values());
+                filtered = Array.from(appMap.values()).concat(orphanApprovals);
+                console.log('[DEBUG] After dedup:', filtered.length, 'unique apps:', appMap.size, 'orphans:', orphanApprovals.length);
             }
 
             filtered.forEach(approval => {
@@ -1005,6 +1016,7 @@
     function updateUIForRole(role) {
       const isStudent = role === 'student';
       const isDean = role === 'dean';
+      const isAdmin = role === 'admin';
 
       // Hide "学生申请" tab for non-students
       const navTabs = document.querySelectorAll('#navTabs .nav-tab');
@@ -1013,22 +1025,22 @@
       }
 
       // Update nav tab text
-      document.getElementById('nav-approval-text').textContent = isStudent ? '我的申请' : (isDean ? '审批查询' : '审批列表');
+      document.getElementById('nav-approval-text').textContent = isStudent ? '我的申请' : (isDean || isAdmin ? '审批查询' : '审批列表');
 
       // Update list page title and role display
-      document.getElementById('list-title').textContent = isStudent ? '我的申请' : (isDean ? '审批查询' : '审批列表');
-      document.getElementById('role-display').textContent = (isStudent ? '学生' : isDean ? '学工部' : role === 'counselor' ? '辅导员' : '宿管员');
+      document.getElementById('list-title').textContent = isStudent ? '我的申请' : (isDean || isAdmin ? '审批查询' : '审批列表');
+      document.getElementById('role-display').textContent = (isStudent ? '学生' : isDean ? '学工部' : isAdmin ? '管理员' : role === 'counselor' ? '辅导员' : '宿管员');
 
-      // Show/hide approval section for student/dean
+      // Show/hide approval section for student/dean/admin
       const approvalSection = document.getElementById('approval-section');
       if (approvalSection) {
-        approvalSection.style.display = (isStudent || isDean) ? 'none' : 'block';
+        approvalSection.style.display = (isStudent || isDean || isAdmin) ? 'none' : 'block';
       }
 
       // Show export button for dean and admin roles
       const exportBtn = document.getElementById('export-btn');
       if (exportBtn) {
-        exportBtn.style.display = (isDean || role === 'admin') ? 'block' : 'none';
+        exportBtn.style.display = (isDean || isAdmin) ? 'block' : 'none';
       }
     }
 

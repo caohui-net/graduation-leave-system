@@ -8,7 +8,11 @@ class ApplicationBriefSerializer(serializers.Serializer):
     status = serializers.CharField()
     student_name = serializers.CharField(source='student.name')
     student_id = serializers.CharField(source='student.user_id')
+    contact_phone = serializers.CharField(allow_null=True)
     leave_date = serializers.DateField()
+    building = serializers.CharField(source='student.building', allow_null=True)
+    room_number = serializers.CharField(source='student.room_number', allow_null=True)
+    created_at = serializers.DateTimeField()
 
 
 class ApprovalListSerializer(serializers.ModelSerializer):

@@ -535,7 +535,93 @@
         const btn = document.getElementById('export-btn');
         const originalText = btn.textContent;
         btn.disabled = true;
-        btn.textContent = '导出中...';
+        btn.textContent = '加载中...';
+
+        try {
+            // Fetch preview data (JSON format)
+            const res = await fetch(API_BASE_URL + '/approvals/?decision=all&limit=1000', {
+                headers: getAuthHeaders()
+            });
+
+            if (res.ok) {
+                const data = await res.json();
+                showExcelPreview(data.results);
+            } else {
+                showToast('加载数据失败', 'error');
+            }
+        } catch (err) {
+            console.error('Export preview failed:', err);
+            showToast('加载失败', 'error');
+        } finally {
+            btn.disabled = false;
+            btn.textContent = originalText;
+        }
+    }
+
+    function showExcelPreview(approvals) {
+        // Build table header
+        const headers = ['申请ID', '提交人', '学号', '手机号', '离校日期', '楼栋号', '房间号', '提交时间', '审批状态',
+                        '宿管员', '宿管审批时间', '宿管审批结果', '辅导员', '辅导员审批时间', '辅导员审批结果'];
+
+        const headerHTML = '<tr>' + headers.map(h => `<th style="padding: 8px; border: 1px solid #ddd; text-align: left; white-space: nowrap;">${h}</th>`).join('') + '</tr>';
+        document.getElementById('excelPreviewHeader').innerHTML = headerHTML;
+
+        // Build table body - group approvals by application
+        const appMap = new Map();
+        approvals.forEach(approval => {
+            const appId = approval.application?.id;
+            if (appId && !appMap.has(appId)) {
+                appMap.set(appId, {
+                    application: approval.application,
+                    dormApproval: null,
+                    counselorApproval: null
+                });
+            }
+
+            if (appId) {
+                const record = appMap.get(appId);
+                if (approval.step === 'dorm_manager') {
+                    record.dormApproval = approval;
+                } else if (approval.step === 'counselor') {
+                    record.counselorApproval = approval;
+                }
+            }
+        });
+
+        const rows = Array.from(appMap.values()).map(record => {
+            const app = record.application;
+            const dorm = record.dormApproval;
+            const counselor = record.counselorApproval;
+
+            return `<tr>
+                <td style="padding: 8px; border: 1px solid #ddd;">${app.id?.substring(0,8) || '-'}</td>
+                <td style="padding: 8px; border: 1px solid #ddd;">${app.student_name || '-'}</td>
+                <td style="padding: 8px; border: 1px solid #ddd;">${app.student_id || '-'}</td>
+                <td style="padding: 8px; border: 1px solid #ddd;">${app.contact_phone || '-'}</td>
+                <td style="padding: 8px; border: 1px solid #ddd;">${app.leave_date || '-'}</td>
+                <td style="padding: 8px; border: 1px solid #ddd;">${app.building || '-'}</td>
+                <td style="padding: 8px; border: 1px solid #ddd;">${app.room_number || '-'}</td>
+                <td style="padding: 8px; border: 1px solid #ddd;">${new Date(app.created_at).toLocaleString()}</td>
+                <td style="padding: 8px; border: 1px solid #ddd;">${app.status || '-'}</td>
+                <td style="padding: 8px; border: 1px solid #ddd;">${dorm?.approver_name || '-'}</td>
+                <td style="padding: 8px; border: 1px solid #ddd;">${dorm?.decided_at ? new Date(dorm.decided_at).toLocaleString() : '-'}</td>
+                <td style="padding: 8px; border: 1px solid #ddd;">${dorm?.decision || '-'}</td>
+                <td style="padding: 8px; border: 1px solid #ddd;">${counselor?.approver_name || '-'}</td>
+                <td style="padding: 8px; border: 1px solid #ddd;">${counselor?.decided_at ? new Date(counselor.decided_at).toLocaleString() : '-'}</td>
+                <td style="padding: 8px; border: 1px solid #ddd;">${counselor?.decision || '-'}</td>
+            </tr>`;
+        }).join('');
+
+        document.getElementById('excelPreviewBody').innerHTML = rows;
+        document.getElementById('excelPreviewModal').style.display = 'block';
+    }
+
+    function closeExcelPreview() {
+        document.getElementById('excelPreviewModal').style.display = 'none';
+    }
+
+    async function confirmExcelDownload() {
+        closeExcelPreview();
 
         try {
             const res = await fetch(API_BASE_URL + '/approvals/export/', {
@@ -555,15 +641,11 @@
                 window.URL.revokeObjectURL(url);
                 showToast('导出成功', 'success');
             } else {
-                const error = await res.json();
-                showToast(error.error?.message || '导出失败', 'error');
+                showToast('导出失败', 'error');
             }
         } catch (err) {
-            console.error('Export failed:', err);
-            showToast('导出失败', 'error');
-        } finally {
-            btn.disabled = false;
-            btn.textContent = originalText;
+            console.error('Download failed:', err);
+            showToast('下载失败', 'error');
         }
     }
 
@@ -1169,6 +1251,26 @@
       return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
     }
   </script>
+
+<!-- Excel预览模态框 -->
+<div id="excelPreviewModal" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 1000; overflow: auto;">
+  <div style="background: white; margin: 20px auto; max-width: 95%; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+    <div style="padding: 20px; border-bottom: 1px solid #f0f0f0; display: flex; justify-content: space-between; align-items: center;">
+      <h3 style="margin: 0;">审批数据预览</h3>
+      <button onclick="closeExcelPreview()" style="border: none; background: none; font-size: 24px; cursor: pointer; color: #999;">&times;</button>
+    </div>
+    <div style="padding: 20px; overflow-x: auto; max-height: 60vh;">
+      <table id="excelPreviewTable" style="width: 100%; border-collapse: collapse; font-size: 13px;">
+        <thead id="excelPreviewHeader" style="background: #f5f5f5; position: sticky; top: 0;"></thead>
+        <tbody id="excelPreviewBody"></tbody>
+      </table>
+    </div>
+    <div style="padding: 20px; border-top: 1px solid #f0f0f0; display: flex; gap: 12px; justify-content: flex-end;">
+      <button onclick="closeExcelPreview()" class="btn-outline" style="flex: 0;">取消</button>
+      <button onclick="confirmExcelDownload()" class="btn-primary" style="flex: 0;">下载Excel</button>
+    </div>
+  </div>
+</div>
 
 <!-- Toast容器 -->
 <div class="toast-container" id="toastContainer"></div>

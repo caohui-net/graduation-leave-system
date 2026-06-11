@@ -609,6 +609,13 @@
             const dorm = record.dormApproval;
             const counselor = record.counselorApproval;
 
+            // Helper function to format date safely
+            const formatDate = (dateStr) => {
+                if (!dateStr) return '-';
+                const date = new Date(dateStr);
+                return isNaN(date.getTime()) ? '-' : date.toLocaleString();
+            };
+
             return `<tr>
                 <td style="padding: 8px; border: 1px solid #ddd;">${app.id?.substring(0,8) || '-'}</td>
                 <td style="padding: 8px; border: 1px solid #ddd;">${app.student_name || '-'}</td>
@@ -617,13 +624,13 @@
                 <td style="padding: 8px; border: 1px solid #ddd;">${app.leave_date || '-'}</td>
                 <td style="padding: 8px; border: 1px solid #ddd;">${app.building || '-'}</td>
                 <td style="padding: 8px; border: 1px solid #ddd;">${app.room_number || '-'}</td>
-                <td style="padding: 8px; border: 1px solid #ddd;">${new Date(app.created_at).toLocaleString()}</td>
+                <td style="padding: 8px; border: 1px solid #ddd;">${formatDate(app.created_at)}</td>
                 <td style="padding: 8px; border: 1px solid #ddd;">${statusMap[app.status] || app.status || '-'}</td>
                 <td style="padding: 8px; border: 1px solid #ddd;">${dorm?.approver_name || '-'}</td>
-                <td style="padding: 8px; border: 1px solid #ddd;">${dorm?.decided_at ? new Date(dorm.decided_at).toLocaleString() : '-'}</td>
+                <td style="padding: 8px; border: 1px solid #ddd;">${formatDate(dorm?.decided_at)}</td>
                 <td style="padding: 8px; border: 1px solid #ddd;">${dorm?.decision ? decisionMap[dorm.decision] || dorm.decision : '-'}</td>
                 <td style="padding: 8px; border: 1px solid #ddd;">${counselor?.approver_name || '-'}</td>
-                <td style="padding: 8px; border: 1px solid #ddd;">${counselor?.decided_at ? new Date(counselor.decided_at).toLocaleString() : '-'}</td>
+                <td style="padding: 8px; border: 1px solid #ddd;">${formatDate(counselor?.decided_at)}</td>
                 <td style="padding: 8px; border: 1px solid #ddd;">${counselor?.decision ? decisionMap[counselor.decision] || counselor.decision : '-'}</td>
             </tr>`;
         }).join('');

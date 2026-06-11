@@ -29,6 +29,7 @@ def sso_callback(request):
     authorization = params.get('authorization') or params.get('Authorization')
     username = params.get('username') or params.get('user_id')
     real_name = params.get('real_name', '')
+    identity_name = params.get('identity_name', '管理员')
 
     if not authorization or not username:
         logger.error(f"SSO callback missing params: {dict(params)}")
@@ -45,14 +46,25 @@ def sso_callback(request):
         """, status=400)
 
     try:
+        # 根据identity_name确定角色
+        if identity_name == '学生':
+            role = 'student'
+            is_staff = False
+        elif identity_name in ['教师', '教职工']:
+            role = 'teacher'
+            is_staff = False
+        else:  # 管理员或其他
+            role = 'admin'
+            is_staff = True
+
         # 创建/获取用户
         with transaction.atomic():
             user, created = User.objects.select_for_update().get_or_create(
                 user_id=username,
                 defaults={
                     'name': real_name or username,
-                    'role': 'admin',
-                    'is_staff': True,
+                    'role': role,
+                    'is_staff': is_staff,
                     'active': True
                 }
             )
@@ -63,10 +75,10 @@ def sso_callback(request):
             defaults={
                 'user': user,
                 'tenant_code': 'default',
-                'user_type': 'admin',
+                'user_type': role,
                 'real_name': real_name or username,
-                'identity_name': '管理员',
-                'role_name': '管理员',
+                'identity_name': identity_name,
+                'role_name': identity_name,
                 'last_login_at': timezone.now()
             }
         )

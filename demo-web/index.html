@@ -11,6 +11,7 @@
     let approvalOffset = 0;
     let approvalHasMore = true;
     let deanDisplayedApps = new Set(); // Track displayed application IDs for dean deduplication
+    let currentUser = null; // Current logged-in user
 
     async function loadMyApplications() {
         if (!currentToken) return;
@@ -949,6 +950,10 @@
           document.getElementById('navTabs').style.display = 'flex';
           document.getElementById('userBar').style.display = 'flex';
           document.getElementById('currentUserName').textContent = result.user.name;
+
+          // Store current user for role-based UI control
+          currentUser = result.user;
+
           const roleMap = {
             'student': '学生',
             'dorm_manager': '宿管员',

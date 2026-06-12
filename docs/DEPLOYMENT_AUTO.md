@@ -2,6 +2,18 @@
 
 ## 一键部署（推荐）
 
+### 前置验证
+
+```bash
+export DEPLOY_HOST=218.75.196.218
+export DEPLOY_USER=root
+./scripts/verify-env.sh
+```
+
+检查：SSH连接、Docker/Git安装、环境变量配置
+
+### 自动部署
+
 ```bash
 export DEPLOY_HOST=218.75.196.218
 export DEPLOY_USER=root
@@ -12,7 +24,7 @@ export DEPLOY_USER=root
 1. 本地测试验证
 2. Git推送代码
 3. 远程部署（备份→构建→迁移→重启→健康检查）
-4. 失败自动回滚
+4. 失败自动回滚（配置+数据库+代码版本）
 
 ---
 

@@ -149,9 +149,11 @@ async function apiGetApplications() {
     return { results: [] };
 }
 
-async function apiGetApprovals(decision = 'pending', limit = 20, offset = 0) {
+async function apiGetApprovals(decision = 'pending', limit = 20, offset = 0, filters = {}) {
     try {
-        const url = API_BASE_URL + '/approvals/?decision=' + decision + '&limit=' + limit + '&offset=' + offset;
+        let url = API_BASE_URL + '/approvals/?decision=' + decision + '&limit=' + limit + '&offset=' + offset;
+        if (filters.class_id) url += '&class_id=' + encodeURIComponent(filters.class_id);
+        if (filters.building) url += '&building=' + encodeURIComponent(filters.building);
         const response = await fetch(url, {
             headers: getAuthHeaders()
         });

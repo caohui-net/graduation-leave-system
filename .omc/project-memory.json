@@ -232,8 +232,8 @@
   "hotPaths": [
     {
       "path": "demo-web/index.html",
-      "accessCount": 191,
-      "lastAccessed": 1781278994755,
+      "accessCount": 213,
+      "lastAccessed": 1781281766056,
       "type": "file"
     },
     {
@@ -267,21 +267,21 @@
       "type": "file"
     },
     {
+      "path": "backend/apps/applications/views.py",
+      "accessCount": 15,
+      "lastAccessed": 1781281493964,
+      "type": "file"
+    },
+    {
       "path": "backend/apps/sso_qingganlian/client.py",
       "accessCount": 13,
       "lastAccessed": 1781251248351,
       "type": "file"
     },
     {
-      "path": "backend/apps/applications/views.py",
-      "accessCount": 11,
-      "lastAccessed": 1781273004053,
-      "type": "file"
-    },
-    {
       "path": "demo-web/js/api.js",
-      "accessCount": 9,
-      "lastAccessed": 1781276104723,
+      "accessCount": 11,
+      "lastAccessed": 1781281649733,
       "type": "file"
     },
     {
@@ -315,6 +315,12 @@
       "type": "file"
     },
     {
+      "path": "backend/apps/applications/models.py",
+      "accessCount": 5,
+      "lastAccessed": 1781281448252,
+      "type": "file"
+    },
+    {
       "path": "frontend/types/api.ts",
       "accessCount": 4,
       "lastAccessed": 1781153346177,
@@ -336,12 +342,6 @@
       "path": "backend/apps/sso_qingganlian/urls.py",
       "accessCount": 4,
       "lastAccessed": 1781246547489,
-      "type": "file"
-    },
-    {
-      "path": "backend/apps/applications/models.py",
-      "accessCount": 4,
-      "lastAccessed": 1781273742790,
       "type": "file"
     },
     {

@@ -28,14 +28,44 @@
       "first_read": "2026-06-12T16:04:52.096Z"
     },
     "/home/caohui/projects/graduation-leave-system/docs/DEPLOYMENT_AUTO.md": {
-      "count": 1,
-      "tokens": 781,
+      "count": 2,
+      "tokens": 892,
       "first_read": "2026-06-12T16:05:31.129Z"
     },
     "/home/caohui/projects/graduation-leave-system/.github/workflows/deploy.yml": {
       "count": 1,
       "tokens": 762,
       "first_read": "2026-06-12T16:09:20.560Z"
+    },
+    "/home/caohui/projects/graduation-leave-system/docs/微信图片_20260612165813_1239_47.jpg": {
+      "count": 1,
+      "tokens": 0,
+      "first_read": "2026-06-12T16:17:17.419Z"
+    },
+    "/home/caohui/projects/graduation-leave-system/demo-web/index.html": {
+      "count": 13,
+      "tokens": 22157,
+      "first_read": "2026-06-12T16:17:42.062Z"
+    },
+    "/home/caohui/projects/graduation-leave-system/demo-web/admin/dashboard.html": {
+      "count": 1,
+      "tokens": 2090,
+      "first_read": "2026-06-12T16:20:00.325Z"
+    },
+    "/home/caohui/projects/graduation-leave-system/backend/apps/applications/models.py": {
+      "count": 1,
+      "tokens": 574,
+      "first_read": "2026-06-12T16:24:07.477Z"
+    },
+    "/home/caohui/projects/graduation-leave-system/backend/apps/applications/views.py": {
+      "count": 2,
+      "tokens": 3765,
+      "first_read": "2026-06-12T16:24:24.561Z"
+    },
+    "/home/caohui/projects/graduation-leave-system/demo-web/js/api.js": {
+      "count": 1,
+      "tokens": 2355,
+      "first_read": "2026-06-12T16:27:17.660Z"
     }
   },
   "files_written": [
@@ -140,6 +170,84 @@
       "action": "create",
       "tokens": 461,
       "at": "2026-06-12T16:10:44.106Z"
+    },
+    {
+      "file": "/home/caohui/projects/graduation-leave-system/docs/DEPLOYMENT_AUTO.md",
+      "action": "edit",
+      "tokens": 96,
+      "at": "2026-06-12T16:12:02.114Z"
+    },
+    {
+      "file": "/home/caohui/projects/graduation-leave-system/demo-web/index.html",
+      "action": "edit",
+      "tokens": 66,
+      "at": "2026-06-12T16:17:52.132Z"
+    },
+    {
+      "file": "/home/caohui/projects/graduation-leave-system/demo-web/index.html",
+      "action": "edit",
+      "tokens": 121,
+      "at": "2026-06-12T16:18:08.471Z"
+    },
+    {
+      "file": "/home/caohui/projects/graduation-leave-system/demo-web/index.html",
+      "action": "edit",
+      "tokens": 165,
+      "at": "2026-06-12T16:18:27.355Z"
+    },
+    {
+      "file": "/home/caohui/projects/graduation-leave-system/demo-web/index.html",
+      "action": "edit",
+      "tokens": 75,
+      "at": "2026-06-12T16:18:46.888Z"
+    },
+    {
+      "file": "/home/caohui/projects/graduation-leave-system/backend/apps/applications/views.py",
+      "action": "edit",
+      "tokens": 178,
+      "at": "2026-06-12T16:24:34.819Z"
+    },
+    {
+      "file": "/home/caohui/projects/graduation-leave-system/backend/apps/applications/views.py",
+      "action": "edit",
+      "tokens": 208,
+      "at": "2026-06-12T16:24:53.935Z"
+    },
+    {
+      "file": "/home/caohui/projects/graduation-leave-system/demo-web/index.html",
+      "action": "edit",
+      "tokens": 446,
+      "at": "2026-06-12T16:25:54.931Z"
+    },
+    {
+      "file": "/home/caohui/projects/graduation-leave-system/demo-web/js/api.js",
+      "action": "edit",
+      "tokens": 195,
+      "at": "2026-06-12T16:27:29.675Z"
+    },
+    {
+      "file": "/home/caohui/projects/graduation-leave-system/demo-web/index.html",
+      "action": "edit",
+      "tokens": 93,
+      "at": "2026-06-12T16:28:05.469Z"
+    },
+    {
+      "file": "/home/caohui/projects/graduation-leave-system/demo-web/index.html",
+      "action": "edit",
+      "tokens": 111,
+      "at": "2026-06-12T16:28:15.302Z"
+    },
+    {
+      "file": "/home/caohui/projects/graduation-leave-system/demo-web/index.html",
+      "action": "edit",
+      "tokens": 466,
+      "at": "2026-06-12T16:28:50.110Z"
+    },
+    {
+      "file": "/home/caohui/projects/graduation-leave-system/demo-web/index.html",
+      "action": "edit",
+      "tokens": 115,
+      "at": "2026-06-12T16:29:26.027Z"
     }
   ],
   "edit_counts": {
@@ -151,13 +259,16 @@
     "scripts/deploy.sh": 2,
     "scripts/rollback.sh": 1,
     ".github/workflows/deploy.yml": 3,
-    "docs/DEPLOYMENT_AUTO.md": 3,
+    "docs/DEPLOYMENT_AUTO.md": 4,
     "scripts/auto-deploy.sh": 1,
-    "scripts/verify-env.sh": 1
+    "scripts/verify-env.sh": 1,
+    "demo-web/index.html": 9,
+    "backend/apps/applications/views.py": 2,
+    "demo-web/js/api.js": 1
   },
-  "anatomy_hits": 6,
-  "anatomy_misses": 1,
-  "repeated_reads_warned": 0,
+  "anatomy_hits": 11,
+  "anatomy_misses": 2,
+  "repeated_reads_warned": 14,
   "cerebrum_warnings": 0,
-  "stop_count": 2
+  "stop_count": 7
 }

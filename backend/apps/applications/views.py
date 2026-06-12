@@ -27,6 +27,8 @@ import logging
         OpenApiParameter('status', str, description='状态过滤'),
         OpenApiParameter('student_name', str, description='学生姓名模糊查询'),
         OpenApiParameter('student_id', str, description='学号精确查询'),
+        OpenApiParameter('class_id', str, description='班级筛选'),
+        OpenApiParameter('building', str, description='宿舍楼筛选'),
         OpenApiParameter('limit', int, description='每页数量（默认20）'),
         OpenApiParameter('offset', int, description='偏移量（默认0）'),
     ],
@@ -111,6 +113,14 @@ def list_applications(request):
         student_id = request.query_params.get('student_id')
         if student_id:
             queryset = queryset.filter(student__user_id=student_id)
+
+        class_id = request.query_params.get('class_id')
+        if class_id:
+            queryset = queryset.filter(class_id__icontains=class_id)
+
+        building = request.query_params.get('building')
+        if building:
+            queryset = queryset.filter(student__building__icontains=building)
 
     # Sort by created_at DESC
     queryset = queryset.order_by('-created_at', '-application_id')

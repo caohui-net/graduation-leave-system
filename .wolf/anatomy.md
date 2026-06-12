@@ -1,6 +1,6 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-06-12T16:10:44.097Z
+> Auto-maintained by OpenWolf. Last scanned: 2026-06-12T16:29:26.015Z
 > Files: 696 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../../../tmp/
@@ -625,7 +625,7 @@
 - `providers.py` — from: check_status (~1187 tok)
 - `serializers.py` — ApplicationListSerializer: get_approvals, validate_leave_date (~640 tok)
 - `urls.py` (~98 tok)
-- `views.py` — applications_view, list_applications, create_application, get_application (~3728 tok)
+- `views.py` — applications_view, list_applications, create_application, get_application (~3851 tok)
 
 ## backend/apps/applications/management/
 
@@ -755,7 +755,7 @@
 ## demo-web/
 
 - `admin-sso-callback.html` — SSO登录中... (~402 tok)
-- `index.html` — 毕业离校申请系统 - UI Demo (~21678 tok)
+- `index.html` — 毕业离校申请系统 - UI Demo (~22184 tok)
 - `mobile-sso-callback.html` — SSO登录中... (~614 tok)
 - `responsive-adapter-example.html` — Declares deviceAdapter (~579 tok)
 - `sso-receiver.html` — 登录中... (~410 tok)
@@ -767,7 +767,7 @@
 
 ## demo-web/js/
 
-- `api.js` — API Integration Layer (~2355 tok)
+- `api.js` — API Integration Layer (~2410 tok)
 - `responsive-adapter.js` — 响应式适配器 - 移动端自动适配模块 (~1783 tok)
 
 ## docs/
@@ -789,7 +789,7 @@
 - `移动端SSO修复测试方案.md` — 移动端SSO修复验证测试方案 (~882 tok)
 - `agentmemory-integration-progress.md` — agentmemory Integration Progress (~1168 tok)
 - `architecture-integration-consensus.md` — 多智能体协作架构整合共识 (~1514 tok)
-- `DEPLOYMENT_AUTO.md` — 异地自动化部署指南 (~892 tok)
+- `DEPLOYMENT_AUTO.md` — 异地自动化部署指南 (~932 tok)
 - `DEPLOYMENT_PROD.md` — 生产环境部署指南 (~803 tok)
 - `PERFORMANCE.md` — 数据库性能优化指南 (~455 tok)
 - `PROJECT-SUMMARY.md` — 毕业生离校申请审批系统 - 项目总结 (~29851 tok)

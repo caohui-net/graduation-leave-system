@@ -165,30 +165,10 @@
         // Filter based on role perspective
         if (currentFilter !== 'all') {
             const beforeFilter = accumulatedResults.length;
-            // Dorm manager / Counselor: filter by their own approval decision
-            if (currentUser && (currentUser.role === 'dorm_manager' || currentUser.role === 'counselor')) {
-                accumulatedResults = accumulatedResults.filter(approval => {
-                    return approval.decision === currentFilter;
-                });
-            }
-            // Dean / Admin: filter by application overall status
-            else {
-                accumulatedResults = accumulatedResults.filter(approval => {
-                    const appStatus = approval.application?.status || '';
-                    console.log('[DEBUG] Admin filter:', appStatus, 'target:', currentFilter, 'match:',
-                        (currentFilter === 'pending' && appStatus.startsWith('pending_')) ||
-                        (currentFilter === 'approved' && appStatus === 'approved') ||
-                        (currentFilter === 'rejected' && appStatus === 'rejected'));
-                    if (currentFilter === 'pending') {
-                        return appStatus.startsWith('pending_');
-                    } else if (currentFilter === 'approved') {
-                        return appStatus === 'approved';
-                    } else if (currentFilter === 'rejected') {
-                        return appStatus === 'rejected';
-                    }
-                    return true;
-                });
-            }
+            // All roles: filter by approval.decision (consistent with statistics API)
+            accumulatedResults = accumulatedResults.filter(approval => {
+                return approval.decision === currentFilter;
+            });
             console.log('[DEBUG] Filter result:', beforeFilter, '→', accumulatedResults.length, 'role:', currentUser?.role, 'filter:', currentFilter);
         }
 
@@ -228,27 +208,16 @@
             displayRecords.forEach(approval => {
                 const application = approval.application || {};
 
-                // Display status based on role perspective
-                let step, tagCls, statusForCheckbox;
-                if (currentUser && (currentUser.role === 'dorm_manager' || currentUser.role === 'counselor')) {
-                    // Dorm manager / Counselor: show their own approval decision
-                    const decision = approval.decision || 'pending';
-                    step = decisionMap[decision] ? decisionMap[decision].text : decision;
-                    tagCls = decisionMap[decision] ? decisionMap[decision].cls : 'tag-pending';
-                    statusForCheckbox = decision;
-                } else {
-                    // Dean / Admin: show application overall status
-                    const appStatus = application.status || 'pending';
-                    step = statusMap[appStatus] ? statusMap[appStatus].text : appStatus;
-                    tagCls = statusMap[appStatus] ? statusMap[appStatus].cls : 'tag-pending';
-                    statusForCheckbox = appStatus;
-                }
+                // Display approval decision (consistent with filter and statistics)
+                const decision = approval.decision || 'pending';
+                const step = decisionMap[decision] ? decisionMap[decision].text : decision;
+                const tagCls = decisionMap[decision] ? decisionMap[decision].cls : 'tag-pending';
 
                 const safeAppId = escapeHtml(application.id || approval.id).substring(0,8);
                 const safeStudentName = escapeHtml(application.student_name || '-');
                 const safeStudentId = escapeHtml(application.student_id || '-');
 
-                const showCheckbox = (statusForCheckbox === 'pending' || statusForCheckbox.startsWith('pending_')) && (currentUser?.role === 'dorm_manager' || currentUser?.role === 'counselor');
+                const showCheckbox = decision === 'pending' && (currentUser?.role === 'dorm_manager' || currentUser?.role === 'counselor');
                 htmlStr += '<div class="card" style="cursor: pointer; display: flex; gap: 12px;">' +
                   (showCheckbox ? '<input type="checkbox" class="approval-checkbox" data-approval-id="' + approval.id + '" onclick="event.stopPropagation(); toggleBatchBar();" style="width: 20px; height: 20px; cursor: pointer;">' : '') +
                   '<div style="flex: 1;" onclick="openApproval(\'' + approval.id + '\')">' +
@@ -262,10 +231,7 @@
                   '</div>';
 
                 // Show approver and decision time for completed approvals
-                const isCompleted = (currentUser && (currentUser.role === 'dorm_manager' || currentUser.role === 'counselor'))
-                    ? (approval.decision === 'approved' || approval.decision === 'rejected')
-                    : (statusForCheckbox === 'approved' || statusForCheckbox === 'rejected');
-                if (isCompleted) {
+                if (decision === 'approved' || decision === 'rejected') {
                     // Extract real approver name from comment if auto-completed
                     let realApprover = approval.approver_name || '-';
                     if (approval.comment && approval.comment.includes('已由')) {

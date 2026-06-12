@@ -154,11 +154,21 @@ def mobile_login(request):
     3. 生成JWT token
     4. 返回token和用户信息
     """
-    # 1. 验证请求参数
-    authorization = request.data.get('authorization')
+    # 1. 验证请求参数 - 兼容saas_wap_token
+    authorization = request.data.get('authorization') or request.data.get('saas_wap_token')
     user_id = request.data.get('user_id')
     real_name = request.data.get('real_name', '')
     identity_name = request.data.get('identity_name', '学生')
+
+    # saas_wap_token格式: S10405开头+其他字符+用户ID（如19970545）
+    # 尝试从token提取user_id
+    if not user_id and authorization:
+        # 从saas_wap_token末尾提取可能的学号/工号
+        import re
+        match = re.search(r'(\d{6,10})$', authorization)
+        if match:
+            user_id = match.group(1)
+            logger.info(f"Extracted user_id from token: {user_id}")
 
     if not authorization or not user_id:
         return Response({'error': '缺少authorization或user_id参数'},

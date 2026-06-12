@@ -46,17 +46,14 @@
   </div>
 
   <script>
-    // 青橄榄SSO回调 - 移动端使用saas_wap_token流程
+    // 青橄榄SSO回调 - 移动端简化流程（不调用青橄榄API）
     window.onload = function() {
       // 获取青橄榄回调参数
       const params = new URLSearchParams(window.location.search);
       const saas_wap_token = params.get('saas_wap_token');
       const tenantCode = params.get('tenantCode') || 'S10405';
 
-      // 调试信息
-      console.log('移动端callback收到:');
-      console.log('- saas_wap_token:', saas_wap_token);
-      console.log('- tenantCode:', tenantCode);
+      console.log('移动端callback收到:', saas_wap_token);
 
       if (!saas_wap_token) {
         document.getElementById('message').textContent = '错误：未收到saas_wap_token';
@@ -65,47 +62,26 @@
 
       document.getElementById('message').textContent = '正在登录...';
 
-      // 调用后端mobile_saas_login接口处理
-      fetch('http://218.75.196.218:7787/api/sso/qingganlian/mobile/saas-login', {
+      // 使用mobile/login简化接口（不调用青橄榄API）
+      fetch('http://218.75.196.218:7787/api/sso/qingganlian/mobile/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          saas_wap_token: saas_wap_token,
-          tenant_code: tenantCode
+          authorization: saas_wap_token,
+          user_id: null  // 后端从token提取
         })
       })
-      .then(res => {
-        console.log('Response status:', res.status);
-        console.log('Response Content-Type:', res.headers.get('content-type'));
-
-        // 先获取响应文本
-        return res.text().then(text => {
-          console.log('Response body:', text.substring(0, 500));
-
-          // 尝试解析为JSON
-          try {
-            const data = JSON.parse(text);
-            return { ok: res.ok, status: res.status, data: data };
-          } catch (e) {
-            console.error('JSON parse error:', e);
-            return { ok: false, status: res.status, error: 'Invalid JSON', text: text };
-          }
-        });
-      })
+      .then(res => res.text().then(text => ({ ok: res.ok, text })))
       .then(result => {
-        if (result.ok && result.data && result.data.token) {
-          // 登录成功
-          const userInfoStr = encodeURIComponent(JSON.stringify(result.data.user));
-          window.location.href = `http://218.75.196.218:7788/sso-receiver.html?token=${result.data.token}&user_info=${userInfoStr}`;
+        const data = JSON.parse(result.text);
+        if (result.ok && data.token) {
+          const userInfoStr = encodeURIComponent(JSON.stringify(data.user));
+          window.location.href = `http://218.75.196.218:7788/sso-receiver.html?token=${data.token}&user_info=${userInfoStr}`;
         } else {
-          // 登录失败
-          const errMsg = result.data?.error || result.error || result.text?.substring(0, 200) || '未知错误';
-          document.getElementById('message').textContent = '登录失败: ' + errMsg;
-          console.error('Login failed:', result);
+          document.getElementById('message').textContent = '登录失败: ' + (data.error || '未知错误');
         }
       })
       .catch(err => {
-        console.error('Fetch error:', err);
         document.getElementById('message').textContent = '请求失败: ' + err.message;
       });
     };

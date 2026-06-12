@@ -315,7 +315,10 @@
         }
         attachmentsHtml += '</div>';
 
-            container.innerHTML = basicInfoHtml + approvalsHtml + attachmentsHtml;
+        // Back button
+        const backButtonHtml = '<div style="padding: 20px;"><button class="btn-outline" onclick="showScreen(1); loadApprovals();" style="width: 100%;">← 返回</button></div>';
+
+        container.innerHTML = basicInfoHtml + approvalsHtml + attachmentsHtml + backButtonHtml;
             console.log('[DEBUG] Detail rendered successfully');
         } catch (e) {
             console.error('[ERROR] showApplicationDetail failed:', e);

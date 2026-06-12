@@ -77,7 +77,7 @@ def mobile_saas_login(request):
 
         # 3. 创建用户
         with transaction.atomic():
-            user, created = User.objects.select_for_update().get_or_create(
+            user, created = User.objects.get_or_create(
                 user_id=user_id_str,
                 defaults={
                     'name': real_name or user_id_str,

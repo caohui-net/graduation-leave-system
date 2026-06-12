@@ -60,7 +60,7 @@ def sso_callback(request):
         # 创建/获取用户
         # SSO只负责认证，用户数据以数据库为准，不自动同步
         with transaction.atomic():
-            user, created = User.objects.select_for_update().get_or_create(
+            user, created = User.objects.get_or_create(
                 user_id=username,
                 defaults={
                     'name': real_name or username,

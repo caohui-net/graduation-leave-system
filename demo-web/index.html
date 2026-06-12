@@ -321,7 +321,7 @@
 
     function showAdminFiltersUI() {
         const adminFiltersEl = document.getElementById('admin-filters');
-        if (adminFiltersEl && currentUser && (currentUser.role === 'dean' || currentUser.role === 'admin')) {
+        if (adminFiltersEl && currentUser && currentUser.role !== 'student') {
             adminFiltersEl.style.display = 'block';
         }
     }

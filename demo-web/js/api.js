@@ -152,6 +152,8 @@ async function apiGetApplications() {
 async function apiGetApprovals(decision = 'pending', limit = 20, offset = 0, filters = {}) {
     try {
         let url = API_BASE_URL + '/approvals/?decision=' + decision + '&limit=' + limit + '&offset=' + offset;
+        if (filters.student_id) url += '&student_id=' + encodeURIComponent(filters.student_id);
+        if (filters.student_name) url += '&student_name=' + encodeURIComponent(filters.student_name);
         if (filters.class_id) url += '&class_id=' + encodeURIComponent(filters.class_id);
         if (filters.building) url += '&building=' + encodeURIComponent(filters.building);
         const response = await fetch(url, {

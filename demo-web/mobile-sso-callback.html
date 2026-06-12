@@ -57,16 +57,13 @@
       console.log('移动端callback收到:');
       console.log('- saas_wap_token:', saas_wap_token);
       console.log('- tenantCode:', tenantCode);
-      console.log('- Full URL:', window.location.href);
 
       if (!saas_wap_token) {
         document.getElementById('message').textContent = '错误：未收到saas_wap_token';
         return;
       }
 
-      // 显示调试信息
-      document.getElementById('message').textContent =
-        '移动端token: ' + saas_wap_token.substring(0, 20) + '...';
+      document.getElementById('message').textContent = '正在登录...';
 
       // 调用后端mobile_saas_login接口处理
       fetch('http://218.75.196.218:7787/api/sso/qingganlian/mobile-saas-login', {
@@ -77,19 +74,39 @@
           tenant_code: tenantCode
         })
       })
-      .then(res => res.json())
-      .then(data => {
-        if (data.token && data.user) {
-          // 登录成功，跳转到sso-receiver保存token
-          const userInfoStr = encodeURIComponent(JSON.stringify(data.user));
-          window.location.href = `http://218.75.196.218:7788/sso-receiver.html?token=${data.token}&user_info=${userInfoStr}`;
+      .then(res => {
+        console.log('Response status:', res.status);
+        console.log('Response Content-Type:', res.headers.get('content-type'));
+
+        // 先获取响应文本
+        return res.text().then(text => {
+          console.log('Response body:', text.substring(0, 500));
+
+          // 尝试解析为JSON
+          try {
+            const data = JSON.parse(text);
+            return { ok: res.ok, status: res.status, data: data };
+          } catch (e) {
+            console.error('JSON parse error:', e);
+            return { ok: false, status: res.status, error: 'Invalid JSON', text: text };
+          }
+        });
+      })
+      .then(result => {
+        if (result.ok && result.data && result.data.token) {
+          // 登录成功
+          const userInfoStr = encodeURIComponent(JSON.stringify(result.data.user));
+          window.location.href = `http://218.75.196.218:7788/sso-receiver.html?token=${result.data.token}&user_info=${userInfoStr}`;
         } else {
-          document.getElementById('message').textContent = '登录失败: ' + (data.error || '未知错误');
+          // 登录失败
+          const errMsg = result.data?.error || result.error || result.text?.substring(0, 200) || '未知错误';
+          document.getElementById('message').textContent = '登录失败: ' + errMsg;
+          console.error('Login failed:', result);
         }
       })
       .catch(err => {
-        console.error('登录请求失败:', err);
-        document.getElementById('message').textContent = '登录请求失败: ' + err.message;
+        console.error('Fetch error:', err);
+        document.getElementById('message').textContent = '请求失败: ' + err.message;
       });
     };
   </script>

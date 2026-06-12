@@ -25,6 +25,8 @@ import logging
     description='获取当前用户的申请列表（学生/辅导员/学工部）',
     parameters=[
         OpenApiParameter('status', str, description='状态过滤'),
+        OpenApiParameter('student_name', str, description='学生姓名模糊查询'),
+        OpenApiParameter('student_id', str, description='学号精确查询'),
         OpenApiParameter('limit', int, description='每页数量（默认20）'),
         OpenApiParameter('offset', int, description='偏移量（默认0）'),
     ],
@@ -99,6 +101,16 @@ def list_applications(request):
     status_param = request.query_params.get('status')
     if status_param:
         queryset = queryset.filter(status=status_param)
+
+    # Additional query filters (only for dean/admin)
+    if user.role in [UserRole.DEAN, UserRole.ADMIN]:
+        student_name = request.query_params.get('student_name')
+        if student_name:
+            queryset = queryset.filter(student_name__icontains=student_name)
+
+        student_id = request.query_params.get('student_id')
+        if student_id:
+            queryset = queryset.filter(student__user_id=student_id)
 
     # Sort by created_at DESC
     queryset = queryset.order_by('-created_at', '-application_id')
@@ -286,3 +298,52 @@ def get_or_create_draft(request):
     )
 
     return Response(ApplicationSerializer(draft).data, status=status.HTTP_201_CREATED)
+
+
+@extend_schema(
+    operation_id='applications_stats',
+    summary='获取申请统计',
+    description='学工部获取各状态申请统计数据',
+    responses={
+        200: {
+            'type': 'object',
+            'properties': {
+                'total': {'type': 'integer'},
+                'draft': {'type': 'integer'},
+                'pending_dorm_manager': {'type': 'integer'},
+                'pending_counselor': {'type': 'integer'},
+                'approved': {'type': 'integer'},
+                'rejected': {'type': 'integer'}
+            }
+        },
+        403: ErrorResponseSerializer,
+    },
+    tags=['申请']
+)
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def get_stats(request):
+    if request.user.role not in [UserRole.DEAN, UserRole.ADMIN]:
+        return Response(
+            {'error': {'code': 'FORBIDDEN', 'message': '仅学工部/管理员可查看统计'}},
+            status=status.HTTP_403_FORBIDDEN
+        )
+
+    from django.db.models import Count
+
+    stats = Application.objects.values('status').annotate(count=Count('status'))
+
+    result = {
+        'total': Application.objects.count(),
+        'draft': 0,
+        'pending_dorm_manager': 0,
+        'pending_counselor': 0,
+        'approved': 0,
+        'rejected': 0
+    }
+
+    for item in stats:
+        status_key = item['status']
+        result[status_key] = item['count']
+
+    return Response(result)

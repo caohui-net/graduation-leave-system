@@ -187,6 +187,9 @@
   </div>
 
   <script>
+    // API基址配置
+    const API_BASE_URL = `http://${window.location.hostname}:7787/api`;
+
     // 加载用户信息
     function loadUserInfo() {
       const token = localStorage.getItem('auth_token');
@@ -216,11 +219,29 @@
     // 加载统计数据
     async function loadStatistics() {
       const token = localStorage.getItem('auth_token');
+      if (!token) {
+        console.error('未找到token');
+        return;
+      }
       try {
-        const response = await fetch('http://218.75.196.218:7787/api/approvals/statistics/', {
+        console.log('正在加载统计数据...');
+        const response = await fetch(API_BASE_URL + '/approvals/statistics/', {
           headers: { 'Authorization': `Bearer ${token}` }
         });
+        console.log('统计API响应状态:', response.status);
+
+        if (!response.ok) {
+          const errorText = await response.text();
+          console.error('统计API错误:', response.status, errorText);
+          document.getElementById('statTotal').textContent = '错误';
+          document.getElementById('statPending').textContent = '错误';
+          document.getElementById('statApproved').textContent = '错误';
+          document.getElementById('statRejected').textContent = '错误';
+          return;
+        }
+
         const data = await response.json();
+        console.log('统计数据:', data);
 
         document.getElementById('statTotal').textContent = data.total || 0;
         document.getElementById('statPending').textContent = data.pending || 0;
@@ -228,6 +249,11 @@
         document.getElementById('statRejected').textContent = data.rejected || 0;
       } catch (error) {
         console.error('加载统计数据失败:', error);
+        // 显示错误提示
+        document.getElementById('statTotal').textContent = '错误';
+        document.getElementById('statPending').textContent = '错误';
+        document.getElementById('statApproved').textContent = '错误';
+        document.getElementById('statRejected').textContent = '错误';
       }
     }
 

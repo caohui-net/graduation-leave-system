@@ -31,8 +31,10 @@
             let filtered = data.results;
             if (currentFilter === 'pending') {
                 filtered = data.results.filter(a => a.status && a.status.startsWith('pending_'));
-            } else if (currentFilter === 'decided') {
-                filtered = data.results.filter(a => a.status === 'approved' || a.status === 'rejected');
+            } else if (currentFilter === 'approved') {
+                filtered = data.results.filter(a => a.status === 'approved');
+            } else if (currentFilter === 'rejected') {
+                filtered = data.results.filter(a => a.status === 'rejected');
             }
 
             let htmlStr = '';
@@ -255,7 +257,7 @@
         currentFilter = filter;
 
         // Update tab active state
-        const tabs = document.querySelectorAll('#approval-tabs .nav-tab');
+        const tabs = document.querySelectorAll('#approval-tabs .filter-tab');
         tabs.forEach((tab, index) => {
             tab.classList.remove('active');
             if ((filter === 'all' && index === 0) ||
@@ -629,7 +631,12 @@
 
         try {
             const ok = await apiApprove(currentApprovalId, comment);
-            if(ok) { showToast('审批通过', 'success'); showScreen(1); loadApprovals(); }
+            if(ok) {
+              showToast('审批通过', 'success');
+              showScreen(1);
+              loadApprovals();
+              loadApprovalStatistics();
+            }
             else { showToast('审批失败', 'error'); }
         } finally {
             btn.disabled = false;
@@ -648,7 +655,12 @@
 
         try {
             const ok = await apiReject(currentApprovalId, comment);
-            if(ok) { showToast('审批拒绝', 'success'); showScreen(1); loadApprovals(); }
+            if(ok) {
+              showToast('审批拒绝', 'success');
+              showScreen(1);
+              loadApprovals();
+              loadApprovalStatistics();
+            }
             else { showToast('审批失败', 'error'); }
         } finally {
             btn.disabled = false;
@@ -934,40 +946,94 @@
       top: 0;
       z-index: 10;
     }
-    .nav-tab {
+
+    /* 筛选标签样式（紧凑版 - Gemini方案） */
+    .filter-tabs {
+      display: flex;
+      gap: 0;
+      background: white;
+      margin-bottom: 0;
+    }
+    .filter-tab {
       flex: 1;
-      text-align: center;
-      padding: 12px 0;
-      font-size: 14px;
+      min-width: 0;
+      height: 32px;
+      padding: 0;
+      font-size: 10px;
+      line-height: 32px;
+      border: 1px solid #e0e0e0;
+      border-right: none;
+      background: white;
       color: #666;
       cursor: pointer;
+      transition: all 0.15s;
       position: relative;
-      border: none;
-      background: none;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
     }
-    @media (max-width: 375px) {
+    .filter-tab::before {
+      content: '';
+      position: absolute;
+      top: -4px;
+      bottom: -4px;
+      left: 0;
+      right: 0;
+      z-index: 1;
+    }
+    .filter-tab:first-child {
+      border-radius: 4px 0 0 4px;
+    }
+    .filter-tab:last-child {
+      border-right: 1px solid #e0e0e0;
+      border-radius: 0 4px 4px 0;
+    }
+    .filter-tab.active {
+      background: #1976d2;
+      color: white;
+      border-color: #1976d2;
+      z-index: 2;
+    }
+    .filter-tab:active {
+      transform: scale(0.98);
+    }
+
+    .nav-tab {
+      flex: 1;
+      text-align: center;
+      padding: 0 2px;
+      min-height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      color: #666;
+      cursor: pointer;
+      position: relative;
+      border: 1px solid #e0e0e0;
+      background: #f8f8f8;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    @media (max-width: 480px) {
       .nav-tab {
-        font-size: 12px;
-        padding: 10px 0;
+        font-size: 11px;
+      }
+    }
+    @media (max-width: 360px) {
+      .nav-tab {
+        font-size: 11px;
       }
     }
     .nav-tab.active {
-      color: var(--primary-color);
+      color: white;
       font-weight: 600;
+      background: var(--primary-color);
+      border-color: var(--primary-color);
     }
     .nav-tab.active::after {
-      content: '';
-      position: absolute;
-      bottom: 0;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 30px;
-      height: 2px;
-      background: var(--primary-color);
-      border-radius: 1px;
+      display: none;
     }
 
     /* 响应式：桌面端Tab导航优化 */
@@ -983,6 +1049,40 @@
         width: 50px;
         height: 3px;
       }
+    }
+
+    /* 统计卡片样式 */
+    .stats-container {
+      background: #f5f5f5;
+      padding: 12px 10px;
+      display: none;
+    }
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+    }
+    @media (min-width: 768px) {
+      .stats-grid {
+        grid-template-columns: repeat(4, 1fr);
+      }
+    }
+    .stat-card {
+      background: white;
+      padding: 12px;
+      border-radius: 6px;
+      text-align: center;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+    .stat-label {
+      font-size: 12px;
+      color: #999;
+      margin-bottom: 6px;
+    }
+    .stat-value {
+      font-size: 24px;
+      font-weight: bold;
+      color: #333;
     }
 
     /* 附件上传区域样式 */
@@ -1155,12 +1255,34 @@
       </div>
     </div>
 
+    <!-- 统计卡片 -->
+    <div class="stats-container" id="approval-stats">
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-label">总审批数</div>
+          <div class="stat-value" id="stat-total">-</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">待审批</div>
+          <div class="stat-value" id="stat-pending">-</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">已通过</div>
+          <div class="stat-value" id="stat-approved">-</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">已驳回</div>
+          <div class="stat-value" id="stat-rejected">-</div>
+        </div>
+      </div>
+    </div>
+
     <!-- Tab切换 -->
-    <div style="background: white; display: flex; border-bottom: 1px solid #f0f0f0;" id="approval-tabs">
-      <div class="nav-tab active" style="flex: 1;" onclick="filterApprovals('all')">全部</div>
-      <div class="nav-tab" style="flex: 1;" onclick="filterApprovals('pending')">待审批</div>
-      <div class="nav-tab" style="flex: 1;" onclick="filterApprovals('approved')">已通过</div>
-      <div class="nav-tab" style="flex: 1;" onclick="filterApprovals('rejected')">已驳回</div>
+    <div class="filter-tabs" id="approval-tabs">
+      <button class="filter-tab active" onclick="filterApprovals('all')" aria-label="全部请假">📋全部</button>
+      <button class="filter-tab" onclick="filterApprovals('pending')" aria-label="待审批">⏳待审</button>
+      <button class="filter-tab" onclick="filterApprovals('approved')" aria-label="已通过">✓通过</button>
+      <button class="filter-tab" onclick="filterApprovals('rejected')" aria-label="已驳回">✗驳回</button>
     </div>
 
     <div style="padding: 10px;" id="approval-list-container">
@@ -1382,6 +1504,46 @@
       const exportBtn = document.getElementById('export-btn');
       if (exportBtn) {
         exportBtn.style.display = (isDean || isAdmin) ? 'block' : 'none';
+      }
+
+      // Show/hide statistics for non-student roles
+      const statsContainer = document.getElementById('approval-stats');
+      if (statsContainer) {
+        statsContainer.style.display = isStudent ? 'none' : 'block';
+      }
+
+      // Load statistics for non-student roles
+      if (!isStudent) {
+        loadApprovalStatistics();
+      }
+    }
+
+    async function loadApprovalStatistics() {
+      if (!currentToken) return;
+      try {
+        const response = await fetch(API_BASE_URL + '/approvals/statistics/', {
+          headers: { 'Authorization': `Bearer ${currentToken}` }
+        });
+        if (!response.ok) {
+          console.error('统计API错误:', response.status);
+          document.getElementById('stat-total').textContent = '错误';
+          document.getElementById('stat-pending').textContent = '错误';
+          document.getElementById('stat-approved').textContent = '错误';
+          document.getElementById('stat-rejected').textContent = '错误';
+          return;
+        }
+        const data = await response.json();
+        console.log('统计数据:', data);
+        document.getElementById('stat-total').textContent = data.total || 0;
+        document.getElementById('stat-pending').textContent = data.pending || 0;
+        document.getElementById('stat-approved').textContent = data.approved || 0;
+        document.getElementById('stat-rejected').textContent = data.rejected || 0;
+      } catch (error) {
+        console.error('加载统计失败:', error);
+        document.getElementById('stat-total').textContent = '错误';
+        document.getElementById('stat-pending').textContent = '错误';
+        document.getElementById('stat-approved').textContent = '错误';
+        document.getElementById('stat-rejected').textContent = '错误';
       }
     }
 

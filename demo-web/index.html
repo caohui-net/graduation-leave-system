@@ -3,6 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
   <title>毕业离校申请系统 - UI Demo</title>
   <link rel="stylesheet" href="css/global.css">
   <script src="js/api.js?v=20260612"></script>
@@ -52,7 +55,7 @@
             filtered.forEach(app => {
                 const statusDisplay = getStatusDisplay(app.status);
                 const appIdDisplay = app.application_id ? app.application_id.substring(0,8) : '未知';
-                htmlStr += '<div class="card" style="cursor: pointer;" onclick="showApplicationDetail(\'' + app.application_id + '\')">' +
+                htmlStr += '<div class="card" style="cursor: pointer;" onclick="openApplication(\'' + app.application_id + '\')">' +
                   '<div class="flex-row justify-between align-center" style="margin-bottom: 8px;">' +
                     '<span style="font-size: 16px; font-weight: bold;">申请 ' + appIdDisplay + '</span>' +
                     '<span class="tag ' + statusDisplay.class + '">' + statusDisplay.text + '</span>' +
@@ -79,226 +82,248 @@
         if (!append) {
             approvalOffset = 0;
             approvalHasMore = true;
-            deanDisplayedApps.clear(); // Clear deduplication set on fresh load
         }
 
-        // Always fetch all records from API, filter by application.status on frontend
-        let decision = 'all';
+        // Map currentFilter to Application status
+        // BUT: if field filters are active, ignore status filter to show all matching records
+        let status = null;
+        const hasFieldFilter = adminFilters && Object.keys(adminFilters).length > 0;
+
+        if (!hasFieldFilter) {
+            // No field filter: apply status filter based on tab
+            if (currentFilter === 'pending') {
+                status = null; // Will filter after fetch
+            } else if (currentFilter === 'approved') {
+                status = 'approved';
+            } else if (currentFilter === 'rejected') {
+                status = 'rejected';
+            }
+        }
+        // If field filter active: status=null, fetch all statuses
 
         const listContainer = document.getElementById('approval-list-container');
         const loadMoreBtn = document.getElementById('load-more-approvals');
 
-        const TARGET_COUNT = 20; // Target number of deduplicated records to display
-        const BATCH_SIZE = 20;   // API request batch size
-        const MAX_ITERATIONS = 10; // Safety limit to prevent infinite loops
-        let accumulatedResults = [];
-        let currentOffset = approvalOffset;
-        let totalCount = 0;
-        let iterations = 0;
+        const BATCH_SIZE = 20;
+        const data = await apiGetApplicationsForAdmin(status, BATCH_SIZE, approvalOffset, adminFilters);
+        console.log('[DEBUG] apiGetApplicationsForAdmin returned:', data, 'offset:', approvalOffset);
 
-        // Loop until we have TARGET_COUNT deduplicated records or no more data
-        while (accumulatedResults.length < TARGET_COUNT && iterations < MAX_ITERATIONS) {
-            iterations++;
-            const data = await apiGetApprovals(decision, BATCH_SIZE, currentOffset, adminFilters);
-            console.log('[DEBUG] apiGetApprovals returned:', data, 'offset:', currentOffset);
-
-            if (!data || !data.results || data.results.length === 0) {
-                // No more data from API
-                break;
-            }
-
-            totalCount = data.count;
-
-            // No front-end filtering needed - API returns correct decision
-            let filtered = data.results;
-
-            // Deduplicate by application_id for all roles (one approval per application)
-            // Priority: keep records matching current filter
-            if (currentUser) {
-                const beforeCount = filtered.length;
-                const appRecords = new Map(); // application_id -> best matching approval
-                const orphanApprovals = [];
-
-                filtered.forEach(approval => {
-                    const appId = approval.application?.id;
-                    if (appId) {
-                        const existing = appRecords.get(appId);
-                        if (!existing) {
-                            appRecords.set(appId, approval);
-                            console.log('[DEBUG] Dedup new:', appId, 'decision:', approval.decision);
-                        } else {
-                            // Keep record that matches current filter (based on approval.decision)
-                            const decision = approval.decision || '';
-                            const existingDecision = existing.decision || '';
-                            console.log('[DEBUG] Dedup duplicate:', appId, 'existing:', existingDecision, 'new:', decision, 'filter:', currentFilter);
-
-                            let shouldReplace = false;
-                            if (currentFilter === 'approved' && decision === 'approved' && existingDecision !== 'approved') {
-                                shouldReplace = true;
-                            } else if (currentFilter === 'rejected' && decision === 'rejected' && existingDecision !== 'rejected') {
-                                shouldReplace = true;
-                            } else if (currentFilter === 'pending' && decision === 'pending' && existingDecision !== 'pending') {
-                                shouldReplace = true;
-                            }
-
-                            if (shouldReplace) {
-                                console.log('[DEBUG] Dedup replace:', appId, existingDecision, '→', decision);
-                                appRecords.set(appId, approval);
-                            }
-                        }
-                    } else {
-                        orphanApprovals.push(approval);
-                    }
-                });
-
-                const newUniqueRecords = Array.from(appRecords.values());
-                filtered = newUniqueRecords.concat(orphanApprovals);
-                console.log('[DEBUG] Dedup: before', beforeCount, '→ after', filtered.length, 'unique apps:', appRecords.size);
-            }
-
-            accumulatedResults = accumulatedResults.concat(filtered);
-            currentOffset += BATCH_SIZE;
-
-            // Stop if we've reached the end of available data
-            if (currentOffset >= totalCount) {
-                break;
-            }
+        if (!data || !data.results) {
+            return;
         }
 
-        // Filter based on role perspective
-        if (currentFilter !== 'all') {
-            const beforeFilter = accumulatedResults.length;
-            // All roles: filter by approval.decision (consistent with statistics API)
-            accumulatedResults = accumulatedResults.filter(approval => {
-                return approval.decision === currentFilter;
-            });
-            console.log('[DEBUG] Filter result:', beforeFilter, '→', accumulatedResults.length, 'role:', currentUser?.role, 'filter:', currentFilter);
+        let results = data.results;
+        const totalCount = data.count;
+
+        // Remove client-side status filtering - let renderApplications handle it after deduplication
+
+        approvalOffset += BATCH_SIZE;
+        approvalHasMore = approvalOffset < totalCount;
+
+        if (!append) {
+            listContainer.innerHTML = '';
         }
 
-        // Render accumulated results (up to TARGET_COUNT)
-        const displayRecords = accumulatedResults.slice(0, TARGET_COUNT);
-        console.log('[DEBUG] Displaying', displayRecords.length, 'records, accumulated', accumulatedResults.length);
+        renderApplications(results);
 
-        // CRITICAL: Only mark as displayed AFTER rendering, not before
-        // This fixes data loss bug where records beyond TARGET_COUNT were marked displayed but never shown
-        if (currentUser) {
-            displayRecords.forEach(approval => {
-                const appId = approval.application?.id;
-                if (appId && !deanDisplayedApps.has(appId)) {
-                    deanDisplayedApps.add(appId);
-                }
-            });
+        if (approvalHasMore) {
+            loadMoreBtn.style.display = 'block';
+        } else {
+            loadMoreBtn.style.display = 'none';
         }
 
-        // Status map based on backend expectations
+        if (!append) {
+            showAdminFiltersUI();
+        }
+    }
+
+    function renderApplications(applications) {
+        const listContainer = document.getElementById('approval-list-container');
+
+        // Deduplicate by student_id: prioritize final states (rejected > approved > pending)
+        const statusPriority = { 'rejected': 3, 'approved': 2, 'pending_counselor': 1, 'pending_dorm_manager': 1 };
+        const studentMap = new Map();
+
+        applications.forEach(app => {
+            const existing = studentMap.get(app.student_id);
+            const currentPriority = statusPriority[app.status] || 0;
+            const existingPriority = existing ? (statusPriority[existing.status] || 0) : -1;
+
+            if (!existing || currentPriority > existingPriority ||
+                (currentPriority === existingPriority && new Date(app.created_at) > new Date(existing.created_at))) {
+                studentMap.set(app.student_id, app);
+            }
+        });
+        let uniqueApps = Array.from(studentMap.values());
+
+        // Apply currentFilter after deduplication
+        if (currentFilter === 'pending') {
+            uniqueApps = uniqueApps.filter(app =>
+                app.status === 'pending_dorm_manager' || app.status === 'pending_counselor'
+            );
+        } else if (currentFilter === 'approved') {
+            uniqueApps = uniqueApps.filter(app => app.status === 'approved');
+        } else if (currentFilter === 'rejected') {
+            uniqueApps = uniqueApps.filter(app => app.status === 'rejected');
+        }
+        // currentFilter === 'all': no additional filter
+
+        // Status display map
         const statusMap = {
             'pending_dorm_manager': { text: '待宿管审批', cls: 'tag-pending' },
             'pending_counselor': { text: '待辅导员审批', cls: 'tag-pending' },
             'approved': { text: '已通过', cls: 'tag-approved' },
-            'rejected': { text: '已拒绝', cls: 'tag-rejected' },
-            'failed': { text: '提交失败', cls: 'tag-rejected' }
+            'rejected': { text: '已驳回', cls: 'tag-rejected' }
         };
 
-        const decisionMap = {
-            'pending': { text: '待审批', cls: 'tag-pending' },
-            'approved': { text: '已通过', cls: 'tag-approved' },
-            'rejected': { text: '已拒绝', cls: 'tag-rejected' }
-        };
+        uniqueApps.forEach(app => {
+            console.log('[DEBUG] renderApplications app:', app, 'application_id type:', typeof app.application_id, 'value:', app.application_id);
+            const statusInfo = statusMap[app.status] || { text: app.status, cls: 'tag-pending' };
+            const appId = app.application_id || app.id || (app.application ? app.application.id : null);
+            if (!appId || typeof appId !== 'string') {
+                console.error('[ERROR] Invalid application_id:', appId, 'app:', app);
+                return;
+            }
+            const safeAppId = escapeHtml(appId).substring(0,8);
+            const safeStudentName = escapeHtml(app.student_name || '-');
+            const safeStudentId = escapeHtml(app.student_id || '-');
 
-        if (displayRecords.length > 0) {
-            let htmlStr = '';
+            const card = document.createElement('div');
+            card.className = 'card';
+            card.style.cursor = 'pointer';
+            card.onclick = () => openApplication(appId);
 
-            displayRecords.forEach(approval => {
-                const application = approval.application || {};
+            card.innerHTML = `
+                <div class="flex-row justify-between align-center" style="margin-bottom: 8px;">
+                    <span style="font-size: 16px; font-weight: bold;">申请 ${safeAppId}</span>
+                    <span class="tag ${statusInfo.cls}">${statusInfo.text}</span>
+                </div>
+                <div style="margin-bottom: 4px;">
+                    <span style="font-size: 14px; color: #999; margin-right: 8px;">学生:</span>
+                    <span style="font-size: 14px; color: #333;">${safeStudentName} (${safeStudentId})</span>
+                </div>
+                <div style="font-size: 12px; color: #999;">
+                    创建: ${app.created_at ? new Date(app.created_at).toLocaleString('zh-CN') : '-'}
+                </div>
+            `;
 
-                // Display approval decision (consistent with filter and statistics)
-                const decision = approval.decision || 'pending';
-                const step = decisionMap[decision] ? decisionMap[decision].text : decision;
-                const tagCls = decisionMap[decision] ? decisionMap[decision].cls : 'tag-pending';
+            listContainer.appendChild(card);
+        });
+    }
 
-                const safeAppId = escapeHtml(application.id || approval.id).substring(0,8);
-                const safeStudentName = escapeHtml(application.student_name || '-');
-                const safeStudentId = escapeHtml(application.student_id || '-');
-
-                const showCheckbox = decision === 'pending' && (currentUser?.role === 'dorm_manager' || currentUser?.role === 'counselor');
-                htmlStr += '<div class="card" style="cursor: pointer; display: flex; gap: 12px;">' +
-                  (showCheckbox ? '<input type="checkbox" class="approval-checkbox" data-approval-id="' + approval.id + '" onclick="event.stopPropagation(); toggleBatchBar();" style="width: 20px; height: 20px; cursor: pointer;">' : '') +
-                  '<div style="flex: 1;" onclick="openApproval(\'' + approval.id + '\')">' +
-                    '<div class="flex-row justify-between align-center" style="margin-bottom: 8px;">' +
-                      '<span style="font-size: 16px; font-weight: bold;">申请 ' + safeAppId + '</span>' +
-                      '<span class="tag ' + tagCls + '">' + step + '</span>' +
-                    '</div>' +
-                  '<div style="margin-bottom: 4px;">' +
-                    '<span style="font-size: 14px; color: #999; margin-right: 8px;">学生:</span>' +
-                    '<span style="font-size: 14px; color: #333;">' + safeStudentName + ' (' + safeStudentId + ')</span>' +
-                  '</div>';
-
-                // Show approver and decision time for completed approvals
-                if (decision === 'approved' || decision === 'rejected') {
-                    // Extract real approver name from comment if auto-completed
-                    let realApprover = approval.approver_name || '-';
-                    if (approval.comment && approval.comment.includes('已由')) {
-                        const match = approval.comment.match(/已由(.+?)完成审批/);
-                        if (match) {
-                            realApprover = match[1];
-                        }
-                    }
-                    const safeApprover = escapeHtml(realApprover);
-
-                    htmlStr += '<div style="margin-bottom: 4px;">' +
-                      '<span style="font-size: 14px; color: #999; margin-right: 8px;">审批人:</span>' +
-                      '<span style="font-size: 14px; color: #333;">' + safeApprover + '</span>' +
-                    '</div>';
-                    if (approval.decided_at) {
-                        htmlStr += '<div style="margin-bottom: 4px;">' +
-                          '<span style="font-size: 14px; color: #999; margin-right: 8px;">审批时间:</span>' +
-                          '<span style="font-size: 14px; color: #333;">' + new Date(approval.decided_at).toLocaleString() + '</span>' +
-                        '</div>';
-                    }
-                }
-
-                htmlStr += '<div style="margin-top: 8px; padding-top: 8px; border-top: 1px solid #f0f0f0;">' +
-                    '<span style="font-size: 12px; color: #999;">创建: ' + new Date(approval.created_at || application.created_at).toLocaleString() + '</span>' +
-                  '</div>' +
-                  '</div>' +
-                '</div>';
+    async function openApplication(appId) {
+        console.log('[DEBUG] openApplication called with appId:', appId, 'type:', typeof appId);
+        // Directly fetch application detail and display
+        try {
+            const url = API_BASE_URL + '/applications/' + appId + '/';
+            console.log('[DEBUG] Constructed URL:', url, 'API_BASE_URL:', API_BASE_URL, 'appId:', appId);
+            const res = await fetch(url, {
+                headers: getAuthHeaders()
             });
-
-            if (append) {
-                listContainer.innerHTML += htmlStr;
+            if (res.ok) {
+                const appData = await res.json();
+                // Show application detail using existing openApproval screen
+                // But need to adapt to show application data instead of approval data
+                showApplicationDetail(appData);
             } else {
-                listContainer.innerHTML = htmlStr;
+                alert('加载详情失败：' + (res.status === 404 ? '申请不存在' : '服务器错误'));
             }
+        } catch (e) {
+            console.error('Failed to open application:', e);
+            alert('加载详情失败：网络错误');
+        }
+    }
 
-            // Update offset to current position
-            approvalOffset = currentOffset;
+    async function showApplicationDetail(appData) {
+        console.log('[DEBUG] showApplicationDetail called with:', appData);
+        try {
+            // Use existing screen-2 to show application detail
+            currentApprovalId = appData.application_id;
+            showScreen(2);
 
-            // Check if there's more data to load
-            // Has more if: we haven't displayed all accumulated results, or there's more data in API
-            approvalHasMore = (accumulatedResults.length > TARGET_COUNT) || (currentOffset < totalCount);
+            // Use approvals from appData directly
+            const approvals = appData.approvals || [];
+            console.log('[DEBUG] Approvals:', approvals);
 
-            if (loadMoreBtn) {
-                loadMoreBtn.style.display = approvalHasMore ? 'block' : 'none';
-            }
+            // Fetch attachments
+            const attachments = await apiGetAttachments(appData.application_id);
+            console.log('[DEBUG] Attachments:', attachments);
+
+            const container = document.querySelector('#screen-2');
+        const basicInfoHtml = '<div class="card">' +
+            '<div style="font-size: 16px; font-weight: bold; margin-bottom: 10px;">基本信息</div>' +
+            '<div style="display: flex; margin-bottom: 8px;">' +
+              '<span style="font-size: 14px; color: #999; width: 80px;">申请ID:</span>' +
+              '<span style="font-size: 14px; color: #333; flex: 1;">' + appData.application_id + '</span>' +
+            '</div>' +
+            '<div style="display: flex; margin-bottom: 8px;">' +
+              '<span style="font-size: 14px; color: #999; width: 80px;">学生:</span>' +
+              '<span style="font-size: 14px; color: #333; flex: 1;">' + appData.student_name + ' (' + appData.student_id + ')</span>' +
+            '</div>' +
+            '<div style="display: flex; margin-bottom: 8px;">' +
+              '<span style="font-size: 14px; color: #999; width: 80px;">联系电话:</span>' +
+              '<span style="font-size: 14px; color: #333; flex: 1;">' + (appData.contact_phone || '-') + '</span>' +
+            '</div>' +
+            '<div style="display: flex; margin-bottom: 8px;">' +
+              '<span style="font-size: 14px; color: #999; width: 80px;">离校日期:</span>' +
+              '<span style="font-size: 14px; color: #333; flex: 1;">' + (appData.leave_date || '-') + '</span>' +
+            '</div>' +
+            '<div style="display: flex; margin-bottom: 8px;">' +
+              '<span style="font-size: 14px; color: #999; width: 80px;">楼栋:</span>' +
+              '<span style="font-size: 14px; color: #333; flex: 1;">' + (appData.building || '-') + '</span>' +
+            '</div>' +
+            '<div style="display: flex; margin-bottom: 8px;">' +
+              '<span style="font-size: 14px; color: #999; width: 80px;">房间号:</span>' +
+              '<span style="font-size: 14px; color: #333; flex: 1;">' + (appData.room_number || '-') + '</span>' +
+            '</div>' +
+            '<div style="display: flex; margin-bottom: 8px;">' +
+              '<span style="font-size: 14px; color: #999; width: 80px;">申请原因:</span>' +
+              '<span style="font-size: 14px; color: #333; flex: 1;">' + (appData.reason || '-') + '</span>' +
+            '</div>' +
+          '</div>';
+
+        // Render approvals
+        let approvalsHtml = '<div class="card"><div style="font-size: 16px; font-weight: bold; margin-bottom: 10px;">审批记录</div>';
+        if (approvals.length > 0) {
+            approvals.forEach(ap => {
+                const decisionText = ap.decision === 'pending' ? '待审批' : (ap.decision === 'approved' ? '已通过' : '已驳回');
+                const stepText = ap.step === 'dorm_manager' ? '宿管审批' : (ap.step === 'counselor' ? '辅导员审批' : '学工部审批');
+                approvalsHtml += '<div style="border-top: 1px solid #f0f0f0; padding-top: 8px; margin-top: 8px;">';
+                approvalsHtml += '<div style="font-weight: bold; margin-bottom: 4px;">' + stepText + ': ' + decisionText + '</div>';
+                approvalsHtml += '<div style="font-size: 14px; color: #666;">审批人: ' + (ap.approver_name || '-') + '</div>';
+                if (ap.decided_at) {
+                    approvalsHtml += '<div style="font-size: 14px; color: #666;">审批时间: ' + new Date(ap.decided_at).toLocaleString() + '</div>';
+                }
+                if (ap.comment) {
+                    approvalsHtml += '<div style="font-size: 14px; color: #666;">备注: ' + ap.comment + '</div>';
+                }
+                approvalsHtml += '</div>';
+            });
         } else {
-            if (!append) {
-                listContainer.innerHTML = '<div style="text-align:center; padding: 20px; color:#999;">暂无数据</div>';
-            }
-            if (loadMoreBtn) {
-                loadMoreBtn.style.display = 'none';
-            }
+            approvalsHtml += '<div style="color: #999;">暂无审批记录</div>';
         }
+        approvalsHtml += '</div>';
 
-        // 显示/隐藏全选栏
-        const selectAllBar = document.getElementById('select-all-bar');
-        const hasCheckboxes = document.querySelectorAll('.approval-checkbox').length > 0;
-        if (selectAllBar) {
-            selectAllBar.style.display = hasCheckboxes ? 'block' : 'none';
+        // Render attachments
+        let attachmentsHtml = '<div class="card"><div style="font-size: 16px; font-weight: bold; margin-bottom: 10px;">附件</div>';
+        if (attachments && attachments.length > 0) {
+            attachments.forEach(att => {
+                attachmentsHtml += '<div style="margin-bottom: 8px;"><a href="' + att.file_url + '" target="_blank">' + att.file_name + '</a></div>';
+            });
+        } else {
+            attachmentsHtml += '<div style="color: #999;">无附件</div>';
         }
+        attachmentsHtml += '</div>';
 
-        // 显示管理员筛选器（仅管理员/学工部可见）
-        if (!append) {
-            showAdminFiltersUI();
+            container.innerHTML = basicInfoHtml + approvalsHtml + attachmentsHtml;
+            console.log('[DEBUG] Detail rendered successfully');
+        } catch (e) {
+            console.error('[ERROR] showApplicationDetail failed:', e);
+            const container = document.querySelector('#screen-2');
+            if (container) {
+                container.innerHTML = '<div class="card"><p style="color: #ff4d4f;">加载失败: ' + e.message + '</p></div>';
+            }
+            alert('显示详情失败：' + e.message);
         }
     }
 
@@ -332,8 +357,6 @@
         adminFilters = {};
         if (value) {
             adminFilters[field] = value;
-            // 使用字段筛选时切换到"全部"状态，显示所有匹配申请
-            currentFilter = 'all';
         }
 
         loadApprovals();
@@ -353,71 +376,6 @@
     }
 
     let currentApprovalId = null;
-    async function showApplicationDetail(applicationId) {
-        // Student view: show application detail with approval history
-        showScreen(2);
-
-        const appRes = await fetch(API_BASE_URL + '/applications/' + applicationId + '/', {
-            headers: getAuthHeaders()
-        });
-
-        if (!appRes.ok) {
-            document.querySelector('#screen-2').innerHTML = '<div class="card"><p style="color: #ff4d4f;">加载失败</p></div>';
-            return;
-        }
-
-        const appData = await appRes.json();
-        const attachments = await apiGetAttachments(applicationId);
-
-        // Fetch approval records
-        const approvalsRes = await fetch(API_BASE_URL + '/approvals/?application_id=' + applicationId, {
-            headers: getAuthHeaders()
-        });
-        const approvalsData = approvalsRes.ok ? await approvalsRes.json() : { results: [] };
-
-        const container = document.querySelector('#screen-2');
-
-        const basicInfoHtml = '<div class="card">' +
-            '<div style="font-size: 16px; font-weight: bold; margin-bottom: 10px;">基本信息</div>' +
-            '<div style="display: flex; margin-bottom: 8px;">' +
-              '<span style="font-size: 14px; color: #999; width: 80px;">申请ID:</span>' +
-              '<span style="font-size: 14px; color: #333;">' + escapeHtml(appData.application_id || '-') + '</span>' +
-            '</div>' +
-            '<div style="display: flex; margin-bottom: 8px;">' +
-              '<span style="font-size: 14px; color: #999; width: 80px;">学生姓名:</span>' +
-              '<span style="font-size: 14px; color: #333;">' + escapeHtml(appData.student_name || '-') + '</span>' +
-            '</div>' +
-            '<div style="display: flex; margin-bottom: 8px;">' +
-              '<span style="font-size: 14px; color: #999; width: 80px;">联系电话:</span>' +
-              '<span style="font-size: 14px; color: #333;">' + escapeHtml(appData.contact_phone || '-') + '</span>' +
-            '</div>' +
-            '<div style="display: flex; margin-bottom: 8px;">' +
-              '<span style="font-size: 14px; color: #999; width: 80px;">离校日期:</span>' +
-              '<span style="font-size: 14px; color: #333;">' + escapeHtml(appData.leave_date || '-') + '</span>' +
-            '</div>' +
-            '<div style="display: flex; margin-bottom: 8px;">' +
-              '<span style="font-size: 14px; color: #999; width: 80px;">离校原因:</span>' +
-              '<span style="font-size: 14px; color: #333;">' + escapeHtml(appData.reason || '-') + '</span>' +
-            '</div>' +
-          '</div>';
-
-        const attachmentsHtml = '<div class="card">' +
-            '<div style="font-size: 16px; font-weight: bold; margin-bottom: 10px;">附件材料</div>' +
-            (attachments && attachments.length > 0
-                ? attachments.map(att =>
-                    '<div style="display: flex; align-items: center; padding: 8px 0; border-bottom: 1px solid #f0f0f0;">' +
-                      '<span style="flex: 1; font-size: 14px; color: #333;">' + escapeHtml(att.filename) + '</span>' +
-                      '<button class="btn-outline" style="padding: 4px 12px; font-size: 13px;" onclick="previewAttachment(\'' + encodeURIComponent(att.attachment_id) + '\')">预览</button>' +
-                    '</div>'
-                  ).join('')
-                : '<div style="color: #999; font-size: 14px;">无附件</div>') +
-          '</div>';
-
-        const approvalProgressHtml = renderStudentApprovalProgress(appData, approvalsData.results);
-
-        container.innerHTML = basicInfoHtml + attachmentsHtml + approvalProgressHtml +
-            '<div style="padding: 20px;"><button class="btn-outline" onclick="showScreen(1); loadMyApplications();" style="width: 100%;">返回</button></div>';
-    }
 
     function renderStudentApprovalProgress(appData, approvals) {
         const stepNames = {

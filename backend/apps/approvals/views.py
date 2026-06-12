@@ -37,6 +37,9 @@ def sanitize_excel_formula(value):
     description='获取当前用户的待审批列表（辅导员或学工部）',
     parameters=[
         OpenApiParameter('decision', str, description='决策过滤：pending/approved/rejected/all（默认pending）'),
+        OpenApiParameter('name', str, description='按姓名查询'),
+        OpenApiParameter('student_id', str, description='按学号查询'),
+        OpenApiParameter('building', str, description='按楼栋查询'),
         OpenApiParameter('limit', int, description='每页数量（默认20）'),
         OpenApiParameter('offset', int, description='偏移量（默认0）'),
     ],
@@ -90,6 +93,19 @@ def list_approvals(request):
     decision_param = request.query_params.get('decision', 'pending')
     if decision_param != 'all':
         queryset = queryset.filter(decision=decision_param)
+
+    # 查询过滤
+    name = request.query_params.get('name')
+    if name:
+        queryset = queryset.filter(application__student_name__icontains=name)
+
+    student_id = request.query_params.get('student_id')
+    if student_id:
+        queryset = queryset.filter(application__student__user_id__icontains=student_id)
+
+    building = request.query_params.get('building')
+    if building:
+        queryset = queryset.filter(application__student__building__icontains=building)
 
     # 排序
     queryset = queryset.order_by('-created_at', '-approval_id')
@@ -385,7 +401,7 @@ def export_approvals(request):
     ws = wb.active
     ws.title = '审批数据'
 
-    headers = ['申请ID', '提交人', '学号', '手机号', '离校日期', '楼栋号', '房间号', '提交时间', '审批状态',
+    headers = ['提交人', '学号', '手机号', '离校日期', '楼栋号', '房间号', '提交时间', '审批状态',
                '宿管员', '宿管审批时间', '宿管审批结果',
                '辅导员', '辅导员审批时间', '辅导员审批结果']
     ws.append(headers)
@@ -399,7 +415,6 @@ def export_approvals(request):
         counselor_approval = app.counselor_approvals_list[0] if app.counselor_approvals_list else None
 
         row = [
-            sanitize_excel_formula(app.application_id),
             sanitize_excel_formula(app.student_name),
             sanitize_excel_formula(app.student.user_id if app.student else ''),
             sanitize_excel_formula(app.contact_phone or ''),
@@ -432,3 +447,130 @@ def export_approvals(request):
     wb.save(response)
 
     return response
+
+
+@extend_schema(
+    operation_id='approvals_statistics',
+    summary='获取审批统计',
+    description='获取当前用户的审批统计数据（总提交数、待审批数、已通过数）',
+    responses={
+        200: {
+            'description': '统计数据',
+            'content': {
+                'application/json': {
+                    'example': {
+                        'total': 100,
+                        'pending': 10,
+                        'approved': 85,
+                        'rejected': 5
+                    }
+                }
+            }
+        },
+        403: ErrorResponseSerializer,
+    },
+    tags=['审批']
+)
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def get_statistics(request):
+    user = request.user
+
+    # 学生禁止访问
+    if user.role == UserRole.STUDENT:
+        return Response(
+            {'error': {'code': 'FORBIDDEN', 'message': '学生不能访问统计数据'}},
+            status=status.HTTP_403_FORBIDDEN
+        )
+
+    # 根据角色筛选数据
+    if user.role == UserRole.DORM_MANAGER:
+        queryset = Approval.objects.filter(
+            approver=user,
+            step=ApprovalStep.DORM_MANAGER
+        )
+    elif user.role == UserRole.COUNSELOR:
+        queryset = Approval.objects.filter(
+            approver=user,
+            step=ApprovalStep.COUNSELOR
+        )
+    elif user.role in [UserRole.DEAN, UserRole.ADMIN]:
+        queryset = Approval.objects.all()
+    else:
+        return Response(
+            {'error': {'code': 'FORBIDDEN', 'message': '无效的用户角色'}},
+            status=status.HTTP_403_FORBIDDEN
+        )
+
+    # 统计数据
+    total = queryset.count()
+    pending = queryset.filter(decision=ApprovalDecision.PENDING).count()
+    approved = queryset.filter(decision=ApprovalDecision.APPROVED).count()
+    rejected = queryset.filter(decision=ApprovalDecision.REJECTED).count()
+
+    return Response({
+        'total': total,
+        'pending': pending,
+        'approved': approved,
+        'rejected': rejected
+    })
+
+
+@extend_schema(
+    operation_id='approvals_batch_action',
+    summary='批量处理审批',
+    request={
+        'application/json': {
+            'type': 'object',
+            'properties': {
+                'approval_ids': {'type': 'array', 'items': {'type': 'string'}},
+                'action': {'type': 'string', 'enum': ['approve', 'reject']},
+                'comment': {'type': 'string'}
+            },
+            'required': ['approval_ids', 'action']
+        }
+    },
+    responses={200: {'description': '批量处理成功'}, 400: ErrorResponseSerializer, 403: ErrorResponseSerializer},
+    tags=['审批']
+)
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+@transaction.atomic
+def batch_action_approvals(request):
+    approval_ids = request.data.get('approval_ids', [])
+    action = request.data.get('action')
+    comment = request.data.get('comment', '')
+
+    if not approval_ids or not isinstance(approval_ids, list):
+        return Response({'error': {'code': 'VALIDATION_ERROR', 'message': '审批ID列表不能为空'}}, status=status.HTTP_400_BAD_REQUEST)
+    if action not in ['approve', 'reject']:
+        return Response({'error': {'code': 'VALIDATION_ERROR', 'message': 'action必须为approve或reject'}}, status=status.HTTP_400_BAD_REQUEST)
+
+    user = request.user
+    approvals = Approval.objects.select_for_update().filter(approval_id__in=approval_ids, approver=user, decision=ApprovalDecision.PENDING)
+
+    if approvals.count() != len(approval_ids):
+        return Response({'error': {'code': 'VALIDATION_ERROR', 'message': f'部分审批不存在或无权限'}}, status=status.HTTP_400_BAD_REQUEST)
+
+    now = timezone.now()
+    decision = ApprovalDecision.APPROVED if action == 'approve' else ApprovalDecision.REJECTED
+
+    for approval in approvals:
+        if not approval_step_matches_application_status(approval):
+            return Response({'error': {'code': 'CONFLICT', 'message': f'审批状态不匹配'}}, status=status.HTTP_409_CONFLICT)
+
+        approval.decision = decision
+        approval.comment = comment
+        approval.decided_at = now
+        approval.decided_by = user
+        approval.save()
+
+        application = approval.application
+        if decision == ApprovalDecision.APPROVED:
+            application.status = ApplicationStatus.PENDING_COUNSELOR if approval.step == ApprovalStep.DORM_MANAGER else ApplicationStatus.APPROVED
+        else:
+            application.status = ApplicationStatus.REJECTED
+        application.save()
+        notify_approval_decided(approval)
+
+    return Response({'success': True, 'processed': approvals.count()})

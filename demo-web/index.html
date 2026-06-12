@@ -198,11 +198,14 @@
                 const safeStudentName = escapeHtml(application.student_name || '-');
                 const safeStudentId = escapeHtml(application.student_id || '-');
 
-                htmlStr += '<div class="card" onclick="openApproval(\'' + approval.id + '\')" style="cursor: pointer;">' +
-                  '<div class="flex-row justify-between align-center" style="margin-bottom: 8px;">' +
-                    '<span style="font-size: 16px; font-weight: bold;">申请 ' + safeAppId + '</span>' +
-                    '<span class="tag ' + tagCls + '">' + step + '</span>' +
-                  '</div>' +
+                const showCheckbox = decision === 'pending' && (currentUser?.role === 'dorm_manager' || currentUser?.role === 'counselor');
+                htmlStr += '<div class="card" style="cursor: pointer; display: flex; gap: 12px;">' +
+                  (showCheckbox ? '<input type="checkbox" class="approval-checkbox" data-approval-id="' + approval.id + '" onclick="event.stopPropagation(); toggleBatchBar();" style="width: 20px; height: 20px; cursor: pointer;">' : '') +
+                  '<div style="flex: 1;" onclick="openApproval(\'' + approval.id + '\')">' +
+                    '<div class="flex-row justify-between align-center" style="margin-bottom: 8px;">' +
+                      '<span style="font-size: 16px; font-weight: bold;">申请 ' + safeAppId + '</span>' +
+                      '<span class="tag ' + tagCls + '">' + step + '</span>' +
+                    '</div>' +
                   '<div style="margin-bottom: 4px;">' +
                     '<span style="font-size: 14px; color: #999; margin-right: 8px;">学生:</span>' +
                     '<span style="font-size: 14px; color: #333;">' + safeStudentName + ' (' + safeStudentId + ')</span>' +
@@ -235,6 +238,7 @@
                 htmlStr += '<div style="margin-top: 8px; padding-top: 8px; border-top: 1px solid #f0f0f0;">' +
                     '<span style="font-size: 12px; color: #999;">创建: ' + new Date(approval.created_at || application.created_at).toLocaleString() + '</span>' +
                   '</div>' +
+                  '</div>' +
                 '</div>';
             });
 
@@ -261,6 +265,13 @@
             if (loadMoreBtn) {
                 loadMoreBtn.style.display = 'none';
             }
+        }
+
+        // 显示/隐藏全选栏
+        const selectAllBar = document.getElementById('select-all-bar');
+        const hasCheckboxes = document.querySelectorAll('.approval-checkbox').length > 0;
+        if (selectAllBar) {
+            selectAllBar.style.display = hasCheckboxes ? 'block' : 'none';
         }
     }
 
@@ -1371,12 +1382,44 @@
       <button class="filter-tab" onclick="filterApprovals('rejected')" aria-label="已驳回">✗驳回</button>
     </div>
 
+    <!-- 全选栏 -->
+    <div id="select-all-bar" style="display: none; background: #f5f5f5; padding: 12px 16px; border-bottom: 1px solid #e8e8e8;">
+      <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+        <input type="checkbox" id="select-all-checkbox" onchange="toggleSelectAll()" style="width: 18px; height: 18px; cursor: pointer;">
+        <span style="font-size: 14px; color: #333;">全选当前页</span>
+        <span id="select-count" style="font-size: 13px; color: #999; margin-left: auto;">已选 0 项</span>
+      </label>
+    </div>
+
     <div style="padding: 10px;" id="approval-list-container">
       <!-- 列表项 -->
       <div style="text-align:center; padding: 20px; color:#999;">加载中...</div>
     </div>
     <div style="padding: 10px; text-align: center;">
       <button id="load-more-approvals" onclick="loadApprovals(true)" style="display: none; padding: 10px 20px; border: 1px solid var(--primary-color); background: white; color: var(--primary-color); border-radius: 4px; cursor: pointer;">加载更多</button>
+    </div>
+
+    <!-- 浮动操作栏 -->
+    <div id="batch-action-bar" style="display: none; position: fixed; bottom: 0; left: 0; right: 0; background: white; border-top: 2px solid var(--primary-color); padding: 12px; box-shadow: 0 -2px 8px rgba(0,0,0,0.1); z-index: 100;">
+      <div style="display: flex; align-items: center; gap: 12px;">
+        <span id="batch-count" style="font-size: 14px; color: #666;">已选 0 项</span>
+        <div style="flex: 1;"></div>
+        <button onclick="batchApprove()" style="padding: 8px 16px; background: var(--primary-color); color: white; border: none; border-radius: 4px; cursor: pointer;">批量通过</button>
+        <button onclick="batchReject()" style="padding: 8px 16px; background: #ff4d4f; color: white; border: none; border-radius: 4px; cursor: pointer;">批量驳回</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 批量操作确认弹窗 -->
+  <div id="batch-confirm-modal" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 200;">
+    <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; border-radius: 8px; padding: 20px; width: 90%; max-width: 400px;">
+      <div style="font-size: 18px; font-weight: bold; margin-bottom: 16px;">确认批量操作</div>
+      <div id="batch-confirm-text" style="font-size: 14px; color: #666; margin-bottom: 16px;"></div>
+      <textarea id="batch-comment" placeholder="审批意见（可选）" style="width: 100%; height: 80px; padding: 8px; border: 1px solid #ddd; border-radius: 4px; resize: none; margin-bottom: 16px;"></textarea>
+      <div style="display: flex; gap: 12px;">
+        <button onclick="closeBatchModal()" style="flex: 1; padding: 10px; background: #f0f0f0; border: none; border-radius: 4px; cursor: pointer;">取消</button>
+        <button id="batch-confirm-btn" onclick="confirmBatchAction()" style="flex: 1; padding: 10px; background: var(--primary-color); color: white; border: none; border-radius: 4px; cursor: pointer;">确认</button>
+      </div>
     </div>
   </div>
 
@@ -1780,6 +1823,87 @@ function showToast(message, type = 'info') {
     toast.style.animation = 'slideIn 0.3s ease-out reverse';
     setTimeout(() => container.removeChild(toast), 300);
   }, 3000);
+}
+
+// 批量操作相关
+let batchAction = '';
+
+function toggleSelectAll() {
+  const selectAll = document.getElementById('select-all-checkbox');
+  const checkboxes = document.querySelectorAll('.approval-checkbox');
+  checkboxes.forEach(cb => cb.checked = selectAll.checked);
+  toggleBatchBar();
+}
+
+function toggleBatchBar() {
+  const checkboxes = document.querySelectorAll('.approval-checkbox:checked');
+  const bar = document.getElementById('batch-action-bar');
+  const count = document.getElementById('batch-count');
+  const selectCount = document.getElementById('select-count');
+  const selectAll = document.getElementById('select-all-checkbox');
+
+  if (checkboxes.length > 0) {
+    bar.style.display = 'block';
+    count.textContent = `已选 ${checkboxes.length} 项`;
+    if (selectCount) selectCount.textContent = `已选 ${checkboxes.length} 项`;
+  } else {
+    bar.style.display = 'none';
+    if (selectCount) selectCount.textContent = '已选 0 项';
+  }
+
+  // 更新全选框状态
+  const total = document.querySelectorAll('.approval-checkbox').length;
+  if (selectAll && total > 0) {
+    selectAll.checked = checkboxes.length === total;
+    selectAll.indeterminate = checkboxes.length > 0 && checkboxes.length < total;
+  }
+}
+
+function batchApprove() {
+  batchAction = 'approve';
+  const count = document.querySelectorAll('.approval-checkbox:checked').length;
+  document.getElementById('batch-confirm-text').textContent = `确定批量通过 ${count} 条审批吗？`;
+  document.getElementById('batch-confirm-modal').style.display = 'block';
+}
+
+function batchReject() {
+  batchAction = 'reject';
+  const count = document.querySelectorAll('.approval-checkbox:checked').length;
+  document.getElementById('batch-confirm-text').textContent = `确定批量驳回 ${count} 条审批吗？`;
+  document.getElementById('batch-confirm-modal').style.display = 'block';
+}
+
+function closeBatchModal() {
+  document.getElementById('batch-confirm-modal').style.display = 'none';
+  document.getElementById('batch-comment').value = '';
+}
+
+async function confirmBatchAction() {
+  const checkboxes = document.querySelectorAll('.approval-checkbox:checked');
+  const ids = Array.from(checkboxes).map(cb => cb.dataset.approvalId);
+  const comment = document.getElementById('batch-comment').value;
+
+  try {
+    const res = await fetch(API_BASE_URL + '/approvals/batch-action/', {
+      method: 'POST',
+      headers: {...getAuthHeaders(), 'Content-Type': 'application/json'},
+      body: JSON.stringify({approval_ids: ids, action: batchAction, comment})
+    });
+
+    const data = await res.json();
+    closeBatchModal();
+
+    if (res.ok) {
+      showToast(`批量${batchAction === 'approve' ? '通过' : '驳回'}成功`, 'success');
+      loadApprovals();
+      document.getElementById('batch-action-bar').style.display = 'none';
+    } else {
+      showToast(data.error?.message || '操作失败', 'error');
+    }
+  } catch (err) {
+    closeBatchModal();
+    showToast('网络错误', 'error');
+  }
 }
 </script>
 </body>

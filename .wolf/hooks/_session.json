@@ -31,6 +31,11 @@
       "count": 1,
       "tokens": 781,
       "first_read": "2026-06-12T16:05:31.129Z"
+    },
+    "/home/caohui/projects/graduation-leave-system/.github/workflows/deploy.yml": {
+      "count": 1,
+      "tokens": 762,
+      "first_read": "2026-06-12T16:09:20.560Z"
     }
   },
   "files_written": [
@@ -105,6 +110,36 @@
       "action": "edit",
       "tokens": 52,
       "at": "2026-06-12T16:05:40.910Z"
+    },
+    {
+      "file": "/home/caohui/projects/graduation-leave-system/.github/workflows/deploy.yml",
+      "action": "create",
+      "tokens": 1207,
+      "at": "2026-06-12T16:09:39.150Z"
+    },
+    {
+      "file": "/home/caohui/projects/graduation-leave-system/scripts/auto-deploy.sh",
+      "action": "create",
+      "tokens": 365,
+      "at": "2026-06-12T16:09:59.054Z"
+    },
+    {
+      "file": "/home/caohui/projects/graduation-leave-system/docs/DEPLOYMENT_AUTO.md",
+      "action": "edit",
+      "tokens": 65,
+      "at": "2026-06-12T16:10:15.320Z"
+    },
+    {
+      "file": "/home/caohui/projects/graduation-leave-system/docs/DEPLOYMENT_AUTO.md",
+      "action": "edit",
+      "tokens": 143,
+      "at": "2026-06-12T16:10:28.570Z"
+    },
+    {
+      "file": "/home/caohui/projects/graduation-leave-system/scripts/verify-env.sh",
+      "action": "create",
+      "tokens": 461,
+      "at": "2026-06-12T16:10:44.106Z"
     }
   ],
   "edit_counts": {
@@ -115,12 +150,14 @@
     "deploy.config.yml": 1,
     "scripts/deploy.sh": 2,
     "scripts/rollback.sh": 1,
-    ".github/workflows/deploy.yml": 2,
-    "docs/DEPLOYMENT_AUTO.md": 1
+    ".github/workflows/deploy.yml": 3,
+    "docs/DEPLOYMENT_AUTO.md": 3,
+    "scripts/auto-deploy.sh": 1,
+    "scripts/verify-env.sh": 1
   },
-  "anatomy_hits": 5,
+  "anatomy_hits": 6,
   "anatomy_misses": 1,
   "repeated_reads_warned": 0,
   "cerebrum_warnings": 0,
-  "stop_count": 1
+  "stop_count": 2
 }

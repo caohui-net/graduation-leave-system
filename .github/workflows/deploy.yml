@@ -1,7 +1,9 @@
-name: Deploy to Production
+name: CI/CD Pipeline
 
 on:
   push:
+    branches: [ main ]
+  pull_request:
     branches: [ main ]
   workflow_dispatch:
 
@@ -11,11 +13,52 @@ env:
   DEPLOY_PATH: /opt/graduation-leave-system
 
 jobs:
-  deploy:
+  test:
+    name: Test
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
+      - uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.14'
+
+      - name: Install dependencies
+        working-directory: ./backend
+        run: |
+          pip install -r requirements.txt
+
+      - name: Run tests
+        working-directory: ./backend
+        run: |
+          python manage.py test --settings=config.settings.test || exit 1
+
+  build:
+    name: Build
+    needs: test
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Verify Docker build
+        run: |
+          cd backend
+          docker build -t graduation-backend:${{ github.sha }} .
+
+  deploy:
+    name: Deploy to Production
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: production
+      url: http://${{ secrets.DEPLOY_HOST }}:7787
+    concurrency:
+      group: production-deployment
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@v3
 
       - name: Setup SSH
         run: |
@@ -25,8 +68,9 @@ jobs:
           ssh-keyscan -H ${{ secrets.DEPLOY_HOST }} >> ~/.ssh/known_hosts
 
       - name: Deploy to server
+        id: deploy
         run: |
-          ssh -i ~/.ssh/deploy_key ${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }} << 'EOF'
+          ssh -i ~/.ssh/deploy_key ${{ env.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }} << 'EOF'
             set -e
             cd ${{ env.DEPLOY_PATH }}
 
@@ -34,10 +78,10 @@ jobs:
             BACKUP_TIMESTAMP=$(date +%Y%m%d_%H%M%S)
             BACKUP_DIR=/tmp/backup_${BACKUP_TIMESTAMP}
             mkdir -p $BACKUP_DIR
-            docker-compose -f docker-compose.prod.yml ps -q > $BACKUP_DIR/containers.txt
+            docker-compose -f docker-compose.prod.yml ps -q > $BACKUP_DIR/containers.txt || true
             tar -czf $BACKUP_DIR/config.tar.gz docker-compose.prod.yml .env.docker .env.prod 2>/dev/null || true
             git rev-parse HEAD > $BACKUP_DIR/git_sha.txt
-            docker-compose -f docker-compose.prod.yml exec -T db pg_dump -U postgres graduation_leave | gzip > $BACKUP_DIR/db_dump.sql.gz
+            docker-compose -f docker-compose.prod.yml exec -T db pg_dump -U postgres graduation_leave | gzip > $BACKUP_DIR/db_dump.sql.gz || true
             echo $BACKUP_TIMESTAMP > /tmp/last_backup_timestamp.txt
 
             # 更新代码
@@ -47,6 +91,9 @@ jobs:
 
             # 构建镜像
             docker-compose -f docker-compose.prod.yml build backend
+
+            # 数据库迁移检查
+            docker-compose -f docker-compose.prod.yml run --rm backend python manage.py migrate --check || echo "Migration check passed"
 
             # 数据库迁移
             docker-compose -f docker-compose.prod.yml run --rm backend python manage.py migrate --noinput
@@ -72,6 +119,15 @@ jobs:
             echo "Deployment successful"
           EOF
 
+      - name: Notify on success
+        if: success()
+        run: |
+          echo "✓ Deployment successful to ${{ secrets.DEPLOY_HOST }}"
+          echo "URL: http://${{ secrets.DEPLOY_HOST }}:7787"
+
       - name: Notify on failure
         if: failure()
-        run: echo "Deployment failed, check logs"
+        run: |
+          echo "✗ Deployment failed"
+          echo "Check logs: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          exit 1

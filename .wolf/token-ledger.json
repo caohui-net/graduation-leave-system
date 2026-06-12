@@ -2,14 +2,14 @@
   "version": 1,
   "created_at": "2026-06-06T16:25:30.583Z",
   "lifetime": {
-    "total_tokens_estimated": 12338531,
-    "total_reads": 5580,
-    "total_writes": 6875,
+    "total_tokens_estimated": 12342756,
+    "total_reads": 5586,
+    "total_writes": 6887,
     "total_sessions": 77,
-    "anatomy_hits": 2959,
-    "anatomy_misses": 2416,
+    "anatomy_hits": 2964,
+    "anatomy_misses": 2417,
     "repeated_reads_blocked": 3624,
-    "estimated_savings_vs_bare_cli": 31584194
+    "estimated_savings_vs_bare_cli": 31585194
   },
   "sessions": [
     {
@@ -80729,6 +80729,119 @@
         "writes_count": 0,
         "repeated_reads_blocked": 0,
         "anatomy_lookups": 0
+      }
+    },
+    {
+      "id": "session-2026-06-12-0001",
+      "started": "2026-06-12T16:01:55.695Z",
+      "ended": "2026-06-12T16:06:29.292Z",
+      "reads": [
+        {
+          "file": "/home/caohui/projects/graduation-leave-system/.collab/artifacts/DISCUSS-异地自动化部署方案技术评审-已实现方案回顾-基于项目需求-1781279827-discuss-r2-gemini-20260612-160019.md",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/caohui/projects/graduation-leave-system/backend/config/urls.py",
+          "tokens_estimated": 265,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/caohui/projects/graduation-leave-system/docker-compose.prod.yml",
+          "tokens_estimated": 384,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/caohui/projects/graduation-leave-system/scripts/deploy.sh",
+          "tokens_estimated": 588,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/caohui/projects/graduation-leave-system/scripts/rollback.sh",
+          "tokens_estimated": 204,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/caohui/projects/graduation-leave-system/docs/DEPLOYMENT_AUTO.md",
+          "tokens_estimated": 781,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        }
+      ],
+      "writes": [
+        {
+          "file": "/home/caohui/projects/graduation-leave-system/backend/apps/healthcheck/__init__.py",
+          "tokens_estimated": 0,
+          "action": "create"
+        },
+        {
+          "file": "/home/caohui/projects/graduation-leave-system/backend/apps/healthcheck/views.py",
+          "tokens_estimated": 193,
+          "action": "create"
+        },
+        {
+          "file": "/home/caohui/projects/graduation-leave-system/backend/config/urls.py",
+          "tokens_estimated": 141,
+          "action": "edit"
+        },
+        {
+          "file": "/home/caohui/projects/graduation-leave-system/docker-compose.prod.yml",
+          "tokens_estimated": 75,
+          "action": "edit"
+        },
+        {
+          "file": "/home/caohui/projects/graduation-leave-system/docker-compose.prod.yml",
+          "tokens_estimated": 194,
+          "action": "edit"
+        },
+        {
+          "file": "/home/caohui/projects/graduation-leave-system/deploy.config.yml",
+          "tokens_estimated": 18,
+          "action": "edit"
+        },
+        {
+          "file": "/home/caohui/projects/graduation-leave-system/scripts/deploy.sh",
+          "tokens_estimated": 208,
+          "action": "edit"
+        },
+        {
+          "file": "/home/caohui/projects/graduation-leave-system/scripts/deploy.sh",
+          "tokens_estimated": 257,
+          "action": "edit"
+        },
+        {
+          "file": "/home/caohui/projects/graduation-leave-system/scripts/rollback.sh",
+          "tokens_estimated": 506,
+          "action": "create"
+        },
+        {
+          "file": "/home/caohui/projects/graduation-leave-system/.github/workflows/deploy.yml",
+          "tokens_estimated": 182,
+          "action": "edit"
+        },
+        {
+          "file": "/home/caohui/projects/graduation-leave-system/.github/workflows/deploy.yml",
+          "tokens_estimated": 177,
+          "action": "edit"
+        },
+        {
+          "file": "/home/caohui/projects/graduation-leave-system/docs/DEPLOYMENT_AUTO.md",
+          "tokens_estimated": 52,
+          "action": "edit"
+        }
+      ],
+      "totals": {
+        "input_tokens_estimated": 2222,
+        "output_tokens_estimated": 2003,
+        "reads_count": 6,
+        "writes_count": 12,
+        "repeated_reads_blocked": 0,
+        "anatomy_lookups": 5
       }
     }
   ],

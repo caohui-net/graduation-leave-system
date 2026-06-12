@@ -1,7 +1,7 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-06-12T16:05:40.900Z
-> Files: 694 tracked | Anatomy hits: 0 | Misses: 0
+> Auto-maintained by OpenWolf. Last scanned: 2026-06-12T16:10:44.097Z
+> Files: 696 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../../../tmp/
 
@@ -67,7 +67,7 @@
 
 ## .github/workflows/
 
-- `deploy.yml` — CI: Deploy to Production (~762 tok)
+- `deploy.yml` — CI: CI/CD Pipeline (~1207 tok)
 
 ## .omc/
 
@@ -789,7 +789,7 @@
 - `移动端SSO修复测试方案.md` — 移动端SSO修复验证测试方案 (~882 tok)
 - `agentmemory-integration-progress.md` — agentmemory Integration Progress (~1168 tok)
 - `architecture-integration-consensus.md` — 多智能体协作架构整合共识 (~1514 tok)
-- `DEPLOYMENT_AUTO.md` — 异地自动化部署指南 (~793 tok)
+- `DEPLOYMENT_AUTO.md` — 异地自动化部署指南 (~892 tok)
 - `DEPLOYMENT_PROD.md` — 生产环境部署指南 (~803 tok)
 - `PERFORMANCE.md` — 数据库性能优化指南 (~455 tok)
 - `PROJECT-SUMMARY.md` — 毕业生离校申请审批系统 - 项目总结 (~29851 tok)
@@ -845,6 +845,7 @@
 
 ## scripts/
 
+- `auto-deploy.sh` — 一键自动化部署 - 完整流程 (~341 tok)
 - `deploy.sh` — 异地自动化部署脚本 (~884 tok)
 - `install_skill.py` — Install claude-codex-gemini-collab skill with all dependencies. (~514 tok)
 - `performance_test.sh` — 性能测试脚本 (~374 tok)
@@ -852,6 +853,7 @@
 - `setup_server.sh` — 首次服务器初始化脚本 (~410 tok)
 - `setup-systemd.sh` — 配置systemd服务（需要sudo权限） (~119 tok)
 - `start-services.sh` — 启动毕业离校系统所有服务 (~131 tok)
+- `verify-env.sh` — 部署环境验证脚本 (~430 tok)
 
 ## tests/
 

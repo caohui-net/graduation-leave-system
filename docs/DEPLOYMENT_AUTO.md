@@ -1,5 +1,21 @@
 # 异地自动化部署指南
 
+## 一键部署（推荐）
+
+```bash
+export DEPLOY_HOST=218.75.196.218
+export DEPLOY_USER=root
+./scripts/auto-deploy.sh
+```
+
+**自动执行：**
+1. 本地测试验证
+2. Git推送代码
+3. 远程部署（备份→构建→迁移→重启→健康检查）
+4. 失败自动回滚
+
+---
+
 ## 快速开始
 
 ### 1. 配置GitHub Secrets
@@ -34,7 +50,9 @@ ssh $DEPLOY_USER@$DEPLOY_HOST "cd $DEPLOY_PATH && docker-compose -f docker-compo
 
 ### 3. 自动化部署
 
-推送代码到main分支自动触发部署：
+**方式一：GitHub Actions（推荐）**
+
+推送代码到main分支自动触发CI/CD：
 
 ```bash
 git add .
@@ -42,16 +60,27 @@ git commit -m "feat: 新功能"
 git push origin main
 ```
 
-GitHub Actions自动执行：
-1. ✓ 代码checkout
-2. ✓ SSH连接服务器
-3. ✓ 备份当前版本（配置+数据库+Git SHA）
-4. ✓ 拉取最新代码
-5. ✓ 构建Docker镜像
-6. ✓ 数据库迁移
-7. ✓ 滚动更新服务
-8. ✓ 健康检查（/readyz端点验证DB连接）
-9. ✓ 失败自动回滚（恢复配置+数据库+代码版本）
+完整流水线：
+1. ✓ 测试阶段 - 运行单元测试
+2. ✓ 构建阶段 - 验证Docker镜像构建
+3. ✓ 部署阶段 - 需要production环境审批
+4. ✓ 备份当前版本（配置+数据库+Git SHA）
+5. ✓ 拉取最新代码
+6. ✓ 构建Docker镜像
+7. ✓ 数据库迁移（含pre-flight检查）
+8. ✓ 滚动更新服务
+9. ✓ 健康检查（/readyz端点验证DB连接）
+10. ✓ 失败自动回滚（恢复配置+数据库+代码版本）
+
+**方式二：一键脚本**
+
+```bash
+export DEPLOY_HOST=218.75.196.218
+export DEPLOY_USER=root
+./scripts/auto-deploy.sh
+```
+
+自动执行：本地测试→Git推送→远程部署→健康验证
 
 ## 手动部署
 

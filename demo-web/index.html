@@ -113,26 +113,44 @@
             let filtered = data.results;
 
             // Deduplicate by application_id for all roles (one approval per application)
+            // Priority: keep records matching current filter
             if (currentUser) {
                 const beforeCount = filtered.length;
-                const newUniqueRecords = [];
+                const appRecords = new Map(); // application_id -> best matching approval
                 const orphanApprovals = [];
 
                 filtered.forEach(approval => {
                     const appId = approval.application?.id;
                     if (appId) {
-                        if (!deanDisplayedApps.has(appId)) {
-                            newUniqueRecords.push(approval);
-                            deanDisplayedApps.add(appId); // Track globally across pages
+                        const existing = appRecords.get(appId);
+                        if (!existing) {
+                            appRecords.set(appId, approval);
+                        } else {
+                            // Keep record that matches current filter
+                            const appStatus = approval.application?.status || '';
+                            const existingStatus = existing.application?.status || '';
+
+                            let shouldReplace = false;
+                            if (currentFilter === 'approved' && appStatus === 'approved' && existingStatus !== 'approved') {
+                                shouldReplace = true;
+                            } else if (currentFilter === 'rejected' && appStatus === 'rejected' && existingStatus !== 'rejected') {
+                                shouldReplace = true;
+                            } else if (currentFilter === 'pending' && appStatus.startsWith('pending_') && !existingStatus.startsWith('pending_')) {
+                                shouldReplace = true;
+                            }
+
+                            if (shouldReplace) {
+                                appRecords.set(appId, approval);
+                            }
                         }
                     } else {
-                        // Keep approvals without application link
                         orphanApprovals.push(approval);
                     }
                 });
 
+                const newUniqueRecords = Array.from(appRecords.values());
                 filtered = newUniqueRecords.concat(orphanApprovals);
-                console.log('[DEBUG] Dedup: before', beforeCount, '→ after', filtered.length, 'displayedApps size:', deanDisplayedApps.size);
+                console.log('[DEBUG] Dedup: before', beforeCount, '→ after', filtered.length, 'unique apps:', appRecords.size);
             }
 
             accumulatedResults = accumulatedResults.concat(filtered);

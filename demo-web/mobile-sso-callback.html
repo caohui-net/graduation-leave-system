@@ -46,44 +46,38 @@
   </div>
 
   <script>
-    // 移动端SSO回调 - 接收青橄榄传递的user_id参数（需配置回调URL）
+    // 移动端SSO回调
     window.onload = function() {
       const params = new URLSearchParams(window.location.search);
       const saas_wap_token = params.get('saas_wap_token');
-      const user_id = params.get('user_id');
 
       if (!saas_wap_token) {
-        document.getElementById('message').textContent = '错误：未收到token';
+        document.getElementById('message').textContent = '错误：未收到认证令牌';
         return;
       }
 
-      if (!user_id) {
-        document.getElementById('message').textContent = '错误：未收到user_id参数，请检查青橄榄回调URL配置';
-        return;
-      }
-
-      document.getElementById('message').textContent = '正在登录...';
-
-      // 调用mobile/login接口
-      fetch('http://218.75.196.218:7787/api/sso/qingganlian/mobile/login', {
+      // POST到后端获取用户信息
+      fetch('http://218.75.196.218:7787/api/sso/qingganlian/mobile/saas-login', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json'
+        },
         body: JSON.stringify({
-          authorization: saas_wap_token,
-          user_id: user_id
+          saas_wap_token: saas_wap_token,
+          tenant_code: params.get('tenantCode') || 'S10405'
         })
       })
       .then(res => res.json())
       .then(data => {
         if (data.token && data.user) {
           const userInfoStr = encodeURIComponent(JSON.stringify(data.user));
-          window.location.href = `http://218.75.196.218:7788/sso-receiver.html?token=${data.token}&user_info=${userInfoStr}`;
+          window.location.replace(`http://218.75.196.218:7788/sso-receiver.html?token=${data.token}&user_info=${userInfoStr}`);
         } else {
-          document.getElementById('message').textContent = '登录失败: ' + (data.error || '未知错误');
+          document.getElementById('message').textContent = '登录失败，请重试';
         }
       })
       .catch(err => {
-        document.getElementById('message').textContent = '请求失败: ' + err.message;
+        document.getElementById('message').textContent = '网络错误，请重试';
       });
     };
   </script>

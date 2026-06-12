@@ -9,7 +9,7 @@ class QingganlanClient:
 
     MOBILE_API_BASE = {
         'dev': 'https://dev-lshospital.goliveplus.cn',
-        'prod': 'https://xuegongmj.hgnu.edu.cn'  # 修正为正式环境地址
+        'prod': 'https://xuegongmj.hgnu.edu.cn'  # 正式环境地址（测试验证通过）
     }
 
     ADMIN_API_BASE = {
@@ -117,7 +117,7 @@ class QingganlanClient:
         Returns:
             dict: 包含user_code等信息
         """
-        endpoint = '/open-api/user-center/user-code-by-token'
+        endpoint = '/api/open-api/user-center/user-code-by-token'
         data = {
             'tenant_code': tenant_code,
             'appid': appid,
@@ -137,7 +137,7 @@ class QingganlanClient:
         Returns:
             dict: 用户详细信息
         """
-        endpoint = '/saas_api/open-api/user-center/user-info'
+        endpoint = '/api/open-api/user-center/user-info'
         data = {
             'tenantCode': tenant_code,
             'userCode': user_code,

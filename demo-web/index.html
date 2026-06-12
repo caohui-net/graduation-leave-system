@@ -737,8 +737,8 @@
             'rejected': '已拒绝'
         };
 
-        // Build table header
-        const headers = ['申请ID', '提交人', '学号', '手机号', '离校日期', '楼栋号', '房间号', '提交时间', '审批状态',
+        // Build table header (移除申请ID)
+        const headers = ['提交人', '学号', '手机号', '离校日期', '楼栋号', '房间号', '提交时间', '审批状态',
                         '宿管员', '宿管审批时间', '宿管审批结果', '辅导员', '辅导员审批时间', '辅导员审批结果'];
 
         const headerHTML = '<tr>' + headers.map(h => `<th style="padding: 8px; border: 1px solid #ddd; text-align: left; white-space: nowrap;">${h}</th>`).join('') + '</tr>';
@@ -779,7 +779,6 @@
             };
 
             return `<tr>
-                <td style="padding: 8px; border: 1px solid #ddd;">${escapeHtml(app.id?.substring(0,8) || '-')}</td>
                 <td style="padding: 8px; border: 1px solid #ddd;">${escapeHtml(app.student_name || '-')}</td>
                 <td style="padding: 8px; border: 1px solid #ddd;">${escapeHtml(app.student_id || '-')}</td>
                 <td style="padding: 8px; border: 1px solid #ddd;">${escapeHtml(app.contact_phone || '-')}</td>

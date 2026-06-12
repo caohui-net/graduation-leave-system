@@ -126,16 +126,16 @@
                         if (!existing) {
                             appRecords.set(appId, approval);
                         } else {
-                            // Keep record that matches current filter
-                            const appStatus = approval.application?.status || '';
-                            const existingStatus = existing.application?.status || '';
+                            // Keep record that matches current filter (based on approval.decision)
+                            const decision = approval.decision || '';
+                            const existingDecision = existing.decision || '';
 
                             let shouldReplace = false;
-                            if (currentFilter === 'approved' && appStatus === 'approved' && existingStatus !== 'approved') {
+                            if (currentFilter === 'approved' && decision === 'approved' && existingDecision !== 'approved') {
                                 shouldReplace = true;
-                            } else if (currentFilter === 'rejected' && appStatus === 'rejected' && existingStatus !== 'rejected') {
+                            } else if (currentFilter === 'rejected' && decision === 'rejected' && existingDecision !== 'rejected') {
                                 shouldReplace = true;
-                            } else if (currentFilter === 'pending' && appStatus.startsWith('pending_') && !existingStatus.startsWith('pending_')) {
+                            } else if (currentFilter === 'pending' && decision === 'pending' && existingDecision !== 'pending') {
                                 shouldReplace = true;
                             }
 

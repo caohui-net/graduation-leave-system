@@ -121,8 +121,8 @@
             // No front-end filtering needed - API returns correct decision
             let filtered = data.results;
 
-            // For dean/admin: deduplicate by application_id
-            if (currentUser && (currentUser.role === 'dean' || currentUser.role === 'admin')) {
+            // Deduplicate by application_id for all roles (one approval per application)
+            if (currentUser) {
                 const beforeCount = filtered.length;
                 const newUniqueRecords = [];
                 const orphanApprovals = [];
@@ -141,7 +141,7 @@
                 });
 
                 filtered = newUniqueRecords.concat(orphanApprovals);
-                console.log('[DEBUG] Dedup: before', beforeCount, '→ after', filtered.length, 'deanDisplayedApps size:', deanDisplayedApps.size);
+                console.log('[DEBUG] Dedup: before', beforeCount, '→ after', filtered.length, 'displayedApps size:', deanDisplayedApps.size);
             }
 
             accumulatedResults = accumulatedResults.concat(filtered);
@@ -159,7 +159,7 @@
 
         // CRITICAL: Only mark as displayed AFTER rendering, not before
         // This fixes data loss bug where records beyond TARGET_COUNT were marked displayed but never shown
-        if (currentUser && (currentUser.role === 'dean' || currentUser.role === 'admin')) {
+        if (currentUser) {
             displayRecords.forEach(approval => {
                 const appId = approval.application?.id;
                 if (appId && !deanDisplayedApps.has(appId)) {

@@ -125,10 +125,12 @@
                         const existing = appRecords.get(appId);
                         if (!existing) {
                             appRecords.set(appId, approval);
+                            console.log('[DEBUG] Dedup new:', appId, 'decision:', approval.decision);
                         } else {
                             // Keep record that matches current filter (based on approval.decision)
                             const decision = approval.decision || '';
                             const existingDecision = existing.decision || '';
+                            console.log('[DEBUG] Dedup duplicate:', appId, 'existing:', existingDecision, 'new:', decision, 'filter:', currentFilter);
 
                             let shouldReplace = false;
                             if (currentFilter === 'approved' && decision === 'approved' && existingDecision !== 'approved') {
@@ -140,6 +142,7 @@
                             }
 
                             if (shouldReplace) {
+                                console.log('[DEBUG] Dedup replace:', appId, existingDecision, '→', decision);
                                 appRecords.set(appId, approval);
                             }
                         }

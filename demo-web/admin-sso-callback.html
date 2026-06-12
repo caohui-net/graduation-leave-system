@@ -44,13 +44,29 @@
     window.onload = function() {
       // 获取当前URL的所有参数
       const currentParams = window.location.search;
+      const currentHash = window.location.hash;
+
+      // 调试信息
+      console.log('管理端callback收到:');
+      console.log('- URL search:', currentParams || '(空)');
+      console.log('- URL hash:', currentHash || '(空)');
+      console.log('- Full URL:', window.location.href);
+
+      // 显示调试信息（用户可见）
+      document.getElementById('message').textContent =
+        '管理端参数: ' + (currentParams || '(无参数)') +
+        ' Hash: ' + (currentHash || '(无)');
 
       // 直接跳转到后端callback，保留所有参数
       // callback_views.py会处理管理端参数（authorization+username）
       // 添加时间戳避免callback接口被缓存
       const timestamp = '_t=' + Date.now();
       const separator = currentParams ? '&' : '?';
-      window.location.href = 'http://218.75.196.218:7787/api/sso/qingganlian/callback' + currentParams + separator + timestamp;
+
+      // 延迟3秒让用户看到调试信息
+      setTimeout(function() {
+        window.location.href = 'http://218.75.196.218:7787/api/sso/qingganlian/callback' + currentParams + separator + timestamp;
+      }, 3000);
     };
   </script>
 </body>

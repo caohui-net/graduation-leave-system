@@ -9,6 +9,7 @@ class ApplicationStatus(models.TextChoices):
     PENDING_COUNSELOR = 'pending_counselor', '待辅导员审批'
     APPROVED = 'approved', '已通过'
     REJECTED = 'rejected', '已驳回'
+    FAILED = 'failed', '提交失败'
 
 
 class DormCheckoutStatus(models.TextChoices):

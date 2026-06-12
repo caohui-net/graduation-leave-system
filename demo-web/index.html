@@ -27,6 +27,16 @@
         const listContainer = document.getElementById('approval-list-container');
 
         if (data.results && data.results.length > 0) {
+            // 检查是否有failed或rejected状态，显示横幅
+            const hasFailed = data.results.some(a => a.status === 'failed');
+            const hasRejected = data.results.some(a => a.status === 'rejected');
+
+            if (hasFailed) {
+                showFailedApplicationBanner();
+            } else if (hasRejected) {
+                showRejectedApplicationBanner();
+            }
+
             // Apply filter
             let filtered = data.results;
             if (currentFilter === 'pending') {
@@ -163,7 +173,8 @@
             'pending_counselor': { text: '待辅导员审批', cls: 'tag-pending' },
             'pending_dean': { text: '待学工部审批', cls: 'tag-pending' },
             'approved': { text: '已通过', cls: 'tag-approved' },
-            'rejected': { text: '已拒绝', cls: 'tag-rejected' }
+            'rejected': { text: '已拒绝', cls: 'tag-rejected' },
+            'failed': { text: '提交失败', cls: 'tag-rejected' }
         };
 
         const decisionMap = {
@@ -853,15 +864,14 @@
         const banner = document.createElement('div');
         banner.id = 'rejected-banner';
         banner.className = 'card';
-        banner.style.cssText = 'margin: 20px; margin-bottom: 20px; padding: 16px; background: #fffbe6; border-left: 4px solid #faad14;';
+        banner.style.cssText = 'margin: 15px; padding: 10px; background: #fffbe6; border-left: 3px solid #faad14;';
         banner.innerHTML = `
-          <div style="display: flex; align-items: center; gap: 12px;">
-            <span style="font-size: 20px;">⚠️</span>
+          <div style="display: flex; align-items: flex-start; gap: 8px;">
+            <span style="font-size: 16px;">⚠️</span>
             <div style="flex: 1;">
-              <div style="font-size: 14px; font-weight: 600; color: #333; margin-bottom: 4px;">您的申请已被驳回</div>
-              <div style="font-size: 13px; color: #666;">请查看驳回原因后重新提交申请</div>
+              <div style="font-size: 13px; font-weight: 600; color: #333;">申请已被驳回</div>
+              <div style="font-size: 11px; color: #666; margin-top: 2px;">请查看驳回原因后重新提交申请</div>
             </div>
-            <button class="btn-outline" onclick="showScreen(1); loadMyApplications();" style="padding: 8px 16px; font-size: 13px;">查看驳回原因</button>
           </div>
         `;
         const screen0 = document.getElementById('screen-0');
@@ -869,6 +879,82 @@
         if (firstChild) {
             firstChild.insertBefore(banner, firstChild.firstChild);
         }
+    }
+
+    function showFailedApplicationBanner() {
+        const existingBanner = document.getElementById('failed-banner');
+        if (existingBanner) return;
+
+        const banner = document.createElement('div');
+        banner.id = 'failed-banner';
+        banner.className = 'card';
+        banner.style.cssText = 'margin: 15px; padding: 10px; background: #fff2f0; border-left: 3px solid #ff4d4f;';
+        banner.innerHTML = `
+          <div style="display: flex; align-items: flex-start; gap: 8px;">
+            <span style="font-size: 16px;">❌</span>
+            <div style="flex: 1;">
+              <div style="font-size: 13px; font-weight: 600; color: #333;">申请提交失败</div>
+              <div style="font-size: 11px; color: #666; margin-top: 2px;">提交未成功，请重新提交</div>
+            </div>
+          </div>
+        `;
+        const screen0 = document.getElementById('screen-0');
+        const firstChild = screen0.querySelector('div[style*="padding: 20px"]');
+        if (firstChild) {
+            firstChild.insertBefore(banner, firstChild.firstChild);
+        }
+    }
+
+    async function resubmitApplication() {
+        // 获取最新的驳回申请
+        const data = await apiGetApplications();
+        const rejectedApp = data.results.find(a => a.status === 'rejected');
+
+        if (!rejectedApp) {
+            showToast('未找到驳回的申请', 'error');
+            return;
+        }
+
+        // 填充表单
+        document.getElementById('contactPhone').value = rejectedApp.contact_phone || '';
+        document.getElementById('applicationReason').value = rejectedApp.reason || '';
+        document.getElementById('leaveDate').value = rejectedApp.leave_date || '';
+
+        // 清空附件（需要重新上传）
+        uploadedFiles = [];
+        renderFileList();
+
+        // 显示提交界面
+        showScreen(0);
+
+        // 滚动到顶部
+        window.scrollTo(0, 0);
+    }
+
+    async function retryFailedApplication() {
+        // 获取失败的申请
+        const data = await apiGetApplications();
+        const failedApp = data.results.find(a => a.status === 'failed');
+
+        if (!failedApp) {
+            showToast('未找到失败的申请', 'error');
+            return;
+        }
+
+        // 填充表单
+        document.getElementById('contactPhone').value = failedApp.contact_phone || '';
+        document.getElementById('applicationReason').value = failedApp.reason || '';
+        document.getElementById('leaveDate').value = failedApp.leave_date || '';
+
+        // 清空附件（需要重新上传）
+        uploadedFiles = [];
+        renderFileList();
+
+        // 显示提交界面
+        showScreen(0);
+
+        // 滚动到顶部
+        window.scrollTo(0, 0);
     }
 
     async function doSubmitApplication() {
@@ -1458,8 +1544,15 @@
             } else {
               showScreen(0); // Show application form (allow submit if no active application)
               if (hasApplications) {
-                // Show info banner if has rejected applications
-                showRejectedApplicationBanner();
+                // Check for failed or rejected applications
+                const hasFailed = applications.results.some(a => a.status === 'failed');
+                const hasRejected = applications.results.some(a => a.status === 'rejected');
+
+                if (hasFailed) {
+                  showFailedApplicationBanner();
+                } else if (hasRejected) {
+                  showRejectedApplicationBanner();
+                }
               }
             }
           } else {

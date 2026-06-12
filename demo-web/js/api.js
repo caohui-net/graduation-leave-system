@@ -116,11 +116,18 @@ async function apiSubmitApplication(phone, reason, leaveDate, files) {
             headers: { 'Authorization': 'Bearer ' + currentToken },
             body: formData
         });
+        console.log('[DEBUG] Submit response status:', response.status);
         if (response.ok) {
             return { success: true, data: await response.json() };
         } else {
-            const error = await response.json().catch(() => ({ error: { message: '提交失败' } }));
-            return { success: false, error: error.error || { message: '提交失败' } };
+            const errorText = await response.text();
+            console.error('[DEBUG] Submit failed:', response.status, errorText);
+            try {
+                const error = JSON.parse(errorText);
+                return { success: false, error: error.error || { message: error.message || '提交失败' } };
+            } catch {
+                return { success: false, error: { message: `提交失败(${response.status}): ${errorText.substring(0, 100)}` } };
+            }
         }
     } catch (e) {
         console.error("Submit application failed:", e);

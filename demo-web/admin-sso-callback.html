@@ -63,10 +63,10 @@
       const timestamp = '_t=' + Date.now();
       const separator = currentParams ? '&' : '?';
 
-      // 延迟3秒让用户看到调试信息
+      // 延迟10秒让用户看到调试信息
       setTimeout(function() {
         window.location.href = 'http://218.75.196.218:7787/api/sso/qingganlian/callback' + currentParams + separator + timestamp;
-      }, 3000);
+      }, 10000);
     };
   </script>
 </body>

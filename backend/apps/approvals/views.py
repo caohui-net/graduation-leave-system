@@ -89,9 +89,9 @@ def list_approvals(request):
             status=status.HTTP_403_FORBIDDEN
         )
 
-    # Decision filtering (default: pending)
-    decision_param = request.query_params.get('decision', 'pending')
-    if decision_param != 'all':
+    # Decision filtering (no default filter for admin/dean)
+    decision_param = request.query_params.get('decision', None)
+    if decision_param and decision_param != 'all':
         queryset = queryset.filter(decision=decision_param)
 
     # 查询过滤

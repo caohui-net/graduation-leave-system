@@ -82,17 +82,8 @@
             deanDisplayedApps.clear(); // Clear deduplication set on fresh load
         }
 
-        // Map currentFilter to API decision parameter
-        let decision = 'pending';
-        if (currentFilter === 'all') {
-            decision = 'all';
-        } else if (currentFilter === 'pending') {
-            decision = 'pending';
-        } else if (currentFilter === 'approved') {
-            decision = 'approved';
-        } else if (currentFilter === 'rejected') {
-            decision = 'rejected';
-        }
+        // Always fetch all records from API, filter by application.status on frontend
+        let decision = 'all';
 
         const listContainer = document.getElementById('approval-list-container');
         const loadMoreBtn = document.getElementById('load-more-approvals');
@@ -151,6 +142,21 @@
             if (currentOffset >= totalCount) {
                 break;
             }
+        }
+
+        // Filter by application.status based on currentFilter
+        if (currentFilter !== 'all') {
+            accumulatedResults = accumulatedResults.filter(approval => {
+                const appStatus = approval.application?.status || '';
+                if (currentFilter === 'pending') {
+                    return appStatus.startsWith('pending_');
+                } else if (currentFilter === 'approved') {
+                    return appStatus === 'approved';
+                } else if (currentFilter === 'rejected') {
+                    return appStatus === 'rejected';
+                }
+                return true;
+            });
         }
 
         // Render accumulated results (up to TARGET_COUNT)

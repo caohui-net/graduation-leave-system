@@ -171,7 +171,6 @@
         const statusMap = {
             'pending_dorm_manager': { text: '待宿管审批', cls: 'tag-pending' },
             'pending_counselor': { text: '待辅导员审批', cls: 'tag-pending' },
-            'pending_dean': { text: '待学工部审批', cls: 'tag-pending' },
             'approved': { text: '已通过', cls: 'tag-approved' },
             'rejected': { text: '已拒绝', cls: 'tag-rejected' },
             'failed': { text: '提交失败', cls: 'tag-rejected' }
@@ -368,11 +367,10 @@
     function renderStudentApprovalProgress(appData, approvals) {
         const stepNames = {
             'dorm_manager': '宿管员审批',
-            'counselor': '辅导员审批',
-            'dean': '学工部审批'
+            'counselor': '辅导员审批'
         };
 
-        const workflow = ['dorm_manager', 'counselor', 'dean'];
+        const workflow = ['dorm_manager', 'counselor'];
         const appStatus = appData.status;
 
         let html = '<div class="card"><div style="font-size: 16px; font-weight: bold; margin-bottom: 10px;">审批进度</div>';
@@ -521,20 +519,19 @@
     function generateTimeline(detail, appData) {
         const stepNames = {
             'dorm_manager': '宿管员审批',
-            'counselor': '辅导员审批',
-            'dean': '学工部审批'
+            'counselor': '辅导员审批'
         };
 
         const appStatus = appData ? appData.status : detail.step;
 
         // Filter workflow based on current user role
-        let workflow = ['dorm_manager', 'counselor', 'dean'];
+        let workflow = ['dorm_manager', 'counselor'];
         if (currentUser && currentUser.role === 'dorm_manager') {
             workflow = ['dorm_manager'];
         } else if (currentUser && currentUser.role === 'counselor') {
             workflow = ['dorm_manager', 'counselor'];
         }
-        // dean/admin sees all steps (default)
+        // admin sees all steps (default: 2 steps)
 
         // Calculate current level index
         let currentLevel;
@@ -1497,7 +1494,6 @@
     const statusMap = {
       'pending_dorm_manager': { text: '待宿管审批', class: 'tag-pending' },
       'pending_counselor': { text: '待辅导员审批', class: 'tag-pending' },
-      'pending_dean': { text: '待学工部审批', class: 'tag-pending' },
       'approved': { text: '已通过', class: 'tag-approved' },
       'rejected': { text: '已拒绝', class: 'tag-rejected' }
     };

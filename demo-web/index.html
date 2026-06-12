@@ -308,7 +308,11 @@
         const value = document.getElementById('filter-value').value.trim();
 
         adminFilters = {};
-        if (value) adminFilters[field] = value;
+        if (value) {
+            adminFilters[field] = value;
+            // 使用字段筛选时切换到"全部"状态，显示所有匹配申请
+            currentFilter = 'all';
+        }
 
         loadApprovals();
     }

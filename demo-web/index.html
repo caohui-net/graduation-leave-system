@@ -146,6 +146,7 @@
 
         // Filter based on role perspective
         if (currentFilter !== 'all') {
+            const beforeFilter = accumulatedResults.length;
             // Dorm manager / Counselor: filter by their own approval decision
             if (currentUser && (currentUser.role === 'dorm_manager' || currentUser.role === 'counselor')) {
                 accumulatedResults = accumulatedResults.filter(approval => {
@@ -156,6 +157,10 @@
             else {
                 accumulatedResults = accumulatedResults.filter(approval => {
                     const appStatus = approval.application?.status || '';
+                    console.log('[DEBUG] Admin filter:', appStatus, 'target:', currentFilter, 'match:',
+                        (currentFilter === 'pending' && appStatus.startsWith('pending_')) ||
+                        (currentFilter === 'approved' && appStatus === 'approved') ||
+                        (currentFilter === 'rejected' && appStatus === 'rejected'));
                     if (currentFilter === 'pending') {
                         return appStatus.startsWith('pending_');
                     } else if (currentFilter === 'approved') {
@@ -166,6 +171,7 @@
                     return true;
                 });
             }
+            console.log('[DEBUG] Filter result:', beforeFilter, '→', accumulatedResults.length, 'role:', currentUser?.role, 'filter:', currentFilter);
         }
 
         // Render accumulated results (up to TARGET_COUNT)

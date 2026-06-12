@@ -46,34 +46,51 @@
   </div>
 
   <script>
-    // 青橄榄SSO回调 - 直接跳转到后端callback处理
-    // 后端callback_views.py已支持移动端参数（authorization+user_id）
+    // 青橄榄SSO回调 - 移动端使用saas_wap_token流程
     window.onload = function() {
-      // 获取当前URL的所有参数
-      const currentParams = window.location.search;
-      const currentHash = window.location.hash;
+      // 获取青橄榄回调参数
+      const params = new URLSearchParams(window.location.search);
+      const saas_wap_token = params.get('saas_wap_token');
+      const tenantCode = params.get('tenantCode') || 'S10405';
 
       // 调试信息
       console.log('移动端callback收到:');
-      console.log('- URL search:', currentParams || '(空)');
-      console.log('- URL hash:', currentHash || '(空)');
+      console.log('- saas_wap_token:', saas_wap_token);
+      console.log('- tenantCode:', tenantCode);
       console.log('- Full URL:', window.location.href);
 
-      // 显示调试信息（用户可见）
+      if (!saas_wap_token) {
+        document.getElementById('message').textContent = '错误：未收到saas_wap_token';
+        return;
+      }
+
+      // 显示调试信息
       document.getElementById('message').textContent =
-        '移动端参数: ' + (currentParams || '(无参数)') +
-        ' Hash: ' + (currentHash || '(无)');
+        '移动端token: ' + saas_wap_token.substring(0, 20) + '...';
 
-      // 直接跳转到后端callback，保留所有参数
-      // 使用绝对URL避免端口错误（前端7788 → 后端7787）
-      // 添加时间戳避免callback接口被缓存
-      const timestamp = '_t=' + Date.now();
-      const separator = currentParams ? '&' : '?';
-
-      // 延迟10秒让用户看到调试信息
-      setTimeout(function() {
-        window.location.href = 'http://218.75.196.218:7787/api/sso/qingganlian/callback' + currentParams + separator + timestamp;
-      }, 10000);
+      // 调用后端mobile_saas_login接口处理
+      fetch('http://218.75.196.218:7787/api/sso/qingganlian/mobile-saas-login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          saas_wap_token: saas_wap_token,
+          tenant_code: tenantCode
+        })
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data.token && data.user) {
+          // 登录成功，跳转到sso-receiver保存token
+          const userInfoStr = encodeURIComponent(JSON.stringify(data.user));
+          window.location.href = `http://218.75.196.218:7788/sso-receiver.html?token=${data.token}&user_info=${userInfoStr}`;
+        } else {
+          document.getElementById('message').textContent = '登录失败: ' + (data.error || '未知错误');
+        }
+      })
+      .catch(err => {
+        console.error('登录请求失败:', err);
+        document.getElementById('message').textContent = '登录请求失败: ' + err.message;
+      });
     };
   </script>
 </body>

@@ -30,13 +30,6 @@
       0% { transform: rotate(0deg); }
       100% { transform: rotate(360deg); }
     }
-    .error {
-      color: #e74c3c;
-      padding: 20px;
-      background: white;
-      border-radius: 8px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    }
   </style>
 </head>
 <body>
@@ -46,68 +39,15 @@
   </div>
 
   <script>
-    const API_BASE_URL = 'http://218.75.196.218:7787';
-
-    // 从URL提取参数（兼容大小写）
-    function getParamsFromURL() {
-      const params = new URLSearchParams(window.location.search);
-      const authorization = params.get('authorization') || params.get('Authorization');
-      const username = params.get('username');
-      return { authorization, username };
-    }
-
-    // 调用后端验证token
-    async function verifyToken(authorization, username) {
-      try {
-        const response = await fetch(`${API_BASE_URL}/api/sso/qingganlian/admin/login`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({ authorization, username })
-        });
-
-        const data = await response.json();
-
-        if (response.ok && data.token) {
-          // 保存JWT token到localStorage
-          localStorage.setItem('auth_token', data.token);
-          localStorage.setItem('user_info', JSON.stringify(data.user));
-
-          // 跳转到系统首页
-          document.getElementById('message').textContent = '登录成功，跳转中...';
-          setTimeout(() => {
-            window.location.href = '/index.html';
-          }, 500);
-        } else {
-          throw new Error(data.error || '登录失败');
-        }
-      } catch (error) {
-        document.querySelector('.loading').innerHTML =
-          `<div class="error">
-            <h3>登录失败</h3>
-            <p>${error.message}</p>
-            <button onclick="window.location.href='/'">返回首页</button>
-          </div>`;
-      }
-    }
-
-    // 页面加载时自动执行
+    // 管理端SSO回调 - 直接跳转到后端callback处理
+    // 与mobile-sso-callback.html统一流程
     window.onload = function() {
-      const { authorization, username } = getParamsFromURL();
+      // 获取当前URL的所有参数
+      const currentParams = window.location.search;
 
-      if (!authorization || !username) {
-        document.querySelector('.loading').innerHTML =
-          `<div class="error">
-            <h3>缺少认证信息</h3>
-            <p>未找到authorization或username参数</p>
-            <button onclick="window.location.href='/'">返回首页</button>
-          </div>`;
-        return;
-      }
-
-      // 验证token
-      verifyToken(authorization, username);
+      // 直接跳转到后端callback，保留所有参数
+      // callback_views.py会处理管理端参数（authorization+username）
+      window.location.href = 'http://218.75.196.218:7787/api/sso/qingganlian/callback' + currentParams;
     };
   </script>
 </body>

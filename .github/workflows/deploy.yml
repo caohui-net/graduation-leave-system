@@ -1,0 +1,68 @@
+name: Deploy to Production
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+env:
+  DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
+  DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
+  DEPLOY_PATH: /opt/graduation-leave-system
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup SSH
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.DEPLOY_SSH_KEY }}" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          ssh-keyscan -H ${{ secrets.DEPLOY_HOST }} >> ~/.ssh/known_hosts
+
+      - name: Deploy to server
+        run: |
+          ssh -i ~/.ssh/deploy_key ${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }} << 'EOF'
+            set -e
+            cd ${{ env.DEPLOY_PATH }}
+
+            # 备份
+            docker-compose -f docker-compose.prod.yml ps -q > /tmp/backup_containers.txt
+            tar -czf /tmp/backup_$(date +%Y%m%d_%H%M%S).tar.gz docker-compose.prod.yml .env.prod || true
+
+            # 更新代码
+            git fetch origin
+            git checkout main
+            git pull origin main
+
+            # 构建镜像
+            docker-compose -f docker-compose.prod.yml build backend
+
+            # 数据库迁移
+            docker-compose -f docker-compose.prod.yml run --rm backend python manage.py migrate --noinput
+
+            # 重启服务
+            docker-compose -f docker-compose.prod.yml up -d --remove-orphans
+
+            # 等待启动
+            sleep 10
+
+            # 健康检查
+            if ! curl -f http://localhost:7787/api/applications/ > /dev/null 2>&1; then
+              echo "Health check failed, rolling back..."
+              docker-compose -f docker-compose.prod.yml down
+              tar -xzf /tmp/backup_*.tar.gz
+              docker-compose -f docker-compose.prod.yml up -d
+              exit 1
+            fi
+
+            echo "Deployment successful"
+          EOF
+
+      - name: Notify on failure
+        if: failure()
+        run: echo "Deployment failed, check logs"

@@ -1,0 +1,29 @@
+# 环境配置
+environments:
+  - name: staging
+    host: staging.example.com
+    user: deploy
+    path: /opt/graduation-leave-system
+    branch: develop
+
+  - name: production
+    host: 218.75.196.218
+    user: root
+    path: /opt/graduation-leave-system
+    branch: main
+
+# 部署配置
+deployment:
+  strategy: rolling-update
+  health_check:
+    url: /api/applications/
+    timeout: 10
+    retries: 3
+
+  backup:
+    enabled: true
+    retention: 7
+
+  rollback:
+    auto: true
+    on_failure: true

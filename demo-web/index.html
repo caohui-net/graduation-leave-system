@@ -146,8 +146,10 @@
 
         // Filter by application.status based on currentFilter
         if (currentFilter !== 'all') {
+            const beforeFilter = accumulatedResults.length;
             accumulatedResults = accumulatedResults.filter(approval => {
                 const appStatus = approval.application?.status || '';
+                console.log('[DEBUG] Filter check:', appStatus, 'currentFilter:', currentFilter);
                 if (currentFilter === 'pending') {
                     return appStatus.startsWith('pending_');
                 } else if (currentFilter === 'approved') {
@@ -157,6 +159,7 @@
                 }
                 return true;
             });
+            console.log('[DEBUG] After status filter:', beforeFilter, '→', accumulatedResults.length);
         }
 
         // Render accumulated results (up to TARGET_COUNT)

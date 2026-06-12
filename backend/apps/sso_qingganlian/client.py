@@ -9,7 +9,7 @@ class QingganlanClient:
 
     MOBILE_API_BASE = {
         'dev': 'https://dev-lshospital.goliveplus.cn',
-        'prod': 'https://dev-lshospital.goliveplus.cn'  # TODO: 确认正式环境地址
+        'prod': 'https://xuegongmj.hgnu.edu.cn'  # 修正为正式环境地址
     }
 
     ADMIN_API_BASE = {

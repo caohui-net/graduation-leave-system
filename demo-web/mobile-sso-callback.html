@@ -46,14 +46,11 @@
   </div>
 
   <script>
-    // 青橄榄SSO回调 - 移动端简化流程（不调用青橄榄API）
+    // 青橄榄SSO回调 - 使用saas_wap_token换取用户信息
     window.onload = function() {
-      // 获取青橄榄回调参数
       const params = new URLSearchParams(window.location.search);
       const saas_wap_token = params.get('saas_wap_token');
       const tenantCode = params.get('tenantCode') || 'S10405';
-
-      console.log('移动端callback收到:', saas_wap_token);
 
       if (!saas_wap_token) {
         document.getElementById('message').textContent = '错误：未收到saas_wap_token';
@@ -62,19 +59,18 @@
 
       document.getElementById('message').textContent = '正在登录...';
 
-      // 使用mobile/login简化接口（不调用青橄榄API）
-      fetch('http://218.75.196.218:7787/api/sso/qingganlian/mobile/login', {
+      // 调用mobile_saas_login接口
+      fetch('http://218.75.196.218:7787/api/sso/qingganlian/mobile/saas-login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          authorization: saas_wap_token,
-          user_id: null  // 后端从token提取
+          saas_wap_token: saas_wap_token,
+          tenant_code: tenantCode
         })
       })
-      .then(res => res.text().then(text => ({ ok: res.ok, text })))
-      .then(result => {
-        const data = JSON.parse(result.text);
-        if (result.ok && data.token) {
+      .then(res => res.json())
+      .then(data => {
+        if (data.token && data.user) {
           const userInfoStr = encodeURIComponent(JSON.stringify(data.user));
           window.location.href = `http://218.75.196.218:7788/sso-receiver.html?token=${data.token}&user_info=${userInfoStr}`;
         } else {

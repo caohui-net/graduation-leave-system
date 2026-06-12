@@ -73,8 +73,12 @@
         let decision = 'pending';
         if (currentFilter === 'all') {
             decision = 'all';
-        } else if (currentFilter === 'decided') {
-            decision = 'all'; // Get all, then filter for approved/rejected
+        } else if (currentFilter === 'pending') {
+            decision = 'pending';
+        } else if (currentFilter === 'approved') {
+            decision = 'approved';
+        } else if (currentFilter === 'rejected') {
+            decision = 'rejected';
         }
 
         const listContainer = document.getElementById('approval-list-container');
@@ -101,12 +105,8 @@
 
             totalCount = data.count;
 
-            // Apply front-end filter only for 'decided' (approved or rejected)
+            // No front-end filtering needed - API returns correct decision
             let filtered = data.results;
-            if (currentFilter === 'decided') {
-                filtered = data.results.filter(a => a.decision === 'approved' || a.decision === 'rejected');
-                console.log('[DEBUG] Filtered decided count:', filtered.length);
-            }
 
             // For dean/admin: deduplicate by application_id
             if (currentUser && (currentUser.role === 'dean' || currentUser.role === 'admin')) {
@@ -260,7 +260,8 @@
             tab.classList.remove('active');
             if ((filter === 'all' && index === 0) ||
                 (filter === 'pending' && index === 1) ||
-                (filter === 'decided' && index === 2)) {
+                (filter === 'approved' && index === 2) ||
+                (filter === 'rejected' && index === 3)) {
                 tab.classList.add('active');
             }
         });
@@ -943,6 +944,15 @@
       position: relative;
       border: none;
       background: none;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    @media (max-width: 375px) {
+      .nav-tab {
+        font-size: 12px;
+        padding: 10px 0;
+      }
     }
     .nav-tab.active {
       color: var(--primary-color);
@@ -1149,7 +1159,8 @@
     <div style="background: white; display: flex; border-bottom: 1px solid #f0f0f0;" id="approval-tabs">
       <div class="nav-tab active" style="flex: 1;" onclick="filterApprovals('all')">全部</div>
       <div class="nav-tab" style="flex: 1;" onclick="filterApprovals('pending')">待审批</div>
-      <div class="nav-tab" style="flex: 1;" onclick="filterApprovals('decided')">已审批</div>
+      <div class="nav-tab" style="flex: 1;" onclick="filterApprovals('approved')">已通过</div>
+      <div class="nav-tab" style="flex: 1;" onclick="filterApprovals('rejected')">已驳回</div>
     </div>
 
     <div style="padding: 10px;" id="approval-list-container">

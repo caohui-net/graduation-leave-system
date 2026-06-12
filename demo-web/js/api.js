@@ -38,20 +38,29 @@ function initializeUIAfterRestore(user) {
         // 显示用户信息
         const userNameEl = document.getElementById('currentUserName');
         const userRoleEl = document.getElementById('currentUserRole');
-        if (userNameEl && user.real_name) userNameEl.textContent = user.real_name;
+        if (userNameEl && (user.name || user.real_name)) {
+            userNameEl.textContent = user.name || user.real_name;
+        }
         if (userRoleEl && user.role) {
             const roleMap = { 'student': '学生', 'dorm_manager': '宿管', 'counselor': '辅导员', 'dean': '学工部', 'admin': '管理员' };
             userRoleEl.textContent = '(' + (roleMap[user.role] || user.role) + ')';
         }
 
+        // 更新界面元素（隐藏学生申请tab等）
+        if (typeof updateUIForRole === 'function') {
+            updateUIForRole(user.role);
+        }
+
         // 根据角色显示对应界面
         if (user.role === 'student') {
             if (typeof showScreen === 'function') showScreen(0);
+            if (typeof loadMyApplications === 'function') loadMyApplications();
         } else {
-            if (typeof showScreen === 'function') showScreen(1); // 审批列表
+            if (typeof showScreen === 'function') showScreen(1);
+            if (typeof loadApprovals === 'function') loadApprovals();
         }
 
-        console.log('UI initialized for user:', user.username);
+        console.log('UI initialized for user:', user.role);
     }
 }
 

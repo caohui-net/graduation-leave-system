@@ -105,8 +105,8 @@ def sso_callback(request):
                         'building': '{user.building or ""}',
                         'room_number': '{user.room_number or ""}'
                     }}));
-                    // 直接跳转到业务页面
-                    window.location.href = '/';
+                    // 直接跳转到业务页面（前端在7788端口）
+                    window.location.href = 'http://218.75.196.218:7788/';
                 </script>
                 <p style="text-align:center; padding-top:100px;">登录成功，正在跳转...</p>
             </body>

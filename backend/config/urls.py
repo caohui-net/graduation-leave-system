@@ -3,9 +3,12 @@ from django.contrib import admin
 from django.urls import path, include
 from django.http import HttpResponseRedirect
 from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
+from apps.healthcheck.views import healthz, readyz
 
 urlpatterns = [
     path('', lambda request: HttpResponseRedirect('http://218.75.196.218:7788/')),
+    path('healthz', healthz, name='healthz'),
+    path('readyz', readyz, name='readyz'),
     path('admin/', admin.site.urls),
     path('api/auth/', include('apps.users.urls')),
     path('api/', include('apps.attachments.urls')),

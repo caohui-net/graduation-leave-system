@@ -1,12 +1,22 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-06-11T16:12:08.938Z
-> Files: 654 tracked | Anatomy hits: 0 | Misses: 0
+> Auto-maintained by OpenWolf. Last scanned: 2026-06-12T16:05:40.900Z
+> Files: 694 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../../../tmp/
 
+- `check_graduate_users.py` (~349 tok)
+- `create_failed_app.py` (~181 tok)
+- `create_test_app.py` — 测试为张官芯创建申请 (~472 tok)
+- `delete_test_app.py` (~116 tok)
 - `golive-integration-revised-plan.md` — 青橄榄平台对接方案（修订版） (~2529 tok)
+- `graduation-frontend.service` (~79 tok)
+- `mobile-sso-404-analysis.md` — 移动端SSO登录404问题分析 (~283 tok)
 - `sso-fix-review.md` — SSO登录修复代码审查 (~475 tok)
+- `test_graduate_submit.py` (~317 tok)
+- `test_qgl_api.py` — generate_rand_str, generate_signature, generate_headers (~852 tok)
+- `test_submit.py` (~421 tok)
+- `test-localstorage.html` — LocalStorage测试 (~164 tok)
 
 ## ../../.claude/
 
@@ -31,15 +41,18 @@
 ## ./
 
 - `.gitignore` — Git ignore rules (~224 tok)
-- `CHANGELOG.md` — Changelog (~3244 tok)
-- `CLAUDE.md` — OpenWolf (~57 tok)
+- `CHANGELOG.md` — Changelog (~170 tok)
+- `CLAUDE.md` — OpenWolf (~158 tok)
 - `debug-login-19970545.md` — 用户19970545登录问题排查 (~244 tok)
+- `deploy.config.yml` (~134 tok)
 - `discussion_ux_proposal.md` — 三方直接讨论交互 UX 设计方案 (~960 tok)
+- `docker-compose.prod.yml` — Docker Compose: 5 services (~410 tok)
 - `docker-compose.yml` — Docker Compose services (~232 tok)
 - `frontend-server.service` (~92 tok)
 - `PRODUCTION-READY.md` — claude-codex-gemini-collab - PRODUCTION READY (~1835 tok)
+- `PROJECT-QUICK-REF.md` — 毕业离校系统 - 项目速查手册 (~1266 tok)
 - `pyproject.toml` — Claude-Codex-Gemini Collaboration Framework (~185 tok)
-- `README.md` — Project documentation (~2788 tok)
+- `README.md` — Project documentation (~433 tok)
 - `response.json` (~469 tok)
 - `SKILL.md` — Claude-Codex-Gemini Collaboration Skill (~3072 tok)
 
@@ -52,11 +65,15 @@
 
 - `openwolf.md` (~313 tok)
 
+## .github/workflows/
+
+- `deploy.yml` — CI: Deploy to Production (~762 tok)
+
 ## .omc/
 
 - `daemon-audit.log` (~125609 tok)
 - `project-memory.json` (~2513 tok)
-- `session-context.json` (~389 tok)
+- `session-context.json` (~453 tok)
 
 ## .omc/artifacts/ask/
 
@@ -603,10 +620,12 @@
 
 ## backend/apps/applications/
 
+- `models.py` — Model: Application, 11 fields (~574 tok)
 - `permissions.py` — can_view_application (~273 tok)
 - `providers.py` — from: check_status (~1187 tok)
 - `serializers.py` — ApplicationListSerializer: get_approvals, validate_leave_date (~640 tok)
-- `views.py` — applications_view, list_applications, create_application, get_application (~3181 tok)
+- `urls.py` (~98 tok)
+- `views.py` — applications_view, list_applications, create_application, get_application (~3728 tok)
 
 ## backend/apps/applications/management/
 
@@ -617,12 +636,16 @@
 - `__init__.py` — Django management commands (~9 tok)
 - `reset_test_data.py` — Command: handle (~261 tok)
 
+## backend/apps/applications/migrations/
+
+- `0002_allow_null_class_id.py` — Declares Migration (~104 tok)
+
 ## backend/apps/approvals/
 
 - `models.py` — Model: Approval, 11 fields (~386 tok)
 - `serializers.py` — ApplicationBriefSerializer: get_attachments (~1326 tok)
-- `urls.py` (~128 tok)
-- `views.py` — sanitize_excel_formula, list_approvals, get_approval, approve_approval (~4967 tok)
+- `urls.py` (~173 tok)
+- `views.py` — sanitize_excel_formula, list_approvals, get_approval, approve_approval (~6401 tok)
 
 ## backend/apps/approvals/migrations/
 
@@ -636,6 +659,11 @@
 
 - `views.py` — attachments_view, upload_attachment, list_attachments, download_attachment (~2168 tok)
 
+## backend/apps/healthcheck/
+
+- `__init__.py` (~0 tok)
+- `views.py` — healthz, readyz (~193 tok)
+
 ## backend/apps/notifications/
 
 - `services.py` — notify_application_submitted, notify_approval_decided, create_approval_timeout_warnings (~1331 tok)
@@ -645,8 +673,8 @@
 - `__init__.py` — 青橄榄平台SSO对接模块 (~26 tok)
 - `apps.py` — Declares SsoQingganlianConfig (~57 tok)
 - `auth.py` — generate_rand_str, generate_signature, generate_request_params (~391 tok)
-- `callback_views.py` — SSO HTML Callback Views - 直接跳转业务页面 (~1232 tok)
-- `client.py` — QingganlanClient: get_user_code_by_token, get_user_info, verify_admin_user (~1422 tok)
+- `callback_views.py` — SSO HTML Callback Views - 直接跳转业务页面 (~1305 tok)
+- `client.py` — QingganlanClient: get_user_code_by_token, get_user_info, verify_admin_user (~1419 tok)
 - `exceptions.py` — 青橄榄SSO异常类 (~123 tok)
 - `models.py` — Model: SSOUserMapping, 16 fields (~715 tok)
 - `README_SECURITY.md` — SSO安全配置说明 (~216 tok)
@@ -654,7 +682,7 @@
 - `serializers.py` — Declares MobileLoginRequestSerializer (~431 tok)
 - `settings.py` — 青橄榄SSO配置管理 (~214 tok)
 - `urls.py` (~124 tok)
-- `views.py` — mobile_saas_login, mobile_login, admin_login (~3317 tok)
+- `views.py` — mobile_saas_login, mobile_login, admin_login (~3438 tok)
 
 ## backend/apps/sso_qingganlian/migrations/
 
@@ -678,6 +706,13 @@
 - `serializers.py` — UserSerializer: validate, validate (~803 tok)
 - `views.py` — LoginRateThrottle: login, demo_login (~712 tok)
 
+## backend/apps/users/management/commands/
+
+- `check_all_buildings.py` — Command: handle (~218 tok)
+- `check_failed_user_apps.py` — Command: handle (~227 tok)
+- `check_graduate_buildings.py` — Command: handle (~441 tok)
+- `check_zi6_managers.py` — Command: handle (~339 tok)
+
 ## backend/backend/apps/sso_qingganlian/
 
 - `client.py` — QingganlanAPIError: get_user_code_by_token, get_user_info, verify_admin_user (~717 tok)
@@ -688,7 +723,7 @@
 
 ## backend/config/
 
-- `urls.py` — URL Configuration (~228 tok)
+- `urls.py` — URL Configuration (~305 tok)
 
 ## backend/config/settings/
 
@@ -719,22 +754,28 @@
 
 ## demo-web/
 
-- `admin-sso-callback.html` — SSO登录中... (~840 tok)
-- `index.html` — 毕业离校申请系统 - UI Demo (~17935 tok)
-- `mobile-sso-callback.html` — SSO登录中... (~1275 tok)
+- `admin-sso-callback.html` — SSO登录中... (~402 tok)
+- `index.html` — 毕业离校申请系统 - UI Demo (~21678 tok)
+- `mobile-sso-callback.html` — SSO登录中... (~614 tok)
+- `responsive-adapter-example.html` — Declares deviceAdapter (~579 tok)
+- `sso-receiver.html` — 登录中... (~410 tok)
 - `test-integration.sh` — Integration Test Script for Graduation Leave System (~1144 tok)
 
 ## demo-web/admin/
 
-- `dashboard.html` — 管理后台 (~1201 tok)
+- `dashboard.html` — 管理后台 (~2090 tok)
 
 ## demo-web/js/
 
-- `api.js` — API Integration Layer (~2159 tok)
+- `api.js` — API Integration Layer (~2355 tok)
+- `responsive-adapter.js` — 响应式适配器 - 移动端自动适配模块 (~1783 tok)
 
 ## docs/
 
 - `测试文档-完整流程测试.html` — 毕业离校申请系统 - 完整流程测试文档 (~716 tok)
+- `后端运行保障方案.md` — 后端服务运行保障方案 (~1023 tok)
+- `浏览器缓存更新方案.md` — 浏览器缓存强制更新方案 (~651 tok)
+- `青橄榄配置检查清单.md` — 青橄榄配置检查清单 (~218 tok)
 - `青橄榄平台对接材料-提交版.md` — 青橄榄平台SSO对接材料 (~1055 tok)
 - `青橄榄租号号对接材料-2026-06-10.md` — 青橄榄平台SSO对接材料（租号号管理端） (~952 tok)
 - `青橄榄SSO对接-三方技术审查.md` — 青橄榄SSO对接 - 三方技术审查报告 (~868 tok)
@@ -742,8 +783,15 @@
 - `青橄榄SSO对接测试清单-2026-06-10.md` — 青橄榄租号号SSO对接测试清单 (~848 tok)
 - `青橄榄SSO对接技术方案.md` — 青橄榄平台SSO对接技术方案 (~1909 tok)
 - `青橄榄SSO对接完成报告-2026-06-10.md` — 青橄榄平台SSO对接完成报告 (~1354 tok)
+- `响应式适配器使用文档.md` — 响应式适配器使用文档 (~1203 tok)
+- `移动端界面适配问题总结.md` — 移动端界面适配问题总结 (~1186 tok)
+- `移动端SSO故障排除.md` — 移动端SSO故障排除 (~481 tok)
+- `移动端SSO修复测试方案.md` — 移动端SSO修复验证测试方案 (~882 tok)
 - `agentmemory-integration-progress.md` — agentmemory Integration Progress (~1168 tok)
 - `architecture-integration-consensus.md` — 多智能体协作架构整合共识 (~1514 tok)
+- `DEPLOYMENT_AUTO.md` — 异地自动化部署指南 (~793 tok)
+- `DEPLOYMENT_PROD.md` — 生产环境部署指南 (~803 tok)
+- `PERFORMANCE.md` — 数据库性能优化指南 (~455 tok)
 - `PROJECT-SUMMARY.md` — 毕业生离校申请审批系统 - 项目总结 (~29851 tok)
 - `qingganlian-api-structure-fix-20260609.md` — 青橄榄SSO API结构修复记录 (~478 tok)
 - `qingganlian-bug-fixes-20260609.md` — 青橄榄SSO代码审计 - Bug修复记录 (~300 tok)
@@ -797,7 +845,11 @@
 
 ## scripts/
 
+- `deploy.sh` — 异地自动化部署脚本 (~884 tok)
 - `install_skill.py` — Install claude-codex-gemini-collab skill with all dependencies. (~514 tok)
+- `performance_test.sh` — 性能测试脚本 (~374 tok)
+- `rollback.sh` — 回滚脚本 - 恢复配置+数据库+容器 (~472 tok)
+- `setup_server.sh` — 首次服务器初始化脚本 (~410 tok)
 - `setup-systemd.sh` — 配置systemd服务（需要sudo权限） (~119 tok)
 - `start-services.sh` — 启动毕业离校系统所有服务 (~131 tok)
 

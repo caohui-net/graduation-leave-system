@@ -16,7 +16,7 @@ environments:
 deployment:
   strategy: rolling-update
   health_check:
-    url: /api/applications/
+    url: /readyz
     timeout: 10
     retries: 3
 

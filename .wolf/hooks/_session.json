@@ -1,149 +1,126 @@
 {
-  "session_id": "session-2026-06-11-2317",
-  "started": "2026-06-11T15:17:41.347Z",
+  "session_id": "session-2026-06-12-0001",
+  "started": "2026-06-12T16:01:55.695Z",
   "files_read": {
-    "/home/caohui/projects/graduation-leave-system/demo-web/mobile-sso-callback.html": {
+    "/home/caohui/projects/graduation-leave-system/.collab/artifacts/DISCUSS-异地自动化部署方案技术评审-已实现方案回顾-基于项目需求-1781279827-discuss-r2-gemini-20260612-160019.md": {
       "count": 1,
-      "tokens": 1275,
-      "first_read": "2026-06-11T15:22:20.910Z"
+      "tokens": 0,
+      "first_read": "2026-06-12T16:02:38.421Z"
     },
-    "/home/caohui/projects/graduation-leave-system/backend/apps/sso_qingganlian/views.py": {
-      "count": 10,
-      "tokens": 3056,
-      "first_read": "2026-06-11T15:25:14.652Z"
-    },
-    "/home/caohui/projects/graduation-leave-system/backend/apps/sso_qingganlian/serializers.py": {
+    "/home/caohui/projects/graduation-leave-system/backend/config/urls.py": {
       "count": 1,
-      "tokens": 382,
-      "first_read": "2026-06-11T15:38:51.471Z"
+      "tokens": 265,
+      "first_read": "2026-06-12T16:03:17.035Z"
     },
-    "/home/caohui/projects/graduation-leave-system/backend/apps/users/models.py": {
+    "/home/caohui/projects/graduation-leave-system/docker-compose.prod.yml": {
       "count": 1,
-      "tokens": 716,
-      "first_read": "2026-06-11T15:42:40.607Z"
+      "tokens": 384,
+      "first_read": "2026-06-12T16:03:51.779Z"
     },
-    "/home/caohui/projects/graduation-leave-system/backend/apps/sso_qingganlian/callback_views.py": {
-      "count": 2,
-      "tokens": 1195,
-      "first_read": "2026-06-11T15:53:16.900Z"
-    },
-    "/home/caohui/projects/graduation-leave-system/backend/apps/sso_qingganlian/client.py": {
+    "/home/caohui/projects/graduation-leave-system/scripts/deploy.sh": {
       "count": 1,
-      "tokens": 1422,
-      "first_read": "2026-06-11T15:57:45.280Z"
+      "tokens": 588,
+      "first_read": "2026-06-12T16:04:23.315Z"
     },
-    "/home/caohui/projects/graduation-leave-system/backend/apps/sso_qingganlian/settings.py": {
+    "/home/caohui/projects/graduation-leave-system/scripts/rollback.sh": {
       "count": 1,
-      "tokens": 174,
-      "first_read": "2026-06-11T16:11:28.252Z"
+      "tokens": 204,
+      "first_read": "2026-06-12T16:04:52.096Z"
+    },
+    "/home/caohui/projects/graduation-leave-system/docs/DEPLOYMENT_AUTO.md": {
+      "count": 1,
+      "tokens": 781,
+      "first_read": "2026-06-12T16:05:31.129Z"
     }
   },
   "files_written": [
     {
-      "file": "/home/caohui/projects/graduation-leave-system/debug-login-19970545.md",
+      "file": "/home/caohui/projects/graduation-leave-system/backend/apps/healthcheck/__init__.py",
       "action": "create",
-      "tokens": 279,
-      "at": "2026-06-11T15:22:39.527Z"
+      "tokens": 0,
+      "at": "2026-06-12T16:03:23.676Z"
     },
     {
-      "file": "/home/caohui/projects/graduation-leave-system/backend/check_user_19970545.py",
+      "file": "/home/caohui/projects/graduation-leave-system/backend/apps/healthcheck/views.py",
       "action": "create",
-      "tokens": 229,
-      "at": "2026-06-11T15:24:44.381Z"
+      "tokens": 193,
+      "at": "2026-06-12T16:03:31.326Z"
     },
     {
-      "file": "/home/caohui/projects/graduation-leave-system/backend/apps/sso_qingganlian/views.py",
+      "file": "/home/caohui/projects/graduation-leave-system/backend/config/urls.py",
       "action": "edit",
-      "tokens": 108,
-      "at": "2026-06-11T15:25:35.170Z"
+      "tokens": 141,
+      "at": "2026-06-12T16:03:39.615Z"
     },
     {
-      "file": "/home/caohui/projects/graduation-leave-system/backend/apps/sso_qingganlian/views.py",
+      "file": "/home/caohui/projects/graduation-leave-system/docker-compose.prod.yml",
       "action": "edit",
-      "tokens": 116,
-      "at": "2026-06-11T15:25:43.561Z"
+      "tokens": 75,
+      "at": "2026-06-12T16:04:00.202Z"
     },
     {
-      "file": "/home/caohui/projects/graduation-leave-system/backend/apps/sso_qingganlian/views.py",
+      "file": "/home/caohui/projects/graduation-leave-system/docker-compose.prod.yml",
       "action": "edit",
-      "tokens": 113,
-      "at": "2026-06-11T15:25:59.924Z"
+      "tokens": 194,
+      "at": "2026-06-12T16:04:09.858Z"
     },
     {
-      "file": "/home/caohui/projects/graduation-leave-system/backend/check_all_users_fields.py",
+      "file": "/home/caohui/projects/graduation-leave-system/deploy.config.yml",
+      "action": "edit",
+      "tokens": 18,
+      "at": "2026-06-12T16:04:17.303Z"
+    },
+    {
+      "file": "/home/caohui/projects/graduation-leave-system/scripts/deploy.sh",
+      "action": "edit",
+      "tokens": 208,
+      "at": "2026-06-12T16:04:34.931Z"
+    },
+    {
+      "file": "/home/caohui/projects/graduation-leave-system/scripts/deploy.sh",
+      "action": "edit",
+      "tokens": 257,
+      "at": "2026-06-12T16:04:45.811Z"
+    },
+    {
+      "file": "/home/caohui/projects/graduation-leave-system/scripts/rollback.sh",
       "action": "create",
-      "tokens": 350,
-      "at": "2026-06-11T15:27:09.802Z"
+      "tokens": 506,
+      "at": "2026-06-12T16:05:07.370Z"
     },
     {
-      "file": "/home/caohui/projects/graduation-leave-system/backend/apps/sso_qingganlian/serializers.py",
+      "file": "/home/caohui/projects/graduation-leave-system/.github/workflows/deploy.yml",
       "action": "edit",
-      "tokens": 148,
-      "at": "2026-06-11T15:39:02.896Z"
+      "tokens": 182,
+      "at": "2026-06-12T16:05:15.877Z"
     },
     {
-      "file": "/tmp/sso-fix-review.md",
-      "action": "create",
-      "tokens": 543,
-      "at": "2026-06-11T15:42:14.401Z"
-    },
-    {
-      "file": "/home/caohui/projects/graduation-leave-system/backend/apps/sso_qingganlian/serializers.py",
+      "file": "/home/caohui/projects/graduation-leave-system/.github/workflows/deploy.yml",
       "action": "edit",
-      "tokens": 48,
-      "at": "2026-06-11T15:54:11.638Z"
+      "tokens": 177,
+      "at": "2026-06-12T16:05:24.318Z"
     },
     {
-      "file": "/home/caohui/projects/graduation-leave-system/backend/apps/sso_qingganlian/callback_views.py",
+      "file": "/home/caohui/projects/graduation-leave-system/docs/DEPLOYMENT_AUTO.md",
       "action": "edit",
-      "tokens": 106,
-      "at": "2026-06-11T15:57:11.514Z"
-    },
-    {
-      "file": "/home/caohui/projects/graduation-leave-system/backend/apps/sso_qingganlian/views.py",
-      "action": "edit",
-      "tokens": 246,
-      "at": "2026-06-11T16:01:01.042Z"
-    },
-    {
-      "file": "/home/caohui/projects/graduation-leave-system/backend/apps/sso_qingganlian/views.py",
-      "action": "edit",
-      "tokens": 92,
-      "at": "2026-06-11T16:01:24.617Z"
-    },
-    {
-      "file": "/home/caohui/projects/graduation-leave-system/backend/apps/sso_qingganlian/settings.py",
-      "action": "edit",
-      "tokens": 58,
-      "at": "2026-06-11T16:11:37.620Z"
-    },
-    {
-      "file": "/home/caohui/projects/graduation-leave-system/backend/apps/sso_qingganlian/views.py",
-      "action": "edit",
-      "tokens": 278,
-      "at": "2026-06-11T16:11:50.662Z"
-    },
-    {
-      "file": "/home/caohui/projects/graduation-leave-system/backend/apps/sso_qingganlian/README_SECURITY.md",
-      "action": "create",
-      "tokens": 247,
-      "at": "2026-06-11T16:12:08.949Z"
+      "tokens": 52,
+      "at": "2026-06-12T16:05:40.910Z"
     }
   ],
   "edit_counts": {
-    "debug-login-19970545.md": 1,
-    "backend/check_user_19970545.py": 1,
-    "backend/apps/sso_qingganlian/views.py": 6,
-    "backend/check_all_users_fields.py": 1,
-    "backend/apps/sso_qingganlian/serializers.py": 2,
-    "../../../../tmp/sso-fix-review.md": 1,
-    "backend/apps/sso_qingganlian/callback_views.py": 1,
-    "backend/apps/sso_qingganlian/settings.py": 1,
-    "backend/apps/sso_qingganlian/README_SECURITY.md": 1
+    "backend/apps/healthcheck/__init__.py": 1,
+    "backend/apps/healthcheck/views.py": 1,
+    "backend/config/urls.py": 1,
+    "docker-compose.prod.yml": 2,
+    "deploy.config.yml": 1,
+    "scripts/deploy.sh": 2,
+    "scripts/rollback.sh": 1,
+    ".github/workflows/deploy.yml": 2,
+    "docs/DEPLOYMENT_AUTO.md": 1
   },
-  "anatomy_hits": 7,
-  "anatomy_misses": 0,
-  "repeated_reads_warned": 10,
+  "anatomy_hits": 5,
+  "anatomy_misses": 1,
+  "repeated_reads_warned": 0,
   "cerebrum_warnings": 0,
-  "stop_count": 10
+  "stop_count": 1
 }

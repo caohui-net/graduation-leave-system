@@ -1,6 +1,6 @@
 {
   "version": "1.0.0",
-  "lastScanned": 1781150277160,
+  "lastScanned": 1781243242865,
   "projectRoot": "/home/caohui/projects/graduation-leave-system",
   "techStack": {
     "languages": [],
@@ -37,47 +37,47 @@
       "path": "PRD",
       "purpose": null,
       "fileCount": 0,
-      "lastAccessed": 1781150277146,
+      "lastAccessed": 1781243242855,
       "keyFiles": []
     },
     "backend": {
       "path": "backend",
       "purpose": null,
-      "fileCount": 17,
-      "lastAccessed": 1781150277148,
+      "fileCount": 24,
+      "lastAccessed": 1781243242858,
       "keyFiles": [
         "API接口清单.md",
         "Dockerfile",
-        "export_admins_for_qgl.py",
-        "manage.py",
-        "requirements.txt"
+        "check_all_users_fields.py",
+        "check_approvals.py",
+        "check_user_19970545.py"
       ]
     },
     "demo-web": {
       "path": "demo-web",
       "purpose": null,
-      "fileCount": 5,
-      "lastAccessed": 1781150277148,
+      "fileCount": 6,
+      "lastAccessed": 1781243242859,
       "keyFiles": [
         "IMPLEMENTATION_NOTES.md",
         "admin-sso-callback.html",
         "index.html",
         "mobile-sso-callback.html",
-        "test-integration.sh"
+        "sso-receiver.html"
       ]
     },
     "docker": {
       "path": "docker",
       "purpose": null,
       "fileCount": 0,
-      "lastAccessed": 1781150277149,
+      "lastAccessed": 1781243242859,
       "keyFiles": []
     },
     "docs": {
       "path": "docs",
       "purpose": "Documentation",
-      "fileCount": 117,
-      "lastAccessed": 1781150277150,
+      "fileCount": 137,
+      "lastAccessed": 1781243242860,
       "keyFiles": [
         "1-5830名毕业生（含研究生）.xls",
         "1-无入住信息.xls",
@@ -90,14 +90,14 @@
       "path": "frontend",
       "purpose": null,
       "fileCount": 0,
-      "lastAccessed": 1781150277150,
+      "lastAccessed": 1781243242860,
       "keyFiles": []
     },
     "logs": {
       "path": "logs",
       "purpose": null,
       "fileCount": 1,
-      "lastAccessed": 1781150277150,
+      "lastAccessed": 1781243242860,
       "keyFiles": [
         "frontend.log"
       ]
@@ -106,7 +106,7 @@
       "path": "miniprogram",
       "purpose": null,
       "fileCount": 5,
-      "lastAccessed": 1781150277150,
+      "lastAccessed": 1781243242861,
       "keyFiles": [
         "app.json",
         "app.ts",
@@ -119,14 +119,14 @@
       "path": "plans",
       "purpose": null,
       "fileCount": 0,
-      "lastAccessed": 1781150277150,
+      "lastAccessed": 1781243242862,
       "keyFiles": []
     },
     "scripts": {
       "path": "scripts",
       "purpose": "Build/utility scripts",
       "fileCount": 5,
-      "lastAccessed": 1781150277151,
+      "lastAccessed": 1781243242862,
       "keyFiles": [
         "analyze_excel_data.py",
         "md_to_docx.py",
@@ -139,7 +139,7 @@
       "path": "tests",
       "purpose": "Test files",
       "fileCount": 7,
-      "lastAccessed": 1781150277151,
+      "lastAccessed": 1781243242862,
       "keyFiles": [
         "api_data_samples.sh",
         "approval_workflow_test.py",
@@ -152,14 +152,14 @@
       "path": "docker/scripts",
       "purpose": "Build/utility scripts",
       "fileCount": 0,
-      "lastAccessed": 1781150277152,
+      "lastAccessed": 1781243242863,
       "keyFiles": []
     },
     "frontend/components": {
       "path": "frontend/components",
       "purpose": "UI components",
       "fileCount": 1,
-      "lastAccessed": 1781150277152,
+      "lastAccessed": 1781243242863,
       "keyFiles": [
         "ApprovalDetail.tsx"
       ]
@@ -168,7 +168,7 @@
       "path": "frontend/services",
       "purpose": "Business logic services",
       "fileCount": 3,
-      "lastAccessed": 1781150277157,
+      "lastAccessed": 1781243242864,
       "keyFiles": [
         "api.ts",
         "attachment.ts",
@@ -179,23 +179,32 @@
       "path": "frontend/types",
       "purpose": "Type definitions",
       "fileCount": 1,
-      "lastAccessed": 1781150277157,
+      "lastAccessed": 1781243242864,
       "keyFiles": [
         "api.ts"
+      ]
+    },
+    "frontend/utils": {
+      "path": "frontend/utils",
+      "purpose": "Utility functions",
+      "fileCount": 1,
+      "lastAccessed": 1781243242864,
+      "keyFiles": [
+        "attachment.ts"
       ]
     },
     "miniprogram/pages": {
       "path": "miniprogram/pages",
       "purpose": "Page components",
       "fileCount": 0,
-      "lastAccessed": 1781150277157,
+      "lastAccessed": 1781243242864,
       "keyFiles": []
     },
     "miniprogram/services": {
       "path": "miniprogram/services",
       "purpose": "Business logic services",
       "fileCount": 1,
-      "lastAccessed": 1781150277159,
+      "lastAccessed": 1781243242864,
       "keyFiles": [
         "api.ts"
       ]
@@ -204,7 +213,7 @@
       "path": "miniprogram/types",
       "purpose": "Type definitions",
       "fileCount": 1,
-      "lastAccessed": 1781150277159,
+      "lastAccessed": 1781243242865,
       "keyFiles": [
         "api.ts"
       ]
@@ -213,7 +222,7 @@
       "path": "miniprogram/utils",
       "purpose": "Utility functions",
       "fileCount": 2,
-      "lastAccessed": 1781150277159,
+      "lastAccessed": 1781243242865,
       "keyFiles": [
         "date.ts",
         "role-guard.ts"
@@ -223,20 +232,56 @@
   "hotPaths": [
     {
       "path": "demo-web/index.html",
-      "accessCount": 95,
-      "lastAccessed": 1781188547944,
-      "type": "file"
-    },
-    {
-      "path": "backend/apps/sso_qingganlian/views.py",
-      "accessCount": 21,
-      "lastAccessed": 1781194310705,
+      "accessCount": 191,
+      "lastAccessed": 1781278994755,
       "type": "file"
     },
     {
       "path": "demo-web/mobile-sso-callback.html",
-      "accessCount": 14,
-      "lastAccessed": 1781191341476,
+      "accessCount": 59,
+      "lastAccessed": 1781251121181,
+      "type": "file"
+    },
+    {
+      "path": "backend/apps/sso_qingganlian/views.py",
+      "accessCount": 40,
+      "lastAccessed": 1781272309135,
+      "type": "file"
+    },
+    {
+      "path": "backend/apps/approvals/views.py",
+      "accessCount": 21,
+      "lastAccessed": 1781276219891,
+      "type": "file"
+    },
+    {
+      "path": "backend/apps/sso_qingganlian/callback_views.py",
+      "accessCount": 20,
+      "lastAccessed": 1781250143024,
+      "type": "file"
+    },
+    {
+      "path": "demo-web/admin-sso-callback.html",
+      "accessCount": 15,
+      "lastAccessed": 1781247421519,
+      "type": "file"
+    },
+    {
+      "path": "backend/apps/sso_qingganlian/client.py",
+      "accessCount": 13,
+      "lastAccessed": 1781251248351,
+      "type": "file"
+    },
+    {
+      "path": "backend/apps/applications/views.py",
+      "accessCount": 11,
+      "lastAccessed": 1781273004053,
+      "type": "file"
+    },
+    {
+      "path": "demo-web/js/api.js",
+      "accessCount": 9,
+      "lastAccessed": 1781276104723,
       "type": "file"
     },
     {
@@ -252,21 +297,21 @@
       "type": "file"
     },
     {
-      "path": "backend/apps/sso_qingganlian/callback_views.py",
-      "accessCount": 8,
-      "lastAccessed": 1781193431551,
+      "path": "PROJECT-QUICK-REF.md",
+      "accessCount": 7,
+      "lastAccessed": 1781278878891,
       "type": "file"
     },
     {
       "path": "backend/apps/users/models.py",
-      "accessCount": 5,
-      "lastAccessed": 1781192561420,
+      "accessCount": 6,
+      "lastAccessed": 1781272033336,
       "type": "file"
     },
     {
       "path": "frontend/mobile/ApprovalDetail.tsx",
-      "accessCount": 4,
-      "lastAccessed": 1781152737023,
+      "accessCount": 5,
+      "lastAccessed": 1781253346336,
       "type": "file"
     },
     {
@@ -282,15 +327,21 @@
       "type": "file"
     },
     {
-      "path": "backend/apps/approvals/views.py",
-      "accessCount": 4,
-      "lastAccessed": 1781155422833,
-      "type": "file"
-    },
-    {
       "path": "backend/import_students.py",
       "accessCount": 4,
       "lastAccessed": 1781175195036,
+      "type": "file"
+    },
+    {
+      "path": "backend/apps/sso_qingganlian/urls.py",
+      "accessCount": 4,
+      "lastAccessed": 1781246547489,
+      "type": "file"
+    },
+    {
+      "path": "backend/apps/applications/models.py",
+      "accessCount": 4,
+      "lastAccessed": 1781273742790,
       "type": "file"
     },
     {
@@ -312,9 +363,15 @@
       "type": "file"
     },
     {
-      "path": "backend/apps/sso_qingganlian/client.py",
+      "path": "backend/apps/sso_qingganlian/settings.py",
       "accessCount": 3,
-      "lastAccessed": 1781193465847,
+      "lastAccessed": 1781235859453,
+      "type": "file"
+    },
+    {
+      "path": "backend/apps/users/serializers.py",
+      "accessCount": 3,
+      "lastAccessed": 1781244156640,
       "type": "file"
     },
     {
@@ -336,33 +393,21 @@
       "type": "file"
     },
     {
-      "path": "backend/apps/users/serializers.py",
-      "accessCount": 2,
-      "lastAccessed": 1781183410911,
-      "type": "file"
-    },
-    {
       "path": "backend/apps/users/management/commands/seed_data.py",
       "accessCount": 2,
       "lastAccessed": 1781183694571,
       "type": "file"
     },
     {
-      "path": "backend/apps/sso_qingganlian/urls.py",
+      "path": "CLAUDE.md",
       "accessCount": 2,
-      "lastAccessed": 1781189384802,
+      "lastAccessed": 1781194963758,
       "type": "file"
     },
     {
-      "path": "demo-web/admin-sso-callback.html",
+      "path": ".wolf/cerebrum.md",
       "accessCount": 2,
-      "lastAccessed": 1781190939421,
-      "type": "file"
-    },
-    {
-      "path": "backend/apps/sso_qingganlian/settings.py",
-      "accessCount": 2,
-      "lastAccessed": 1781194297654,
+      "lastAccessed": 1781194985495,
       "type": "file"
     },
     {
@@ -432,18 +477,6 @@
       "type": "file"
     },
     {
-      "path": "backend/apps/applications/views.py",
-      "accessCount": 1,
-      "lastAccessed": 1781174151289,
-      "type": "file"
-    },
-    {
-      "path": "backend/apps/applications/models.py",
-      "accessCount": 1,
-      "lastAccessed": 1781174978422,
-      "type": "file"
-    },
-    {
       "path": "backend/test_student_interface.py",
       "accessCount": 1,
       "lastAccessed": 1781175037050,
@@ -453,12 +486,6 @@
       "path": "backend/test_api_response.py",
       "accessCount": 1,
       "lastAccessed": 1781182543174,
-      "type": "file"
-    },
-    {
-      "path": "demo-web/js/api.js",
-      "accessCount": 1,
-      "lastAccessed": 1781187946048,
       "type": "file"
     },
     {
@@ -483,6 +510,24 @@
       "path": "backend/apps/sso_qingganlian/README_SECURITY.md",
       "accessCount": 1,
       "lastAccessed": 1781194328987,
+      "type": "file"
+    },
+    {
+      "path": "backend/apps/sso_qingganlian/exceptions.py",
+      "accessCount": 1,
+      "lastAccessed": 1781233212131,
+      "type": "file"
+    },
+    {
+      "path": "docs/移动端SSO修复测试方案.md",
+      "accessCount": 1,
+      "lastAccessed": 1781233436173,
+      "type": "file"
+    },
+    {
+      "path": "docs/218.75.196.218-1781235524633.log",
+      "accessCount": 1,
+      "lastAccessed": 1781235652825,
       "type": "file"
     }
   ],

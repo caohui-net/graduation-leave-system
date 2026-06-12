@@ -17,10 +17,37 @@
       "status": "completed",
       "completed_at": "2026-06-11T15:43:26.808Z",
       "duration_ms": 52040
+    },
+    {
+      "agent_id": "a8b12d60559dd1cf6",
+      "agent_type": "codex:codex-rescue",
+      "started_at": "2026-06-12T09:10:33.472Z",
+      "parent_mode": "none",
+      "status": "completed",
+      "completed_at": "2026-06-12T09:15:45.178Z",
+      "duration_ms": 311706
+    },
+    {
+      "agent_id": "a924390cfeae9d4d9",
+      "agent_type": "oh-my-claudecode:designer",
+      "started_at": "2026-06-12T09:10:33.536Z",
+      "parent_mode": "none",
+      "status": "completed",
+      "completed_at": "2026-06-12T09:11:18.428Z",
+      "duration_ms": 44892
+    },
+    {
+      "agent_id": "a5081d87630fad621",
+      "agent_type": "oh-my-claudecode:designer",
+      "started_at": "2026-06-12T09:26:11.614Z",
+      "parent_mode": "none",
+      "status": "completed",
+      "completed_at": "2026-06-12T09:26:27.193Z",
+      "duration_ms": 15579
     }
   ],
-  "total_spawned": 1,
-  "total_completed": 2,
+  "total_spawned": 4,
+  "total_completed": 6,
   "total_failed": 0,
-  "last_updated": "2026-06-11T15:52:15.670Z"
+  "last_updated": "2026-06-12T09:26:27.297Z"
 }

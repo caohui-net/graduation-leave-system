@@ -36,13 +36,19 @@ else
     echo_error "SSH连接失败，请检查配置"
 fi
 
-# 2. 备份当前版本
+# 2. 备份当前版本（配置+数据库+Git SHA）
 echo ""
 echo "2. 备份当前版本..."
+BACKUP_TIMESTAMP=$(date +%Y%m%d_%H%M%S)
 ssh $REMOTE_USER@$REMOTE_HOST "cd $REMOTE_PATH && \
-    docker-compose -f docker-compose.prod.yml ps -q > /tmp/backup_containers.txt && \
-    tar -czf /tmp/backup_\$(date +%Y%m%d_%H%M%S).tar.gz docker-compose.prod.yml .env.prod || true"
-echo_success "备份完成"
+    export BACKUP_DIR=/tmp/backup_\${BACKUP_TIMESTAMP} && \
+    mkdir -p \$BACKUP_DIR && \
+    docker-compose -f docker-compose.prod.yml ps -q > \$BACKUP_DIR/containers.txt && \
+    tar -czf \$BACKUP_DIR/config.tar.gz docker-compose.prod.yml .env.docker .env.prod 2>/dev/null || true && \
+    git rev-parse HEAD > \$BACKUP_DIR/git_sha.txt && \
+    docker-compose -f docker-compose.prod.yml exec -T db pg_dump -U postgres graduation_leave | gzip > \$BACKUP_DIR/db_dump.sql.gz && \
+    echo \$BACKUP_TIMESTAMP > /tmp/last_backup_timestamp.txt"
+echo_success "备份完成（配置+数据库+Git SHA）"
 
 # 3. 拉取最新代码
 echo ""
@@ -78,10 +84,23 @@ echo_success "服务重启完成"
 echo ""
 echo "7. 健康检查..."
 sleep 10
-if ssh $REMOTE_USER@$REMOTE_HOST "curl -f http://localhost:7787/api/applications/ > /dev/null 2>&1"; then
+if ssh $REMOTE_USER@$REMOTE_HOST "curl -f http://localhost:7787/readyz > /dev/null 2>&1"; then
     echo_success "健康检查通过"
 else
-    echo_error "健康检查失败，开始回滚..."
+    echo ""
+    echo "✗ 健康检查失败，开始自动回滚..."
+    LAST_BACKUP=$(ssh $REMOTE_USER@$REMOTE_HOST "cat /tmp/last_backup_timestamp.txt 2>/dev/null || echo ''")
+    if [ -n "$LAST_BACKUP" ]; then
+        ssh $REMOTE_USER@$REMOTE_HOST "cd $REMOTE_PATH && \
+            export BACKUP_DIR=/tmp/backup_\${LAST_BACKUP} && \
+            docker-compose -f docker-compose.prod.yml down && \
+            tar -xzf \$BACKUP_DIR/config.tar.gz && \
+            gunzip -c \$BACKUP_DIR/db_dump.sql.gz | docker-compose -f docker-compose.prod.yml exec -T db psql -U postgres graduation_leave && \
+            docker-compose -f docker-compose.prod.yml up -d"
+        echo_error "已回滚到备份点: $LAST_BACKUP"
+    else
+        echo_error "健康检查失败且无备份可用"
+    fi
 fi
 
 # 8. 清理旧镜像

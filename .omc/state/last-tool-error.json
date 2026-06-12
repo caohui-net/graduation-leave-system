@@ -1,7 +1,7 @@
 {
   "tool_name": "Bash",
-  "tool_input_preview": "{\"command\":\"cd /home/caohui/projects/graduation-leave-system/backend && source venv/bin/activate && python3 manage.py shell -c \\\"\\nfrom apps.users.models import User\\n\\nusers = User.objects.all()\\ntot...",
-  "error": "Exit code 1\n总用户数: 6081\nbuilding为NULL: 28 (0%)\nroom_number为NULL: 269 (4%)\n两者都为NULL: 28 (0%)\n\n用户19970545: building=None, room=None\n\n最近5个用户:\nTraceback (most recent call last):\n  File \"/home/caohui/projects/graduation-leave-system/backend/manage.py\", line 22, in <module>\n    main()\n    ~~~~^^\n  File \"/home/caohui/projects/graduation-leave-system/backend/manage.py\", line 18, in main\n    execute_from_command_line(sys.argv)\n    ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^\n  File \"/home/caohui/projects/graduatio...",
-  "timestamp": "2026-06-11T15:27:32.559Z",
+  "tool_input_preview": "{\"command\":\"docker exec 1946adf4680e ps aux 2>&1\",\"description\":\"Check container processes\"}",
+  "error": "Exit code 127\nOCI runtime exec failed: exec failed: unable to start container process: exec: \"ps\": executable file not found in $PATH",
+  "timestamp": "2026-06-12T15:14:18.482Z",
   "retry_count": 2
 }

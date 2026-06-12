@@ -1,0 +1,9 @@
+{"t":0,"agent":"system","event":"skill_invoked","skill_name":"claude-codex-gemini-collab"}
+{"t":0,"agent":"a8b12d6","agent_type":"codex:codex-rescue","event":"agent_start","parent_mode":"none"}
+{"t":0,"agent":"a924390","agent_type":"designer","event":"agent_start","parent_mode":"none"}
+{"t":0,"agent":"a924390","agent_type":"designer","event":"agent_stop","success":true,"duration_ms":44892}
+{"t":0,"agent":"a8b12d6","agent_type":"codex:codex-rescue","event":"agent_stop","success":true,"duration_ms":311706}
+{"t":0,"agent":"a5081d8","agent_type":"designer","event":"agent_start","parent_mode":"none"}
+{"t":0,"agent":"a5081d8","agent_type":"designer","event":"agent_stop","success":true,"duration_ms":14589}
+{"t":0,"agent":"a5081d8","agent_type":"designer","event":"agent_start","parent_mode":"none"}
+{"t":0,"agent":"a5081d8","agent_type":"designer","event":"agent_stop","success":true,"duration_ms":15579}

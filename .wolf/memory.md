@@ -1210,3 +1210,369 @@
 | 00:11 | Edited backend/apps/sso_qingganlian/settings.py | 2→6 lines | ~58 |
 | 00:11 | Edited backend/apps/sso_qingganlian/views.py | 20→23 lines | ~278 |
 | 00:12 | Created backend/apps/sso_qingganlian/README_SECURITY.md | — | ~231 |
+| 00:12 | Session end: 15 writes across 9 files (debug-login-19970545.md, check_user_19970545.py, views.py, check_all_users_fields.py, serializers.py) | 7 reads | ~11181 tok |
+| 00:18 | Created PROJECT-QUICK-REF.md | — | ~194 |
+| 00:18 | Edited PROJECT-QUICK-REF.md | expanded (+219 lines) | ~1167 |
+| 00:21 | Session end: 17 writes across 10 files (debug-login-19970545.md, check_user_19970545.py, views.py, check_all_users_fields.py, serializers.py) | 7 reads | ~12639 tok |
+| 00:22 | Edited CLAUDE.md | expanded (+16 lines) | ~168 |
+| 00:23 | Edited .omc/session-context.json | 3→8 lines | ~82 |
+| 00:24 | Session end: 19 writes across 12 files (debug-login-19970545.md, check_user_19970545.py, views.py, check_all_users_fields.py, serializers.py) | 9 reads | ~13347 tok |
+| 00:25 | Session end: 19 writes across 12 files (debug-login-19970545.md, check_user_19970545.py, views.py, check_all_users_fields.py, serializers.py) | 9 reads | ~13347 tok |
+| 10:58 | Created ../../../../tmp/mobile-sso-404-analysis.md | — | ~302 |
+| 10:58 | Session end: 20 writes across 13 files (debug-login-19970545.md, check_user_19970545.py, views.py, check_all_users_fields.py, serializers.py) | 11 reads | ~31767 tok |
+| 11:01 | Edited demo-web/mobile-sso-callback.html | removed 108 lines | ~103 |
+| 11:01 | Session end: 21 writes across 14 files (debug-login-19970545.md, check_user_19970545.py, views.py, check_all_users_fields.py, serializers.py) | 12 reads | ~32261 tok |
+| 11:03 | Created docs/移动端SSO修复测试方案.md | — | ~940 |
+
+## Session: 2026-06-12 11:07
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 11:44 | Created docs/青橄榄配置检查清单.md | — | ~233 |
+| 11:44 | Session end: 1 writes across 1 files (青橄榄配置检查清单.md) | 6 reads | ~23536 tok |
+| 11:47 | Edited demo-web/mobile-sso-callback.html | modified function() | ~103 |
+| 11:57 | Session end: 2 writes across 2 files (青橄榄配置检查清单.md, mobile-sso-callback.html) | 8 reads | ~26144 tok |
+| 12:18 | Session end: 2 writes across 2 files (青橄榄配置检查清单.md, mobile-sso-callback.html) | 8 reads | ~26144 tok |
+| 12:21 | Created docs/移动端SSO故障排除.md | — | ~513 |
+| 12:21 | Session end: 3 writes across 3 files (青橄榄配置检查清单.md, mobile-sso-callback.html, 移动端SSO故障排除.md) | 8 reads | ~26694 tok |
+| 12:29 | Session end: 3 writes across 3 files (青橄榄配置检查清单.md, mobile-sso-callback.html, 移动端SSO故障排除.md) | 10 reads | ~27534 tok |
+| 12:30 | Edited demo-web/admin-sso-callback.html | modified function() | ~105 |
+| 12:31 | Created demo-web/admin-sso-callback.html | — | ~362 |
+| 12:31 | Session end: 5 writes across 4 files (青橄榄配置检查清单.md, mobile-sso-callback.html, 移动端SSO故障排除.md, admin-sso-callback.html) | 10 reads | ~27830 tok |
+| 12:35 | Edited backend/apps/sso_qingganlian/callback_views.py | 2→2 lines | ~34 |
+| 12:36 | Session end: 6 writes across 5 files (青橄榄配置检查清单.md, mobile-sso-callback.html, 移动端SSO故障排除.md, admin-sso-callback.html, callback_views.py) | 10 reads | ~27864 tok |
+| 12:39 | Created ../../../../tmp/test-localstorage.html | — | ~164 |
+| 12:39 | Edited backend/apps/sso_qingganlian/callback_views.py | expanded (+7 lines) | ~276 |
+| 12:39 | Created demo-web/sso-receiver.html | — | ~410 |
+| 12:40 | Session end: 9 writes across 7 files (青橄榄配置检查清单.md, mobile-sso-callback.html, 移动端SSO故障排除.md, admin-sso-callback.html, callback_views.py) | 10 reads | ~28755 tok |
+| 12:47 | Edited backend/apps/sso_qingganlian/callback_views.py | modified atomic() | ~184 |
+| 12:49 | Session end: 10 writes across 7 files (青橄榄配置检查清单.md, mobile-sso-callback.html, 移动端SSO故障排除.md, admin-sso-callback.html, callback_views.py) | 10 reads | ~28939 tok |
+| 12:52 | Edited demo-web/js/api.js | added 3 condition(s) | ~161 |
+| 12:53 | Edited demo-web/js/api.js | modified if() | ~157 |
+| 12:53 | Session end: 12 writes across 8 files (青橄榄配置检查清单.md, mobile-sso-callback.html, 移动端SSO故障排除.md, admin-sso-callback.html, callback_views.py) | 11 reads | ~31494 tok |
+| 12:54 | Edited backend/apps/sso_qingganlian/callback_views.py | save() → info() | ~188 |
+| 12:55 | Session end: 13 writes across 8 files (青橄榄配置检查清单.md, mobile-sso-callback.html, 移动端SSO故障排除.md, admin-sso-callback.html, callback_views.py) | 11 reads | ~31682 tok |
+| 12:56 | Session end: 13 writes across 8 files (青橄榄配置检查清单.md, mobile-sso-callback.html, 移动端SSO故障排除.md, admin-sso-callback.html, callback_views.py) | 11 reads | ~31682 tok |
+| 12:58 | Session end: 13 writes across 8 files (青橄榄配置检查清单.md, mobile-sso-callback.html, 移动端SSO故障排除.md, admin-sso-callback.html, callback_views.py) | 11 reads | ~31682 tok |
+| 12:58 | Created docs/后端运行保障方案.md | — | ~568 |
+| 12:59 | Edited docs/后端运行保障方案.md | expanded (+111 lines) | ~531 |
+| 13:01 | Session end: 15 writes across 9 files (青橄榄配置检查清单.md, mobile-sso-callback.html, 移动端SSO故障排除.md, admin-sso-callback.html, callback_views.py) | 11 reads | ~32859 tok |
+| 13:04 | Created docs/浏览器缓存更新方案.md | — | ~170 |
+| 13:04 | Edited demo-web/mobile-sso-callback.html | 4→7 lines | ~81 |
+| 13:04 | Edited demo-web/admin-sso-callback.html | 4→7 lines | ~81 |
+| 13:04 | Edited demo-web/sso-receiver.html | 4→7 lines | ~80 |
+| 13:04 | Edited demo-web/index.html | "js/api.js?v=20260610-1650" → "js/api.js?v=20260612" | ~13 |
+| 13:05 | Edited docs/浏览器缓存更新方案.md | expanded (+123 lines) | ~527 |
+| 13:05 | Session end: 21 writes across 11 files (青橄榄配置检查清单.md, mobile-sso-callback.html, 移动端SSO故障排除.md, admin-sso-callback.html, callback_views.py) | 11 reads | ~33880 tok |
+| 13:07 | Edited demo-web/mobile-sso-callback.html | 7→4 lines | ~35 |
+| 13:07 | Edited demo-web/admin-sso-callback.html | 7→4 lines | ~35 |
+| 13:07 | Edited demo-web/sso-receiver.html | 7→4 lines | ~35 |
+| 13:08 | Edited demo-web/mobile-sso-callback.html | 3→6 lines | ~87 |
+| 13:08 | Edited demo-web/admin-sso-callback.html | 3→6 lines | ~92 |
+| 13:09 | Session end: 26 writes across 11 files (青橄榄配置检查清单.md, mobile-sso-callback.html, 移动端SSO故障排除.md, admin-sso-callback.html, callback_views.py) | 11 reads | ~33917 tok |
+| 13:10 | Session end: 26 writes across 11 files (青橄榄配置检查清单.md, mobile-sso-callback.html, 移动端SSO故障排除.md, admin-sso-callback.html, callback_views.py) | 11 reads | ~33917 tok |
+| 13:20 | Session end: 26 writes across 11 files (青橄榄配置检查清单.md, mobile-sso-callback.html, 移动端SSO故障排除.md, admin-sso-callback.html, callback_views.py) | 11 reads | ~33917 tok |
+| 13:45 | Edited demo-web/index.html | 3→3 lines | ~54 |
+| 13:45 | Edited demo-web/index.html | modified escapeHtml() | ~372 |
+
+## Session: 2026-06-12 13:47
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 14:07 | Edited backend/apps/sso_qingganlian/views.py | 12→12 lines | ~112 |
+| 14:07 | Edited backend/apps/sso_qingganlian/views.py | 13→13 lines | ~120 |
+| 14:08 | Edited backend/apps/sso_qingganlian/views.py | 13→13 lines | ~116 |
+| 14:09 | Edited backend/apps/applications/views.py | modified get_stats() | ~412 |
+| 14:09 | Edited backend/apps/applications/urls.py | 5→6 lines | ~83 |
+| 14:10 | Edited backend/apps/applications/views.py | 16→18 lines | ~178 |
+| 14:10 | Edited backend/apps/applications/views.py | expanded (+10 lines) | ~174 |
+| 14:11 | Session end: 7 writes across 2 files (views.py, urls.py) | 8 reads | ~13889 tok |
+| 14:22 | Edited backend/config/urls.py | added 1 import(s) | ~265 |
+| 14:22 | Session end: 8 writes across 2 files (views.py, urls.py) | 9 reads | ~14382 tok |
+| 14:23 | Session end: 8 writes across 2 files (views.py, urls.py) | 9 reads | ~14382 tok |
+| 14:25 | Session end: 8 writes across 2 files (views.py, urls.py) | 9 reads | ~14382 tok |
+| 14:27 | Session end: 8 writes across 2 files (views.py, urls.py) | 12 reads | ~16137 tok |
+| 14:28 | Session end: 8 writes across 2 files (views.py, urls.py) | 13 reads | ~16539 tok |
+| 14:34 | Edited demo-web/mobile-sso-callback.html | modified function() | ~286 |
+| 14:35 | Edited demo-web/admin-sso-callback.html | modified function() | ~286 |
+| 14:36 | Session end: 10 writes across 4 files (views.py, urls.py, mobile-sso-callback.html, admin-sso-callback.html) | 13 reads | ~17151 tok |
+| 14:37 | Edited demo-web/mobile-sso-callback.html | modified setTimeout() | ~54 |
+| 14:37 | Edited demo-web/admin-sso-callback.html | modified setTimeout() | ~54 |
+| 14:37 | Session end: 12 writes across 4 files (views.py, urls.py, mobile-sso-callback.html, admin-sso-callback.html) | 13 reads | ~17267 tok |
+| 14:39 | Edited demo-web/mobile-sso-callback.html | added 2 condition(s) | ~464 |
+| 14:39 | Session end: 13 writes across 4 files (views.py, urls.py, mobile-sso-callback.html, admin-sso-callback.html) | 13 reads | ~17764 tok |
+| 14:40 | Edited demo-web/mobile-sso-callback.html | added optional chaining | ~636 |
+| 14:41 | Session end: 14 writes across 4 files (views.py, urls.py, mobile-sso-callback.html, admin-sso-callback.html) | 13 reads | ~18446 tok |
+| 14:42 | Edited demo-web/mobile-sso-callback.html | 2→2 lines | ~31 |
+| 14:43 | Session end: 15 writes across 4 files (views.py, urls.py, mobile-sso-callback.html, admin-sso-callback.html) | 14 reads | ~18604 tok |
+| 14:43 | Created demo-web/admin-sso-callback.html | — | ~402 |
+| 14:44 | Session end: 16 writes across 4 files (views.py, urls.py, mobile-sso-callback.html, admin-sso-callback.html) | 14 reads | ~19034 tok |
+| 14:46 | Edited backend/apps/sso_qingganlian/views.py | expanded (+10 lines) | ~228 |
+| 14:46 | Edited demo-web/mobile-sso-callback.html | modified function() | ~404 |
+| 14:47 | Session end: 18 writes across 4 files (views.py, urls.py, mobile-sso-callback.html, admin-sso-callback.html) | 15 reads | ~21127 tok |
+| 14:54 | Edited backend/apps/sso_qingganlian/client.py | 4→4 lines | ~42 |
+| 14:55 | Edited demo-web/mobile-sso-callback.html | modified function() | ~361 |
+| 14:56 | Session end: 20 writes across 5 files (views.py, urls.py, mobile-sso-callback.html, admin-sso-callback.html, client.py) | 15 reads | ~21556 tok |
+| 14:59 | Session end: 20 writes across 5 files (views.py, urls.py, mobile-sso-callback.html, admin-sso-callback.html, client.py) | 15 reads | ~21552 tok |
+| 15:01 | Edited backend/apps/sso_qingganlian/callback_views.py | modified atomic() | ~114 |
+| 15:02 | Edited backend/apps/sso_qingganlian/views.py | modified atomic() | ~31 |
+| 15:03 | Session end: 22 writes across 6 files (views.py, urls.py, mobile-sso-callback.html, admin-sso-callback.html, client.py) | 15 reads | ~21697 tok |
+| 15:06 | Session end: 22 writes across 6 files (views.py, urls.py, mobile-sso-callback.html, admin-sso-callback.html, client.py) | 15 reads | ~21691 tok |
+| 15:09 | Session end: 22 writes across 6 files (views.py, urls.py, mobile-sso-callback.html, admin-sso-callback.html, client.py) | 15 reads | ~21691 tok |
+| 15:12 | Edited demo-web/mobile-sso-callback.html | added 1 condition(s) | ~403 |
+| 15:12 | Session end: 23 writes across 6 files (views.py, urls.py, mobile-sso-callback.html, admin-sso-callback.html, client.py) | 15 reads | ~22123 tok |
+| 15:13 | Edited demo-web/mobile-sso-callback.html | 3→3 lines | ~37 |
+| 15:14 | Session end: 24 writes across 6 files (views.py, urls.py, mobile-sso-callback.html, admin-sso-callback.html, client.py) | 15 reads | ~22162 tok |
+| 15:16 | Edited demo-web/mobile-sso-callback.html | modified function() | ~387 |
+| 15:17 | Session end: 25 writes across 6 files (views.py, urls.py, mobile-sso-callback.html, admin-sso-callback.html, client.py) | 15 reads | ~22688 tok |
+
+## Session: 2026-06-12 15:21
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 15:22 | Edited demo-web/mobile-sso-callback.html | modified function() | ~122 |
+| 15:22 | Edited demo-web/mobile-sso-callback.html | 8→8 lines | ~74 |
+| 15:22 | Session end: 2 writes across 1 files (mobile-sso-callback.html) | 0 reads | ~210 tok |
+| 15:23 | Edited demo-web/mobile-sso-callback.html | modified function() | ~196 |
+| 15:23 | Session end: 3 writes across 1 files (mobile-sso-callback.html) | 0 reads | ~420 tok |
+| 15:24 | Edited demo-web/mobile-sso-callback.html | added 1 condition(s) | ~282 |
+| 15:24 | Session end: 4 writes across 1 files (mobile-sso-callback.html) | 0 reads | ~722 tok |
+| 15:25 | Session end: 4 writes across 1 files (mobile-sso-callback.html) | 0 reads | ~722 tok |
+
+## Session: 2026-06-12 15:32
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 15:39 | Edited demo-web/mobile-sso-callback.html | modified function() | ~77 |
+| 15:39 | Edited demo-web/mobile-sso-callback.html | modified if() | ~78 |
+| 15:40 | Session end: 2 writes across 1 files (mobile-sso-callback.html) | 3 reads | ~5611 tok |
+| 15:40 | Edited demo-web/mobile-sso-callback.html | modified if() | ~65 |
+| 15:40 | Session end: 3 writes across 1 files (mobile-sso-callback.html) | 3 reads | ~5680 tok |
+| 15:42 | Edited demo-web/mobile-sso-callback.html | modified function() | ~268 |
+| 15:42 | Session end: 4 writes across 1 files (mobile-sso-callback.html) | 4 reads | ~7272 tok |
+| 15:43 | Edited demo-web/mobile-sso-callback.html | reduced (-12 lines) | ~87 |
+| 15:43 | Session end: 5 writes across 1 files (mobile-sso-callback.html) | 4 reads | ~7339 tok |
+| 15:45 | Session end: 5 writes across 1 files (mobile-sso-callback.html) | 4 reads | ~7339 tok |
+| 15:46 | Edited demo-web/mobile-sso-callback.html | modified function() | ~253 |
+| 15:46 | Session end: 6 writes across 1 files (mobile-sso-callback.html) | 4 reads | ~7467 tok |
+| 15:48 | Session end: 6 writes across 1 files (mobile-sso-callback.html) | 4 reads | ~7467 tok |
+| 15:49 | Edited demo-web/mobile-sso-callback.html | 4→5 lines | ~60 |
+| 15:49 | Edited demo-web/mobile-sso-callback.html | modified function() | ~268 |
+| 15:50 | Session end: 8 writes across 1 files (mobile-sso-callback.html) | 4 reads | ~7819 tok |
+| 15:50 | Edited demo-web/mobile-sso-callback.html | added 2 condition(s) | ~334 |
+| 15:50 | Edited demo-web/mobile-sso-callback.html | 9→9 lines | ~106 |
+| 15:51 | Session end: 10 writes across 1 files (mobile-sso-callback.html) | 4 reads | ~8290 tok |
+| 15:52 | Edited demo-web/mobile-sso-callback.html | added 1 condition(s) | ~154 |
+| 15:52 | Edited demo-web/mobile-sso-callback.html | modified if() | ~203 |
+| 15:52 | Session end: 12 writes across 1 files (mobile-sso-callback.html) | 4 reads | ~8672 tok |
+| 15:53 | Edited demo-web/mobile-sso-callback.html | modified function() | ~330 |
+| 15:54 | Edited demo-web/mobile-sso-callback.html | modified if() | ~137 |
+| 15:54 | Session end: 14 writes across 1 files (mobile-sso-callback.html) | 4 reads | ~9173 tok |
+| 15:55 | Edited demo-web/mobile-sso-callback.html | added 1 condition(s) | ~288 |
+| 15:56 | Session end: 15 writes across 1 files (mobile-sso-callback.html) | 4 reads | ~9481 tok |
+| 15:56 | Session end: 15 writes across 1 files (mobile-sso-callback.html) | 4 reads | ~9481 tok |
+| 15:57 | Session end: 15 writes across 1 files (mobile-sso-callback.html) | 4 reads | ~9481 tok |
+| 15:58 | Session end: 15 writes across 1 files (mobile-sso-callback.html) | 4 reads | ~9481 tok |
+| 15:58 | Edited demo-web/mobile-sso-callback.html | reduced (-17 lines) | ~52 |
+| 15:58 | Session end: 16 writes across 1 files (mobile-sso-callback.html) | 4 reads | ~9536 tok |
+| 16:00 | Edited backend/apps/sso_qingganlian/client.py | 4→4 lines | ~45 |
+| 16:00 | Edited backend/apps/sso_qingganlian/client.py | modified get_user_code_by_token() | ~165 |
+| 16:01 | Session end: 18 writes across 2 files (mobile-sso-callback.html, client.py) | 5 reads | ~11164 tok |
+| 16:03 | Session end: 18 writes across 2 files (mobile-sso-callback.html, client.py) | 6 reads | ~11396 tok |
+| 16:04 | Created ../../../../tmp/test_qgl_api.py | — | ~852 |
+| 16:05 | Edited backend/apps/sso_qingganlian/client.py | modified get_user_code_by_token() | ~164 |
+| 16:05 | Session end: 20 writes across 3 files (mobile-sso-callback.html, client.py, test_qgl_api.py) | 7 reads | ~12803 tok |
+| 16:08 | Edited demo-web/mobile-sso-callback.html | get() → match() | ~384 |
+| 16:08 | Session end: 21 writes across 3 files (mobile-sso-callback.html, client.py, test_qgl_api.py) | 7 reads | ~13214 tok |
+| 16:09 | Edited demo-web/mobile-sso-callback.html | match() → get() | ~288 |
+| 16:09 | Session end: 22 writes across 3 files (mobile-sso-callback.html, client.py, test_qgl_api.py) | 7 reads | ~13522 tok |
+| 16:11 | Edited backend/apps/sso_qingganlian/client.py | 4→4 lines | ~43 |
+| 16:11 | Session end: 23 writes across 3 files (mobile-sso-callback.html, client.py, test_qgl_api.py) | 7 reads | ~13565 tok |
+| 16:13 | Edited backend/apps/sso_qingganlian/client.py | modified get_user_info() | ~151 |
+| 16:13 | Session end: 24 writes across 3 files (mobile-sso-callback.html, client.py, test_qgl_api.py) | 7 reads | ~13716 tok |
+| 16:14 | Edited demo-web/mobile-sso-callback.html | 5→4 lines | ~27 |
+| 16:14 | Edited demo-web/mobile-sso-callback.html | modified function() | ~310 |
+| 16:14 | Session end: 26 writes across 3 files (mobile-sso-callback.html, client.py, test_qgl_api.py) | 7 reads | ~14077 tok |
+| 16:16 | Edited demo-web/mobile-sso-callback.html | modified then() | ~100 |
+| 16:16 | Session end: 27 writes across 3 files (mobile-sso-callback.html, client.py, test_qgl_api.py) | 7 reads | ~14184 tok |
+| 16:19 | Session end: 27 writes across 3 files (mobile-sso-callback.html, client.py, test_qgl_api.py) | 7 reads | ~14184 tok |
+| 16:21 | Session end: 27 writes across 3 files (mobile-sso-callback.html, client.py, test_qgl_api.py) | 7 reads | ~14184 tok |
+| 16:24 | Session end: 27 writes across 3 files (mobile-sso-callback.html, client.py, test_qgl_api.py) | 8 reads | ~19151 tok |
+| 16:25 | Edited backend/apps/approvals/views.py | 3→3 lines | ~46 |
+| 16:25 | Edited backend/apps/approvals/views.py | 17→16 lines | ~337 |
+| 16:26 | Edited backend/apps/approvals/views.py | 15→18 lines | ~196 |
+| 16:27 | Edited backend/apps/approvals/views.py | expanded (+13 lines) | ~192 |
+| 16:27 | Edited backend/apps/approvals/urls.py | 7→8 lines | ~133 |
+| 16:27 | Session end: 32 writes across 5 files (mobile-sso-callback.html, client.py, test_qgl_api.py, views.py, urls.py) | 9 reads | ~20165 tok |
+
+## Session: 2026-06-12 16:30
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 16:32 | Edited demo-web/admin/dashboard.html | modified child() | ~274 |
+| 16:32 | Edited demo-web/admin/dashboard.html | expanded (+19 lines) | ~206 |
+| 16:32 | Edited demo-web/admin/dashboard.html | added error handling | ~444 |
+| 16:32 | Session end: 3 writes across 1 files (dashboard.html) | 1 reads | ~2190 tok |
+| 16:36 | Session end: 3 writes across 1 files (dashboard.html) | 3 reads | ~21627 tok |
+| 16:37 | Session end: 3 writes across 1 files (dashboard.html) | 3 reads | ~21627 tok |
+| 16:40 | Edited demo-web/admin/dashboard.html | minmax() → media() | ~70 |
+| 16:40 | Session end: 4 writes across 1 files (dashboard.html) | 3 reads | ~22291 tok |
+| 16:42 | Edited demo-web/index.html | 6→7 lines | ~134 |
+| 16:43 | Edited demo-web/index.html | modified filterApprovals() | ~200 |
+| 16:43 | Edited demo-web/index.html | modified media() | ~111 |
+| 16:43 | Session end: 7 writes across 2 files (dashboard.html, index.html) | 3 reads | ~22793 tok |
+| 16:44 | Edited demo-web/index.html | added 2 condition(s) | ~113 |
+| 16:44 | Edited demo-web/index.html | 8→4 lines | ~42 |
+| 16:44 | Session end: 9 writes across 2 files (dashboard.html, index.html) | 3 reads | ~23025 tok |
+| 16:45 | Session end: 9 writes across 2 files (dashboard.html, index.html) | 3 reads | ~23025 tok |
+| 16:47 | Edited demo-web/admin/dashboard.html | added 2 condition(s) | ~372 |
+| 16:47 | Session end: 10 writes across 2 files (dashboard.html, index.html) | 4 reads | ~29131 tok |
+| 16:50 | Edited demo-web/index.html | modified media() | ~268 |
+| 16:50 | Edited demo-web/index.html | expanded (+22 lines) | ~379 |
+| 16:51 | Edited demo-web/index.html | added 2 condition(s) | ~449 |
+| 16:51 | Edited demo-web/index.html | added error handling | ~222 |
+| 16:51 | Session end: 14 writes across 2 files (dashboard.html, index.html) | 4 reads | ~30981 tok |
+| 16:52 | Edited demo-web/index.html | modified loadApprovalStatistics() | ~228 |
+| 16:52 | Session end: 15 writes across 2 files (dashboard.html, index.html) | 4 reads | ~31226 tok |
+| 16:55 | Edited demo-web/index.html | modified media() | ~96 |
+| 16:55 | Session end: 16 writes across 2 files (dashboard.html, index.html) | 4 reads | ~31558 tok |
+| 17:00 | Edited demo-web/index.html | modified media() | ~202 |
+| 17:00 | Session end: 17 writes across 2 files (dashboard.html, index.html) | 5 reads | ~31775 tok |
+| 17:04 | Created docs/移动端界面适配问题总结.md | — | ~1265 |
+| 17:04 | Session end: 18 writes across 3 files (dashboard.html, index.html, 移动端界面适配问题总结.md) | 5 reads | ~33130 tok |
+| 17:16 | Session end: 18 writes across 3 files (dashboard.html, index.html, 移动端界面适配问题总结.md) | 6 reads | ~34493 tok |
+| 17:17 | Session end: 18 writes across 3 files (dashboard.html, index.html, 移动端界面适配问题总结.md) | 6 reads | ~34493 tok |
+| 17:19 | Edited demo-web/index.html | modified loadApprovalStatistics() | ~372 |
+| 17:19 | Edited demo-web/admin/dashboard.html | 2→5 lines | ~30 |
+| 17:20 | Edited demo-web/admin/dashboard.html | modified loadStatistics() | ~442 |
+| 17:20 | Edited demo-web/index.html | added 1 condition(s) | ~221 |
+| 17:20 | Edited demo-web/index.html | modified if() | ~88 |
+| 17:21 | Edited demo-web/index.html | modified if() | ~70 |
+| 17:21 | Edited demo-web/index.html | 7→7 lines | ~136 |
+| 17:21 | Edited demo-web/index.html | modified media() | ~159 |
+| 17:22 | Session end: 26 writes across 3 files (dashboard.html, index.html, 移动端界面适配问题总结.md) | 6 reads | ~36314 tok |
+| 17:24 | Session end: 26 writes across 3 files (dashboard.html, index.html, 移动端界面适配问题总结.md) | 6 reads | ~36314 tok |
+| 17:26 | Session end: 26 writes across 3 files (dashboard.html, index.html, 移动端界面适配问题总结.md) | 6 reads | ~36314 tok |
+| 17:26 | Edited demo-web/index.html | 7→7 lines | ~128 |
+| 17:27 | Edited demo-web/index.html | expanded (+49 lines) | ~287 |
+| 17:28 | Edited demo-web/index.html | modified filterApprovals() | ~202 |
+| 17:28 | Session end: 29 writes across 3 files (dashboard.html, index.html, 移动端界面适配问题总结.md) | 6 reads | ~37272 tok |
+| 17:30 | Edited demo-web/index.html | 7→7 lines | ~130 |
+| 17:31 | Edited demo-web/index.html | 15→18 lines | ~109 |
+| 17:31 | Session end: 31 writes across 3 files (dashboard.html, index.html, 移动端界面适配问题总结.md) | 6 reads | ~37528 tok |
+| 17:32 | Session end: 31 writes across 3 files (dashboard.html, index.html, 移动端界面适配问题总结.md) | 6 reads | ~37528 tok |
+| 17:34 | Session end: 31 writes across 3 files (dashboard.html, index.html, 移动端界面适配问题总结.md) | 6 reads | ~37528 tok |
+| 17:36 | Created demo-web/js/responsive-adapter.js | — | ~1783 |
+| 17:37 | Created docs/响应式适配器使用文档.md | — | ~1284 |
+| 17:37 | Created demo-web/responsive-adapter-example.html | — | ~579 |
+| 17:37 | Session end: 34 writes across 6 files (dashboard.html, index.html, 移动端界面适配问题总结.md, responsive-adapter.js, 响应式适配器使用文档.md) | 6 reads | ~41307 tok |
+
+## Session: 2026-06-12 21:46
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 21:48 | Created ../../../../tmp/check_graduate_users.py | — | ~349 |
+| 21:49 | Session end: 1 writes across 1 files (check_graduate_users.py) | 5 reads | ~9418 tok |
+| 21:50 | Session end: 1 writes across 1 files (check_graduate_users.py) | 5 reads | ~9418 tok |
+| 21:52 | Created backend/apps/users/management/commands/check_graduate_buildings.py | — | ~441 |
+| 21:53 | Created backend/apps/users/management/commands/check_zi6_managers.py | — | ~339 |
+| 21:56 | Created backend/apps/users/management/commands/check_all_buildings.py | — | ~218 |
+| 21:56 | Created backend/apps/users/management/commands/check_failed_user_apps.py | — | ~227 |
+| 21:57 | Session end: 5 writes across 5 files (check_graduate_users.py, check_graduate_buildings.py, check_zi6_managers.py, check_all_buildings.py, check_failed_user_apps.py) | 9 reads | ~33617 tok |
+| 22:02 | Created ../../../../tmp/test_graduate_submit.py | — | ~317 |
+| 22:02 | Created ../../../../tmp/test_submit.py | — | ~421 |
+| 22:03 | Edited demo-web/js/api.js | modified apiSubmitApplication() | ~379 |
+| 22:03 | Created ../../../../tmp/create_test_app.py | — | ~472 |
+| 22:06 | Created backend/apps/applications/migrations/0002_allow_null_class_id.py | — | ~104 |
+| 22:06 | Session end: 10 writes across 10 files (check_graduate_users.py, check_graduate_buildings.py, check_zi6_managers.py, check_all_buildings.py, check_failed_user_apps.py) | 10 reads | ~36641 tok |
+| 22:07 | Session end: 10 writes across 10 files (check_graduate_users.py, check_graduate_buildings.py, check_zi6_managers.py, check_all_buildings.py, check_failed_user_apps.py) | 10 reads | ~36641 tok |
+| 22:08 | Created ../../../../tmp/delete_test_app.py | — | ~56 |
+| 22:08 | Created ../../../../tmp/delete_test_app.py | — | ~116 |
+| 22:08 | Session end: 12 writes across 11 files (check_graduate_users.py, check_graduate_buildings.py, check_zi6_managers.py, check_all_buildings.py, check_failed_user_apps.py) | 10 reads | ~36813 tok |
+| 22:09 | Session end: 12 writes across 11 files (check_graduate_users.py, check_graduate_buildings.py, check_zi6_managers.py, check_all_buildings.py, check_failed_user_apps.py) | 10 reads | ~36813 tok |
+| 22:09 | Session end: 12 writes across 11 files (check_graduate_users.py, check_graduate_buildings.py, check_zi6_managers.py, check_all_buildings.py, check_failed_user_apps.py) | 10 reads | ~36813 tok |
+| 22:11 | Session end: 12 writes across 11 files (check_graduate_users.py, check_graduate_buildings.py, check_zi6_managers.py, check_all_buildings.py, check_failed_user_apps.py) | 10 reads | ~36813 tok |
+| 22:12 | Session end: 12 writes across 11 files (check_graduate_users.py, check_graduate_buildings.py, check_zi6_managers.py, check_all_buildings.py, check_failed_user_apps.py) | 10 reads | ~36813 tok |
+| 22:14 | Edited demo-web/index.html | added 1 condition(s) | ~568 |
+| 22:14 | Session end: 13 writes across 12 files (check_graduate_users.py, check_graduate_buildings.py, check_zi6_managers.py, check_all_buildings.py, check_failed_user_apps.py) | 11 reads | ~37421 tok |
+| 22:15 | Edited backend/apps/applications/models.py | modified ApplicationStatus() | ~80 |
+| 22:16 | Edited demo-web/index.html | 8→9 lines | ~131 |
+| 22:16 | Edited demo-web/index.html | added 2 condition(s) | ~694 |
+| 22:16 | Edited demo-web/index.html | added 1 condition(s) | ~423 |
+| 22:18 | Edited demo-web/index.html | added 2 condition(s) | ~304 |
+| 22:18 | Session end: 18 writes across 13 files (check_graduate_users.py, check_graduate_buildings.py, check_zi6_managers.py, check_all_buildings.py, check_failed_user_apps.py) | 11 reads | ~39964 tok |
+| 22:19 | Created ../../../../tmp/create_failed_app.py | — | ~181 |
+| 22:20 | Session end: 19 writes across 14 files (check_graduate_users.py, check_graduate_buildings.py, check_zi6_managers.py, check_all_buildings.py, check_failed_user_apps.py) | 11 reads | ~40145 tok |
+| 22:22 | Edited demo-web/index.html | added 2 condition(s) | ~305 |
+| 22:23 | Edited demo-web/index.html | modified showRejectedApplicationBanner() | ~680 |
+| 22:24 | Session end: 21 writes across 14 files (check_graduate_users.py, check_graduate_buildings.py, check_zi6_managers.py, check_all_buildings.py, check_failed_user_apps.py) | 11 reads | ~41300 tok |
+| 22:28 | Edited demo-web/index.html | modified showFailedApplicationBanner() | ~327 |
+| 22:28 | Session end: 22 writes across 14 files (check_graduate_users.py, check_graduate_buildings.py, check_zi6_managers.py, check_all_buildings.py, check_failed_user_apps.py) | 11 reads | ~41650 tok |
+| 22:33 | Edited demo-web/index.html | modified resubmitApplication() | ~395 |
+| 22:33 | Session end: 23 writes across 14 files (check_graduate_users.py, check_graduate_buildings.py, check_zi6_managers.py, check_all_buildings.py, check_failed_user_apps.py) | 11 reads | ~42073 tok |
+| 22:36 | Edited demo-web/index.html | modified showRejectedApplicationBanner() | ~572 |
+| 22:36 | Session end: 24 writes across 14 files (check_graduate_users.py, check_graduate_buildings.py, check_zi6_managers.py, check_all_buildings.py, check_failed_user_apps.py) | 11 reads | ~42736 tok |
+| 22:42 | Session end: 24 writes across 14 files (check_graduate_users.py, check_graduate_buildings.py, check_zi6_managers.py, check_all_buildings.py, check_failed_user_apps.py) | 11 reads | ~42736 tok |
+| 22:44 | Session end: 24 writes across 14 files (check_graduate_users.py, check_graduate_buildings.py, check_zi6_managers.py, check_all_buildings.py, check_failed_user_apps.py) | 11 reads | ~42736 tok |
+
+## Session: 2026-06-12 22:49
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 22:56 | Edited backend/apps/approvals/views.py | modified batch_action_approvals() | ~762 |
+| 22:57 | Edited backend/apps/approvals/urls.py | 8→9 lines | ~158 |
+| 22:58 | Edited demo-web/index.html | added optional chaining | ~238 |
+| 22:58 | Edited demo-web/index.html | 4→5 lines | ~95 |
+| 22:58 | Edited demo-web/index.html | expanded (+23 lines) | ~621 |
+| 22:59 | Edited demo-web/index.html | added error handling | ~604 |
+| 22:59 | Session end: 6 writes across 3 files (views.py, urls.py, index.html) | 5 reads | ~31453 tok |
+| 23:01 | Session end: 6 writes across 3 files (views.py, urls.py, index.html) | 5 reads | ~31453 tok |
+| 23:04 | Session end: 6 writes across 3 files (views.py, urls.py, index.html) | 5 reads | ~31478 tok |
+| 23:12 | Created ../../../../tmp/graduation-frontend.service | — | ~79 |
+| 23:13 | Session end: 7 writes across 4 files (views.py, urls.py, index.html, graduation-frontend.service) | 7 reads | ~32828 tok |
+| 23:15 | Session end: 7 writes across 4 files (views.py, urls.py, index.html, graduation-frontend.service) | 7 reads | ~32828 tok |
+| 23:19 | Session end: 7 writes across 4 files (views.py, urls.py, index.html, graduation-frontend.service) | 8 reads | ~32828 tok |
+| 23:26 | Edited demo-web/index.html | expanded (+9 lines) | ~297 |
+| 23:26 | Edited demo-web/index.html | added 3 condition(s) | ~318 |
+| 23:27 | Edited demo-web/index.html | added 1 condition(s) | ~109 |
+| 23:27 | Session end: 10 writes across 4 files (views.py, urls.py, index.html, graduation-frontend.service) | 8 reads | ~34520 tok |
+| 23:37 | Session end: 10 writes across 4 files (views.py, urls.py, index.html, graduation-frontend.service) | 8 reads | ~34520 tok |
+| 23:38 | Session end: 10 writes across 4 files (views.py, urls.py, index.html, graduation-frontend.service) | 8 reads | ~34520 tok |
+| 23:41 | Session end: 10 writes across 4 files (views.py, urls.py, index.html, graduation-frontend.service) | 8 reads | ~34599 tok |
+| 23:43 | Session end: 10 writes across 4 files (views.py, urls.py, index.html, graduation-frontend.service) | 8 reads | ~34599 tok |
+| 23:44 | Edited README.md | 9→14 lines | ~75 |
+| 23:44 | Edited README.md | 13→14 lines | ~59 |
+| 23:44 | Created CHANGELOG.md | — | ~181 |
+| 23:45 | Session end: 13 writes across 6 files (views.py, urls.py, index.html, graduation-frontend.service, README.md) | 9 reads | ~37724 tok |
+| 23:47 | Session end: 13 writes across 6 files (views.py, urls.py, index.html, graduation-frontend.service, README.md) | 9 reads | ~35369 tok |
+| 23:48 | Created docker-compose.prod.yml | — | ~384 |
+| 23:49 | Created scripts/performance_test.sh | — | ~374 |
+| 23:49 | Created docs/PERFORMANCE.md | — | ~485 |
+| 23:49 | Created docs/DEPLOYMENT_PROD.md | — | ~857 |
+| 23:50 | Session end: 17 writes across 10 files (views.py, urls.py, index.html, graduation-frontend.service, README.md) | 11 reads | ~37823 tok |
+| 23:51 | Created scripts/deploy.sh | — | ~588 |
+| 23:51 | Created scripts/setup_server.sh | — | ~410 |
+| 23:54 | Session end: 19 writes across 12 files (views.py, urls.py, index.html, graduation-frontend.service, README.md) | 11 reads | ~38893 tok |
+| 23:54 | Created scripts/rollback.sh | — | ~204 |
+| 23:55 | Created .github/workflows/deploy.yml | — | ~569 |
+| 23:55 | Created deploy.config.yml | — | ~138 |
+| 23:55 | Created docs/DEPLOYMENT_AUTO.md | — | ~834 |
+| 23:56 | Session end: 23 writes across 16 files (views.py, urls.py, index.html, graduation-frontend.service, README.md) | 11 reads | ~40712 tok |
+| 23:59 | Session end: 23 writes across 16 files (views.py, urls.py, index.html, graduation-frontend.service, README.md) | 11 reads | ~40712 tok |
+
+## Session: 2026-06-12 00:01
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 00:03 | Created backend/apps/healthcheck/__init__.py | — | ~0 |
+| 00:03 | Created backend/apps/healthcheck/views.py | — | ~193 |
+| 00:03 | Edited backend/config/urls.py | 9→12 lines | ~141 |
+| 00:04 | Edited docker-compose.prod.yml | 9→10 lines | ~75 |
+| 00:04 | Edited docker-compose.prod.yml | 23→24 lines | ~194 |
+| 00:04 | Edited deploy.config.yml | 4→4 lines | ~18 |
+| 00:04 | Edited scripts/deploy.sh | expanded (+6 lines) | ~194 |
+| 00:04 | Edited scripts/deploy.sh | expanded (+13 lines) | ~240 |
+| 00:05 | Created scripts/rollback.sh | — | ~472 |
+| 00:05 | Edited .github/workflows/deploy.yml | expanded (+6 lines) | ~182 |
+| 00:05 | Edited .github/workflows/deploy.yml | 8→11 lines | ~177 |
+| 00:05 | Edited docs/DEPLOYMENT_AUTO.md | 10→10 lines | ~49 |

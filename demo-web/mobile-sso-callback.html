@@ -53,8 +53,8 @@
       const currentParams = window.location.search;
 
       // 直接跳转到后端callback，保留所有参数
-      // 后端会验证参数、创建用户、设置localStorage、跳转首页
-      window.location.href = '/api/sso/qingganlian/callback' + currentParams;
+      // 使用绝对URL避免端口错误（前端7788 → 后端7787）
+      window.location.href = 'http://218.75.196.218:7787/api/sso/qingganlian/callback' + currentParams;
     };
   </script>
 </body>

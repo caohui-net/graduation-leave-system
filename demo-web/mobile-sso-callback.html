@@ -56,8 +56,8 @@
         return;
       }
 
-      // 从token提取用户ID（末尾8位数字）
-      const match = saas_wap_token.match(/(\d{8})$/);
+      // 从token提取用户ID（末尾6-10位数字）
+      const match = saas_wap_token.match(/(\d{6,10})$/);
       const user_id = match ? match[1] : null;
 
       if (!user_id) {

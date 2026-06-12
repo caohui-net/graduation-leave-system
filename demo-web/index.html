@@ -304,20 +304,18 @@
     }
 
     function applyAdminFilters() {
-        const classId = document.getElementById('filter-class').value.trim();
-        const building = document.getElementById('filter-building').value.trim();
+        const field = document.getElementById('filter-field').value;
+        const value = document.getElementById('filter-value').value.trim();
 
         adminFilters = {};
-        if (classId) adminFilters.class_id = classId;
-        if (building) adminFilters.building = building;
+        if (value) adminFilters[field] = value;
 
         loadApprovals();
     }
 
     function clearAdminFilters() {
         adminFilters = {};
-        document.getElementById('filter-class').value = '';
-        document.getElementById('filter-building').value = '';
+        document.getElementById('filter-value').value = '';
         loadApprovals();
     }
 
@@ -1412,10 +1410,15 @@
 
     <!-- 管理员分类筛选 -->
     <div id="admin-filters" style="display: none; background: white; padding: 12px 16px; margin-bottom: 12px;">
-      <div style="font-size: 14px; font-weight: bold; margin-bottom: 8px; color: #666;">分类筛选</div>
+      <div style="font-size: 14px; font-weight: bold; margin-bottom: 8px; color: #666;">查询筛选</div>
       <div style="display: flex; gap: 8px; flex-wrap: wrap;">
-        <input type="text" id="filter-class" placeholder="班级（如：2020计科1）" style="flex: 1; min-width: 140px; padding: 8px; border: 1px solid #ddd; border-radius: 4px; font-size: 14px;">
-        <input type="text" id="filter-building" placeholder="宿舍楼（如：6栋）" style="flex: 1; min-width: 120px; padding: 8px; border: 1px solid #ddd; border-radius: 4px; font-size: 14px;">
+        <select id="filter-field" style="padding: 8px; border: 1px solid #ddd; border-radius: 4px; font-size: 14px; background: white;">
+          <option value="student_id">学号</option>
+          <option value="student_name">姓名</option>
+          <option value="class_id">班级</option>
+          <option value="building">宿舍楼</option>
+        </select>
+        <input type="text" id="filter-value" placeholder="输入查询值" style="flex: 1; min-width: 140px; padding: 8px; border: 1px solid #ddd; border-radius: 4px; font-size: 14px;">
         <button onclick="applyAdminFilters()" style="padding: 8px 16px; background: var(--primary-color); color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 14px;">筛选</button>
         <button onclick="clearAdminFilters()" style="padding: 8px 16px; background: #f0f0f0; color: #666; border: none; border-radius: 4px; cursor: pointer; font-size: 14px;">清除</button>
       </div>

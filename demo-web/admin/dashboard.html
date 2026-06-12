@@ -184,6 +184,50 @@
       <button class="btn btn-primary" onclick="testAPI()">测试API调用</button>
       <button class="btn btn-danger" onclick="logout()">退出登录</button>
     </div>
+
+    <!-- 申请列表管理 -->
+    <div style="margin-top: 40px; border-top: 2px solid #3498db; padding-top: 30px;">
+      <h2 style="color: #2c3e50; margin-bottom: 20px;">申请列表管理</h2>
+
+      <!-- 查询筛选器 -->
+      <div style="background: #f8f9fa; padding: 20px; border-radius: 6px; margin-bottom: 20px;">
+        <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+          <label style="font-weight: bold; color: #34495e;">筛选字段:</label>
+          <select id="filter-field" style="padding: 10px; border: 1px solid #ddd; border-radius: 4px; font-size: 14px;">
+            <option value="student_id">学号</option>
+            <option value="student_name">姓名</option>
+            <option value="class_id">班级</option>
+            <option value="building">宿舍楼</option>
+          </select>
+          <input type="text" id="filter-value" placeholder="输入查询值" style="flex: 1; min-width: 200px; padding: 10px; border: 1px solid #ddd; border-radius: 4px; font-size: 14px;">
+          <button onclick="applyFilter()" style="padding: 10px 20px; background: #3498db; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 14px;">筛选</button>
+          <button onclick="clearFilter()" style="padding: 10px 20px; background: #95a5a6; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 14px;">清除</button>
+        </div>
+      </div>
+
+      <!-- 申请列表表格 -->
+      <div style="overflow-x: auto;">
+        <table id="applications-table" style="width: 100%; border-collapse: collapse; background: white;">
+          <thead>
+            <tr style="background: #ecf0f1;">
+              <th style="padding: 12px; text-align: left; border-bottom: 2px solid #bdc3c7;">申请ID</th>
+              <th style="padding: 12px; text-align: left; border-bottom: 2px solid #bdc3c7;">学号</th>
+              <th style="padding: 12px; text-align: left; border-bottom: 2px solid #bdc3c7;">姓名</th>
+              <th style="padding: 12px; text-align: left; border-bottom: 2px solid #bdc3c7;">班级</th>
+              <th style="padding: 12px; text-align: left; border-bottom: 2px solid #bdc3c7;">宿舍楼</th>
+              <th style="padding: 12px; text-align: left; border-bottom: 2px solid #bdc3c7;">联系电话</th>
+              <th style="padding: 12px; text-align: left; border-bottom: 2px solid #bdc3c7;">状态</th>
+              <th style="padding: 12px; text-align: left; border-bottom: 2px solid #bdc3c7;">申请时间</th>
+            </tr>
+          </thead>
+          <tbody id="applications-tbody">
+            <tr>
+              <td colspan="8" style="padding: 40px; text-align: center; color: #999;">加载中...</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
   </div>
 
   <script>
@@ -214,6 +258,8 @@
 
       // 加载统计数据
       loadStatistics();
+      // 加载申请列表
+      loadApplications();
     }
 
     // 加载统计数据
@@ -269,6 +315,84 @@
       localStorage.removeItem('user_info');
       alert('已退出登录');
       window.location.href = '/';
+    }
+
+    // 申请列表管理
+    let currentFilters = {};
+
+    async function loadApplications() {
+      const token = localStorage.getItem('auth_token');
+      if (!token) return;
+
+      try {
+        let url = API_BASE_URL + '/applications/?limit=50';
+        Object.keys(currentFilters).forEach(key => {
+          url += `&${key}=${encodeURIComponent(currentFilters[key])}`;
+        });
+
+        const response = await fetch(url, {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+
+        if (!response.ok) {
+          document.getElementById('applications-tbody').innerHTML =
+            '<tr><td colspan="8" style="padding: 20px; text-align: center; color: #e74c3c;">加载失败</td></tr>';
+          return;
+        }
+
+        const data = await response.json();
+        renderApplications(data.results || []);
+      } catch (error) {
+        console.error('加载申请列表失败:', error);
+        document.getElementById('applications-tbody').innerHTML =
+          '<tr><td colspan="8" style="padding: 20px; text-align: center; color: #e74c3c;">网络错误</td></tr>';
+      }
+    }
+
+    function renderApplications(applications) {
+      const tbody = document.getElementById('applications-tbody');
+
+      if (applications.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="8" style="padding: 40px; text-align: center; color: #999;">暂无申请记录</td></tr>';
+        return;
+      }
+
+      const statusMap = {
+        'draft': '草稿',
+        'pending_dorm_manager': '待宿管审批',
+        'pending_counselor': '待辅导员审批',
+        'approved': '已通过',
+        'rejected': '已驳回'
+      };
+
+      tbody.innerHTML = applications.map(app => `
+        <tr style="border-bottom: 1px solid #ecf0f1;">
+          <td style="padding: 12px;">${app.application_id || '-'}</td>
+          <td style="padding: 12px;">${app.student?.user_id || '-'}</td>
+          <td style="padding: 12px;">${app.student_name || '-'}</td>
+          <td style="padding: 12px;">${app.class_id || '-'}</td>
+          <td style="padding: 12px;">${app.student?.building || '-'}</td>
+          <td style="padding: 12px;">${app.contact_phone || '-'}</td>
+          <td style="padding: 12px;">${statusMap[app.status] || app.status}</td>
+          <td style="padding: 12px;">${new Date(app.created_at).toLocaleString('zh-CN')}</td>
+        </tr>
+      `).join('');
+    }
+
+    function applyFilter() {
+      const field = document.getElementById('filter-field').value;
+      const value = document.getElementById('filter-value').value.trim();
+
+      currentFilters = {};
+      if (value) currentFilters[field] = value;
+
+      loadApplications();
+    }
+
+    function clearFilter() {
+      currentFilters = {};
+      document.getElementById('filter-value').value = '';
+      loadApplications();
     }
 
     // 页面加载时执行

@@ -1,47 +1,28 @@
 {
-  "last_updated": "2026-06-11T16:18:00Z",
+  "last_updated": "2026-06-12T20:30:37Z",
   "session_start_checklist": [
     "⚠️ MANDATORY: Read PROJECT-QUICK-REF.md FIRST (env/ports/deploy/config)",
     "Read .wolf/cerebrum.md (user preferences, do-not-repeat)",
     "Read .wolf/anatomy.md if accessing files"
   ],
   "completed": [
-    "学生宿舍信息字段添加（room_number, campus, gender, major, level）",
-    "数据库迁移创建并执行（0008_add_room_and_student_info.py）",
-    "学生数据安全导入（5812/5830条，匹配策略：姓名+楼栋双重验证）",
-    "导入脚本编写（仅更新不创建，支持dry-run测试）",
-    "SSO回调页面优化（移除调试信息泄露，保留正常登录功能）",
-    "所有修改已提交并推送到远程仓库"
+    "协作状态修复：从529个事件重建state.json",
+    "清理过期讨论artifacts（PC端管理界面查询功能UI改进方案）"
   ],
   "pending": [],
   "evidence": [
-    "User模型新增5个字段验证通过",
-    "数据导入结果：总用户6081，有room_number 5812",
-    "commit feat(users): 添加学生宿舍信息字段和导入功能",
-    "commit refactor(sso): 移除SSO回调页面调试信息",
-    "SSO回调页面测试通过（用户确认）"
+    "后端API支持多参数组合查询（backend/apps/applications/views.py line 108-123）",
+    "协作状态备份：.omc/collaboration/backup-20260612-203037",
+    "讨论artifacts已删除：DISCUSS-PC端管理界面查询功能UI改进方案-*"
   ],
-  "next_focus": "学生宿舍信息功能已完成并测试通过。后续可能需要：1）在审批流程中展示学生宿舍信息；2）在导出功能中包含宿舍字段",
+  "next_focus": "无待办任务。系统状态正常。",
   "artifacts": {
-    "migrations": "backend/apps/users/migrations/0008_add_room_and_student_info.py",
-    "import_script": "backend/import_students.py",
-    "data_source": "docs/1-5830名毕业生（含研究生）.xls",
-    "modified_files": [
-      "backend/apps/users/models.py",
-      "demo-web/mobile-sso-callback.html"
-    ],
-    "commits": [
-      "feat(users): 添加学生宿舍信息字段和导入功能",
-      "chore: 删除SSO对接测试页面 (reverted)",
-      "Revert \"chore: 删除SSO对接测试页面\"",
-      "refactor(sso): 移除SSO回调页面调试信息"
-    ]
+    "collaboration_backup": ".omc/collaboration/backup-20260612-203037",
+    "repaired_state": ".collab/state.json"
   },
   "session_summary": {
-    "task": "添加学生宿舍信息（房间号）到系统",
-    "approach": "从Excel文件读取5830条学生数据，通过姓名+楼栋匹配现有用户安全更新",
-    "result": "5812条学生获得完整宿舍信息（校区、楼栋、房间号）",
-    "data_quality": "匹配率99.7%（5812/5830），未匹配18条可能是数据差异",
-    "safety_measures": "仅更新不创建、干运行测试、双重匹配验证"
+    "task": "协作状态维护与清理",
+    "approach": "使用collab_validate.py repair重建状态，删除过期讨论artifacts",
+    "result": "协作状态从损坏恢复正常，过期讨论已清理"
   }
 }

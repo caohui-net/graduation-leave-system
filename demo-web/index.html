@@ -189,16 +189,16 @@
             displayRecords.forEach(approval => {
                 const application = approval.application || {};
 
-                // Use approval decision for status tag (more accurate for dean/approval views)
-                const decision = approval.decision || 'pending';
-                const step = decisionMap[decision] ? decisionMap[decision].text : decision;
-                const tagCls = decisionMap[decision] ? decisionMap[decision].cls : 'tag-pending';
+                // Use application status (overall status) instead of approval decision (single approval status)
+                const appStatus = application.status || 'pending';
+                const step = statusMap[appStatus] ? statusMap[appStatus].text : appStatus;
+                const tagCls = statusMap[appStatus] ? statusMap[appStatus].cls : 'tag-pending';
 
                 const safeAppId = escapeHtml(application.id || approval.id).substring(0,8);
                 const safeStudentName = escapeHtml(application.student_name || '-');
                 const safeStudentId = escapeHtml(application.student_id || '-');
 
-                const showCheckbox = decision === 'pending' && (currentUser?.role === 'dorm_manager' || currentUser?.role === 'counselor');
+                const showCheckbox = appStatus.startsWith('pending_') && (currentUser?.role === 'dorm_manager' || currentUser?.role === 'counselor');
                 htmlStr += '<div class="card" style="cursor: pointer; display: flex; gap: 12px;">' +
                   (showCheckbox ? '<input type="checkbox" class="approval-checkbox" data-approval-id="' + approval.id + '" onclick="event.stopPropagation(); toggleBatchBar();" style="width: 20px; height: 20px; cursor: pointer;">' : '') +
                   '<div style="flex: 1;" onclick="openApproval(\'' + approval.id + '\')">' +
@@ -211,8 +211,8 @@
                     '<span style="font-size: 14px; color: #333;">' + safeStudentName + ' (' + safeStudentId + ')</span>' +
                   '</div>';
 
-                // Show approver and decision time for decided approvals
-                if (approval.decision === 'approved' || approval.decision === 'rejected') {
+                // Show approver and decision time for completed approvals
+                if (appStatus === 'approved' || appStatus === 'rejected') {
                     // Extract real approver name from comment if auto-completed
                     let realApprover = approval.approver_name || '-';
                     if (approval.comment && approval.comment.includes('已由')) {

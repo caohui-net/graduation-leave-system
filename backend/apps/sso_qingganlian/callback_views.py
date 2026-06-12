@@ -69,6 +69,14 @@ def sso_callback(request):
                 }
             )
 
+            # 更新用户信息（即使用户已存在也要更新，确保与SSO同步）
+            if not created:
+                user.name = real_name or username
+                user.role = role
+                user.is_staff = is_staff
+                user.active = True
+                user.save()
+
         # 更新SSO映射
         SSOUserMapping.objects.update_or_create(
             user_code=username,

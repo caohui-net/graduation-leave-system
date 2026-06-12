@@ -58,6 +58,7 @@ def sso_callback(request):
             is_staff = True
 
         # 创建/获取用户
+        # SSO只负责认证，用户数据以数据库为准，不自动同步
         with transaction.atomic():
             user, created = User.objects.select_for_update().get_or_create(
                 user_id=username,
@@ -69,13 +70,11 @@ def sso_callback(request):
                 }
             )
 
-            # 更新用户信息（即使用户已存在也要更新，确保与SSO同步）
-            if not created:
-                user.name = real_name or username
-                user.role = role
-                user.is_staff = is_staff
-                user.active = True
-                user.save()
+            # 如果是新创建的用户，记录日志
+            if created:
+                logger.info(f"SSO created new user: {username}, role={role}")
+            else:
+                logger.info(f"SSO login existing user: {username}, db_role={user.role}")
 
         # 更新SSO映射
         SSOUserMapping.objects.update_or_create(

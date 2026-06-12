@@ -46,26 +46,34 @@
   </div>
 
   <script>
-    // 青橄榄SSO回调 - 使用saas_wap_token换取用户信息
+    // 移动端SSO回调 - 简化流程（不调用青橄榄API）
     window.onload = function() {
       const params = new URLSearchParams(window.location.search);
       const saas_wap_token = params.get('saas_wap_token');
-      const tenantCode = params.get('tenantCode') || 'S10405';
 
       if (!saas_wap_token) {
-        document.getElementById('message').textContent = '错误：未收到saas_wap_token';
+        document.getElementById('message').textContent = '错误：未收到token';
+        return;
+      }
+
+      // 从token提取用户ID（末尾8位数字）
+      const match = saas_wap_token.match(/(\d{8})$/);
+      const user_id = match ? match[1] : null;
+
+      if (!user_id) {
+        document.getElementById('message').textContent = '错误：无法解析用户ID';
         return;
       }
 
       document.getElementById('message').textContent = '正在登录...';
 
-      // 调用mobile_saas_login接口
-      fetch('http://218.75.196.218:7787/api/sso/qingganlian/mobile/saas-login', {
+      // 调用mobile/login简化接口
+      fetch('http://218.75.196.218:7787/api/sso/qingganlian/mobile/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          saas_wap_token: saas_wap_token,
-          tenant_code: tenantCode
+          authorization: saas_wap_token,
+          user_id: user_id
         })
       })
       .then(res => res.json())

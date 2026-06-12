@@ -3,9 +3,6 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-  <meta http-equiv="Pragma" content="no-cache">
-  <meta http-equiv="Expires" content="0">
   <title>SSO登录中...</title>
   <style>
     body {
@@ -50,7 +47,10 @@
 
       // 直接跳转到后端callback，保留所有参数
       // callback_views.py会处理管理端参数（authorization+username）
-      window.location.href = 'http://218.75.196.218:7787/api/sso/qingganlian/callback' + currentParams;
+      // 添加时间戳避免callback接口被缓存
+      const timestamp = '_t=' + Date.now();
+      const separator = currentParams ? '&' : '?';
+      window.location.href = 'http://218.75.196.218:7787/api/sso/qingganlian/callback' + currentParams + separator + timestamp;
     };
   </script>
 </body>

@@ -89,24 +89,31 @@ def sso_callback(request):
 
         logger.info(f"SSO callback success: user={username}")
 
-        # 直接跳转到业务页面（设置token到localStorage）
+        # 通过URL参数传递token和user_info（避免localStorage跨域问题）
+        import urllib.parse
+        import json
+
+        user_info = {
+            'user_id': user.user_id,
+            'name': user.name,
+            'role': user.role,
+            'building': user.building or '',
+            'room_number': user.room_number or ''
+        }
+
+        redirect_url = (
+            f'http://218.75.196.218:7788/sso-receiver.html'
+            f'?token={urllib.parse.quote(access_token)}'
+            f'&user_info={urllib.parse.quote(json.dumps(user_info))}'
+        )
+
         return HttpResponse(f"""
             <!DOCTYPE html>
             <html>
             <head><meta charset="UTF-8"><title>登录中</title></head>
             <body>
                 <script>
-                    // 保存token到localStorage
-                    localStorage.setItem('auth_token', '{access_token}');
-                    localStorage.setItem('user_info', JSON.stringify({{
-                        'user_id': '{user.user_id}',
-                        'name': '{user.name}',
-                        'role': '{user.role}',
-                        'building': '{user.building or ""}',
-                        'room_number': '{user.room_number or ""}'
-                    }}));
-                    // 直接跳转到业务页面（前端在7788端口）
-                    window.location.href = 'http://218.75.196.218:7788/';
+                    window.location.href = '{redirect_url}';
                 </script>
                 <p style="text-align:center; padding-top:100px;">登录成功，正在跳转...</p>
             </body>

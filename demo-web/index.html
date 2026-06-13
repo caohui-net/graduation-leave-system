@@ -7,8 +7,8 @@
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
   <title>毕业离校申请系统 - UI Demo</title>
-  <link rel="stylesheet" href="css/global.css?v=20260613">
-  <script src="js/api.js?v=20260613"></script>
+  <link rel="stylesheet" href="css/global.css?v=20260613-2">
+  <script src="js/api.js?v=20260613-2"></script></script>
 <script>
     let currentFilter = 'all';
     let approvalOffset = 0;
@@ -406,6 +406,7 @@
     }
 
     function applyAdminFilters() {
+        console.log('[DEBUG] applyAdminFilters called');
         const field = document.getElementById('filter-field').value;
         const value = document.getElementById('filter-value').value.trim();
 
@@ -414,6 +415,7 @@
             adminFilters[field] = value;
         }
 
+        console.log('[DEBUG] Applying filters:', adminFilters, 'currentToken:', currentToken ? 'exists' : 'missing');
         loadApprovals();
     }
 

@@ -188,22 +188,31 @@
             const safeStudentName = escapeHtml(app.student_name || '-');
             const safeStudentId = escapeHtml(app.student_id || '-');
 
+            // Check if should show checkbox
+            const isPending = app.status === 'pending_dorm_manager' || app.status === 'pending_counselor';
+            const myApproval = app.approvals?.find(ap =>
+                ap.approver_id === currentUser?.user_id && ap.decision === 'pending'
+            );
+            const showCheckbox = isPending && myApproval && (currentUser?.role === 'dorm_manager' || currentUser?.role === 'counselor');
+
             const card = document.createElement('div');
             card.className = 'card';
-            card.style.cursor = 'pointer';
-            card.onclick = () => openApplication(appId);
+            card.style.cssText = 'cursor: pointer; display: flex; gap: 12px;';
 
             card.innerHTML = `
-                <div class="flex-row justify-between align-center" style="margin-bottom: 8px;">
-                    <span style="font-size: 16px; font-weight: bold;">申请 ${safeAppId}</span>
-                    <span class="tag ${statusInfo.cls}">${statusInfo.text}</span>
-                </div>
-                <div style="margin-bottom: 4px;">
-                    <span style="font-size: 14px; color: #999; margin-right: 8px;">学生:</span>
-                    <span style="font-size: 14px; color: #333;">${safeStudentName} (${safeStudentId})</span>
-                </div>
-                <div style="font-size: 12px; color: #999;">
-                    创建: ${app.created_at ? new Date(app.created_at).toLocaleString('zh-CN') : '-'}
+                ${showCheckbox ? `<input type="checkbox" class="approval-checkbox" data-approval-id="${myApproval.id}" onclick="event.stopPropagation(); toggleBatchBar();" style="width: 20px; height: 20px; cursor: pointer;">` : ''}
+                <div style="flex: 1;" onclick="openApplication('${appId}')">
+                    <div class="flex-row justify-between align-center" style="margin-bottom: 8px;">
+                        <span style="font-size: 16px; font-weight: bold;">申请 ${safeAppId}</span>
+                        <span class="tag ${statusInfo.cls}">${statusInfo.text}</span>
+                    </div>
+                    <div style="margin-bottom: 4px;">
+                        <span style="font-size: 14px; color: #999; margin-right: 8px;">学生:</span>
+                        <span style="font-size: 14px; color: #333;">${safeStudentName} (${safeStudentId})</span>
+                    </div>
+                    <div style="font-size: 12px; color: #999;">
+                        创建: ${app.created_at ? new Date(app.created_at).toLocaleString('zh-CN') : '-'}
+                    </div>
                 </div>
             `;
 
@@ -326,6 +335,16 @@
 
         container.innerHTML = basicInfoHtml + approvalsHtml + attachmentsHtml + backButtonHtml;
             console.log('[DEBUG] Detail rendered successfully');
+
+            // Control approval button visibility
+            const approvalSection = document.getElementById('approval-section');
+            if (approvalSection) {
+                const shouldShow = myApproval &&
+                    myApproval.decision === 'pending' &&
+                    (currentUser?.role === 'dorm_manager' || currentUser?.role === 'counselor');
+                approvalSection.style.display = shouldShow ? 'block' : 'none';
+                console.log('[DEBUG] Approval section display:', shouldShow ? 'block' : 'none', 'myApproval:', myApproval);
+            }
         } catch (e) {
             console.error('[ERROR] showApplicationDetail failed:', e);
             const container = document.querySelector('#screen-2');

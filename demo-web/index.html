@@ -7,8 +7,8 @@
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
   <title>毕业离校申请系统 - UI Demo</title>
-  <link rel="stylesheet" href="css/global.css?v=20260613-2">
-  <script src="js/api.js?v=20260613-2"></script></script>
+  <link rel="stylesheet" href="css/global.css?v=20260613-3">
+  <script src="js/api.js?v=20260613-3"></script></script></script>
 <script>
     let currentFilter = 'all';
     let approvalOffset = 0;
@@ -269,6 +269,12 @@
             console.log('[DEBUG] Current user approval ID:', currentApprovalId);
             console.log('[DEBUG] Current user ID:', currentUser?.user_id, 'Role:', currentUser?.role);
             console.log('[DEBUG] All approvals approver_ids:', approvals.map(ap => ({ id: ap.id, approver_id: ap.approver_id, approver_name: ap.approver_name, decision: ap.decision })));
+            console.log('[DEBUG] Matching check:', approvals.map(ap => ({
+                approver_id: ap.approver_id,
+                matches_id: ap.approver_id === currentUser?.user_id,
+                decision: ap.decision,
+                is_pending: ap.decision === 'pending'
+            })));
 
             // Fetch attachments
             const attachments = await apiGetAttachments(appData.application_id);
@@ -701,7 +707,12 @@
     }
     
     async function doApprove() {
-        if(!currentApprovalId) return;
+        console.log('[DEBUG] doApprove called, currentApprovalId:', currentApprovalId);
+        if(!currentApprovalId) {
+            console.error('[ERROR] currentApprovalId is null/undefined, cannot approve');
+            showToast('无法审批：未找到您的待审批记录', 'error');
+            return;
+        }
         const comment = document.getElementById('approvalComment').value;
         const btn = event?.target || document.querySelector('#approval-actions .btn-primary');
 
@@ -710,7 +721,9 @@
         btn.textContent = '处理中...';
 
         try {
+            console.log('[DEBUG] Calling apiApprove with approval_id:', currentApprovalId, 'comment:', comment);
             const ok = await apiApprove(currentApprovalId, comment);
+            console.log('[DEBUG] apiApprove result:', ok);
             if(ok) {
               showToast('审批通过', 'success');
               showScreen(1);

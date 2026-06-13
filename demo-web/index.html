@@ -794,8 +794,8 @@
         btn.textContent = '加载中...';
 
         try {
-            // Fetch preview data (JSON format)
-            const res = await fetch(API_BASE_URL + '/approvals/?decision=all&limit=1000', {
+            // Fetch preview data (JSON format) - no artificial limit
+            const res = await fetch(API_BASE_URL + '/approvals/?decision=all&limit=100000', {
                 headers: getAuthHeaders()
             });
 

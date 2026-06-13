@@ -378,28 +378,34 @@ def export_approvals(request):
             status=status.HTTP_403_FORBIDDEN
         )
 
-    # Limit export to 1000 rows max to prevent memory issues
-    MAX_EXPORT_ROWS = 1000
+    # Export all students with their latest application (if any)
+    # Optimized: fetch all data in 3-4 queries instead of N+1
+    from django.db.models import OuterRef, Subquery, Prefetch
 
-    # Optimize query with Prefetch to avoid N+1
-    dorm_prefetch = Prefetch(
-        'approvals',
-        queryset=Approval.objects.filter(step=ApprovalStep.DORM_MANAGER),
-        to_attr='dorm_approvals_list'
-    )
-    counselor_prefetch = Prefetch(
-        'approvals',
-        queryset=Approval.objects.filter(step=ApprovalStep.COUNSELOR),
-        to_attr='counselor_approvals_list'
+    # Get all students
+    students = User.objects.filter(role=UserRole.STUDENT).order_by('user_id')
+
+    # Get latest application ID for each student (subquery)
+    latest_app_subquery = Application.objects.filter(
+        student=OuterRef('pk')
+    ).order_by('-created_at').values('id')[:1]
+
+    students_list = list(students.annotate(latest_app_id=Subquery(latest_app_subquery)))
+
+    # Get all latest applications with prefetched approvals
+    latest_app_ids = [s.latest_app_id for s in students_list if s.latest_app_id]
+
+    applications = Application.objects.filter(id__in=latest_app_ids).prefetch_related(
+        Prefetch('approvals', queryset=Approval.objects.filter(step=ApprovalStep.DORM_MANAGER), to_attr='dorm_approvals_list'),
+        Prefetch('approvals', queryset=Approval.objects.filter(step=ApprovalStep.COUNSELOR), to_attr='counselor_approvals_list')
     )
 
-    applications = Application.objects.select_related('student').prefetch_related(
-        dorm_prefetch, counselor_prefetch
-    ).order_by('-created_at')[:MAX_EXPORT_ROWS]
+    # Build mapping: student_id -> application
+    app_map = {app.student_id: app for app in applications}
 
     wb = Workbook()
     ws = wb.active
-    ws.title = '审批数据'
+    ws.title = '学生数据'
 
     headers = ['提交人', '学号', '手机号', '离校日期', '楼栋号', '房间号', '提交时间', '审批状态',
                '宿管员', '宿管审批时间', '宿管审批结果',
@@ -410,19 +416,37 @@ def export_approvals(request):
         cell.font = Font(bold=True)
         cell.alignment = Alignment(horizontal='center')
 
-    for app in applications:
-        dorm_approval = app.dorm_approvals_list[0] if app.dorm_approvals_list else None
-        counselor_approval = app.counselor_approvals_list[0] if app.counselor_approvals_list else None
+    for student in students_list:
+        # Get latest application from pre-fetched map (no DB query)
+        latest_app = app_map.get(student.id)
+
+        if latest_app:
+            # Student has submitted application
+            dorm_approval = latest_app.dorm_approvals_list[0] if latest_app.dorm_approvals_list else None
+            counselor_approval = latest_app.counselor_approvals_list[0] if latest_app.counselor_approvals_list else None
+
+            status_display = latest_app.get_status_display()
+            leave_date = latest_app.leave_date.strftime('%Y-%m-%d') if latest_app.leave_date else ''
+            contact_phone = latest_app.contact_phone or student.phone or ''
+            submit_time = latest_app.created_at.strftime('%Y-%m-%d %H:%M:%S')
+        else:
+            # Student has not submitted
+            dorm_approval = None
+            counselor_approval = None
+            status_display = '未提交'
+            leave_date = ''
+            contact_phone = student.phone or ''
+            submit_time = ''
 
         row = [
-            sanitize_excel_formula(app.student_name),
-            sanitize_excel_formula(app.student.user_id if app.student else ''),
-            sanitize_excel_formula(app.contact_phone or ''),
-            app.leave_date.strftime('%Y-%m-%d') if app.leave_date else '',
-            sanitize_excel_formula(app.student.building or '') if app.student else '',
-            sanitize_excel_formula(app.student.room_number or '') if app.student else '',
-            app.created_at.strftime('%Y-%m-%d %H:%M:%S'),
-            app.get_status_display(),
+            sanitize_excel_formula(student.name),
+            sanitize_excel_formula(student.user_id),
+            sanitize_excel_formula(contact_phone),
+            leave_date,
+            sanitize_excel_formula(student.building or ''),
+            sanitize_excel_formula(student.room_number or ''),
+            submit_time,
+            status_display,
             sanitize_excel_formula(dorm_approval.approver_name if dorm_approval else ''),
             dorm_approval.decided_at.strftime('%Y-%m-%d %H:%M:%S') if dorm_approval and dorm_approval.decided_at else '',
             dorm_approval.get_decision_display() if dorm_approval else '',
@@ -443,7 +467,7 @@ def export_approvals(request):
     response = HttpResponse(
         content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
     )
-    response['Content-Disposition'] = f'attachment; filename="approvals_{timezone.now().strftime("%Y%m%d_%H%M%S")}.xlsx"'
+    response['Content-Disposition'] = f'attachment; filename="students_{timezone.now().strftime("%Y%m%d_%H%M%S")}.xlsx"'
     wb.save(response)
 
     return response

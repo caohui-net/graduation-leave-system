@@ -463,6 +463,12 @@
             });
             const appData = appRes.ok ? await appRes.json() : null;
 
+            // Fetch all approvals for this application
+            const approvalsRes = await fetch(API_BASE_URL + '/approvals/?application_id=' + detail.application_id, {
+                headers: getAuthHeaders()
+            });
+            const allApprovals = approvalsRes.ok ? (await approvalsRes.json()).results || [] : [];
+
             // Fetch attachments
             const attachments = await apiGetAttachments(detail.application_id);
 
@@ -516,7 +522,7 @@
             }
 
             // 动态生成审批时间轴
-            const timelineHtml = generateTimeline(detail, appData);
+            const timelineHtml = generateTimeline(detail, appData, allApprovals);
 
             const cards = container.querySelectorAll('.card');
             if (cards.length > 0) {
@@ -532,7 +538,7 @@
         }
     }
 
-    function generateTimeline(detail, appData) {
+    function generateTimeline(detail, appData, allApprovals = []) {
         const stepNames = {
             'dorm_manager': '宿管员审批',
             'counselor': '辅导员审批'
@@ -540,14 +546,14 @@
 
         const appStatus = appData ? appData.status : detail.step;
 
-        // Filter workflow based on current user role
-        let workflow = ['dorm_manager', 'counselor'];
-        if (currentUser && currentUser.role === 'dorm_manager') {
-            workflow = ['dorm_manager'];
-        } else if (currentUser && currentUser.role === 'counselor') {
-            workflow = ['dorm_manager', 'counselor'];
-        }
-        // admin sees all steps (default: 2 steps)
+        // Always show all workflow steps
+        const workflow = ['dorm_manager', 'counselor'];
+
+        // Create approval map by step
+        const approvalMap = {};
+        allApprovals.forEach(ap => {
+            approvalMap[ap.step] = ap;
+        });
 
         // Calculate current level index
         let currentLevel;
@@ -568,18 +574,19 @@
             const step = workflow[i];
             const stepName = stepNames[step];
             const isLast = i === 0;
+            const approval = approvalMap[step];
 
             let state, tagText, tagCls, dotBg, dotBorder, showConnector;
 
-            // Check if this is the current approval's step
-            if (step === detail.step) {
-                if (detail.decision === 'approved') {
+            // Use actual approval record if exists
+            if (approval) {
+                if (approval.decision === 'approved') {
                     state = 'approved';
                     tagText = '已通过';
                     tagCls = 'tag-approved';
                     dotBg = 'var(--status-success)';
                     dotBorder = 'var(--status-success)';
-                } else if (detail.decision === 'rejected') {
+                } else if (approval.decision === 'rejected') {
                     state = 'rejected';
                     tagText = '已驳回';
                     tagCls = 'tag-rejected';
@@ -592,20 +599,6 @@
                     dotBg = 'white';
                     dotBorder = 'var(--primary-color)';
                 }
-                showConnector = !isLast;
-            } else if (i < currentLevel || appStatus === 'approved') {
-                state = 'approved';
-                tagText = '已通过';
-                tagCls = 'tag-approved';
-                dotBg = 'var(--status-success)';
-                dotBorder = 'var(--status-success)';
-                showConnector = !isLast;
-            } else if (i === currentLevel && appStatus !== 'rejected') {
-                state = 'pending';
-                tagText = '待审批';
-                tagCls = 'tag-pending';
-                dotBg = 'white';
-                dotBorder = 'var(--primary-color)';
                 showConnector = !isLast;
             } else {
                 state = 'future';
@@ -628,15 +621,13 @@
                 '<span class="tag ' + tagCls + '">' + tagText + '</span>' +
               '</div>';
 
-            if (state === 'approved' || state === 'pending' || state === 'rejected') {
-                if (detail.step === step) {
-                    html += '<div style="font-size: 13px; color: #666;">审批人: ' + (detail.approver_name || '待分配') + '</div>';
-                    if (detail.decided_at) {
-                        html += '<div style="font-size: 13px; color: #666;">时间: ' + detail.decided_at + '</div>';
-                    }
-                    if (detail.comment) {
-                        html += '<div style="font-size: 13px; color: #666; margin-top: 4px;">意见: ' + detail.comment + '</div>';
-                    }
+            if (approval && (state === 'approved' || state === 'pending' || state === 'rejected')) {
+                html += '<div style="font-size: 13px; color: #666;">审批人: ' + (approval.approver_name || '待分配') + '</div>';
+                if (approval.decided_at) {
+                    html += '<div style="font-size: 13px; color: #666;">时间: ' + approval.decided_at + '</div>';
+                }
+                if (approval.comment) {
+                    html += '<div style="font-size: 13px; color: #666; margin-top: 4px;">意见: ' + approval.comment + '</div>';
                 }
             }
 

@@ -84,28 +84,12 @@
             approvalHasMore = true;
         }
 
-        // Map currentFilter to Application status
-        // BUT: if field filters are active, ignore status filter to show all matching records
-        let status = null;
-        const hasFieldFilter = adminFilters && Object.keys(adminFilters).length > 0;
-
-        if (!hasFieldFilter) {
-            // No field filter: apply status filter based on tab
-            if (currentFilter === 'pending') {
-                status = null; // Will filter after fetch
-            } else if (currentFilter === 'approved') {
-                status = 'approved';
-            } else if (currentFilter === 'rejected') {
-                status = 'rejected';
-            }
-        }
-        // If field filter active: status=null, fetch all statuses
-
+        // Fetch all applications - filter by approval decision client-side
         const listContainer = document.getElementById('approval-list-container');
         const loadMoreBtn = document.getElementById('load-more-approvals');
 
         const BATCH_SIZE = 20;
-        const data = await apiGetApplicationsForAdmin(status, BATCH_SIZE, approvalOffset, adminFilters);
+        const data = await apiGetApplicationsForAdmin(null, BATCH_SIZE, approvalOffset, adminFilters);
         console.log('[DEBUG] apiGetApplicationsForAdmin returned:', data, 'offset:', approvalOffset);
 
         if (!data || !data.results) {
@@ -115,7 +99,18 @@
         let results = data.results;
         const totalCount = data.count;
 
-        // Remove client-side status filtering - let renderApplications handle it after deduplication
+        // Filter by current user's approval decision
+        if (currentFilter !== 'all') {
+            results = results.filter(app => {
+                const myApproval = app.approvals?.find(ap => String(ap.approver_id) === String(currentUser.user_id));
+                if (!myApproval) return false;
+
+                if (currentFilter === 'pending') return myApproval.decision === 'pending';
+                if (currentFilter === 'approved') return myApproval.decision === 'approved';
+                if (currentFilter === 'rejected') return myApproval.decision === 'rejected';
+                return true;
+            });
+        }
 
         approvalOffset += BATCH_SIZE;
         approvalHasMore = approvalOffset < totalCount;
@@ -156,17 +151,7 @@
         });
         let uniqueApps = Array.from(studentMap.values());
 
-        // Apply currentFilter after deduplication
-        if (currentFilter === 'pending') {
-            uniqueApps = uniqueApps.filter(app =>
-                app.status === 'pending_dorm_manager' || app.status === 'pending_counselor'
-            );
-        } else if (currentFilter === 'approved') {
-            uniqueApps = uniqueApps.filter(app => app.status === 'approved');
-        } else if (currentFilter === 'rejected') {
-            uniqueApps = uniqueApps.filter(app => app.status === 'rejected');
-        }
-        // currentFilter === 'all': no additional filter
+        // Filter already applied in loadApprovals() - don't filter again
 
         // Status display map
         const statusMap = {

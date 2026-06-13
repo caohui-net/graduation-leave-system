@@ -71,23 +71,21 @@ def list_applications(request):
     if user.role == UserRole.STUDENT:
         queryset = Application.objects.filter(student=user)
 
-    # Dorm Manager: applications with own pending dorm manager approvals
+    # Dorm Manager: applications with own dorm manager approvals
     elif user.role == UserRole.DORM_MANAGER:
-        pending_approvals = Approval.objects.filter(
+        my_approvals = Approval.objects.filter(
             approver=user,
-            step=ApprovalStep.DORM_MANAGER,
-            decision=ApprovalDecision.PENDING
+            step=ApprovalStep.DORM_MANAGER
         ).values_list('application', flat=True)
-        queryset = Application.objects.filter(pk__in=pending_approvals)
+        queryset = Application.objects.filter(pk__in=my_approvals)
 
-    # Counselor: applications with own pending counselor approvals
+    # Counselor: applications with own counselor approvals
     elif user.role == UserRole.COUNSELOR:
-        pending_approvals = Approval.objects.filter(
+        my_approvals = Approval.objects.filter(
             approver=user,
-            step=ApprovalStep.COUNSELOR,
-            decision=ApprovalDecision.PENDING
+            step=ApprovalStep.COUNSELOR
         ).values_list('application', flat=True)
-        queryset = Application.objects.filter(pk__in=pending_approvals)
+        queryset = Application.objects.filter(pk__in=my_approvals)
 
     # Dean/Admin: view all applications
     elif user.role in [UserRole.DEAN, UserRole.ADMIN]:

@@ -7,8 +7,8 @@
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
   <title>毕业离校申请系统 - UI Demo</title>
-  <link rel="stylesheet" href="css/global.css?v=20260613-3">
-  <script src="js/api.js?v=20260613-3"></script></script></script>
+  <link rel="stylesheet" href="css/global.css?v=20260613-4">
+  <script src="js/api.js?v=20260613-4"></script></script></script>
 <script>
     let currentFilter = 'all';
     let approvalOffset = 0;
@@ -263,15 +263,18 @@
 
             // Find current user's pending approval
             const myApproval = approvals.find(ap =>
-                ap.approver_id === currentUser?.user_id && ap.decision === 'pending'
+                String(ap.approver_id) === String(currentUser?.user_id) && ap.decision === 'pending'
             );
-            currentApprovalId = myApproval ? myApproval.id : null;
+            currentApprovalId = myApproval ? myApproval.approval_id : null;
             console.log('[DEBUG] Current user approval ID:', currentApprovalId);
             console.log('[DEBUG] Current user ID:', currentUser?.user_id, 'Role:', currentUser?.role);
             console.log('[DEBUG] All approvals approver_ids:', approvals.map(ap => ({ id: ap.id, approver_id: ap.approver_id, approver_name: ap.approver_name, decision: ap.decision })));
             console.log('[DEBUG] Matching check:', approvals.map(ap => ({
                 approver_id: ap.approver_id,
-                matches_id: ap.approver_id === currentUser?.user_id,
+                approver_id_type: typeof ap.approver_id,
+                current_user_id: currentUser?.user_id,
+                current_user_id_type: typeof currentUser?.user_id,
+                matches_id: String(ap.approver_id) === String(currentUser?.user_id),
                 decision: ap.decision,
                 is_pending: ap.decision === 'pending'
             })));

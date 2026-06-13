@@ -5,15 +5,18 @@ from .models import Application
 class ApplicationListSerializer(serializers.ModelSerializer):
     """Application list serializer with nested approvals for batch operations"""
     student_id = serializers.CharField(source='student.user_id', read_only=True)
+    building = serializers.CharField(source='student.building', read_only=True, allow_null=True, required=False)
+    room_number = serializers.CharField(source='student.room_number', read_only=True, allow_null=True, required=False)
     approvals = serializers.SerializerMethodField()
 
     class Meta:
         model = Application
         fields = ['application_id', 'student_id', 'student_name', 'class_id',
-                  'contact_phone', 'reason', 'leave_date', 'status', 'created_at',
-                  'updated_at', 'approvals']
+                  'contact_phone', 'reason', 'leave_date', 'status', 'building',
+                  'room_number', 'created_at', 'updated_at', 'approvals']
         read_only_fields = ['application_id', 'student_id', 'student_name',
-                            'class_id', 'status', 'created_at', 'updated_at']
+                            'class_id', 'status', 'building', 'room_number',
+                            'created_at', 'updated_at']
 
     def get_approvals(self, obj):
         from apps.approvals.serializers import ApprovalBriefSerializer
@@ -22,16 +25,18 @@ class ApplicationListSerializer(serializers.ModelSerializer):
 
 class ApplicationSerializer(serializers.ModelSerializer):
     student_id = serializers.CharField(source='student.user_id', read_only=True)
+    building = serializers.CharField(source='student.building', read_only=True, allow_null=True, required=False)
+    room_number = serializers.CharField(source='student.room_number', read_only=True, allow_null=True, required=False)
     approvals = serializers.SerializerMethodField()
 
     class Meta:
         model = Application
         fields = ['application_id', 'student_id', 'student_name', 'class_id',
                   'contact_phone', 'reason', 'leave_date', 'status', 'dorm_checkout_status',
-                  'approvals', 'created_at', 'updated_at']
+                  'building', 'room_number', 'approvals', 'created_at', 'updated_at']
         read_only_fields = ['application_id', 'student_id', 'student_name',
                             'class_id', 'status', 'dorm_checkout_status',
-                            'created_at', 'updated_at']
+                            'building', 'room_number', 'created_at', 'updated_at']
 
     def get_approvals(self, obj):
         from apps.approvals.serializers import ApprovalBriefSerializer

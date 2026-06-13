@@ -252,6 +252,7 @@
 
     async function showApplicationDetail(appData) {
         console.log('[DEBUG] showApplicationDetail called with:', appData);
+        console.log('[DEBUG] building:', appData.building, 'room_number:', appData.room_number);
         try {
             // Use existing screen-2 to show application detail
             showScreen(2);
@@ -271,7 +272,24 @@
             const attachments = await apiGetAttachments(appData.application_id);
             console.log('[DEBUG] Attachments:', attachments);
 
-            const container = document.querySelector('#screen-2');
+            // Get or create detail container
+            let detailContainer = document.getElementById('detail-container');
+            if (!detailContainer) {
+                const approvalSection = document.getElementById('approval-section');
+                const parentContainer = approvalSection.parentNode;
+
+                // Remove static mock cards (direct children only, before creating detail-container)
+                Array.from(parentContainer.children).forEach(child => {
+                    if (child.classList && child.classList.contains('card')) {
+                        child.remove();
+                    }
+                });
+
+                detailContainer = document.createElement('div');
+                detailContainer.id = 'detail-container';
+                parentContainer.insertBefore(detailContainer, approvalSection);
+            }
+
         const basicInfoHtml = '<div class="card">' +
             '<div style="font-size: 16px; font-weight: bold; margin-bottom: 10px;">基本信息</div>' +
             '<div style="display: flex; margin-bottom: 8px;">' +
@@ -340,7 +358,7 @@
         // Back button
         const backButtonHtml = '<div style="padding: 20px;"><button class="btn-outline" onclick="showScreen(1); loadApprovals();" style="width: 100%;">← 返回</button></div>';
 
-        container.innerHTML = basicInfoHtml + approvalsHtml + attachmentsHtml + backButtonHtml;
+        detailContainer.innerHTML = basicInfoHtml + approvalsHtml + attachmentsHtml + backButtonHtml;
             console.log('[DEBUG] Detail rendered successfully');
 
             // Control approval button visibility

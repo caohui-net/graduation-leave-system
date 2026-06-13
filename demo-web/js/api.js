@@ -149,6 +149,26 @@ async function apiGetApplications() {
     return { results: [] };
 }
 
+async function apiGetApplicationsForAdmin(status = null, limit = 20, offset = 0, filters = {}) {
+    try {
+        let url = API_BASE_URL + '/applications/?limit=' + limit + '&offset=' + offset;
+        if (status) url += '&status=' + encodeURIComponent(status);
+        if (filters.student_id) url += '&student_id=' + encodeURIComponent(filters.student_id);
+        if (filters.student_name) url += '&student_name=' + encodeURIComponent(filters.student_name);
+        if (filters.class_id) url += '&class_id=' + encodeURIComponent(filters.class_id);
+        if (filters.building) url += '&building=' + encodeURIComponent(filters.building);
+        const response = await fetch(url, {
+            headers: getAuthHeaders()
+        });
+        if (response.ok) {
+            return await response.json();
+        }
+    } catch (e) {
+        console.error("Get applications failed:", e);
+    }
+    return { results: [], count: 0 };
+}
+
 async function apiGetApprovals(decision = 'pending', limit = 20, offset = 0, filters = {}) {
     try {
         let url = API_BASE_URL + '/approvals/?decision=' + decision + '&limit=' + limit + '&offset=' + offset;

@@ -4,6 +4,35 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [1.1.1] - 2026-06-13 ⚠️ 重要更新
+
+### Fixed
+- **🔴 重要修复：详情页重复显示问题**
+  - 问题：申请详情页基本信息和审批记录重复显示
+  - 根因：静态mock卡片与动态生成内容同时渲染
+  - 方案：创建专用`detail-container`容器，首次进入时删除静态卡片
+  - 影响范围：所有管理员查看申请详情页面
+
+- **🔴 重要修复：审批按钮消失问题**
+  - 问题：修复重复显示后，审批操作按钮被意外删除
+  - 根因：DOM操作误删`approval-section`审批按钮区
+  - 方案：保留`approval-section`，只替换内容区域
+  - 影响范围：宿管员/辅导员审批操作
+
+- **楼栋号和房间号显示缺失**
+  - 问题：详情页楼栋和房间号字段显示为`-`
+  - 根因：序列化器未包含`building`和`room_number`字段
+  - 方案：
+    - `ApplicationSerializer`（详情API）：添加字段
+    - `ApplicationListSerializer`（列表API）：添加字段
+    - 配置`allow_null=True`支持空值
+  - 影响范围：申请详情页、列表页
+
+### Technical Details
+- 前端：DOM结构优化，避免innerHTML覆盖关键元素
+- 后端：序列化器字段统一，支持关联查询`source='student.building'`
+- 测试：已验证列表加载、详情显示、审批功能正常
+
 ## [1.1.0] - 2026-06-12
 
 ### Added

@@ -238,12 +238,18 @@
         console.log('[DEBUG] showApplicationDetail called with:', appData);
         try {
             // Use existing screen-2 to show application detail
-            currentApprovalId = appData.application_id;
             showScreen(2);
 
             // Use approvals from appData directly
             const approvals = appData.approvals || [];
             console.log('[DEBUG] Approvals:', approvals);
+
+            // Find current user's pending approval
+            const myApproval = approvals.find(ap =>
+                ap.approver_id === currentUser?.user_id && ap.decision === 'pending'
+            );
+            currentApprovalId = myApproval ? myApproval.id : null;
+            console.log('[DEBUG] Current user approval ID:', currentApprovalId);
 
             // Fetch attachments
             const attachments = await apiGetAttachments(appData.application_id);

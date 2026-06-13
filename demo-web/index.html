@@ -218,6 +218,13 @@
 
             listContainer.appendChild(card);
         });
+
+        // 显示/隐藏全选栏
+        const selectAllBar = document.getElementById('select-all-bar');
+        const hasCheckboxes = document.querySelectorAll('.approval-checkbox').length > 0;
+        if (selectAllBar) {
+            selectAllBar.style.display = hasCheckboxes ? 'block' : 'none';
+        }
     }
 
     async function openApplication(appId) {

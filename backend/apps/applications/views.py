@@ -104,8 +104,8 @@ def list_applications(request):
     if status_param:
         queryset = queryset.filter(status=status_param)
 
-    # Additional query filters (only for dean/admin)
-    if user.role in [UserRole.DEAN, UserRole.ADMIN]:
+    # Additional query filters (for non-students)
+    if user.role in [UserRole.DEAN, UserRole.ADMIN, UserRole.DORM_MANAGER, UserRole.COUNSELOR]:
         student_name = request.query_params.get('student_name')
         if student_name:
             queryset = queryset.filter(student_name__icontains=student_name)

@@ -195,7 +195,7 @@
             // Check if should show checkbox (only in pending filter)
             const isPending = app.status === 'pending_dorm_manager' || app.status === 'pending_counselor';
             const myApproval = app.approvals?.find(ap =>
-                ap.approver_id === currentUser?.user_id && ap.decision === 'pending'
+                ap.approver_id === currentUser?.user_id && (ap.decision === null || ap.decision === 'pending')
             );
             const showCheckbox = currentFilter === 'pending' && isPending && myApproval && (currentUser?.role === 'dorm_manager' || currentUser?.role === 'counselor');
 

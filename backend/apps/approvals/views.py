@@ -602,12 +602,54 @@ def batch_action_approvals(request):
         approval.decided_by = user
         approval.save()
 
+        notify_approval_decided(approval)
+
         application = approval.application
         if decision == ApprovalDecision.APPROVED:
-            application.status = ApplicationStatus.PENDING_COUNSELOR if approval.step == ApprovalStep.DORM_MANAGER else ApplicationStatus.APPROVED
+            if approval.step == ApprovalStep.DORM_MANAGER:
+                # Auto-complete other pending dorm manager approvals
+                other_dorm_approvals = Approval.objects.filter(
+                    application=application,
+                    step=ApprovalStep.DORM_MANAGER,
+                    decision=ApprovalDecision.PENDING
+                ).exclude(approval_id=approval.approval_id)
+
+                if other_dorm_approvals.exists():
+                    for other_approval in other_dorm_approvals:
+                        other_approval.decision = ApprovalDecision.APPROVED
+                        other_approval.comment = f'已由{approval.approver_name}完成审批，无需重复操作'
+                        other_approval.decided_at = now
+                        other_approval.decided_by = user
+                        other_approval.save()
+
+                # Create counselor approval if not exists
+                if not Approval.objects.filter(application=application, step=ApprovalStep.COUNSELOR).exists():
+                    counselors = User.objects.filter(
+                        role=UserRole.COUNSELOR,
+                        department=application.student.department,
+                        active=True
+                    ).order_by('user_id')
+
+                    counselor = counselors.first()
+                    if not counselor:
+                        return Response({'error': {'code': 'NOT_FOUND', 'message': '该学院辅导员不存在',
+                                                    'details': {'department': application.student.department}}},
+                                        status=status.HTTP_404_NOT_FOUND)
+
+                    Approval.objects.create(
+                        approval_id=f'apv_{uuid.uuid4().hex[:8]}',
+                        application=application,
+                        step=ApprovalStep.COUNSELOR,
+                        approver=counselor,
+                        approver_name=counselor.name,
+                        decision=ApprovalDecision.PENDING
+                    )
+
+                application.status = ApplicationStatus.PENDING_COUNSELOR
+            else:
+                application.status = ApplicationStatus.APPROVED
         else:
             application.status = ApplicationStatus.REJECTED
         application.save()
-        notify_approval_decided(approval)
 
     return Response({'success': True, 'processed': approvals.count()})

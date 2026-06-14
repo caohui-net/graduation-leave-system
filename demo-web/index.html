@@ -794,14 +794,14 @@
         btn.textContent = '加载中...';
 
         try {
-            // Fetch preview data (JSON format) - no artificial limit
-            const res = await fetch(API_BASE_URL + '/approvals/?decision=all&limit=100000', {
+            // Fetch preview data (limit to 100 records for preview)
+            const res = await fetch(API_BASE_URL + '/approvals/?decision=all&limit=100', {
                 headers: getAuthHeaders()
             });
 
             if (res.ok) {
                 const data = await res.json();
-                showExcelPreview(data.results);
+                showExcelPreview(data.results, data.count);
             } else {
                 showToast('加载数据失败', 'error');
             }
@@ -814,7 +814,7 @@
         }
     }
 
-    function showExcelPreview(approvals) {
+    function showExcelPreview(approvals, totalCount) {
         // Status mapping to Chinese
         const statusMap = {
             'pending_dorm_manager': '待宿管审批',
@@ -831,11 +831,13 @@
             'rejected': '已拒绝'
         };
 
-        // Build table header (移除申请ID)
+        // Build table header with total count info
         const headers = ['提交人', '学号', '手机号', '离校日期', '楼栋号', '房间号', '提交时间', '审批状态',
                         '宿管员', '宿管审批时间', '宿管审批结果', '辅导员', '辅导员审批时间', '辅导员审批结果'];
 
-        const headerHTML = '<tr>' + headers.map(h => `<th style="padding: 8px; border: 1px solid #ddd; text-align: left; white-space: nowrap;">${h}</th>`).join('') + '</tr>';
+        const previewNote = totalCount > approvals.length ?
+            `<tr><td colspan="${headers.length}" style="padding: 8px; background: #fff3cd; text-align: center;">预览前100条，导出将包含全部${totalCount}条记录</td></tr>` : '';
+        const headerHTML = previewNote + '<tr>' + headers.map(h => `<th style="padding: 8px; border: 1px solid #ddd; text-align: left; white-space: nowrap;">${h}</th>`).join('') + '</tr>';
         document.getElementById('excelPreviewHeader').innerHTML = headerHTML;
 
         // Build table body - group approvals by application
@@ -1568,6 +1570,11 @@
   </div>
 
   <script>
+    // Auth helper
+    function getAuthHeaders() {
+      return currentToken ? { 'Authorization': `Bearer ${currentToken}` } : {};
+    }
+
     // Status mapping
     const statusMap = {
       'pending_dorm_manager': { text: '待宿管审批', class: 'tag-pending' },
@@ -1868,9 +1875,9 @@
       <h3 style="margin: 0;">审批数据预览</h3>
       <button onclick="closeExcelPreview()" style="border: none; background: none; font-size: 24px; cursor: pointer; color: #999;">&times;</button>
     </div>
-    <div style="padding: 20px; overflow-x: auto; max-height: 60vh;">
+    <div style="padding: 20px; overflow-x: auto; max-height: 60vh; overflow-y: auto;">
       <table id="excelPreviewTable" style="width: 100%; border-collapse: collapse; font-size: 13px;">
-        <thead id="excelPreviewHeader" style="background: #f5f5f5; position: sticky; top: 0;"></thead>
+        <thead id="excelPreviewHeader" style="background: #f5f5f5; position: sticky; top: 0; z-index: 10;"></thead>
         <tbody id="excelPreviewBody"></tbody>
       </table>
     </div>

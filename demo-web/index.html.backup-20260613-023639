@@ -1,0 +1,1964 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>毕业离校申请系统 - UI Demo</title>
+  <link rel="stylesheet" href="css/global.css">
+  <script src="js/api.js?v=20260612"></script>
+<script>
+    let currentFilter = 'all';
+    let approvalOffset = 0;
+    let approvalHasMore = true;
+    let deanDisplayedApps = new Set(); // Track displayed application IDs for dean deduplication
+    let adminFilters = {}; // 管理员筛选器状态
+    // currentUser is declared in api.js
+
+    // HTML escape helper to prevent XSS
+    function escapeHtml(text) {
+        if (!text) return '';
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+    }
+
+    async function loadMyApplications() {
+        if (!currentToken) return;
+        const data = await apiGetApplications();
+        const listContainer = document.getElementById('approval-list-container');
+
+        if (data.results && data.results.length > 0) {
+            // 检查是否有failed或rejected状态，显示横幅
+            const hasFailed = data.results.some(a => a.status === 'failed');
+            const hasRejected = data.results.some(a => a.status === 'rejected');
+
+            if (hasFailed) {
+                showFailedApplicationBanner();
+            } else if (hasRejected) {
+                showRejectedApplicationBanner();
+            }
+
+            // Apply filter
+            let filtered = data.results;
+            if (currentFilter === 'pending') {
+                filtered = data.results.filter(a => a.status && a.status.startsWith('pending_'));
+            } else if (currentFilter === 'approved') {
+                filtered = data.results.filter(a => a.status === 'approved');
+            } else if (currentFilter === 'rejected') {
+                filtered = data.results.filter(a => a.status === 'rejected');
+            }
+
+            let htmlStr = '';
+            filtered.forEach(app => {
+                const statusDisplay = getStatusDisplay(app.status);
+                const appIdDisplay = app.application_id ? app.application_id.substring(0,8) : '未知';
+                htmlStr += '<div class="card" style="cursor: pointer;" onclick="showApplicationDetail(\'' + app.application_id + '\')">' +
+                  '<div class="flex-row justify-between align-center" style="margin-bottom: 8px;">' +
+                    '<span style="font-size: 16px; font-weight: bold;">申请 ' + appIdDisplay + '</span>' +
+                    '<span class="tag ' + statusDisplay.class + '">' + statusDisplay.text + '</span>' +
+                  '</div>' +
+                  '<div style="margin-bottom: 4px;">' +
+                    '<span style="font-size: 14px; color: #999; margin-right: 8px;">离校日期:</span>' +
+                    '<span style="font-size: 14px; color: #333;">' + (app.leave_date || '-') + '</span>' +
+                  '</div>' +
+                  '<div style="margin-top: 8px; padding-top: 8px; border-top: 1px solid #f0f0f0;">' +
+                    '<span style="font-size: 12px; color: #999;">' + new Date(app.created_at).toLocaleString() + '</span>' +
+                  '</div>' +
+                '</div>';
+            });
+            listContainer.innerHTML = htmlStr;
+        } else {
+            listContainer.innerHTML = '<div style="text-align:center; padding: 20px; color:#999;">暂无申请记录</div>';
+        }
+    }
+
+    async function loadApprovals(append = false) {
+        console.log('[DEBUG] loadApprovals called, append=', append, 'currentToken=', currentToken);
+        if (!currentToken) return;
+
+        if (!append) {
+            approvalOffset = 0;
+            approvalHasMore = true;
+        }
+
+        // Map currentFilter to Application status
+        let status = null;
+        if (currentFilter === 'pending') {
+            // Pending = pending_dorm_manager OR pending_counselor
+            // API doesn't support OR query, fetch all and filter client-side
+            status = null; // Will filter after fetch
+        } else if (currentFilter === 'approved') {
+            status = 'approved';
+        } else if (currentFilter === 'rejected') {
+            status = 'rejected';
+        }
+        // currentFilter === 'all' -> status = null (no filter)
+
+        const listContainer = document.getElementById('approval-list-container');
+        const loadMoreBtn = document.getElementById('load-more-approvals');
+
+        const BATCH_SIZE = 20;
+        const data = await apiGetApplicationsForAdmin(status, BATCH_SIZE, approvalOffset, adminFilters);
+        console.log('[DEBUG] apiGetApplicationsForAdmin returned:', data, 'offset:', approvalOffset);
+
+        if (!data || !data.results) {
+            return;
+        }
+
+        let results = data.results;
+        const totalCount = data.count;
+
+        // Client-side filter for 'pending' (pending_dorm_manager OR pending_counselor)
+        if (currentFilter === 'pending') {
+            results = results.filter(app =>
+                app.status === 'pending_dorm_manager' || app.status === 'pending_counselor'
+            );
+        }
+
+        approvalOffset += BATCH_SIZE;
+        approvalHasMore = approvalOffset < totalCount;
+
+        if (!append) {
+            listContainer.innerHTML = '';
+        }
+
+        renderApplications(results);
+
+        if (approvalHasMore) {
+            loadMoreBtn.style.display = 'block';
+        } else {
+            loadMoreBtn.style.display = 'none';
+        }
+
+        if (!append) {
+            showAdminFiltersUI();
+        }
+    }
+
+    function renderApplications(applications) {
+        const listContainer = document.getElementById('approval-list-container');
+
+        // Status display map
+        const statusMap = {
+            'pending_dorm_manager': { text: '待宿管审批', cls: 'tag-pending' },
+            'pending_counselor': { text: '待辅导员审批', cls: 'tag-pending' },
+            'approved': { text: '已通过', cls: 'tag-approved' },
+            'rejected': { text: '已驳回', cls: 'tag-rejected' }
+        };
+
+        applications.forEach(app => {
+            const statusInfo = statusMap[app.status] || { text: app.status, cls: 'tag-pending' };
+            const safeAppId = escapeHtml(app.id || app.application_id).substring(0,8);
+            const safeStudentName = escapeHtml(app.student_name || '-');
+            const safeStudentId = escapeHtml(app.student?.user_id || app.student_id || '-');
+
+            const card = document.createElement('div');
+            card.className = 'card';
+            card.style.cursor = 'pointer';
+            card.onclick = () => openApplication(app.id);
+
+            card.innerHTML = `
+                <div class="flex-row justify-between align-center" style="margin-bottom: 8px;">
+                    <span style="font-size: 16px; font-weight: bold;">申请 ${safeAppId}</span>
+                    <span class="tag ${statusInfo.cls}">${statusInfo.text}</span>
+                </div>
+                <div style="margin-bottom: 4px;">
+                    <span style="font-size: 14px; color: #999; margin-right: 8px;">学生:</span>
+                    <span style="font-size: 14px; color: #333;">${safeStudentName} (${safeStudentId})</span>
+                </div>
+                <div style="font-size: 12px; color: #999;">
+                    创建: ${app.created_at ? new Date(app.created_at).toLocaleString('zh-CN') : '-'}
+                </div>
+            `;
+
+            listContainer.appendChild(card);
+        });
+    }
+
+    function openApplication(appId) {
+        window.location.href = `/demo-web/application-detail.html?id=${appId}`;
+    }
+
+        // Status map based on backend expectations
+        const statusMap = {
+            'pending_dorm_manager': { text: '待宿管审批', cls: 'tag-pending' },
+            'pending_counselor': { text: '待辅导员审批', cls: 'tag-pending' },
+            'approved': { text: '已通过', cls: 'tag-approved' },
+            'rejected': { text: '已拒绝', cls: 'tag-rejected' },
+            'failed': { text: '提交失败', cls: 'tag-rejected' }
+        };
+
+        const decisionMap = {
+            'pending': { text: '待审批', cls: 'tag-pending' },
+            'approved': { text: '已通过', cls: 'tag-approved' },
+            'rejected': { text: '已拒绝', cls: 'tag-rejected' }
+        };
+
+        if (displayRecords.length > 0) {
+            let htmlStr = '';
+
+            displayRecords.forEach(approval => {
+                const application = approval.application || {};
+
+                // Display approval decision (consistent with filter and statistics)
+                const decision = approval.decision || 'pending';
+                const step = decisionMap[decision] ? decisionMap[decision].text : decision;
+                const tagCls = decisionMap[decision] ? decisionMap[decision].cls : 'tag-pending';
+
+                const safeAppId = escapeHtml(application.id || approval.id).substring(0,8);
+                const safeStudentName = escapeHtml(application.student_name || '-');
+                const safeStudentId = escapeHtml(application.student_id || '-');
+
+                const showCheckbox = decision === 'pending' && (currentUser?.role === 'dorm_manager' || currentUser?.role === 'counselor');
+                htmlStr += '<div class="card" style="cursor: pointer; display: flex; gap: 12px;">' +
+                  (showCheckbox ? '<input type="checkbox" class="approval-checkbox" data-approval-id="' + approval.id + '" onclick="event.stopPropagation(); toggleBatchBar();" style="width: 20px; height: 20px; cursor: pointer;">' : '') +
+                  '<div style="flex: 1;" onclick="openApproval(\'' + approval.id + '\')">' +
+                    '<div class="flex-row justify-between align-center" style="margin-bottom: 8px;">' +
+                      '<span style="font-size: 16px; font-weight: bold;">申请 ' + safeAppId + '</span>' +
+                      '<span class="tag ' + tagCls + '">' + step + '</span>' +
+                    '</div>' +
+                  '<div style="margin-bottom: 4px;">' +
+                    '<span style="font-size: 14px; color: #999; margin-right: 8px;">学生:</span>' +
+                    '<span style="font-size: 14px; color: #333;">' + safeStudentName + ' (' + safeStudentId + ')</span>' +
+                  '</div>';
+
+                // Show approver and decision time for completed approvals
+                if (decision === 'approved' || decision === 'rejected') {
+                    // Extract real approver name from comment if auto-completed
+                    let realApprover = approval.approver_name || '-';
+                    if (approval.comment && approval.comment.includes('已由')) {
+                        const match = approval.comment.match(/已由(.+?)完成审批/);
+                        if (match) {
+                            realApprover = match[1];
+                        }
+                    }
+                    const safeApprover = escapeHtml(realApprover);
+
+                    htmlStr += '<div style="margin-bottom: 4px;">' +
+                      '<span style="font-size: 14px; color: #999; margin-right: 8px;">审批人:</span>' +
+                      '<span style="font-size: 14px; color: #333;">' + safeApprover + '</span>' +
+                    '</div>';
+                    if (approval.decided_at) {
+                        htmlStr += '<div style="margin-bottom: 4px;">' +
+                          '<span style="font-size: 14px; color: #999; margin-right: 8px;">审批时间:</span>' +
+                          '<span style="font-size: 14px; color: #333;">' + new Date(approval.decided_at).toLocaleString() + '</span>' +
+                        '</div>';
+                    }
+                }
+
+                htmlStr += '<div style="margin-top: 8px; padding-top: 8px; border-top: 1px solid #f0f0f0;">' +
+                    '<span style="font-size: 12px; color: #999;">创建: ' + new Date(approval.created_at || application.created_at).toLocaleString() + '</span>' +
+                  '</div>' +
+                  '</div>' +
+                '</div>';
+            });
+
+            if (append) {
+                listContainer.innerHTML += htmlStr;
+            } else {
+                listContainer.innerHTML = htmlStr;
+            }
+
+            // Update offset to current position
+            approvalOffset = currentOffset;
+
+            // Check if there's more data to load
+            // Has more if: we haven't displayed all accumulated results, or there's more data in API
+            approvalHasMore = (accumulatedResults.length > TARGET_COUNT) || (currentOffset < totalCount);
+
+            if (loadMoreBtn) {
+                loadMoreBtn.style.display = approvalHasMore ? 'block' : 'none';
+            }
+        } else {
+            if (!append) {
+                listContainer.innerHTML = '<div style="text-align:center; padding: 20px; color:#999;">暂无数据</div>';
+            }
+            if (loadMoreBtn) {
+                loadMoreBtn.style.display = 'none';
+            }
+        }
+
+        // 显示/隐藏全选栏
+        const selectAllBar = document.getElementById('select-all-bar');
+        const hasCheckboxes = document.querySelectorAll('.approval-checkbox').length > 0;
+        if (selectAllBar) {
+            selectAllBar.style.display = hasCheckboxes ? 'block' : 'none';
+        }
+
+        // 显示管理员筛选器（仅管理员/学工部可见）
+        if (!append) {
+            showAdminFiltersUI();
+        }
+    }
+
+    function filterApprovals(filter) {
+        currentFilter = filter;
+
+        // Update tab active state
+        const tabs = document.querySelectorAll('#approval-tabs .filter-tab');
+        tabs.forEach((tab, index) => {
+            tab.classList.remove('active');
+            if ((filter === 'all' && index === 0) ||
+                (filter === 'pending' && index === 1) ||
+                (filter === 'approved' && index === 2) ||
+                (filter === 'rejected' && index === 3)) {
+                tab.classList.add('active');
+            }
+        });
+
+        // Reload list with filter
+        if (currentUser && currentUser.role === 'student') {
+            loadMyApplications();
+        } else {
+            loadApprovals();
+        }
+    }
+
+    function applyAdminFilters() {
+        const field = document.getElementById('filter-field').value;
+        const value = document.getElementById('filter-value').value.trim();
+
+        adminFilters = {};
+        if (value) {
+            adminFilters[field] = value;
+        }
+
+        loadApprovals();
+    }
+
+    function clearAdminFilters() {
+        adminFilters = {};
+        document.getElementById('filter-value').value = '';
+        loadApprovals();
+    }
+
+    function showAdminFiltersUI() {
+        const adminFiltersEl = document.getElementById('admin-filters');
+        if (adminFiltersEl && currentUser && currentUser.role !== 'student') {
+            adminFiltersEl.style.display = 'block';
+        }
+    }
+
+    let currentApprovalId = null;
+    async function showApplicationDetail(applicationId) {
+        // Student view: show application detail with approval history
+        showScreen(2);
+
+        const appRes = await fetch(API_BASE_URL + '/applications/' + applicationId + '/', {
+            headers: getAuthHeaders()
+        });
+
+        if (!appRes.ok) {
+            document.querySelector('#screen-2').innerHTML = '<div class="card"><p style="color: #ff4d4f;">加载失败</p></div>';
+            return;
+        }
+
+        const appData = await appRes.json();
+        const attachments = await apiGetAttachments(applicationId);
+
+        // Fetch approval records
+        const approvalsRes = await fetch(API_BASE_URL + '/approvals/?application_id=' + applicationId, {
+            headers: getAuthHeaders()
+        });
+        const approvalsData = approvalsRes.ok ? await approvalsRes.json() : { results: [] };
+
+        const container = document.querySelector('#screen-2');
+
+        const basicInfoHtml = '<div class="card">' +
+            '<div style="font-size: 16px; font-weight: bold; margin-bottom: 10px;">基本信息</div>' +
+            '<div style="display: flex; margin-bottom: 8px;">' +
+              '<span style="font-size: 14px; color: #999; width: 80px;">申请ID:</span>' +
+              '<span style="font-size: 14px; color: #333;">' + escapeHtml(appData.application_id || '-') + '</span>' +
+            '</div>' +
+            '<div style="display: flex; margin-bottom: 8px;">' +
+              '<span style="font-size: 14px; color: #999; width: 80px;">学生姓名:</span>' +
+              '<span style="font-size: 14px; color: #333;">' + escapeHtml(appData.student_name || '-') + '</span>' +
+            '</div>' +
+            '<div style="display: flex; margin-bottom: 8px;">' +
+              '<span style="font-size: 14px; color: #999; width: 80px;">联系电话:</span>' +
+              '<span style="font-size: 14px; color: #333;">' + escapeHtml(appData.contact_phone || '-') + '</span>' +
+            '</div>' +
+            '<div style="display: flex; margin-bottom: 8px;">' +
+              '<span style="font-size: 14px; color: #999; width: 80px;">离校日期:</span>' +
+              '<span style="font-size: 14px; color: #333;">' + escapeHtml(appData.leave_date || '-') + '</span>' +
+            '</div>' +
+            '<div style="display: flex; margin-bottom: 8px;">' +
+              '<span style="font-size: 14px; color: #999; width: 80px;">离校原因:</span>' +
+              '<span style="font-size: 14px; color: #333;">' + escapeHtml(appData.reason || '-') + '</span>' +
+            '</div>' +
+          '</div>';
+
+        const attachmentsHtml = '<div class="card">' +
+            '<div style="font-size: 16px; font-weight: bold; margin-bottom: 10px;">附件材料</div>' +
+            (attachments && attachments.length > 0
+                ? attachments.map(att =>
+                    '<div style="display: flex; align-items: center; padding: 8px 0; border-bottom: 1px solid #f0f0f0;">' +
+                      '<span style="flex: 1; font-size: 14px; color: #333;">' + escapeHtml(att.filename) + '</span>' +
+                      '<button class="btn-outline" style="padding: 4px 12px; font-size: 13px;" onclick="previewAttachment(\'' + encodeURIComponent(att.attachment_id) + '\')">预览</button>' +
+                    '</div>'
+                  ).join('')
+                : '<div style="color: #999; font-size: 14px;">无附件</div>') +
+          '</div>';
+
+        const approvalProgressHtml = renderStudentApprovalProgress(appData, approvalsData.results);
+
+        container.innerHTML = basicInfoHtml + attachmentsHtml + approvalProgressHtml +
+            '<div style="padding: 20px;"><button class="btn-outline" onclick="showScreen(1); loadMyApplications();" style="width: 100%;">返回</button></div>';
+    }
+
+    function renderStudentApprovalProgress(appData, approvals) {
+        const stepNames = {
+            'dorm_manager': '宿管员审批',
+            'counselor': '辅导员审批'
+        };
+
+        const workflow = ['dorm_manager', 'counselor'];
+        const appStatus = appData.status;
+
+        let html = '<div class="card"><div style="font-size: 16px; font-weight: bold; margin-bottom: 10px;">审批进度</div>';
+
+        for (let i = workflow.length - 1; i >= 0; i--) {
+            const step = workflow[i];
+            const stepName = stepNames[step];
+            const approval = approvals.find(a => a.step === step);
+
+            let state, tagText, tagCls, dotBg, dotBorder;
+
+            if (appStatus === 'rejected' && approval && approval.decision === 'rejected') {
+                state = 'rejected';
+                tagText = '已驳回';
+                tagCls = 'tag-rejected';
+                dotBg = 'var(--status-error)';
+                dotBorder = 'var(--status-error)';
+            } else if (approval && approval.decision === 'approved') {
+                state = 'approved';
+                tagText = '已通过';
+                tagCls = 'tag-approved';
+                dotBg = 'var(--status-success)';
+                dotBorder = 'var(--status-success)';
+            } else if (appStatus === 'pending_' + step) {
+                state = 'pending';
+                tagText = '待审批';
+                tagCls = 'tag-pending';
+                dotBg = 'white';
+                dotBorder = 'var(--primary-color)';
+            } else {
+                state = 'future';
+                tagText = '未开始';
+                tagCls = 'tag';
+                dotBg = '#e8e8e8';
+                dotBorder = '#e8e8e8';
+            }
+
+            html += '<div style="position: relative; padding-left: 30px; margin-bottom: 20px;">' +
+                '<div style="position: absolute; left: 10px; top: 4px; width: 10px; height: 10px; border-radius: 50%; background: ' + dotBg + '; border: 2px solid ' + dotBorder + ';"></div>' +
+                '<div style="margin-bottom: 6px;"><span style="font-size: 15px; font-weight: 600;">' + stepName + '</span> <span class="tag ' + tagCls + '">' + tagText + '</span></div>';
+
+            if (approval) {
+                html += '<div style="font-size: 13px; color: #666;">审批人: ' + (approval.approver_name || '待分配') + '</div>';
+                if (approval.decided_at) {
+                    html += '<div style="font-size: 13px; color: #666;">时间: ' + new Date(approval.decided_at).toLocaleString() + '</div>';
+                }
+                if (state === 'rejected') {
+                    const comment = approval.comment && approval.comment.trim() ? approval.comment : '审批人未填写驳回原因';
+                    html += '<div style="font-size: 13px; color: #ff4d4f; margin-top: 4px; font-weight: 600;">驳回原因: ' + comment + '</div>';
+                } else if (approval.comment && approval.comment.trim()) {
+                    html += '<div style="font-size: 13px; color: #666; margin-top: 4px;">意见: ' + approval.comment + '</div>';
+                }
+            }
+
+            html += '</div>';
+        }
+
+        html += '</div>';
+        return html;
+    }
+
+    async function openApproval(id) {
+        currentApprovalId = id;
+        showScreen(2);
+
+        const res = await fetch(API_BASE_URL + '/approvals/' + id + '/', {
+            headers: getAuthHeaders()
+        });
+        if (res.ok) {
+            const detail = await res.json();
+
+            const appRes = await fetch(API_BASE_URL + '/applications/' + detail.application_id + '/', {
+                headers: getAuthHeaders()
+            });
+            const appData = appRes.ok ? await appRes.json() : null;
+
+            // Fetch attachments
+            const attachments = await apiGetAttachments(detail.application_id);
+
+            const container = document.querySelector('#screen-2');
+
+            const basicInfoHtml = '<div class="card">' +
+                '<div style="font-size: 16px; font-weight: bold; margin-bottom: 10px;">基本信息</div>' +
+                '<div style="display: flex; margin-bottom: 8px;">' +
+                  '<span style="font-size: 14px; color: #999; width: 80px;">申请ID:</span>' +
+                  '<span style="font-size: 14px; color: #333; flex: 1;">' + (detail.application_id || detail.id.substring(0,8)) + '</span>' +
+                '</div>' +
+                '<div style="display: flex; margin-bottom: 8px;">' +
+                  '<span style="font-size: 14px; color: #999; width: 80px;">学生:</span>' +
+                  '<span style="font-size: 14px; color: #333; flex: 1;">' + (detail.student_name || '-') + ' (' + (detail.student_id || '-') + ')</span>' +
+                '</div>' +
+                '<div style="display: flex; margin-bottom: 8px;">' +
+                  '<span style="font-size: 14px; color: #999; width: 80px;">联系电话:</span>' +
+                  '<span style="font-size: 14px; color: #333; flex: 1;">' + (detail.contact_phone || '-') + '</span>' +
+                '</div>' +
+                '<div style="display: flex; margin-bottom: 8px;">' +
+                  '<span style="font-size: 14px; color: #999; width: 80px;">离校日期:</span>' +
+                  '<span style="font-size: 14px; color: #333; flex: 1;">' + (detail.leave_date || '-') + '</span>' +
+                '</div>' +
+                '<div style="display: flex; margin-bottom: 8px;">' +
+                  '<span style="font-size: 14px; color: #999; width: 80px;">楼栋号:</span>' +
+                  '<span style="font-size: 14px; color: #333; flex: 1;">' + (detail.building || '-') + '</span>' +
+                '</div>' +
+                '<div style="display: flex; margin-bottom: 8px;">' +
+                  '<span style="font-size: 14px; color: #999; width: 80px;">房间号:</span>' +
+                  '<span style="font-size: 14px; color: #333; flex: 1;">' + (detail.room_number || '-') + '</span>' +
+                '</div>' +
+                '<div style="display: flex; margin-bottom: 8px;">' +
+                  '<span style="font-size: 14px; color: #999; width: 80px;">申请原因:</span>' +
+                  '<span style="font-size: 14px; color: #333; flex: 1;">' + (detail.reason || '无') + '</span>' +
+                '</div>' +
+              '</div>';
+
+            // Generate attachment HTML - hide download for counselor/dorm_manager
+            let attachmentHtml = '';
+            if (attachments && attachments.length > 0) {
+                const showDownload = currentUser && (currentUser.role === 'dean' || currentUser.role === 'admin');
+                attachmentHtml = '<div class="card"><div style="font-size: 16px; font-weight: bold; margin-bottom: 10px;">附件材料</div>';
+                attachments.forEach(att => {
+                    attachmentHtml += '<div style="display: flex; align-items: center; padding: 8px 0; border-bottom: 1px solid #f0f0f0;">' +
+                        '<span style="font-size: 14px; color: #333; flex: 1;">' + att.file_name + ' (' + (att.file_size / 1024).toFixed(2) + ' KB)</span>' +
+                        '<button onclick="handleAttachmentPreview(\'' + att.attachment_id + '\')" style="font-size: 14px; color: var(--primary-color); background: none; border: none; cursor: pointer; margin-right: 12px;">预览</button>' +
+                        (showDownload ? '<button onclick="handleAttachmentDownload(\'' + att.attachment_id + '\', \'' + att.file_name + '\')" style="font-size: 14px; color: var(--primary-color); background: none; border: none; cursor: pointer;">下载</button>' : '') +
+                    '</div>';
+                });
+                attachmentHtml += '</div>';
+            }
+
+            // 动态生成审批时间轴
+            const timelineHtml = generateTimeline(detail, appData);
+
+            const cards = container.querySelectorAll('.card');
+            if (cards.length > 0) {
+                cards[0].outerHTML = basicInfoHtml;
+            }
+            if (cards.length > 1) {
+                if (attachmentHtml) {
+                    cards[1].outerHTML = attachmentHtml + timelineHtml;
+                } else {
+                    cards[1].outerHTML = timelineHtml;
+                }
+            }
+        }
+    }
+
+    function generateTimeline(detail, appData) {
+        const stepNames = {
+            'dorm_manager': '宿管员审批',
+            'counselor': '辅导员审批'
+        };
+
+        const appStatus = appData ? appData.status : detail.step;
+
+        // Filter workflow based on current user role
+        let workflow = ['dorm_manager', 'counselor'];
+        if (currentUser && currentUser.role === 'dorm_manager') {
+            workflow = ['dorm_manager'];
+        } else if (currentUser && currentUser.role === 'counselor') {
+            workflow = ['dorm_manager', 'counselor'];
+        }
+        // admin sees all steps (default: 2 steps)
+
+        // Calculate current level index
+        let currentLevel;
+        if (appStatus === 'approved') {
+            currentLevel = workflow.length;
+        } else if (appStatus === 'rejected') {
+            currentLevel = workflow.indexOf(detail.step);
+        } else if (appStatus.startsWith('pending_')) {
+            const pendingStep = appStatus.replace('pending_', '');
+            currentLevel = workflow.indexOf(pendingStep);
+        } else {
+            currentLevel = -1;
+        }
+
+        let html = '<div class="card"><div style="font-size: 16px; font-weight: bold; margin-bottom: 10px;">审批记录</div>';
+
+        for (let i = workflow.length - 1; i >= 0; i--) {
+            const step = workflow[i];
+            const stepName = stepNames[step];
+            const isLast = i === 0;
+
+            let state, tagText, tagCls, dotBg, dotBorder, showConnector;
+
+            // Check if this is the current approval's step
+            if (step === detail.step) {
+                if (detail.decision === 'approved') {
+                    state = 'approved';
+                    tagText = '已通过';
+                    tagCls = 'tag-approved';
+                    dotBg = 'var(--status-success)';
+                    dotBorder = 'var(--status-success)';
+                } else if (detail.decision === 'rejected') {
+                    state = 'rejected';
+                    tagText = '已驳回';
+                    tagCls = 'tag-rejected';
+                    dotBg = 'var(--status-error)';
+                    dotBorder = 'var(--status-error)';
+                } else {
+                    state = 'pending';
+                    tagText = '待审批';
+                    tagCls = 'tag-pending';
+                    dotBg = 'white';
+                    dotBorder = 'var(--primary-color)';
+                }
+                showConnector = !isLast;
+            } else if (i < currentLevel || appStatus === 'approved') {
+                state = 'approved';
+                tagText = '已通过';
+                tagCls = 'tag-approved';
+                dotBg = 'var(--status-success)';
+                dotBorder = 'var(--status-success)';
+                showConnector = !isLast;
+            } else if (i === currentLevel && appStatus !== 'rejected') {
+                state = 'pending';
+                tagText = '待审批';
+                tagCls = 'tag-pending';
+                dotBg = 'white';
+                dotBorder = 'var(--primary-color)';
+                showConnector = !isLast;
+            } else {
+                state = 'future';
+                tagText = '未开始';
+                tagCls = 'tag';
+                dotBg = '#e8e8e8';
+                dotBorder = '#e8e8e8';
+                showConnector = !isLast;
+            }
+
+            html += '<div style="position: relative; padding-left: 30px;' + (isLast ? '' : ' margin-bottom: 20px;') + '">' +
+              '<div style="position: absolute; left: 10px; top: 4px; width: 10px; height: 10px; border-radius: 50%; background: ' + dotBg + '; border: 2px solid ' + dotBorder + ';"></div>';
+
+            if (showConnector) {
+                html += '<div style="position: absolute; left: 14px; top: 16px; bottom: -20px; width: 1px; background: #e8e8e8;"></div>';
+            }
+
+            html += '<div class="flex-row justify-between align-center" style="margin-bottom: 6px;">' +
+                '<span style="font-size: 15px; font-weight: 600;">' + stepName + '</span>' +
+                '<span class="tag ' + tagCls + '">' + tagText + '</span>' +
+              '</div>';
+
+            if (state === 'approved' || state === 'pending' || state === 'rejected') {
+                if (detail.step === step) {
+                    html += '<div style="font-size: 13px; color: #666;">审批人: ' + (detail.approver_name || '待分配') + '</div>';
+                    if (detail.decided_at) {
+                        html += '<div style="font-size: 13px; color: #666;">时间: ' + detail.decided_at + '</div>';
+                    }
+                    if (detail.comment) {
+                        html += '<div style="font-size: 13px; color: #666; margin-top: 4px;">意见: ' + detail.comment + '</div>';
+                    }
+                }
+            }
+
+            html += '</div>';
+        }
+
+        html += '<div style="position: relative; padding-left: 30px; margin-top: 20px;">' +
+          '<div style="position: absolute; left: 10px; top: 4px; width: 10px; height: 10px; border-radius: 50%; background: var(--status-success); border: 2px solid var(--status-success);"></div>' +
+          '<div class="flex-row justify-between align-center" style="margin-bottom: 6px;">' +
+            '<span style="font-size: 15px; font-weight: 600;">提交申请</span>' +
+            '<span class="tag tag-approved">已完成</span>' +
+          '</div>' +
+          '<div style="font-size: 13px; color: #666;">学生已提交</div>' +
+        '</div></div>';
+
+        return html;
+    }
+    
+    async function doApprove() {
+        if(!currentApprovalId) return;
+        const comment = document.getElementById('approvalComment').value;
+        const btn = event?.target || document.querySelector('#approval-actions .btn-primary');
+
+        const originalText = btn.textContent;
+        btn.disabled = true;
+        btn.textContent = '处理中...';
+
+        try {
+            const ok = await apiApprove(currentApprovalId, comment);
+            if(ok) {
+              showToast('审批通过', 'success');
+              showScreen(1);
+              loadApprovals();
+              loadApprovalStatistics();
+            }
+            else { showToast('审批失败', 'error'); }
+        } finally {
+            btn.disabled = false;
+            btn.textContent = originalText;
+        }
+    }
+
+    async function doReject() {
+        if(!currentApprovalId) return;
+        const comment = document.getElementById('approvalComment').value;
+        const btn = event?.target || document.querySelector('#approval-actions .btn-outline');
+
+        const originalText = btn.textContent;
+        btn.disabled = true;
+        btn.textContent = '处理中...';
+
+        try {
+            const ok = await apiReject(currentApprovalId, comment);
+            if(ok) {
+              showToast('审批拒绝', 'success');
+              showScreen(1);
+              loadApprovals();
+              loadApprovalStatistics();
+            }
+            else { showToast('审批失败', 'error'); }
+        } finally {
+            btn.disabled = false;
+            btn.textContent = originalText;
+        }
+    }
+
+    async function handleAttachmentPreview(attachmentId) {
+        try {
+            const url = API_BASE_URL + '/api/attachments/' + attachmentId + '/download/?preview=true';
+            const response = await fetch(url, {
+                headers: { 'Authorization': 'Bearer ' + currentToken }
+            });
+            if (!response.ok) throw new Error('预览失败');
+            const blob = await response.blob();
+            const blobUrl = URL.createObjectURL(blob);
+            window.open(blobUrl, '_blank');
+            setTimeout(() => URL.revokeObjectURL(blobUrl), 100);
+        } catch (error) {
+            showToast('预览失败: ' + error.message, 'error');
+        }
+    }
+
+    async function handleAttachmentDownload(attachmentId, fileName) {
+        try {
+            const url = API_BASE_URL + '/api/attachments/' + attachmentId + '/download/';
+            const response = await fetch(url, {
+                headers: { 'Authorization': 'Bearer ' + currentToken }
+            });
+            if (!response.ok) throw new Error('下载失败');
+            const blob = await response.blob();
+            const blobUrl = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = blobUrl;
+            a.download = fileName;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(blobUrl);
+            showToast('下载成功', 'success');
+        } catch (error) {
+            showToast('下载失败: ' + error.message, 'error');
+        }
+    }
+
+    async function exportApprovals() {
+        const btn = document.getElementById('export-btn');
+        const originalText = btn.textContent;
+        btn.disabled = true;
+        btn.textContent = '加载中...';
+
+        try {
+            // Fetch preview data (JSON format)
+            const res = await fetch(API_BASE_URL + '/approvals/?decision=all&limit=1000', {
+                headers: getAuthHeaders()
+            });
+
+            if (res.ok) {
+                const data = await res.json();
+                showExcelPreview(data.results);
+            } else {
+                showToast('加载数据失败', 'error');
+            }
+        } catch (err) {
+            console.error('Export preview failed:', err);
+            showToast('加载失败', 'error');
+        } finally {
+            btn.disabled = false;
+            btn.textContent = originalText;
+        }
+    }
+
+    function showExcelPreview(approvals) {
+        // Status mapping to Chinese
+        const statusMap = {
+            'pending_dorm_manager': '待宿管审批',
+            'pending_counselor': '待辅导员审批',
+            'pending_dean': '待学工部审批',
+            'approved': '已通过',
+            'rejected': '已拒绝',
+            'draft': '草稿'
+        };
+
+        const decisionMap = {
+            'pending': '待审批',
+            'approved': '已通过',
+            'rejected': '已拒绝'
+        };
+
+        // Build table header (移除申请ID)
+        const headers = ['提交人', '学号', '手机号', '离校日期', '楼栋号', '房间号', '提交时间', '审批状态',
+                        '宿管员', '宿管审批时间', '宿管审批结果', '辅导员', '辅导员审批时间', '辅导员审批结果'];
+
+        const headerHTML = '<tr>' + headers.map(h => `<th style="padding: 8px; border: 1px solid #ddd; text-align: left; white-space: nowrap;">${h}</th>`).join('') + '</tr>';
+        document.getElementById('excelPreviewHeader').innerHTML = headerHTML;
+
+        // Build table body - group approvals by application
+        const appMap = new Map();
+        approvals.forEach(approval => {
+            const appId = approval.application?.id;
+            if (appId && !appMap.has(appId)) {
+                appMap.set(appId, {
+                    application: approval.application,
+                    dormApproval: null,
+                    counselorApproval: null
+                });
+            }
+
+            if (appId) {
+                const record = appMap.get(appId);
+                if (approval.step === 'dorm_manager') {
+                    record.dormApproval = approval;
+                } else if (approval.step === 'counselor') {
+                    record.counselorApproval = approval;
+                }
+            }
+        });
+
+        const rows = Array.from(appMap.values()).map(record => {
+            const app = record.application;
+            const dorm = record.dormApproval;
+            const counselor = record.counselorApproval;
+
+            // Helper function to format date safely
+            const formatDate = (dateStr) => {
+                if (!dateStr) return '-';
+                const date = new Date(dateStr);
+                return isNaN(date.getTime()) ? '-' : date.toLocaleString();
+            };
+
+            return `<tr>
+                <td style="padding: 8px; border: 1px solid #ddd;">${escapeHtml(app.student_name || '-')}</td>
+                <td style="padding: 8px; border: 1px solid #ddd;">${escapeHtml(app.student_id || '-')}</td>
+                <td style="padding: 8px; border: 1px solid #ddd;">${escapeHtml(app.contact_phone || '-')}</td>
+                <td style="padding: 8px; border: 1px solid #ddd;">${escapeHtml(app.leave_date || '-')}</td>
+                <td style="padding: 8px; border: 1px solid #ddd;">${escapeHtml(app.building || '-')}</td>
+                <td style="padding: 8px; border: 1px solid #ddd;">${escapeHtml(app.room_number || '-')}</td>
+                <td style="padding: 8px; border: 1px solid #ddd;">${formatDate(app.created_at)}</td>
+                <td style="padding: 8px; border: 1px solid #ddd;">${statusMap[app.status] || escapeHtml(app.status) || '-'}</td>
+                <td style="padding: 8px; border: 1px solid #ddd;">${escapeHtml(dorm?.approver_name || '-')}</td>
+                <td style="padding: 8px; border: 1px solid #ddd;">${formatDate(dorm?.decided_at)}</td>
+                <td style="padding: 8px; border: 1px solid #ddd;">${dorm?.decision ? decisionMap[dorm.decision] || escapeHtml(dorm.decision) : '-'}</td>
+                <td style="padding: 8px; border: 1px solid #ddd;">${escapeHtml(counselor?.approver_name || '-')}</td>
+                <td style="padding: 8px; border: 1px solid #ddd;">${formatDate(counselor?.decided_at)}</td>
+                <td style="padding: 8px; border: 1px solid #ddd;">${counselor?.decision ? decisionMap[counselor.decision] || escapeHtml(counselor.decision) : '-'}</td>
+            </tr>`;
+        }).join('');
+
+        document.getElementById('excelPreviewBody').innerHTML = rows;
+        document.getElementById('excelPreviewModal').style.display = 'block';
+    }
+
+    function closeExcelPreview() {
+        document.getElementById('excelPreviewModal').style.display = 'none';
+    }
+
+    async function confirmExcelDownload() {
+        closeExcelPreview();
+
+        try {
+            const res = await fetch(API_BASE_URL + '/approvals/export/', {
+                method: 'GET',
+                headers: getAuthHeaders()
+            });
+
+            if (res.ok) {
+                const blob = await res.blob();
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = '审批数据_' + new Date().toISOString().split('T')[0] + '.xlsx';
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                window.URL.revokeObjectURL(url);
+                showToast('导出成功', 'success');
+            } else {
+                showToast('导出失败', 'error');
+            }
+        } catch (err) {
+            console.error('Download failed:', err);
+            showToast('下载失败', 'error');
+        }
+    }
+
+    function showRejectedApplicationBanner() {
+        const existingBanner = document.getElementById('rejected-banner');
+        if (existingBanner) return;
+
+        const banner = document.createElement('div');
+        banner.id = 'rejected-banner';
+        banner.className = 'card';
+        banner.style.cssText = 'margin: 15px; padding: 10px; background: #fffbe6; border-left: 3px solid #faad14;';
+        banner.innerHTML = `
+          <div style="display: flex; align-items: flex-start; gap: 8px;">
+            <span style="font-size: 16px;">⚠️</span>
+            <div style="flex: 1;">
+              <div style="font-size: 13px; font-weight: 600; color: #333;">申请已被驳回</div>
+              <div style="font-size: 11px; color: #666; margin-top: 2px;">请查看驳回原因后重新提交申请</div>
+            </div>
+          </div>
+        `;
+        const screen0 = document.getElementById('screen-0');
+        const firstChild = screen0.querySelector('div[style*="padding: 20px"]');
+        if (firstChild) {
+            firstChild.insertBefore(banner, firstChild.firstChild);
+        }
+    }
+
+    function showFailedApplicationBanner() {
+        const existingBanner = document.getElementById('failed-banner');
+        if (existingBanner) return;
+
+        const banner = document.createElement('div');
+        banner.id = 'failed-banner';
+        banner.className = 'card';
+        banner.style.cssText = 'margin: 15px; padding: 10px; background: #fff2f0; border-left: 3px solid #ff4d4f;';
+        banner.innerHTML = `
+          <div style="display: flex; align-items: flex-start; gap: 8px;">
+            <span style="font-size: 16px;">❌</span>
+            <div style="flex: 1;">
+              <div style="font-size: 13px; font-weight: 600; color: #333;">申请提交失败</div>
+              <div style="font-size: 11px; color: #666; margin-top: 2px;">提交未成功，请重新提交</div>
+            </div>
+          </div>
+        `;
+        const screen0 = document.getElementById('screen-0');
+        const firstChild = screen0.querySelector('div[style*="padding: 20px"]');
+        if (firstChild) {
+            firstChild.insertBefore(banner, firstChild.firstChild);
+        }
+    }
+
+    async function resubmitApplication() {
+        // 获取最新的驳回申请
+        const data = await apiGetApplications();
+        const rejectedApp = data.results.find(a => a.status === 'rejected');
+
+        if (!rejectedApp) {
+            showToast('未找到驳回的申请', 'error');
+            return;
+        }
+
+        // 填充表单
+        document.getElementById('contactPhone').value = rejectedApp.contact_phone || '';
+        document.getElementById('applicationReason').value = rejectedApp.reason || '';
+        document.getElementById('leaveDate').value = rejectedApp.leave_date || '';
+
+        // 清空附件（需要重新上传）
+        uploadedFiles = [];
+        renderFileList();
+
+        // 显示提交界面
+        showScreen(0);
+
+        // 滚动到顶部
+        window.scrollTo(0, 0);
+    }
+
+    async function retryFailedApplication() {
+        // 获取失败的申请
+        const data = await apiGetApplications();
+        const failedApp = data.results.find(a => a.status === 'failed');
+
+        if (!failedApp) {
+            showToast('未找到失败的申请', 'error');
+            return;
+        }
+
+        // 填充表单
+        document.getElementById('contactPhone').value = failedApp.contact_phone || '';
+        document.getElementById('applicationReason').value = failedApp.reason || '';
+        document.getElementById('leaveDate').value = failedApp.leave_date || '';
+
+        // 清空附件（需要重新上传）
+        uploadedFiles = [];
+        renderFileList();
+
+        // 显示提交界面
+        showScreen(0);
+
+        // 滚动到顶部
+        window.scrollTo(0, 0);
+    }
+
+    async function doSubmitApplication() {
+        const phone = document.getElementById('contactPhone').value;
+        const reason = document.getElementById('applicationReason').value;
+        const leaveDate = document.getElementById('leaveDate').value;
+
+        // 验证必填字段
+        if (!phone || !leaveDate) {
+             showToast('请输入联系电话和离校日期', 'error');
+             return;
+        }
+
+        // 验证附件（必需）
+        if (!uploadedFiles || uploadedFiles.length === 0) {
+             showToast('请上传附件材料', 'error');
+             return;
+        }
+
+        // 验证手机号格式（11位，1开头）
+        if (!/^1\d{10}$/.test(phone)) {
+             showToast('请输入有效的11位手机号码', 'error');
+             return;
+        }
+
+        // 验证原因长度（最多500字符）
+        if (reason && reason.length > 500) {
+             showToast('离校原因不能超过500字', 'error');
+             return;
+        }
+
+        // 验证离校日期（不能早于今天）
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        const selectedDate = new Date(leaveDate);
+        if (selectedDate < today) {
+             showToast('离校日期不能早于今天', 'error');
+             return;
+        }
+
+        const btn = event?.target || document.querySelector('#screen-0 .btn-primary');
+        const originalText = btn.textContent;
+        btn.disabled = true;
+        btn.textContent = '提交中...';
+
+        try {
+            const result = await apiSubmitApplication(phone, reason, leaveDate, uploadedFiles);
+            if (result.success) {
+                showToast('申请提交成功', 'success');
+                document.getElementById('contactPhone').value = '';
+                document.getElementById('applicationReason').value = '';
+                document.getElementById('leaveDate').value = '';
+                uploadedFiles = [];
+                renderFileList();
+
+                // Switch to progress view
+                showScreen(1);
+                loadMyApplications();
+            } else {
+                showToast(result.error.message || '申请提交失败', 'error');
+            }
+        } finally {
+            btn.disabled = false;
+            btn.textContent = originalText;
+        }
+    }
+</script>
+  <style>
+    /* 导航标签 */
+    .nav-tabs {
+      background: white;
+      display: flex;
+      border-bottom: 1px solid #f0f0f0;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    /* 筛选标签样式（紧凑版 - Gemini方案） */
+    .filter-tabs {
+      display: flex;
+      gap: 0;
+      background: white;
+      margin-bottom: 0;
+    }
+    .filter-tab {
+      flex: 1;
+      min-width: 0;
+      height: 32px;
+      padding: 0;
+      font-size: 10px;
+      line-height: 32px;
+      border: 1px solid #e0e0e0;
+      border-right: none;
+      background: white;
+      color: #666;
+      cursor: pointer;
+      transition: all 0.15s;
+      position: relative;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .filter-tab::before {
+      content: '';
+      position: absolute;
+      top: -4px;
+      bottom: -4px;
+      left: 0;
+      right: 0;
+      z-index: 1;
+    }
+    .filter-tab:first-child {
+      border-radius: 4px 0 0 4px;
+    }
+    .filter-tab:last-child {
+      border-right: 1px solid #e0e0e0;
+      border-radius: 0 4px 4px 0;
+    }
+    .filter-tab.active {
+      background: #1976d2;
+      color: white;
+      border-color: #1976d2;
+      z-index: 2;
+    }
+    .filter-tab:active {
+      transform: scale(0.98);
+    }
+
+    .nav-tab {
+      flex: 1;
+      text-align: center;
+      padding: 0 2px;
+      min-height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      color: #666;
+      cursor: pointer;
+      position: relative;
+      border: 1px solid #e0e0e0;
+      background: #f8f8f8;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    @media (max-width: 480px) {
+      .nav-tab {
+        font-size: 11px;
+      }
+    }
+    @media (max-width: 360px) {
+      .nav-tab {
+        font-size: 11px;
+      }
+    }
+    .nav-tab.active {
+      color: white;
+      font-weight: 600;
+      background: var(--primary-color);
+      border-color: var(--primary-color);
+    }
+    .nav-tab.active::after {
+      display: none;
+    }
+
+    /* 响应式：桌面端Tab导航优化 */
+    @media (min-width: 1024px) {
+      .nav-tabs {
+        padding: 0 40px;
+      }
+      .nav-tab {
+        padding: 16px 24px;
+        font-size: 16px;
+      }
+      .nav-tab.active::after {
+        width: 50px;
+        height: 3px;
+      }
+    }
+
+    /* 统计卡片样式 */
+    .stats-container {
+      background: #f5f5f5;
+      padding: 12px 10px;
+      display: none;
+    }
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+    }
+    @media (min-width: 768px) {
+      .stats-grid {
+        grid-template-columns: repeat(4, 1fr);
+      }
+    }
+    .stat-card {
+      background: white;
+      padding: 12px;
+      border-radius: 6px;
+      text-align: center;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+    .stat-label {
+      font-size: 12px;
+      color: #999;
+      margin-bottom: 6px;
+    }
+    .stat-value {
+      font-size: 24px;
+      font-weight: bold;
+      color: #333;
+    }
+
+    /* 附件上传区域样式 */
+    .upload-area {
+      border: 2px dashed #d9d9d9;
+      border-radius: 8px;
+      padding: 30px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    .upload-area:hover {
+      border-color: var(--primary-color);
+      background: #fafafa;
+    }
+    .file-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px;
+      background: #fafafa;
+      border-radius: 4px;
+      margin-bottom: 8px;
+    }
+    .file-info {
+      flex: 1;
+      margin-left: 8px;
+    }
+    .file-name {
+      font-size: 14px;
+      color: #333;
+    }
+    .file-size {
+      font-size: 12px;
+      color: #999;
+    }
+    .btn-delete {
+      background: none;
+      border: none;
+      color: var(--status-error);
+      font-size: 20px;
+      cursor: pointer;
+      padding: 0 8px;
+    }
+
+    .screen {
+      display: none;
+      min-height: calc(100vh - 45px);
+    }
+    .screen.active {
+      display: block;
+    }
+    .login-screen {
+      display: none;
+      min-height: calc(100vh - 45px);
+    }
+    .login-screen.active {
+      display: block;
+    }
+  </style>
+</head>
+<body>
+  <!-- 顶部导航 -->
+  <div class="nav-tabs" id="navTabs" style="display: none;">
+    <button class="nav-tab active" onclick="showScreen(0)">学生申请</button>
+    <button class="nav-tab" onclick="showScreen(1)"><span id="nav-approval-text">审批列表</span></button>
+    <button class="nav-tab" onclick="showScreen(2)" style="display: none;">申请详情</button>
+  </div>
+
+  <!-- 登录状态栏 -->
+  <div id="userBar" style="background: white; padding: 8px 16px; border-bottom: 1px solid #f0f0f0; display: none; align-items: center; justify-content: space-between;">
+    <div>
+      <span style="font-size: 14px; color: #666;">当前用户:</span>
+      <span id="currentUserName" style="font-size: 14px; font-weight: 500; margin-left: 8px;"></span>
+      <span id="currentUserRole" style="font-size: 12px; color: #999; margin-left: 8px;"></span>
+    </div>
+    <button onclick="logout()" style="padding: 4px 12px; border: 1px solid #d9d9d9; border-radius: 4px; background: white; cursor: pointer;">退出登录</button>
+  </div>
+
+  <!-- 登录屏幕 -->
+  <div class="login-screen active" id="screen-login">
+    <div style="padding: 40px 20px; max-width: 400px; margin: 0 auto;">
+      <div class="card">
+        <div style="text-align: center; margin-bottom: 30px;">
+          <h2 style="color: var(--primary-color); margin-bottom: 8px;">毕业离校申请系统</h2>
+          <p style="color: #666; font-size: 14px;">请登录以继续</p>
+        </div>
+        <div style="margin-bottom: 20px;">
+          <label style="display: block; font-size: 14px; margin-bottom: 8px; font-weight: 500;">用户ID</label>
+          <input id="loginUserId" type="text" style="width: 100%; padding: 12px; border: 1px solid #d9d9d9; border-radius: 4px; font-size: 14px;" placeholder="请输入用户ID（如 2020001）" required>
+        </div>
+        <div style="margin-bottom: 24px;">
+          <label style="display: block; font-size: 14px; margin-bottom: 8px; font-weight: 500;">密码</label>
+          <input id="loginPassword" type="password" autocomplete="new-password" style="width: 100%; padding: 12px; border: 1px solid #d9d9d9; border-radius: 4px; font-size: 14px;" placeholder="请输入密码" required>
+        </div>
+        <div id="loginError" style="display: none; padding: 10px; background: #fff2f0; border: 1px solid #ffccc7; border-radius: 4px; color: #cf1322; font-size: 14px; margin-bottom: 16px;"></div>
+        <button class="btn-primary" onclick="doLogin()">登录</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="screen" id="screen-0">
+    <div style="padding: 20px;">
+      <!-- 用户信息卡片 -->
+      <div class="card" style="margin-bottom: 20px;">
+        <div style="font-size: 16px; font-weight: 600; color: var(--primary-color); margin-bottom: 16px; padding-bottom: 12px; border-bottom: 1px solid #f0f0f0;">
+          申请人信息
+        </div>
+        <div style="display: flex; align-items: center; padding: 10px 0;">
+          <span style="font-size: 14px; color: #666; width: 80px;">姓名</span>
+          <span id="studentName" style="font-size: 14px; color: #333;">-</span>
+        </div>
+        <div style="display: flex; align-items: center; padding: 10px 0;">
+          <span style="font-size: 14px; color: #666; width: 80px;">学号</span>
+          <span id="studentId" style="font-size: 14px; color: #333;">-</span>
+        </div>
+        <div style="display: flex; align-items: center; padding: 10px 0;">
+          <span style="font-size: 14px; color: #666; width: 80px;">楼栋号</span>
+          <span id="studentBuilding" style="font-size: 14px; color: #333;">-</span>
+        </div>
+        <div style="display: flex; align-items: center; padding: 10px 0;">
+          <span style="font-size: 14px; color: #666; width: 80px;">房间号</span>
+          <span id="studentRoom" style="font-size: 14px; color: #333;">-</span>
+        </div>
+      </div>
+
+      <!-- 表单卡片 -->
+      <div class="card">
+        <div style="margin-bottom: 20px;">
+          <label style="display: block; font-size: 14px; margin-bottom: 8px; font-weight: 500;">联系电话</label>
+          <input id="contactPhone" type="tel" name="contact_phone" maxlength="20" inputmode="numeric" style="width: 100%; padding: 12px; border: 1px solid #d9d9d9; border-radius: 4px; font-size: 14px;" placeholder="请输入联系电话" required>
+        </div>
+        <div style="margin-bottom: 20px;">
+          <label style="display: block; font-size: 14px; margin-bottom: 8px; font-weight: 500;">离校原因</label>
+          <textarea id="applicationReason" style="width: 100%; min-height: 120px; padding: 12px; border: 1px solid #d9d9d9; border-radius: 4px; font-size: 14px;" placeholder="请输入离校原因"></textarea>
+          <span style="display: block; text-align: right; font-size: 12px; color: #999; margin-top: 4px;">0/500</span>
+        </div>
+        <div style="margin-bottom: 20px;">
+          <label style="display: block; font-size: 14px; margin-bottom: 8px; font-weight: 500;">离校日期</label>
+          <input id="leaveDate" type="date" name="leave_date" style="width: 100%; padding: 12px; border: 1px solid #d9d9d9; border-radius: 4px; font-size: 14px;" required>
+        </div>
+
+        <!-- 附件上传区域 -->
+        <div style="margin-bottom: 20px;">
+          <label style="display: block; font-size: 14px; margin-bottom: 8px; font-weight: 500;">附件材料（必需）</label>
+          <div class="upload-zone">
+            <input type="file" id="fileInput" multiple accept=".jpg,.jpeg,.png,.pdf,.doc,.docx" style="display: none;">
+            <div class="upload-area" onclick="document.getElementById('fileInput').click()">
+              <div style="font-size: 40px; color: #999; margin-bottom: 8px;">📎</div>
+              <div style="font-size: 14px; color: #666;">点击或拖拽文件到此处上传</div>
+              <div style="font-size: 12px; color: #999; margin-top: 4px;">支持jpg/png/pdf/doc/docx，单文件不超过10MB</div>
+            </div>
+          </div>
+          <!-- 文件列表 -->
+          <div id="fileList" style="margin-top: 12px;"></div>
+        </div>
+
+        <button class="btn-primary" onclick="doSubmitApplication()">提交申请</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 屏幕2: 审批列表页 -->
+  <div class="screen" id="screen-1">
+    <div style="background: white; padding: 16px; display: flex; justify-content: space-between; align-items: center;">
+      <div style="font-size: 18px; font-weight: bold;" id="list-title">审批列表</div>
+      <div style="display: flex; align-items: center; gap: 12px;">
+        <button id="export-btn" onclick="exportApprovals()" style="display: none; padding: 8px 16px; background: var(--primary-color); color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 14px;">导出Excel</button>
+        <div style="font-size: 12px; color: #999;" id="role-display">宿管员</div>
+      </div>
+    </div>
+
+    <!-- 统计卡片 -->
+    <div class="stats-container" id="approval-stats">
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-label">总审批数</div>
+          <div class="stat-value" id="stat-total">-</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">待审批</div>
+          <div class="stat-value" id="stat-pending">-</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">已通过</div>
+          <div class="stat-value" id="stat-approved">-</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">已驳回</div>
+          <div class="stat-value" id="stat-rejected">-</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tab切换 -->
+    <div class="filter-tabs" id="approval-tabs">
+      <button class="filter-tab active" onclick="filterApprovals('all')" aria-label="全部请假">📋全部</button>
+      <button class="filter-tab" onclick="filterApprovals('pending')" aria-label="待审批">⏳待审</button>
+      <button class="filter-tab" onclick="filterApprovals('approved')" aria-label="已通过">✓通过</button>
+      <button class="filter-tab" onclick="filterApprovals('rejected')" aria-label="已驳回">✗驳回</button>
+    </div>
+
+    <!-- 管理员分类筛选 -->
+    <div id="admin-filters" style="display: none; background: white; padding: 12px 16px; margin-bottom: 12px;">
+      <div style="font-size: 14px; font-weight: bold; margin-bottom: 8px; color: #666;">查询筛选</div>
+      <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+        <select id="filter-field" style="padding: 8px; border: 1px solid #ddd; border-radius: 4px; font-size: 14px; background: white;">
+          <option value="student_id">学号</option>
+          <option value="student_name">姓名</option>
+          <option value="class_id">班级</option>
+          <option value="building">宿舍楼</option>
+        </select>
+        <input type="text" id="filter-value" placeholder="输入查询值" style="flex: 1; min-width: 140px; padding: 8px; border: 1px solid #ddd; border-radius: 4px; font-size: 14px;">
+        <button onclick="applyAdminFilters()" style="padding: 8px 16px; background: var(--primary-color); color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 14px;">筛选</button>
+        <button onclick="clearAdminFilters()" style="padding: 8px 16px; background: #f0f0f0; color: #666; border: none; border-radius: 4px; cursor: pointer; font-size: 14px;">清除</button>
+      </div>
+    </div>
+
+    <!-- 全选栏 -->
+    <div id="select-all-bar" style="display: none; background: #f5f5f5; padding: 12px 16px; border-bottom: 1px solid #e8e8e8;">
+      <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+        <input type="checkbox" id="select-all-checkbox" onchange="toggleSelectAll()" style="width: 18px; height: 18px; cursor: pointer;">
+        <span style="font-size: 14px; color: #333;">全选当前页</span>
+        <span id="select-count" style="font-size: 13px; color: #999; margin-left: auto;">已选 0 项</span>
+      </label>
+    </div>
+
+    <div style="padding: 10px;" id="approval-list-container">
+      <!-- 列表项 -->
+      <div style="text-align:center; padding: 20px; color:#999;">加载中...</div>
+    </div>
+    <div style="padding: 10px; text-align: center;">
+      <button id="load-more-approvals" onclick="loadApprovals(true)" style="display: none; padding: 10px 20px; border: 1px solid var(--primary-color); background: white; color: var(--primary-color); border-radius: 4px; cursor: pointer;">加载更多</button>
+    </div>
+
+    <!-- 浮动操作栏 -->
+    <div id="batch-action-bar" style="display: none; position: fixed; bottom: 0; left: 0; right: 0; background: white; border-top: 2px solid var(--primary-color); padding: 12px; box-shadow: 0 -2px 8px rgba(0,0,0,0.1); z-index: 100;">
+      <div style="display: flex; align-items: center; gap: 12px;">
+        <span id="batch-count" style="font-size: 14px; color: #666;">已选 0 项</span>
+        <div style="flex: 1;"></div>
+        <button onclick="batchApprove()" style="padding: 8px 16px; background: var(--primary-color); color: white; border: none; border-radius: 4px; cursor: pointer;">批量通过</button>
+        <button onclick="batchReject()" style="padding: 8px 16px; background: #ff4d4f; color: white; border: none; border-radius: 4px; cursor: pointer;">批量驳回</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 批量操作确认弹窗 -->
+  <div id="batch-confirm-modal" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 200;">
+    <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; border-radius: 8px; padding: 20px; width: 90%; max-width: 400px;">
+      <div style="font-size: 18px; font-weight: bold; margin-bottom: 16px;">确认批量操作</div>
+      <div id="batch-confirm-text" style="font-size: 14px; color: #666; margin-bottom: 16px;"></div>
+      <textarea id="batch-comment" placeholder="审批意见（可选）" style="width: 100%; height: 80px; padding: 8px; border: 1px solid #ddd; border-radius: 4px; resize: none; margin-bottom: 16px;"></textarea>
+      <div style="display: flex; gap: 12px;">
+        <button onclick="closeBatchModal()" style="flex: 1; padding: 10px; background: #f0f0f0; border: none; border-radius: 4px; cursor: pointer;">取消</button>
+        <button id="batch-confirm-btn" onclick="confirmBatchAction()" style="flex: 1; padding: 10px; background: var(--primary-color); color: white; border: none; border-radius: 4px; cursor: pointer;">确认</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 屏幕3: 申请详情页 -->
+  <div class="screen" id="screen-2">
+    <div style="background: white; padding: 16px; display: flex; align-items: center; gap: 12px;">
+      <button onclick="showScreen(1)" style="border: none; background: none; font-size: 20px; cursor: pointer; color: var(--primary-color); padding: 0;">←</button>
+      <div style="font-size: 18px; font-weight: bold;">申请详情</div>
+    </div>
+
+    <div style="padding: 10px;">
+      <!-- 基本信息 -->
+      <div class="card">
+        <div style="font-size: 16px; font-weight: bold; margin-bottom: 10px;">基本信息</div>
+        <div style="display: flex; margin-bottom: 8px;">
+          <span style="font-size: 14px; color: #999; width: 80px;">申请ID:</span>
+          <span style="font-size: 14px; color: #333; flex: 1;">-</span>
+        </div>
+        <div style="display: flex; margin-bottom: 8px;">
+          <span style="font-size: 14px; color: #999; width: 80px;">学生:</span>
+          <span style="font-size: 14px; color: #333; flex: 1;">-</span>
+        </div>
+        <div style="display: flex; margin-bottom: 8px;">
+          <span style="font-size: 14px; color: #999; width: 80px;">离校日期:</span>
+          <span style="font-size: 14px; color: #333; flex: 1;">-</span>
+        </div>
+        <div style="display: flex; margin-bottom: 8px;">
+          <span style="font-size: 14px; color: #999; width: 80px;">申请原因:</span>
+          <span style="font-size: 14px; color: #333; flex: 1;">-</span>
+        </div>
+      </div>
+
+      <!-- 审批记录时间轴 -->
+      <div class="card">
+        <div style="font-size: 16px; font-weight: bold; margin-bottom: 10px;">审批记录</div>
+
+        <!-- 时间轴项 -->
+        <div style="position: relative; padding-left: 30px; margin-bottom: 20px;">
+          <div style="position: absolute; left: 10px; top: 4px; width: 10px; height: 10px; border-radius: 50%; background: white; border: 2px solid var(--primary-color);"></div>
+          <div style="position: absolute; left: 14px; top: 16px; bottom: -20px; width: 1px; background: #e8e8e8;"></div>
+          <div class="flex-row justify-between align-center" style="margin-bottom: 6px;">
+            <span style="font-size: 15px; font-weight: 600;">宿管员审批</span>
+            <span class="tag tag-pending">待审批</span>
+          </div>
+          <div style="font-size: 13px; color: #666;">审批人: 李老师</div>
+        </div>
+
+        <div style="position: relative; padding-left: 30px; margin-bottom: 20px;">
+          <div style="position: absolute; left: 10px; top: 4px; width: 10px; height: 10px; border-radius: 50%; background: var(--status-success); border: 2px solid var(--status-success);"></div>
+          <div class="flex-row justify-between align-center" style="margin-bottom: 6px;">
+            <span style="font-size: 15px; font-weight: 600;">提交申请</span>
+            <span class="tag tag-approved">已完成</span>
+          </div>
+          <div style="font-size: 13px; color: #666;">提交时间: 2024-06-01 10:30</div>
+        </div>
+      </div>
+
+      <!-- 审批操作 -->
+      <div id="approval-section" style="padding: 10px;">
+        <div class="card" style="margin-bottom: 10px;">
+          <label style="display: block; font-size: 14px; color: #333; margin-bottom: 6px; font-weight: 500;">审批意见（可选）</label>
+          <textarea id="approvalComment" style="width: 100%; min-height: 60px; padding: 8px; border: 1px solid #e8e8e8; border-radius: 4px; font-size: 14px;" placeholder="请输入审批意见"></textarea>
+          <span style="display: block; text-align: right; font-size: 12px; color: #999; margin-top: 4px;">0/200</span>
+        </div>
+        <div style="display: flex; gap: 10px;" id="approval-actions">
+          <button class="btn-primary" style="flex: 1;" onclick="doApprove()">通过</button>
+          <button class="btn-outline" style="flex: 1;" onclick="doReject()">拒绝</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Status mapping
+    const statusMap = {
+      'pending_dorm_manager': { text: '待宿管审批', class: 'tag-pending' },
+      'pending_counselor': { text: '待辅导员审批', class: 'tag-pending' },
+      'approved': { text: '已通过', class: 'tag-approved' },
+      'rejected': { text: '已拒绝', class: 'tag-rejected' }
+    };
+
+    function getStatusDisplay(status) {
+      return statusMap[status] || { text: status, class: 'tag' };
+    }
+
+    function showScreen(index) {
+      document.querySelectorAll('.screen').forEach((s, i) => {
+        s.classList.toggle('active', i === index);
+      });
+      document.querySelectorAll('.nav-tabs .nav-tab').forEach((t, i) => {
+        t.classList.toggle('active', i === index);
+      });
+    }
+
+    async function doLogin() {
+      const userId = document.getElementById('loginUserId').value.trim();
+      const password = document.getElementById('loginPassword').value.trim();
+      const errorEl = document.getElementById('loginError');
+      const btn = event?.target || document.querySelector('#screen-login .btn-primary');
+
+      if (!userId || !password) {
+        errorEl.textContent = '请输入用户ID和密码';
+        errorEl.style.display = 'block';
+        return;
+      }
+
+      // Loading state
+      const originalText = btn.textContent;
+      btn.disabled = true;
+      btn.textContent = '登录中...';
+
+      try {
+        const result = await apiLogin(userId, password);
+
+        if (result.success) {
+          errorEl.style.display = 'none';
+          document.getElementById('loginUserId').value = '';
+          document.getElementById('loginPassword').value = '';
+
+          // Show nav tabs and user bar
+          document.getElementById('navTabs').style.display = 'flex';
+          document.getElementById('userBar').style.display = 'flex';
+          document.getElementById('currentUserName').textContent = result.user.name;
+
+          // Store current user for role-based UI control
+          currentUser = result.user;
+
+          const roleMap = {
+            'student': '学生',
+            'dorm_manager': '宿管员',
+            'counselor': '辅导员',
+            'dean': '学工部'
+          };
+          document.getElementById('currentUserRole').textContent = '(' + (roleMap[result.user.role] || result.user.role) + ')';
+
+          // Update UI based on role
+          updateUIForRole(result.user.role);
+
+          // Hide login screen
+          document.getElementById('screen-login').classList.remove('active');
+
+          // Route based on role and application status
+          if (result.user.role === 'student') {
+            document.getElementById('studentName').textContent = result.user.name;
+            document.getElementById('studentId').textContent = result.user.user_id;
+            document.getElementById('studentBuilding').textContent = result.user.building || '-';
+            document.getElementById('studentRoom').textContent = result.user.room_number || '-';
+
+            // Pre-fill phone if available
+            if (result.user.phone) {
+              document.getElementById('contactPhone').value = result.user.phone;
+            }
+
+            // Check if student has applications
+            const applications = await apiGetApplications();
+            const hasApplications = applications.results && applications.results.length > 0;
+            const hasActiveApplication = hasApplications && applications.results.some(app =>
+              app.status.startsWith('pending_') || app.status === 'approved'
+            );
+
+            if (hasActiveApplication) {
+              showScreen(1); // Show application progress
+              loadMyApplications();
+            } else {
+              showScreen(0); // Show application form (allow submit if no active application)
+              if (hasApplications) {
+                // Check for failed or rejected applications
+                const hasFailed = applications.results.some(a => a.status === 'failed');
+                const hasRejected = applications.results.some(a => a.status === 'rejected');
+
+                if (hasFailed) {
+                  showFailedApplicationBanner();
+                } else if (hasRejected) {
+                  showRejectedApplicationBanner();
+                }
+              }
+            }
+          } else {
+            showScreen(1); // Approval list screen
+            loadApprovals();
+          }
+        } else {
+          errorEl.textContent = result.error.error || '登录失败，请检查用户ID和密码';
+          errorEl.style.display = 'block';
+        }
+      } finally {
+        btn.disabled = false;
+        btn.textContent = originalText;
+      }
+    }
+
+    function updateUIForRole(role) {
+      const isStudent = role === 'student';
+      const isDean = role === 'dean';
+      const isAdmin = role === 'admin';
+
+      // Hide "学生申请" tab for non-students
+      const navTabs = document.querySelectorAll('#navTabs .nav-tab');
+      if (navTabs[0]) {
+        navTabs[0].style.display = isStudent ? 'block' : 'none';
+      }
+
+      // Update nav tab text
+      document.getElementById('nav-approval-text').textContent = isStudent ? '我的申请' : (isDean || isAdmin ? '审批查询' : '审批列表');
+
+      // Update list page title and role display
+      document.getElementById('list-title').textContent = isStudent ? '我的申请' : (isDean || isAdmin ? '审批查询' : '审批列表');
+      document.getElementById('role-display').textContent = (isStudent ? '学生' : isDean ? '学工部' : isAdmin ? '管理员' : role === 'counselor' ? '辅导员' : '宿管员');
+
+      // Show/hide approval section for student/dean/admin
+      const approvalSection = document.getElementById('approval-section');
+      if (approvalSection) {
+        approvalSection.style.display = (isStudent || isDean || isAdmin) ? 'none' : 'block';
+      }
+
+      // Show export button for dean and admin roles
+      const exportBtn = document.getElementById('export-btn');
+      if (exportBtn) {
+        exportBtn.style.display = (isDean || isAdmin) ? 'block' : 'none';
+      }
+
+      // Show/hide statistics for non-student roles
+      const statsContainer = document.getElementById('approval-stats');
+      if (statsContainer) {
+        statsContainer.style.display = isStudent ? 'none' : 'block';
+      }
+
+      // Load statistics for non-student roles
+      if (!isStudent) {
+        loadApprovalStatistics();
+      }
+    }
+
+    async function loadApprovalStatistics() {
+      if (!currentToken) return;
+      try {
+        const response = await fetch(API_BASE_URL + '/approvals/statistics/', {
+          headers: { 'Authorization': `Bearer ${currentToken}` }
+        });
+        if (!response.ok) {
+          console.error('统计API错误:', response.status);
+          document.getElementById('stat-total').textContent = '错误';
+          document.getElementById('stat-pending').textContent = '错误';
+          document.getElementById('stat-approved').textContent = '错误';
+          document.getElementById('stat-rejected').textContent = '错误';
+          return;
+        }
+        const data = await response.json();
+        console.log('统计数据:', data);
+        document.getElementById('stat-total').textContent = data.total || 0;
+        document.getElementById('stat-pending').textContent = data.pending || 0;
+        document.getElementById('stat-approved').textContent = data.approved || 0;
+        document.getElementById('stat-rejected').textContent = data.rejected || 0;
+      } catch (error) {
+        console.error('加载统计失败:', error);
+        document.getElementById('stat-total').textContent = '错误';
+        document.getElementById('stat-pending').textContent = '错误';
+        document.getElementById('stat-approved').textContent = '错误';
+        document.getElementById('stat-rejected').textContent = '错误';
+      }
+    }
+
+    function logout() {
+      currentToken = null;
+      currentUser = null;
+      deanDisplayedApps.clear(); // Clear deduplication memory on logout
+      approvalOffset = 0;
+      approvalHasMore = true;
+      uploadedFiles = [];
+      // Clear persistent login state to prevent auto-login on refresh
+      localStorage.removeItem('auth_token');
+      localStorage.removeItem('user_info');
+      document.getElementById('navTabs').style.display = 'none';
+      document.getElementById('userBar').style.display = 'none';
+      document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+      document.getElementById('screen-login').classList.add('active');
+      renderFileList();
+    }
+
+    // File upload management
+    const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
+    const ALLOWED_TYPES = ['.jpg', '.jpeg', '.png', '.pdf', '.doc', '.docx'];
+    let uploadedFiles = [];
+
+    const fileInput = document.getElementById('fileInput');
+    const fileList = document.getElementById('fileList');
+    const uploadArea = document.querySelector('.upload-area');
+
+    // File selection handler
+    fileInput.addEventListener('change', (e) => {
+      handleFiles(e.target.files);
+    });
+
+    // Drag and drop handlers
+    uploadArea.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      uploadArea.style.borderColor = 'var(--primary-color)';
+      uploadArea.style.background = '#fafafa';
+    });
+
+    uploadArea.addEventListener('dragleave', () => {
+      uploadArea.style.borderColor = '#d9d9d9';
+      uploadArea.style.background = 'white';
+    });
+
+    uploadArea.addEventListener('drop', (e) => {
+      e.preventDefault();
+      uploadArea.style.borderColor = '#d9d9d9';
+      uploadArea.style.background = 'white';
+      handleFiles(e.dataTransfer.files);
+    });
+
+    function handleFiles(files) {
+      const validFiles = [];
+      const errors = [];
+
+      Array.from(files).forEach(file => {
+        const ext = '.' + file.name.split('.').pop().toLowerCase();
+
+        if (!ALLOWED_TYPES.includes(ext)) {
+          errors.push(`${file.name}: 不支持的文件格式`);
+          return;
+        }
+
+        if (file.size > MAX_FILE_SIZE) {
+          errors.push(`${file.name}: 文件大小超过10MB`);
+          return;
+        }
+
+        validFiles.push(file);
+      });
+
+      if (errors.length > 0) {
+        errors.forEach(err => showToast(err, 'error'));
+      }
+
+      uploadedFiles = uploadedFiles.concat(validFiles);
+      renderFileList();
+      fileInput.value = ''; // Reset input
+    }
+
+    function renderFileList() {
+      fileList.innerHTML = uploadedFiles.map((file, index) => `
+        <div class="file-item">
+          <span style="font-size: 20px;">📄</span>
+          <div class="file-info">
+            <div class="file-name">${file.name}</div>
+            <div class="file-size">${formatFileSize(file.size)}</div>
+          </div>
+          <button class="btn-delete" onclick="removeFile(${index})" type="button">×</button>
+        </div>
+      `).join('');
+    }
+
+    function removeFile(index) {
+      uploadedFiles.splice(index, 1);
+      renderFileList();
+    }
+
+    function formatFileSize(bytes) {
+      if (bytes < 1024) return bytes + ' B';
+      if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
+      return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
+    }
+  </script>
+
+<!-- Excel预览模态框 -->
+<div id="excelPreviewModal" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 1000; overflow: auto;">
+  <div style="background: white; margin: 20px auto; max-width: 95%; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+    <div style="padding: 20px; border-bottom: 1px solid #f0f0f0; display: flex; justify-content: space-between; align-items: center;">
+      <h3 style="margin: 0;">审批数据预览</h3>
+      <button onclick="closeExcelPreview()" style="border: none; background: none; font-size: 24px; cursor: pointer; color: #999;">&times;</button>
+    </div>
+    <div style="padding: 20px; overflow-x: auto; max-height: 60vh;">
+      <table id="excelPreviewTable" style="width: 100%; border-collapse: collapse; font-size: 13px;">
+        <thead id="excelPreviewHeader" style="background: #f5f5f5; position: sticky; top: 0;"></thead>
+        <tbody id="excelPreviewBody"></tbody>
+      </table>
+    </div>
+    <div style="padding: 20px; border-top: 1px solid #f0f0f0; display: flex; gap: 12px; justify-content: flex-end;">
+      <button onclick="closeExcelPreview()" class="btn-outline" style="flex: 0;">取消</button>
+      <button onclick="confirmExcelDownload()" class="btn-primary" style="flex: 0;">下载Excel</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast容器 -->
+<div class="toast-container" id="toastContainer"></div>
+
+<script>
+// Toast通知函数
+function showToast(message, type = 'info') {
+  const container = document.getElementById('toastContainer');
+  const toast = document.createElement('div');
+  toast.className = 'toast' + (type !== 'info' ? ' ' + type : '');
+  toast.textContent = message;
+  container.appendChild(toast);
+
+  setTimeout(() => {
+    toast.style.animation = 'slideIn 0.3s ease-out reverse';
+    setTimeout(() => container.removeChild(toast), 300);
+  }, 3000);
+}
+
+// 批量操作相关
+let batchAction = '';
+
+function toggleSelectAll() {
+  const selectAll = document.getElementById('select-all-checkbox');
+  const checkboxes = document.querySelectorAll('.approval-checkbox');
+  checkboxes.forEach(cb => cb.checked = selectAll.checked);
+  toggleBatchBar();
+}
+
+function toggleBatchBar() {
+  const checkboxes = document.querySelectorAll('.approval-checkbox:checked');
+  const bar = document.getElementById('batch-action-bar');
+  const count = document.getElementById('batch-count');
+  const selectCount = document.getElementById('select-count');
+  const selectAll = document.getElementById('select-all-checkbox');
+
+  if (checkboxes.length > 0) {
+    bar.style.display = 'block';
+    count.textContent = `已选 ${checkboxes.length} 项`;
+    if (selectCount) selectCount.textContent = `已选 ${checkboxes.length} 项`;
+  } else {
+    bar.style.display = 'none';
+    if (selectCount) selectCount.textContent = '已选 0 项';
+  }
+
+  // 更新全选框状态
+  const total = document.querySelectorAll('.approval-checkbox').length;
+  if (selectAll && total > 0) {
+    selectAll.checked = checkboxes.length === total;
+    selectAll.indeterminate = checkboxes.length > 0 && checkboxes.length < total;
+  }
+}
+
+function batchApprove() {
+  batchAction = 'approve';
+  const count = document.querySelectorAll('.approval-checkbox:checked').length;
+  document.getElementById('batch-confirm-text').textContent = `确定批量通过 ${count} 条审批吗？`;
+  document.getElementById('batch-confirm-modal').style.display = 'block';
+}
+
+function batchReject() {
+  batchAction = 'reject';
+  const count = document.querySelectorAll('.approval-checkbox:checked').length;
+  document.getElementById('batch-confirm-text').textContent = `确定批量驳回 ${count} 条审批吗？`;
+  document.getElementById('batch-confirm-modal').style.display = 'block';
+}
+
+function closeBatchModal() {
+  document.getElementById('batch-confirm-modal').style.display = 'none';
+  document.getElementById('batch-comment').value = '';
+}
+
+async function confirmBatchAction() {
+  const checkboxes = document.querySelectorAll('.approval-checkbox:checked');
+  const ids = Array.from(checkboxes).map(cb => cb.dataset.approvalId);
+  const comment = document.getElementById('batch-comment').value;
+
+  try {
+    const res = await fetch(API_BASE_URL + '/approvals/batch-action/', {
+      method: 'POST',
+      headers: {...getAuthHeaders(), 'Content-Type': 'application/json'},
+      body: JSON.stringify({approval_ids: ids, action: batchAction, comment})
+    });
+
+    const data = await res.json();
+    closeBatchModal();
+
+    if (res.ok) {
+      showToast(`批量${batchAction === 'approve' ? '通过' : '驳回'}成功`, 'success');
+      loadApprovals();
+      document.getElementById('batch-action-bar').style.display = 'none';
+    } else {
+      showToast(data.error?.message || '操作失败', 'error');
+    }
+  } catch (err) {
+    closeBatchModal();
+    showToast('网络错误', 'error');
+  }
+}
+</script>
+</body>
+</html>

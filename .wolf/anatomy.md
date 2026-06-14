@@ -1,7 +1,7 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-06-12T16:29:26.015Z
-> Files: 696 tracked | Anatomy hits: 0 | Misses: 0
+> Auto-maintained by OpenWolf. Last scanned: 2026-06-14T02:12:46.832Z
+> Files: 699 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../../../tmp/
 
@@ -12,6 +12,7 @@
 - `golive-integration-revised-plan.md` — 青橄榄平台对接方案（修订版） (~2529 tok)
 - `graduation-frontend.service` (~79 tok)
 - `mobile-sso-404-analysis.md` — 移动端SSO登录404问题分析 (~283 tok)
+- `restore_test_data.sh` — Restore test data after rejection testing (~315 tok)
 - `sso-fix-review.md` — SSO登录修复代码审查 (~475 tok)
 - `test_graduate_submit.py` (~317 tok)
 - `test_qgl_api.py` — generate_rand_str, generate_signature, generate_headers (~852 tok)
@@ -41,7 +42,7 @@
 ## ./
 
 - `.gitignore` — Git ignore rules (~224 tok)
-- `CHANGELOG.md` — Changelog (~170 tok)
+- `CHANGELOG.md` — Changelog (~747 tok)
 - `CLAUDE.md` — OpenWolf (~158 tok)
 - `debug-login-19970545.md` — 用户19970545登录问题排查 (~244 tok)
 - `deploy.config.yml` (~134 tok)
@@ -52,7 +53,7 @@
 - `PRODUCTION-READY.md` — claude-codex-gemini-collab - PRODUCTION READY (~1835 tok)
 - `PROJECT-QUICK-REF.md` — 毕业离校系统 - 项目速查手册 (~1266 tok)
 - `pyproject.toml` — Claude-Codex-Gemini Collaboration Framework (~185 tok)
-- `README.md` — Project documentation (~433 tok)
+- `README.md` — Project documentation (~451 tok)
 - `response.json` (~469 tok)
 - `SKILL.md` — Claude-Codex-Gemini Collaboration Skill (~3072 tok)
 
@@ -597,6 +598,10 @@
 - `auto-routing-taxonomy.md` — 任务分类Taxonomy - 自动智能路由 (~396 tok)
 - `auto-routing-ui-rules.md` — UI任务识别规则 - Gemini专用 (~277 tok)
 
+## PRD/
+
+- `异地Docker自动部署方案.md` — 毕业离校系统异地Docker自动部署方案 (~357 tok)
+
 ## backend/
 
 - `接口测试分析报告.md` — 青橄榄SSO接口测试分析报告 (~191 tok)
@@ -623,9 +628,9 @@
 - `models.py` — Model: Application, 11 fields (~574 tok)
 - `permissions.py` — can_view_application (~273 tok)
 - `providers.py` — from: check_status (~1187 tok)
-- `serializers.py` — ApplicationListSerializer: get_approvals, validate_leave_date (~640 tok)
+- `serializers.py` — ApplicationListSerializer: get_approvals, get_approvals, validate_leave_date (~890 tok)
 - `urls.py` (~98 tok)
-- `views.py` — applications_view, list_applications, create_application, get_application (~3851 tok)
+- `views.py` — applications_view, list_applications, create_application, get_application (~3826 tok)
 
 ## backend/apps/applications/management/
 
@@ -643,9 +648,10 @@
 ## backend/apps/approvals/
 
 - `models.py` — Model: Approval, 11 fields (~386 tok)
+- `pagination.py` — ApprovalLimitOffsetPagination: get_paginated_response (~116 tok)
 - `serializers.py` — ApplicationBriefSerializer: get_attachments (~1326 tok)
 - `urls.py` (~173 tok)
-- `views.py` — sanitize_excel_formula, list_approvals, get_approval, approve_approval (~6401 tok)
+- `views.py` — sanitize_excel_formula, list_approvals, get_approval, approve_approval (~6968 tok)
 
 ## backend/apps/approvals/migrations/
 
@@ -755,7 +761,7 @@
 ## demo-web/
 
 - `admin-sso-callback.html` — SSO登录中... (~402 tok)
-- `index.html` — 毕业离校申请系统 - UI Demo (~22184 tok)
+- `index.html` — 毕业离校申请系统 - UI Demo (~23109 tok)
 - `mobile-sso-callback.html` — SSO登录中... (~614 tok)
 - `responsive-adapter-example.html` — Declares deviceAdapter (~579 tok)
 - `sso-receiver.html` — 登录中... (~410 tok)
@@ -763,11 +769,11 @@
 
 ## demo-web/admin/
 
-- `dashboard.html` — 管理后台 (~2090 tok)
+- `dashboard.html` — 管理后台 (~3548 tok)
 
 ## demo-web/js/
 
-- `api.js` — API Integration Layer (~2410 tok)
+- `api.js` — API Integration Layer (~2733 tok)
 - `responsive-adapter.js` — 响应式适配器 - 移动端自动适配模块 (~1783 tok)
 
 ## docs/

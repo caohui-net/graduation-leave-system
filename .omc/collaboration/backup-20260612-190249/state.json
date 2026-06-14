@@ -1,8 +1,8 @@
 {
   "last_event_id": 529,
-  "status": "initialized",
+  "status": "completed",
   "current_task": null,
-  "active_agent": null,
+  "active_agent": "none",
   "workflow_id": "claude-codex-gemini-collab",
   "updated_at": "2026-06-10T05:52:08.789768Z"
 }

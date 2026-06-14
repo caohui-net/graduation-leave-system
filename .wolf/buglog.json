@@ -1,1 +1,14 @@
-[]
+[
+  {
+    "id": "bug-001",
+    "timestamp": "2026-06-14T01:00:00Z",
+    "error_message": "用户19970545登录后导出excel失败",
+    "file": "demo-web/index.html",
+    "root_cause": "getAuthHeaders() 函数被调用7次但未定义，导致导出功能调用时抛出 ReferenceError",
+    "fix": "在 script 标签开头添加 getAuthHeaders() 函数定义，返回包含 JWT Bearer token 的 Authorization 头",
+    "tags": ["frontend", "authentication", "export", "javascript", "undefined-function"],
+    "related_bugs": [],
+    "occurrences": 1,
+    "last_seen": "2026-06-14T01:00:00Z"
+  }
+]

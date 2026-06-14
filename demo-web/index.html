@@ -199,6 +199,16 @@
             );
             const showCheckbox = currentFilter === 'pending' && isPending && myApproval && (currentUser?.role === 'dorm_manager' || currentUser?.role === 'counselor');
 
+            if (currentFilter === 'pending' && !showCheckbox) {
+                console.log('[DEBUG] Checkbox hidden for', appId, {
+                    isPending,
+                    hasMyApproval: !!myApproval,
+                    currentRole: currentUser?.role,
+                    currentUserId: currentUser?.user_id,
+                    approvals: app.approvals
+                });
+            }
+
             const card = document.createElement('div');
             card.className = 'card';
             card.style.cssText = 'cursor: pointer; display: flex; gap: 12px;';
@@ -380,7 +390,7 @@
             const approvalSection = document.getElementById('approval-section');
             if (approvalSection) {
                 const shouldShow = myApproval &&
-                    myApproval.decision === 'pending' &&
+                    (myApproval.decision === null || myApproval.decision === 'pending') &&
                     (currentUser?.role === 'dorm_manager' || currentUser?.role === 'counselor');
                 approvalSection.style.display = shouldShow ? 'block' : 'none';
                 console.log('[DEBUG] Approval section display:', shouldShow ? 'block' : 'none', 'myApproval:', myApproval);

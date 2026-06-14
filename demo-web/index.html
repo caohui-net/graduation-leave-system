@@ -154,11 +154,21 @@
     function renderApplications(applications) {
         const listContainer = document.getElementById('approval-list-container');
 
+        // Filter: only show approvals belonging to current user
+        // Backend already filters by approver=user, but validate to prevent data inconsistency
+        const myApps = applications.filter(app => {
+            const myApproval = app.approvals?.find(ap => ap.approver_id === currentUser?.user_id);
+            if (!myApproval) {
+                console.warn('[FILTER] Skipping app not assigned to current user:', app.application_id, 'approvals:', app.approvals);
+            }
+            return !!myApproval;
+        });
+
         // Deduplicate by student_id: prioritize final states (rejected > approved > pending)
         const statusPriority = { 'rejected': 3, 'approved': 2, 'pending_counselor': 1, 'pending_dorm_manager': 1 };
         const studentMap = new Map();
 
-        applications.forEach(app => {
+        myApps.forEach(app => {
             const existing = studentMap.get(app.student_id);
             const currentPriority = statusPriority[app.status] || 0;
             const existingPriority = existing ? (statusPriority[existing.status] || 0) : -1;

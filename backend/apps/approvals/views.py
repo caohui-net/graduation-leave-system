@@ -237,19 +237,6 @@ def approve_approval(request, approval_id):
                 f"for application {application.application_id} after approval by {actual_approver.user_id}"
             )
 
-        # Check for existing counselor approval to prevent duplicates
-        existing_counselor_approval = Approval.objects.filter(
-            application=application,
-            step=ApprovalStep.COUNSELOR
-        ).exists()
-
-        if existing_counselor_approval:
-            return Response({'error': {'code': 'CONFLICT', 'message': '辅导员审批已存在，不能重复创建'}},
-                            status=status.HTTP_409_CONFLICT)
-
-        application.status = ApplicationStatus.PENDING_COUNSELOR
-        application.save()
-
         # Get counselor by department (Phase 3 design: department-based routing)
         # Note: Original design used ClassMapping (class_id), but Phase 3 user requirements
         # changed to "按学院向辅导员审批" (approval by department/college).
@@ -274,14 +261,24 @@ def approve_approval(request, approval_id):
                                         'details': {'department': application.student.department}}},
                             status=status.HTTP_404_NOT_FOUND)
 
-        Approval.objects.create(
-            approval_id=f'apv_{uuid.uuid4().hex[:8]}',
+        # Atomic counselor approval creation (防止竞态条件)
+        counselor_approval, created = Approval.objects.get_or_create(
             application=application,
             step=ApprovalStep.COUNSELOR,
-            approver=counselor,
-            approver_name=counselor.name,
-            decision=ApprovalDecision.PENDING
+            defaults={
+                'approval_id': f'apv_{uuid.uuid4().hex[:8]}',
+                'approver': counselor,
+                'approver_name': counselor.name,
+                'decision': ApprovalDecision.PENDING
+            }
         )
+
+        if not created:
+            return Response({'error': {'code': 'CONFLICT', 'message': '辅导员审批已存在，不能重复创建'}},
+                            status=status.HTTP_409_CONFLICT)
+
+        application.status = ApplicationStatus.PENDING_COUNSELOR
+        application.save()
     elif approval.step == ApprovalStep.COUNSELOR:
         # Counselor approval completes the process (2-level approval)
         application.status = ApplicationStatus.APPROVED

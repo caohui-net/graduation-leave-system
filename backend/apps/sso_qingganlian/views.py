@@ -118,7 +118,9 @@ def mobile_saas_login(request):
             'token': access_token,
             'user': {
                 'id': user.user_id,
+                'user_id': user.user_id,
                 'username': user.user_id,
+                'name': real_name,
                 'real_name': real_name,
                 'role': user.role,  # 从数据库读取
                 'phone': phone,

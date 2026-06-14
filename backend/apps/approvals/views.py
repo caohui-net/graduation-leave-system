@@ -401,61 +401,61 @@ def export_approvals(request):
             Prefetch('approvals', queryset=Approval.objects.filter(step=ApprovalStep.COUNSELOR), to_attr='counselor_approvals_list')
         )
 
-    # Build mapping: student_id -> application
-    app_map = {app.student_id: app for app in applications}
+        # Build mapping: student_id -> application
+        app_map = {app.student_id: app for app in applications}
 
-    wb = Workbook()
-    ws = wb.active
-    ws.title = '学生数据'
+        wb = Workbook()
+        ws = wb.active
+        ws.title = '学生数据'
 
-    headers = ['提交人', '学号', '手机号', '离校日期', '楼栋号', '房间号', '提交时间', '审批状态',
-               '宿管员', '宿管审批时间', '宿管审批结果',
-               '辅导员', '辅导员审批时间', '辅导员审批结果']
-    ws.append(headers)
+        headers = ['提交人', '学号', '手机号', '离校日期', '楼栋号', '房间号', '提交时间', '审批状态',
+                   '宿管员', '宿管审批时间', '宿管审批结果',
+                   '辅导员', '辅导员审批时间', '辅导员审批结果']
+        ws.append(headers)
 
-    for cell in ws[1]:
-        cell.font = Font(bold=True)
-        cell.alignment = Alignment(horizontal='center')
+        for cell in ws[1]:
+            cell.font = Font(bold=True)
+            cell.alignment = Alignment(horizontal='center')
 
-    for student in students_list:
-        # Get latest application from pre-fetched map (no DB query)
-        latest_app = app_map.get(student.id)
+        for student in students_list:
+            # Get latest application from pre-fetched map (no DB query)
+            latest_app = app_map.get(student.id)
 
-        if latest_app:
-            # Student has submitted application
-            dorm_approval = latest_app.dorm_approvals_list[0] if latest_app.dorm_approvals_list else None
-            counselor_approval = latest_app.counselor_approvals_list[0] if latest_app.counselor_approvals_list else None
+            if latest_app:
+                # Student has submitted application
+                dorm_approval = latest_app.dorm_approvals_list[0] if latest_app.dorm_approvals_list else None
+                counselor_approval = latest_app.counselor_approvals_list[0] if latest_app.counselor_approvals_list else None
 
-            status_display = latest_app.get_status_display()
-            leave_date = latest_app.leave_date.strftime('%Y-%m-%d') if latest_app.leave_date else ''
-            contact_phone = latest_app.contact_phone or student.phone or ''
-            submit_time = latest_app.created_at.strftime('%Y-%m-%d %H:%M:%S')
-        else:
-            # Student has not submitted
-            dorm_approval = None
-            counselor_approval = None
-            status_display = '未提交'
-            leave_date = ''
-            contact_phone = student.phone or ''
-            submit_time = ''
+                status_display = latest_app.get_status_display()
+                leave_date = latest_app.leave_date.strftime('%Y-%m-%d') if latest_app.leave_date else ''
+                contact_phone = latest_app.contact_phone or student.phone or ''
+                submit_time = latest_app.created_at.strftime('%Y-%m-%d %H:%M:%S')
+            else:
+                # Student has not submitted
+                dorm_approval = None
+                counselor_approval = None
+                status_display = '未提交'
+                leave_date = ''
+                contact_phone = student.phone or ''
+                submit_time = ''
 
-        row = [
-            sanitize_excel_formula(student.name),
-            sanitize_excel_formula(student.user_id),
-            sanitize_excel_formula(contact_phone),
-            leave_date,
-            sanitize_excel_formula(student.building or ''),
-            sanitize_excel_formula(student.room_number or ''),
-            submit_time,
-            status_display,
-            sanitize_excel_formula(dorm_approval.approver_name if dorm_approval else ''),
-            dorm_approval.decided_at.strftime('%Y-%m-%d %H:%M:%S') if dorm_approval and dorm_approval.decided_at else '',
-            dorm_approval.get_decision_display() if dorm_approval else '',
-            sanitize_excel_formula(counselor_approval.approver_name if counselor_approval else ''),
-            counselor_approval.decided_at.strftime('%Y-%m-%d %H:%M:%S') if counselor_approval and counselor_approval.decided_at else '',
-            counselor_approval.get_decision_display() if counselor_approval else '',
-        ]
-        ws.append(row)
+            row = [
+                sanitize_excel_formula(student.name),
+                sanitize_excel_formula(student.user_id),
+                sanitize_excel_formula(contact_phone),
+                leave_date,
+                sanitize_excel_formula(student.building or ''),
+                sanitize_excel_formula(student.room_number or ''),
+                submit_time,
+                status_display,
+                sanitize_excel_formula(dorm_approval.approver_name if dorm_approval else ''),
+                dorm_approval.decided_at.strftime('%Y-%m-%d %H:%M:%S') if dorm_approval and dorm_approval.decided_at else '',
+                dorm_approval.get_decision_display() if dorm_approval else '',
+                sanitize_excel_formula(counselor_approval.approver_name if counselor_approval else ''),
+                counselor_approval.decided_at.strftime('%Y-%m-%d %H:%M:%S') if counselor_approval and counselor_approval.decided_at else '',
+                counselor_approval.get_decision_display() if counselor_approval else '',
+            ]
+            ws.append(row)
 
         for column in ws.columns:
             max_length = 0

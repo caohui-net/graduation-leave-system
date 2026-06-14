@@ -389,14 +389,14 @@ def export_approvals(request):
         # Get latest application ID for each student (subquery)
         latest_app_subquery = Application.objects.filter(
             student=OuterRef('pk')
-        ).order_by('-created_at').values('id')[:1]
+        ).order_by('-created_at').values('application_id')[:1]
 
         students_list = list(students.annotate(latest_app_id=Subquery(latest_app_subquery)))
 
         # Get all latest applications with prefetched approvals
         latest_app_ids = [s.latest_app_id for s in students_list if s.latest_app_id]
 
-        applications = Application.objects.filter(id__in=latest_app_ids).prefetch_related(
+        applications = Application.objects.filter(application_id__in=latest_app_ids).prefetch_related(
             Prefetch('approvals', queryset=Approval.objects.filter(step=ApprovalStep.DORM_MANAGER), to_attr='dorm_approvals_list'),
             Prefetch('approvals', queryset=Approval.objects.filter(step=ApprovalStep.COUNSELOR), to_attr='counselor_approvals_list')
         )
@@ -419,7 +419,7 @@ def export_approvals(request):
 
         for student in students_list:
             # Get latest application from pre-fetched map (no DB query)
-            latest_app = app_map.get(student.id)
+            latest_app = app_map.get(student.user_id)
 
             if latest_app:
                 # Student has submitted application

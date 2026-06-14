@@ -75,37 +75,29 @@ def mobile_saas_login(request):
         phone = user_info.get('phone', '')
         user_id_str = user_info.get('number', user_code)
 
-        # 3. 创建用户
-        # 角色识别
-        if identity_name in ['学生', '本专科生', '研究生', '博士生', '硕士生']:
-            role = 'student'
-            sso_user_type = 'mobile_student'
-        elif identity_name == '辅导员':
-            role = 'counselor'
-            sso_user_type = 'mobile_counselor'
-        elif identity_name == '宿管员':
-            role = 'dorm_manager'
-            sso_user_type = 'mobile_dorm_manager'
-        elif identity_name in ['教师', '教职工']:
-            role = 'teacher'
-            sso_user_type = 'mobile_teacher'
-        else:
-            role = 'student'
-            sso_user_type = 'mobile_student'
-
+        # 3. 获取或创建用户（角色从数据库读取，不由SSO判断）
         with transaction.atomic():
             user, created = User.objects.get_or_create(
                 user_id=user_id_str,
                 defaults={
                     'name': real_name or user_id_str,
-                    'role': role,
+                    'role': 'student',  # 新用户默认student，需管理员修改
                     'is_staff': False,
                     'active': True
                 }
             )
-            if not created and user.role != role:
-                user.role = role
-                user.save()
+
+        # 4. 确定sso_user_type（仅用于SSO映射表）
+        if identity_name in ['学生', '本专科生', '研究生', '博士生', '硕士生']:
+            sso_user_type = 'mobile_student'
+        elif identity_name == '辅导员':
+            sso_user_type = 'mobile_counselor'
+        elif identity_name == '宿管员':
+            sso_user_type = 'mobile_dorm_manager'
+        elif identity_name in ['教师', '教职工']:
+            sso_user_type = 'mobile_teacher'
+        else:
+            sso_user_type = 'mobile_student'
 
         # 5. 更新SSOUserMapping
         SSOUserMapping.objects.update_or_create(
@@ -132,14 +124,14 @@ def mobile_saas_login(request):
                 'id': user.user_id,
                 'username': user.user_id,
                 'real_name': real_name,
-                'role': role,
+                'role': user.role,  # 从数据库读取
                 'phone': phone,
                 'building': user.building or '',
                 'room_number': user.room_number or ''
             }
         }
 
-        logger.info(f"Mobile SAAS login success: user={user.user_id}, role={role}")
+        logger.info(f"Mobile SAAS login success: user={user.user_id}, role={user.role}")
         return Response(response_data, status=status.HTTP_200_OK)
 
     except Exception as e:
@@ -190,37 +182,29 @@ def mobile_login(request):
         tenant_code = 'S10405'
         phone = ''
 
-        # 3. 创建用户和映射（事务保护防竞态）
-        # 角色识别
-        if identity_name in ['学生', '本专科生', '研究生', '博士生', '硕士生']:
-            role = 'student'
-            sso_user_type = 'mobile_student'
-        elif identity_name == '辅导员':
-            role = 'counselor'
-            sso_user_type = 'mobile_counselor'
-        elif identity_name == '宿管员':
-            role = 'dorm_manager'
-            sso_user_type = 'mobile_dorm_manager'
-        elif identity_name in ['教师', '教职工']:
-            role = 'teacher'
-            sso_user_type = 'mobile_teacher'
-        else:
-            role = 'student'
-            sso_user_type = 'mobile_student'
-
+        # 3. 获取或创建用户（角色从数据库读取，不由SSO判断）
         with transaction.atomic():
             user, created = User.objects.select_for_update().get_or_create(
                 user_id=user_id,
                 defaults={
                     'name': real_name or user_id,
-                    'role': role,
+                    'role': 'student',  # 新用户默认student，需管理员修改
                     'is_staff': False,
                     'active': True
                 }
             )
-            if not created and user.role != role:
-                user.role = role
-                user.save()
+
+        # 4. 确定sso_user_type（仅用于SSO映射表）
+        if identity_name in ['学生', '本专科生', '研究生', '博士生', '硕士生']:
+            sso_user_type = 'mobile_student'
+        elif identity_name == '辅导员':
+            sso_user_type = 'mobile_counselor'
+        elif identity_name == '宿管员':
+            sso_user_type = 'mobile_dorm_manager'
+        elif identity_name in ['教师', '教职工']:
+            sso_user_type = 'mobile_teacher'
+        else:
+            sso_user_type = 'mobile_student'
 
         # 5. 创建或更新SSOUserMapping
         mapping, _ = SSOUserMapping.objects.update_or_create(
@@ -241,21 +225,21 @@ def mobile_login(request):
         refresh = RefreshToken.for_user(user)
         access_token = str(refresh.access_token)
 
-        # 7. 返回响应
+        # 7. 返回响应（role从数据库读取）
         response_data = {
             'token': access_token,
             'user': {
                 'id': user.user_id,
                 'username': user.user_id,
                 'real_name': real_name or user_id,
-                'role': role,
+                'role': user.role,  # 从数据库读取
                 'phone': phone,
                 'building': user.building or '',
                 'room_number': user.room_number or ''
             }
         }
 
-        logger.info(f"Mobile login success: user={user.user_id}, role={role}")
+        logger.info(f"Mobile login success: user={user.user_id}, role={user.role}")
         return Response(response_data, status=status.HTTP_200_OK)
 
     except Exception as e:

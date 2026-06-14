@@ -75,17 +75,13 @@ def mobile_saas_login(request):
         phone = user_info.get('phone', '')
         user_id_str = user_info.get('number', user_code)
 
-        # 3. 获取或创建用户（角色从数据库读取，不由SSO判断）
-        with transaction.atomic():
-            user, created = User.objects.get_or_create(
-                user_id=user_id_str,
-                defaults={
-                    'name': real_name or user_id_str,
-                    'role': 'student',  # 新用户默认student，需管理员修改
-                    'is_staff': False,
-                    'active': True
-                }
-            )
+        # 3. 查询本地用户（未匹配用户拒绝登录）
+        try:
+            user = User.objects.get(user_id=user_id_str)
+        except User.DoesNotExist:
+            logger.warning(f"Mobile SAAS login rejected: user {user_id_str} not found in database")
+            return Response({'error': '用户未授权，请联系管理员'},
+                          status=status.HTTP_403_FORBIDDEN)
 
         # 4. 确定sso_user_type（仅用于SSO映射表）
         if identity_name in ['学生', '本专科生', '研究生', '博士生', '硕士生']:
@@ -182,17 +178,13 @@ def mobile_login(request):
         tenant_code = 'S10405'
         phone = ''
 
-        # 3. 获取或创建用户（角色从数据库读取，不由SSO判断）
-        with transaction.atomic():
-            user, created = User.objects.select_for_update().get_or_create(
-                user_id=user_id,
-                defaults={
-                    'name': real_name or user_id,
-                    'role': 'student',  # 新用户默认student，需管理员修改
-                    'is_staff': False,
-                    'active': True
-                }
-            )
+        # 3. 查询本地用户（未匹配用户拒绝登录）
+        try:
+            user = User.objects.get(user_id=user_id)
+        except User.DoesNotExist:
+            logger.warning(f"Mobile login rejected: user {user_id} not found in database")
+            return Response({'error': '用户未授权，请联系管理员'},
+                          status=status.HTTP_403_FORBIDDEN)
 
         # 4. 确定sso_user_type（仅用于SSO映射表）
         if identity_name in ['学生', '本专科生', '研究生', '博士生', '硕士生']:

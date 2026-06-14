@@ -76,30 +76,33 @@ def mobile_saas_login(request):
         user_id_str = user_info.get('number', user_code)
 
         # 3. 创建用户
-        # 学生身份识别：学生、本专科生、研究生等
-        is_student = identity_name in ['学生', '本专科生', '研究生', '博士生', '硕士生']
+        # 角色识别
+        if identity_name in ['学生', '本专科生', '研究生', '博士生', '硕士生']:
+            role = 'student'
+            sso_user_type = 'mobile_student'
+        elif identity_name == '辅导员':
+            role = 'counselor'
+            sso_user_type = 'mobile_counselor'
+        elif identity_name == '宿管员':
+            role = 'dorm_manager'
+            sso_user_type = 'mobile_dorm_manager'
+        elif identity_name in ['教师', '教职工']:
+            role = 'teacher'
+            sso_user_type = 'mobile_teacher'
+        else:
+            role = 'student'
+            sso_user_type = 'mobile_student'
 
         with transaction.atomic():
             user, created = User.objects.get_or_create(
                 user_id=user_id_str,
                 defaults={
                     'name': real_name or user_id_str,
-                    'role': 'student' if is_student else 'teacher',
+                    'role': role,
                     'is_staff': False,
                     'active': True
                 }
             )
-
-        # 4. 确定角色
-        if is_student:
-            sso_user_type = 'mobile_student'
-            role = 'student'
-        elif identity_name in ['教师', '教职工']:
-            sso_user_type = 'mobile_teacher'
-            role = 'teacher'
-        else:
-            sso_user_type = 'mobile_student'
-            role = 'student'
 
         # 5. 更新SSOUserMapping
         SSOUserMapping.objects.update_or_create(
@@ -185,30 +188,33 @@ def mobile_login(request):
         phone = ''
 
         # 3. 创建用户和映射（事务保护防竞态）
-        # 学生身份识别：学生、本专科生、研究生等
-        is_student = identity_name in ['学生', '本专科生', '研究生', '博士生', '硕士生']
+        # 角色识别
+        if identity_name in ['学生', '本专科生', '研究生', '博士生', '硕士生']:
+            role = 'student'
+            sso_user_type = 'mobile_student'
+        elif identity_name == '辅导员':
+            role = 'counselor'
+            sso_user_type = 'mobile_counselor'
+        elif identity_name == '宿管员':
+            role = 'dorm_manager'
+            sso_user_type = 'mobile_dorm_manager'
+        elif identity_name in ['教师', '教职工']:
+            role = 'teacher'
+            sso_user_type = 'mobile_teacher'
+        else:
+            role = 'student'
+            sso_user_type = 'mobile_student'
 
         with transaction.atomic():
             user, created = User.objects.select_for_update().get_or_create(
                 user_id=user_id,
                 defaults={
                     'name': real_name or user_id,
-                    'role': 'student' if is_student else 'teacher',
+                    'role': role,
                     'is_staff': False,
                     'active': True
                 }
             )
-
-        # 4. 确定用户类型
-        if is_student:
-            sso_user_type = 'mobile_student'
-            role = 'student'
-        elif identity_name in ['教师', '教职工']:
-            sso_user_type = 'mobile_teacher'
-            role = 'teacher'
-        else:
-            sso_user_type = 'mobile_student'
-            role = 'student'
 
         # 5. 创建或更新SSOUserMapping
         mapping, _ = SSOUserMapping.objects.update_or_create(

@@ -192,12 +192,12 @@
             const safeStudentName = escapeHtml(app.student_name || '-');
             const safeStudentId = escapeHtml(app.student_id || '-');
 
-            // Check if should show checkbox
+            // Check if should show checkbox (only in pending filter)
             const isPending = app.status === 'pending_dorm_manager' || app.status === 'pending_counselor';
             const myApproval = app.approvals?.find(ap =>
                 ap.approver_id === currentUser?.user_id && ap.decision === 'pending'
             );
-            const showCheckbox = isPending && myApproval && (currentUser?.role === 'dorm_manager' || currentUser?.role === 'counselor');
+            const showCheckbox = currentFilter === 'pending' && isPending && myApproval && (currentUser?.role === 'dorm_manager' || currentUser?.role === 'counselor');
 
             const card = document.createElement('div');
             card.className = 'card';

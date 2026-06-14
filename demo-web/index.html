@@ -223,11 +223,11 @@
             listContainer.appendChild(card);
         });
 
-        // 显示/隐藏全选栏
+        // 显示/隐藏全选栏（仅在待审批时显示）
         const selectAllBar = document.getElementById('select-all-bar');
         const hasCheckboxes = document.querySelectorAll('.approval-checkbox').length > 0;
         if (selectAllBar) {
-            selectAllBar.style.display = hasCheckboxes ? 'block' : 'none';
+            selectAllBar.style.display = (hasCheckboxes && currentFilter === 'pending') ? 'block' : 'none';
         }
     }
 
@@ -409,6 +409,11 @@
                 tab.classList.add('active');
             }
         });
+
+        // 切换标签时清除选中状态和隐藏批量操作栏
+        const selectAll = document.getElementById('select-all-checkbox');
+        if (selectAll) selectAll.checked = false;
+        document.getElementById('batch-action-bar').style.display = 'none';
 
         // Reload list with filter
         if (currentUser && currentUser.role === 'student') {

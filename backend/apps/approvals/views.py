@@ -581,7 +581,13 @@ def batch_action_approvals(request):
     approvals = Approval.objects.select_for_update().filter(approval_id__in=approval_ids, approver=user, decision=ApprovalDecision.PENDING)
 
     if approvals.count() != len(approval_ids):
-        return Response({'error': {'code': 'VALIDATION_ERROR', 'message': f'部分审批不存在或无权限'}}, status=status.HTTP_400_BAD_REQUEST)
+        missing_count = len(approval_ids) - approvals.count()
+        return Response({
+            'error': {
+                'code': 'VALIDATION_ERROR',
+                'message': f'无法操作 {missing_count} 个审批：不存在、非待审批状态或您无权限（只能操作分配给您的审批）'
+            }
+        }, status=status.HTTP_400_BAD_REQUEST)
 
     now = timezone.now()
     decision = ApprovalDecision.APPROVED if action == 'approve' else ApprovalDecision.REJECTED

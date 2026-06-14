@@ -372,33 +372,34 @@ def reject_approval(request, approval_id):
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def export_approvals(request):
-    if request.user.role not in [UserRole.DEAN, UserRole.ADMIN]:
-        return Response(
-            {'error': {'code': 'FORBIDDEN', 'message': '仅学工部/管理员可导出数据'}},
-            status=status.HTTP_403_FORBIDDEN
+    try:
+        if request.user.role not in [UserRole.DEAN, UserRole.ADMIN]:
+            return Response(
+                {'error': {'code': 'FORBIDDEN', 'message': '仅学工部/管理员可导出数据'}},
+                status=status.HTTP_403_FORBIDDEN
+            )
+
+        # Export all students with their latest application (if any)
+        # Optimized: fetch all data in 3-4 queries instead of N+1
+        from django.db.models import OuterRef, Subquery, Prefetch
+
+        # Get all students
+        students = User.objects.filter(role=UserRole.STUDENT).order_by('user_id')
+
+        # Get latest application ID for each student (subquery)
+        latest_app_subquery = Application.objects.filter(
+            student=OuterRef('pk')
+        ).order_by('-created_at').values('id')[:1]
+
+        students_list = list(students.annotate(latest_app_id=Subquery(latest_app_subquery)))
+
+        # Get all latest applications with prefetched approvals
+        latest_app_ids = [s.latest_app_id for s in students_list if s.latest_app_id]
+
+        applications = Application.objects.filter(id__in=latest_app_ids).prefetch_related(
+            Prefetch('approvals', queryset=Approval.objects.filter(step=ApprovalStep.DORM_MANAGER), to_attr='dorm_approvals_list'),
+            Prefetch('approvals', queryset=Approval.objects.filter(step=ApprovalStep.COUNSELOR), to_attr='counselor_approvals_list')
         )
-
-    # Export all students with their latest application (if any)
-    # Optimized: fetch all data in 3-4 queries instead of N+1
-    from django.db.models import OuterRef, Subquery, Prefetch
-
-    # Get all students
-    students = User.objects.filter(role=UserRole.STUDENT).order_by('user_id')
-
-    # Get latest application ID for each student (subquery)
-    latest_app_subquery = Application.objects.filter(
-        student=OuterRef('pk')
-    ).order_by('-created_at').values('id')[:1]
-
-    students_list = list(students.annotate(latest_app_id=Subquery(latest_app_subquery)))
-
-    # Get all latest applications with prefetched approvals
-    latest_app_ids = [s.latest_app_id for s in students_list if s.latest_app_id]
-
-    applications = Application.objects.filter(id__in=latest_app_ids).prefetch_related(
-        Prefetch('approvals', queryset=Approval.objects.filter(step=ApprovalStep.DORM_MANAGER), to_attr='dorm_approvals_list'),
-        Prefetch('approvals', queryset=Approval.objects.filter(step=ApprovalStep.COUNSELOR), to_attr='counselor_approvals_list')
-    )
 
     # Build mapping: student_id -> application
     app_map = {app.student_id: app for app in applications}
@@ -456,21 +457,27 @@ def export_approvals(request):
         ]
         ws.append(row)
 
-    for column in ws.columns:
-        max_length = 0
-        column_letter = column[0].column_letter
-        for cell in column:
-            if cell.value:
-                max_length = max(max_length, len(str(cell.value)))
-        ws.column_dimensions[column_letter].width = min(max_length + 2, 50)
+        for column in ws.columns:
+            max_length = 0
+            column_letter = column[0].column_letter
+            for cell in column:
+                if cell.value:
+                    max_length = max(max_length, len(str(cell.value)))
+            ws.column_dimensions[column_letter].width = min(max_length + 2, 50)
 
-    response = HttpResponse(
-        content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
-    )
-    response['Content-Disposition'] = f'attachment; filename="students_{timezone.now().strftime("%Y%m%d_%H%M%S")}.xlsx"'
-    wb.save(response)
+        response = HttpResponse(
+            content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+        )
+        response['Content-Disposition'] = f'attachment; filename="students_{timezone.now().strftime("%Y%m%d_%H%M%S")}.xlsx"'
+        wb.save(response)
 
-    return response
+        return response
+    except Exception as e:
+        logging.error(f'Export failed: {type(e).__name__}: {e}', exc_info=True)
+        return Response(
+            {'error': {'code': 'INTERNAL_ERROR', 'message': f'导出失败: {str(e)}'}},
+            status=status.HTTP_500_INTERNAL_SERVER_ERROR
+        )
 
 
 @extend_schema(

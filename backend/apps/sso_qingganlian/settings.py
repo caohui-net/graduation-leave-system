@@ -24,3 +24,5 @@ ENV = config('QGL_ENV', default='prod')  # dev or prod
 # 安全配置
 # admin_login是否验证authorization token（默认开启，对接失败时可临时关闭）
 VERIFY_ADMIN_TOKEN = config('QGL_VERIFY_ADMIN_TOKEN', default=True, cast=bool)
+# mobile_login是否验证authorization token（默认关闭，生产环境建议开启）
+VERIFY_MOBILE_TOKEN = config('QGL_VERIFY_MOBILE_TOKEN', default=False, cast=bool)

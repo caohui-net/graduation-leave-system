@@ -142,16 +142,14 @@ def mobile_saas_login(request):
 @permission_classes([AllowAny])
 def mobile_login(request):
     """
-    移动端登录端点（简化流程）
-
-    安全假设：此接口信任青橄榄平台已完成用户认证，仅接收回调参数。
-    生产部署建议：配置nginx/防火墙限制只允许青橄榄IP访问此接口。
+    移动端登录端点
 
     流程：
     1. 验证请求参数（authorization + user_id）
-    2. 直接使用user_id创建本地User（青橄榄移动端无token验证API）
-    3. 生成JWT token
-    4. 返回token和用户信息
+    2. 可选token验证（通过环境变量控制）
+    3. 查询本地User（不创建）
+    4. 生成JWT token
+    5. 返回token和用户信息
     """
     # 1. 验证请求参数 - 兼容saas_wap_token
     authorization = request.data.get('authorization') or request.data.get('saas_wap_token')
@@ -176,9 +174,40 @@ def mobile_login(request):
     logger.info(f"Mobile login attempt: user_id={user_id}")
 
     try:
-        # 2. 直接使用user_id作为标识（青橄榄新流程）
+        # 2. 可选的authorization token验证（可通过QGL_VERIFY_MOBILE_TOKEN环境变量控制）
         tenant_code = 'S10405'
         phone = ''
+
+        if sso_settings.VERIFY_MOBILE_TOKEN:
+            client = QingganlanClient(
+                app_key=sso_settings.MOBILE_APP_KEY,
+                app_secret=sso_settings.MOBILE_APP_SECRET,
+                env='prod',
+                api_type='mobile'
+            )
+
+            try:
+                # 使用get_user_code_by_token验证token有效性
+                token_response = client.get_user_code_by_token(
+                    tenant_code=tenant_code,
+                    appid=sso_settings.MOBILE_APPID,
+                    saas_wap_token=authorization
+                )
+                verified_user_code = token_response.get('data', {}).get('user_code')
+
+                # 验证token对应的user_code与请求的user_id是否一致
+                if verified_user_code != user_id:
+                    logger.error(f"Mobile token verification failed: token user_code {verified_user_code} != request user_id {user_id}")
+                    return Response({'error': '认证失败: 用户身份不匹配'},
+                                  status=status.HTTP_401_UNAUTHORIZED)
+
+                logger.info(f"Mobile token verified: user_code={verified_user_code}")
+            except SSOAPIError as e:
+                logger.error(f"Mobile token verification failed: {e.code} - {e.message}")
+                return Response({'error': f'认证失败: {e.message}'},
+                              status=status.HTTP_401_UNAUTHORIZED)
+        else:
+            logger.warning(f"Mobile token verification SKIPPED (QGL_VERIFY_MOBILE_TOKEN=False)")
 
         # 3. 查询本地用户（未匹配用户拒绝登录）
         try:
@@ -251,7 +280,7 @@ def admin_login(request):
     流程：
     1. 验证请求参数（authorization token）
     2. 调用青橄榄API: verify-user
-    3. 查询/创建本地管理员User
+    3. 查询本地管理员User（不创建）
     4. 查询/创建SSOUserMapping
     5. 生成JWT token
     6. 返回token和用户信息
@@ -297,19 +326,17 @@ def admin_login(request):
         role_name = '管理员'
         phone = ''
 
-        # 3. 创建用户和映射（事务保护防竞态）
-        with transaction.atomic():
-            user, created = User.objects.select_for_update().get_or_create(
-                user_id=user_code,
-                defaults={
-                    'name': name,
-                    'role': 'admin',
-                    'is_staff': True,
-                    'active': True
-                }
-            )
+        # 3. 查询用户（仅匹配，不创建）
+        try:
+            user = User.objects.get(user_id=user_code)
+        except User.DoesNotExist:
+            logger.warning(f"Admin login rejected: user {user_code} not found in database")
+            return Response({'error': '用户未授权，请联系管理员'},
+                          status=status.HTTP_403_FORBIDDEN)
 
-            # 4. 创建或更新SSOUserMapping
+        # 4. 更新SSOUserMapping
+        with transaction.atomic():
+
             mapping, _ = SSOUserMapping.objects.update_or_create(
                 user_code=user_code,
                 defaults={

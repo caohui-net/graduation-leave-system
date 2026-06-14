@@ -103,6 +103,9 @@ def mobile_saas_login(request):
                     'active': True
                 }
             )
+            if not created and user.role != role:
+                user.role = role
+                user.save()
 
         # 5. 更新SSOUserMapping
         SSOUserMapping.objects.update_or_create(
@@ -215,6 +218,9 @@ def mobile_login(request):
                     'active': True
                 }
             )
+            if not created and user.role != role:
+                user.role = role
+                user.save()
 
         # 5. 创建或更新SSOUserMapping
         mapping, _ = SSOUserMapping.objects.update_or_create(

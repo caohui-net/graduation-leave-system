@@ -46,44 +46,33 @@ def sso_callback(request):
         """, status=400)
 
     try:
-        # 根据identity_name确定角色
-        if identity_name == '学生':
-            role = 'student'
-            is_staff = False
-        elif identity_name in ['教师', '教职工']:
-            role = 'teacher'
-            is_staff = False
-        else:  # 管理员或其他
-            role = 'admin'
-            is_staff = True
+        # SSO仅做身份验证，不创建用户
+        # 用户必须预先存在于本地数据库
+        try:
+            user = User.objects.get(user_id=username, active=True)
+            logger.info(f"SSO login existing user: {username}, role={user.role}")
+        except User.DoesNotExist:
+            logger.warning(f"SSO rejected unknown user: {username}, identity={identity_name}")
+            return HttpResponse("""
+                <!DOCTYPE html>
+                <html>
+                <head><meta charset="UTF-8"><title>登录失败</title></head>
+                <body style="text-align:center; padding-top:100px; font-family: Arial;">
+                    <h2>用户不存在</h2>
+                    <p>您的账号未在系统中注册，请联系管理员</p>
+                    <button onclick="window.location.href='/'">返回首页</button>
+                </body>
+                </html>
+            """, status=403)
 
-        # 创建/获取用户
-        # SSO只负责认证，用户数据以数据库为准，不自动同步
-        with transaction.atomic():
-            user, created = User.objects.get_or_create(
-                user_id=username,
-                defaults={
-                    'name': real_name or username,
-                    'role': role,
-                    'is_staff': is_staff,
-                    'active': True
-                }
-            )
-
-            # 如果是新创建的用户，记录日志
-            if created:
-                logger.info(f"SSO created new user: {username}, role={role}")
-            else:
-                logger.info(f"SSO login existing user: {username}, db_role={user.role}")
-
-        # 更新SSO映射
+        # 更新SSO映射（使用用户真实角色）
         SSOUserMapping.objects.update_or_create(
             user_code=username,
             defaults={
                 'user': user,
                 'tenant_code': 'default',
-                'user_type': role,
-                'real_name': real_name or username,
+                'user_type': user.role,  # 使用数据库中的真实角色
+                'real_name': user.name,  # 使用数据库中的真实姓名
                 'identity_name': identity_name,
                 'role_name': identity_name,
                 'last_login_at': timezone.now()

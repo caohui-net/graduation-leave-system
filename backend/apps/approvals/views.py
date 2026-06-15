@@ -10,6 +10,9 @@ import logging
 from drf_spectacular.utils import extend_schema, OpenApiParameter
 from openpyxl import Workbook
 from openpyxl.styles import Font, Alignment
+
+logger = logging.getLogger(__name__)
+
 from .models import Approval, ApprovalDecision, ApprovalStep
 from .serializers import ApprovalSerializer, ApprovalActionSerializer, ApprovalListSerializer, ApprovalListResponseSerializer
 from .pagination import ApprovalLimitOffsetPagination
@@ -67,6 +70,7 @@ def list_approvals(request):
             approver=user,
             step=ApprovalStep.DORM_MANAGER
         ).select_related('application', 'application__student', 'approver')
+        default_decision = 'pending'
 
     # 辅导员: 只看自己的counselor审批
     elif user.role == UserRole.COUNSELOR:
@@ -74,14 +78,17 @@ def list_approvals(request):
             approver=user,
             step=ApprovalStep.COUNSELOR
         ).select_related('application', 'application__student', 'approver')
+        default_decision = 'pending'
 
     # 学工部: 查看所有审批（存档用）
     elif user.role == UserRole.DEAN:
         queryset = Approval.objects.all().select_related('application', 'application__student', 'approver')
+        default_decision = None
 
     # 学工管理员: 查看所有审批（管理用）
     elif user.role == UserRole.ADMIN:
         queryset = Approval.objects.all().select_related('application', 'application__student', 'approver')
+        default_decision = None
 
     else:
         return Response(
@@ -89,8 +96,8 @@ def list_approvals(request):
             status=status.HTTP_403_FORBIDDEN
         )
 
-    # Decision filtering (no default filter for admin/dean)
-    decision_param = request.query_params.get('decision', None)
+    # Decision filtering (default to pending for counselor/dorm_manager)
+    decision_param = request.query_params.get('decision', default_decision)
     if decision_param and decision_param != 'all':
         queryset = queryset.filter(decision=decision_param)
 

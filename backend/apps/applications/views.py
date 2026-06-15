@@ -123,6 +123,9 @@ def list_applications(request):
     # Sort by created_at DESC
     queryset = queryset.order_by('-created_at', '-application_id')
 
+    # Optimize queries: prefetch related objects to avoid N+1
+    queryset = queryset.select_related('student').prefetch_related('approvals__approver')
+
     # Paginate
     paginator = ApplicationLimitOffsetPagination()
     page = paginator.paginate_queryset(queryset, request)
@@ -251,7 +254,7 @@ def create_application(request):
 @permission_classes([IsAuthenticated])
 def get_application(request, application_id):
     try:
-        application = Application.objects.get(application_id=application_id)
+        application = Application.objects.select_related('student').prefetch_related('approvals__approver').get(application_id=application_id)
     except Application.DoesNotExist:
         return Response({'error': {'code': 'NOT_FOUND', 'message': '申请不存在',
                                     'details': {'application_id': application_id}}},

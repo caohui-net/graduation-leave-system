@@ -8,23 +8,82 @@
 
 ## 1. 环境配置
 
+### 系统环境
+```bash
+Python版本: 3.14.4
+  - 命令: python3 (非容器环境)
+  - 命令: python (Docker容器内)
+
+Docker版本: 29.1.3
+  - 命令: docker, docker-compose
+
+操作系统: Ubuntu 26.04 LTS
+```
+
 ### 后端 (Django)
 ```bash
+框架: Django + Django REST Framework
 路径: /home/caohui/projects/graduation-leave-system/backend
-Python: 3.14.4 (需虚拟环境)
+Python: 3.14.4 (需虚拟环境或Docker)
 虚拟环境: backend/venv
-启动: source venv/bin/activate && python manage.py runserver 0.0.0.0:7787
-端口: 7787
-数据库: SQLite (db.sqlite3)
+端口: 7787 (宿主机) -> 8000 (容器内)
+
+# 非Docker启动（开发）
+cd backend
+source venv/bin/activate
+python manage.py runserver 0.0.0.0:7787
+
+# Docker启动（推荐）
+docker-compose up -d backend
+```
+
+### 数据库 (PostgreSQL)
+```bash
+类型: PostgreSQL 15 (Docker容器)
+容器名: graduation-leave-system-db-1
+端口: 5432 (宿主机和容器)
+数据库名: graduation_leave
+用户: postgres
+密码: postgres (配置在.env.docker)
+数据卷: postgres_data
+
+# 连接数据库
+docker exec -it graduation-leave-system-db-1 psql -U postgres -d graduation_leave
+
+# 检查容器状态
+docker ps | grep graduation-leave-system
 ```
 
 ### 前端 (HTML静态)
 ```bash
 路径: /home/caohui/projects/graduation-leave-system/demo-web
-服务器: dufs (文件服务器)
-端口: 7788 (需确认)
+服务器: dufs (文件服务器) - 宿主机直接运行，非Docker
+端口: 7788
 入口: index.html (管理端)
 移动端回调: mobile-sso-callback.html
+
+# 启动前端（手动）
+cd demo-web
+dufs -p 7788 --allow-all
+```
+
+### Docker容器状态
+```bash
+# 查看运行中的容器
+docker ps --format "table {{.Names}}\t{{.Status}}\t{{.Ports}}"
+
+当前运行容器：
+- graduation-leave-system-backend-1  # Django后端，挂载 ./backend:/app
+- graduation-leave-system-db-1       # PostgreSQL 15
+
+# 容器内路径
+后端应用: /app (挂载自宿主机 ./backend)
+数据库数据: /var/lib/postgresql/data (卷 postgres_data)
+媒体文件: /app/media (卷 media_data)
+
+# 进入容器
+docker exec -it graduation-leave-system-backend-1 bash
+docker exec -it graduation-leave-system-db-1 psql -U postgres -d graduation_leave
 ```
 
 ### 关键URL
@@ -133,6 +192,10 @@ QGL_VERIFY_ADMIN_TOKEN=true  # false时跳过admin token验证
 
 ## 6. 数据库状态
 
+### 数据库类型
+- **PostgreSQL 15** (Docker容器运行)
+- 连接信息见"环境配置"章节
+
 ### 用户表关键字段
 ```python
 User模型字段：
@@ -156,7 +219,29 @@ User模型字段：
 
 ## 7. 部署信息
 
-### 后端服务
+### Docker部署（推荐）
+```bash
+# 启动所有服务
+docker-compose up -d
+
+# 查看服务状态
+docker-compose ps
+docker ps | grep graduation-leave-system
+
+# 重启后端（代码更新后）
+docker-compose restart backend
+
+# 查看后端日志
+docker-compose logs -f backend
+
+# 停止所有服务
+docker-compose down
+
+# 完全清理（包含数据卷）
+docker-compose down -v
+```
+
+### 后端服务（非Docker）
 ```bash
 # 检查运行状态
 pgrep -f "manage.py runserver"
@@ -210,7 +295,24 @@ dufs -p 7788 --allow-all
 
 ## 9. 常用命令
 
-### 开发
+### 开发（Docker环境）
+```bash
+# 进入后端容器
+docker exec -it graduation-leave-system-backend-1 bash
+
+# 容器内执行Django命令
+docker exec -it graduation-leave-system-backend-1 python manage.py shell
+docker exec -it graduation-leave-system-backend-1 python manage.py migrate
+docker exec -it graduation-leave-system-backend-1 python manage.py createsuperuser
+
+# 数据库操作
+docker exec -it graduation-leave-system-db-1 psql -U postgres -d graduation_leave
+
+# 查看用户数
+docker exec -it graduation-leave-system-db-1 psql -U postgres -d graduation_leave -c "SELECT COUNT(*) FROM users_user;"
+```
+
+### 开发（非Docker环境）
 ```bash
 # 激活后端环境
 cd backend && source venv/bin/activate

@@ -156,12 +156,17 @@ def download_attachment(request, attachment_id):
         if preview_mode and attachment.content_type not in ALLOWED_PREVIEW_TYPES:
             preview_mode = False
 
-        return FileResponse(
+        response = FileResponse(
             attachment.file.open('rb'),
             as_attachment=not preview_mode,
             filename=attachment.file_name,
             content_type=attachment.content_type
         )
+        # 安全响应头
+        response['X-Content-Type-Options'] = 'nosniff'
+        response['X-Frame-Options'] = 'SAMEORIGIN' if preview_mode else 'DENY'
+        response['Content-Security-Policy'] = "default-src 'none'; img-src 'self'; style-src 'unsafe-inline'"
+        return response
     except FileNotFoundError:
         return Response({'error': {'code': 'NOT_FOUND', 'message': '文件不存在'}},
                         status=status.HTTP_404_NOT_FOUND)

@@ -1,6 +1,8 @@
 """青橄榄SSO配置管理"""
 from decouple import config
+import logging
 
+logger = logging.getLogger(__name__)
 
 # 移动端配置
 MOBILE_APP_KEY = config(
@@ -11,6 +13,18 @@ MOBILE_APP_SECRET = config(
     'QGL_MOBILE_APP_SECRET',
     default='da02720febcf47071ee5db78c2b068ec'
 )
+
+# 安全检查：密钥使用默认值时警告
+if MOBILE_APP_KEY == 'cb6f276a42042179e90cd79c4126e075':
+    logger.warning(
+        "⚠️  [SECURITY] QGL_MOBILE_APP_KEY使用默认值！"
+        "生产环境必须设置环境变量。当前配置存在外部平台凭据泄漏风险。"
+    )
+if MOBILE_APP_SECRET == 'da02720febcf47071ee5db78c2b068ec':
+    logger.warning(
+        "⚠️  [SECURITY] QGL_MOBILE_APP_SECRET使用默认值！"
+        "生产环境必须设置环境变量。当前配置存在外部平台凭据泄漏风险。"
+    )
 MOBILE_TENANT_CODE = config('QGL_MOBILE_TENANT_CODE', default='S10405')
 MOBILE_APPID = config('QGL_MOBILE_APPID', default='8uonta')
 

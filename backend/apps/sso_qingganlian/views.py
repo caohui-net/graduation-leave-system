@@ -207,7 +207,10 @@ def mobile_login(request):
                 return Response({'error': f'认证失败: {e.message}'},
                               status=status.HTTP_401_UNAUTHORIZED)
         else:
-            logger.warning(f"Mobile token verification SKIPPED (QGL_VERIFY_MOBILE_TOKEN=False)")
+            logger.warning(
+                f"⚠️  [SECURITY] Mobile token verification SKIPPED (QGL_VERIFY_MOBILE_TOKEN=False) "
+                f"for user_id={user_id}. 生产环境必须开启验证以防止账号冒用！"
+            )
 
         # 3. 查询本地用户（未匹配用户拒绝登录）
         try:
@@ -311,13 +314,24 @@ def admin_login(request):
 
             try:
                 verify_result = client.verify_admin_user(authorization)
-                logger.info(f"Admin token verified: {verify_result}")
+
+                # 验证token与username的绑定关系
+                verified_username = verify_result.get('data', {}).get('username') or verify_result.get('data', {}).get('user_id')
+                if verified_username and verified_username != username:
+                    logger.error(f"Admin token verification failed: token username {verified_username} != request username {username}")
+                    return Response({'error': '认证失败: 用户身份不匹配'},
+                                  status=status.HTTP_401_UNAUTHORIZED)
+
+                logger.info(f"Admin token verified: username={verified_username}")
             except SSOAPIError as e:
                 logger.error(f"Admin token verification failed: {e.code} - {e.message}")
                 return Response({'error': f'认证失败: {e.message}'},
                               status=status.HTTP_401_UNAUTHORIZED)
         else:
-            logger.warning(f"Admin token verification SKIPPED (QGL_VERIFY_ADMIN_TOKEN=False)")
+            logger.warning(
+                f"⚠️  [SECURITY] Admin token verification SKIPPED (QGL_VERIFY_ADMIN_TOKEN=False) "
+                f"for user={username}. 生产环境必须开启验证以防止账号冒用！"
+            )
 
         # 3. 使用username作为user_code
         user_code = username

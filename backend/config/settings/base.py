@@ -5,10 +5,19 @@ Base settings shared across all environments.
 from pathlib import Path
 from decouple import config
 from datetime import timedelta
+import logging
 
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
 SECRET_KEY = config('SECRET_KEY', default='django-insecure-dev-key-change-in-production')
+
+# 安全检查：SECRET_KEY使用默认值时警告
+if SECRET_KEY == 'django-insecure-dev-key-change-in-production':
+    logging.warning(
+        "⚠️  [SECURITY] SECRET_KEY使用默认值！"
+        "生产环境必须设置环境变量 SECRET_KEY。"
+        "当前配置存在JWT签名被预测的风险。"
+    )
 
 DEBUG = config('DEBUG', default=True, cast=bool)
 

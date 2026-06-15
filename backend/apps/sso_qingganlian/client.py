@@ -1,7 +1,10 @@
+import logging
 import requests
 from django.conf import settings
 from .auth import generate_request_params
 from .exceptions import SSOAPIError, SSOTokenExpiredError, SSOUserInfoError
+
+logger = logging.getLogger(__name__)
 
 
 class QingganlanClient:
@@ -39,6 +42,25 @@ class QingganlanClient:
 
         self.session = requests.Session()
 
+    def _sanitize_headers(self, headers):
+        """脱敏headers中的敏感信息"""
+        safe = headers.copy()
+        for key in ['sign', 'appKey', 'Authorization']:
+            if key in safe:
+                safe[key] = safe[key][:8] + '***' if len(safe[key]) > 8 else '***'
+        return safe
+
+    def _sanitize_data(self, data):
+        """脱敏data中的敏感信息"""
+        if not data:
+            return data
+        safe = data.copy() if isinstance(data, dict) else data
+        if isinstance(safe, dict):
+            for key in ['token', 'saas_wap_token', 'password', 'idCard']:
+                if key in safe and safe[key]:
+                    safe[key] = str(safe[key])[:8] + '***' if len(str(safe[key])) > 8 else '***'
+        return safe
+
     def _make_request(self, method, endpoint, data=None, encryption_type='sha1', use_form_data=False):
         """
         发起HTTP请求
@@ -65,24 +87,24 @@ class QingganlanClient:
             if method.upper() == 'POST':
                 if use_form_data:
                     # 使用form-data
-                    print(f"[SSO API] POST {url} (form-data)")
-                    print(f"[SSO API] Headers: {headers}")
-                    print(f"[SSO API] Data: {data}")
+                    logger.info(f"[SSO API] POST {url} (form-data)")
+                    logger.debug(f"[SSO API] Headers: {self._sanitize_headers(headers)}")
+                    logger.debug(f"[SSO API] Data: {self._sanitize_data(data)}")
                     response = self.session.post(url, headers=headers, data=data, timeout=30)
                 else:
-                    print(f"[SSO API] POST {url} (json)")
-                    print(f"[SSO API] Headers: {headers}")
-                    print(f"[SSO API] Data: {data}")
+                    logger.info(f"[SSO API] POST {url} (json)")
+                    logger.debug(f"[SSO API] Headers: {self._sanitize_headers(headers)}")
+                    logger.debug(f"[SSO API] Data: {self._sanitize_data(data)}")
                     response = self.session.post(url, headers=headers, json=data, timeout=30)
             else:
-                print(f"[SSO API] GET {url}")
-                print(f"[SSO API] Headers: {headers}")
-                print(f"[SSO API] Params: {data}")
+                logger.info(f"[SSO API] GET {url}")
+                logger.debug(f"[SSO API] Headers: {self._sanitize_headers(headers)}")
+                logger.debug(f"[SSO API] Params: {self._sanitize_data(data)}")
                 response = self.session.get(url, headers=headers, params=data, timeout=30)
 
-            # Log full response for debugging
-            print(f"[SSO API] Status: {response.status_code}")
-            print(f"[SSO API] Response: {response.text[:500]}")
+            # Log status (response content only in debug mode, truncated)
+            logger.info(f"[SSO API] Status: {response.status_code}")
+            logger.debug(f"[SSO API] Response: {response.text[:200]}...")
 
             response.raise_for_status()
             result = response.json()

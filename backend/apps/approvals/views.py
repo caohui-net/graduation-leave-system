@@ -579,6 +579,20 @@ def batch_action_approvals(request):
 
     if approvals.count() != len(approval_ids):
         missing_count = len(approval_ids) - approvals.count()
+        found_ids = set(approvals.values_list('approval_id', flat=True))
+        missing_ids = [aid for aid in approval_ids if aid not in found_ids]
+
+        # Log detailed error for debugging
+        logger.error(f"Batch action rejected for user {user.user_id}: {missing_count} approvals not accessible. Missing IDs: {missing_ids[:10]}")
+
+        # Check reason for first missing approval
+        if missing_ids:
+            sample_approval = Approval.objects.filter(approval_id=missing_ids[0]).first()
+            if sample_approval:
+                logger.error(f"Sample missing approval {missing_ids[0]}: approver={sample_approval.approver_id}, decision={sample_approval.decision}, step={sample_approval.step}")
+            else:
+                logger.error(f"Sample missing approval {missing_ids[0]}: not found in database")
+
         return Response({
             'error': {
                 'code': 'VALIDATION_ERROR',

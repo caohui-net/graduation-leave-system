@@ -20,6 +20,11 @@ class QingganlanClient:
         'prod': 'https://zhhq.huanghuai.edu.cn'
     }
 
+    # Class-level failure tracking (简化实现，生产环境建议用Redis)
+    _failure_count = 0
+    _total_requests = 0
+    _last_alert_time = None
+
     def __init__(self, app_key, app_secret, env='prod', api_type='mobile'):
         """
         初始化客户端
@@ -61,6 +66,24 @@ class QingganlanClient:
                     safe[key] = str(safe[key])[:8] + '***' if len(str(safe[key])) > 8 else '***'
         return safe
 
+    @classmethod
+    def _check_and_alert(cls):
+        """检查失败率并告警"""
+        import datetime
+        if cls._total_requests < 10:
+            return
+
+        failure_rate = cls._failure_count / cls._total_requests
+        if failure_rate > 0.3:  # 30%失败率阈值
+            now = datetime.datetime.now()
+            if cls._last_alert_time is None or (now - cls._last_alert_time).seconds > 300:  # 5分钟告警一次
+                logger.error(
+                    f"⚠️  [SSO ALERT] 外部API失败率过高: {failure_rate:.1%} "
+                    f"({cls._failure_count}/{cls._total_requests}) "
+                    f"请检查青橄榄SSO服务状态"
+                )
+                cls._last_alert_time = now
+
     def _make_request(self, method, endpoint, data=None, encryption_type='sha1', use_form_data=False):
         """
         发起HTTP请求
@@ -80,6 +103,7 @@ class QingganlanClient:
             SSOTokenExpiredError: Token过期
             SSOUserInfoError: 用户信息获取失败
         """
+        QingganlanClient._total_requests += 1
         url = f"{self.base_url}{endpoint}"
         headers = generate_request_params(self.app_key, self.app_secret, encryption_type)
 
@@ -125,7 +149,14 @@ class QingganlanClient:
             return result
 
         except requests.exceptions.RequestException as e:
+            QingganlanClient._failure_count += 1
+            QingganlanClient._check_and_alert()
+            logger.error(f"[SSO API] 请求失败: {url} - {str(e)}")
             raise Exception(f"API请求失败: {str(e)}")
+        except (SSOAPIError, SSOTokenExpiredError, SSOUserInfoError) as e:
+            QingganlanClient._failure_count += 1
+            QingganlanClient._check_and_alert()
+            raise
 
     def get_user_code_by_token(self, tenant_code, appid, saas_wap_token):
         """

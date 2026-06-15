@@ -4,6 +4,27 @@ const API_BASE_URL = `http://${window.location.hostname}:7787/api`;
 let currentToken = null;
 let currentUser = null;
 
+// Fetch with timeout (AbortController)
+async function fetchWithTimeout(url, options = {}, timeout = 8000) {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), timeout);
+
+    try {
+        const response = await fetch(url, {
+            ...options,
+            signal: controller.signal
+        });
+        clearTimeout(timeoutId);
+        return response;
+    } catch (error) {
+        clearTimeout(timeoutId);
+        if (error.name === 'AbortError') {
+            throw new Error(`请求超时（${timeout}ms）：${url}`);
+        }
+        throw error;
+    }
+}
+
 // 页面加载时自动恢复登录状态
 function restoreAuthState() {
     const savedToken = localStorage.getItem('auth_token');

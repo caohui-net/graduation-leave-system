@@ -1,11 +1,21 @@
 {
-  "last_updated": "2026-06-15T01:54:00Z",
+  "last_updated": "2026-06-15T20:30:00Z",
   "session_start_checklist": [
     "⚠️ MANDATORY: Read PROJECT-QUICK-REF.md FIRST (env/ports/deploy/config)",
     "Read .wolf/cerebrum.md (user preferences, do-not-repeat)",
     "Read .wolf/anatomy.md if accessing files"
   ],
   "completed": [
+    "【2026-06-15】P0安全漏洞修复：SSO认证绕过、密钥硬编码、敏感日志泄漏",
+    "【2026-06-15】P1性能优化：N+1查询优化、根路由配置化",
+    "【2026-06-15】P1附件安全：magic number类型检测、安全响应头",
+    "【2026-06-15】断路器决策讨论：Claude+Codex+Gemini三方共识达成",
+    "【2026-06-15】技术决策：拒绝断路器实施，优化超时配置",
+    "【2026-06-15】超时优化：backend SSO API 30s→(3,5)秒",
+    "【2026-06-15】前端超时控制：fetchWithTimeout 8秒，11处替换",
+    "【2026-06-15】外部接口监控告警：失败率>30%触发logger.error",
+    "【2026-06-15】负载测试脚本：验证快速失败行为",
+    "【2026-06-15】ADR文档：归档断路器决策过程和理由",
     "【2026-06-15】验证宿管员和辅导员数据与原始Excel文档一致性",
     "【2026-06-15】确认数据库用户信息完全匹配Excel源文档（20辅导员+76宿管员）",
     "【2026-06-14】排查用户19970545（李桃花）登录后无数据问题",
@@ -36,10 +46,19 @@
     "无department学生：26人，宿管员通过后无法分配辅导员（报错：该学院辅导员不存在）",
     "多宿管员机制：88.7%申请有2个宿管员（2771/3125），同楼栋多人配置"
   ],
-  "next_focus": "修复辅导员兜底机制（P0优先级），添加FALLBACK_COUNSELOR_USER_ID配置，处理26个无department学生流程阻塞问题",
+  "next_focus": "生产部署验证，负载测试执行（2026-06-17前），监控SSO失败率",
   "artifacts": {
     "audit_report": "三方技术审计报告（Claude+Codex+Gemini联合评估）- 内存中",
     "data_analysis": "审批数据组成分析：8517条审批的step/decision/approver分布",
+    "circuit_breaker_discussion": ".collab/artifacts/fast/DISCUSS-断路器决策-6000用户系统-超时30S-1781554606-*",
+    "adr_document": "docs/adr/0001-reject-circuit-breaker.md",
+    "load_test_script": "tests/load_test_timeout.py",
+    "code_review_doc": "docs/code-review-request-2026-06-16.md",
+    "commits": {
+      "p0_p1_fixes": ["167e76d", "b7f2dda", "0f3bf16"],
+      "timeout_optimization": "e7453e0",
+      "followup_tasks": "0a59542"
+    },
     "issue_findings": [
       "🔴严重：辅导员兜底机制缺失（26学生受影响）",
       "🟡中等：数据完整性校验不足（159无building+26无department）",
@@ -72,6 +91,17 @@
     }
   ],
   "key_decisions": [
+    {
+      "decision": "拒绝实施通用断路器模式",
+      "rationale": "Claude+Codex+Gemini共识：6000用户规模，快速失败达90%断路器效果，无架构复杂度",
+      "alternatives": "超时优化(3,5)、前端控制、监控告警",
+      "date": "2026-06-15"
+    },
+    {
+      "decision": "超时配置优化：backend 30s→(3,5)秒，frontend 8秒",
+      "rationale": "30s超时是根源问题，快速失败防止线程池耗尽",
+      "date": "2026-06-15"
+    },
     {
       "decision": "学工管理员只保留2人：肖延量（20144020）和李桃花（19970545）",
       "rationale": "用户明确要求，清理18个测试账号",

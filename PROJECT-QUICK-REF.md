@@ -196,6 +196,23 @@ QGL_VERIFY_ADMIN_TOKEN=true  # false时跳过admin token验证
 - **PostgreSQL 15** (Docker容器运行)
 - 连接信息见"环境配置"章节
 
+### 角色数据完整性（2026-06-15验证）
+**有效角色（UserRole枚举）**: student, dorm_manager, counselor, dean, admin
+
+**当前分布**:
+- student: 6001
+- dorm_manager: 76
+- counselor: 24
+- admin: 18
+- dean: 2
+
+**验证命令**:
+```bash
+# 检查无效角色（应返回0行）
+docker exec graduation-leave-system-db-1 psql -U postgres -d graduation_leave -c \
+  "SELECT role, COUNT(*) FROM users WHERE role NOT IN ('student','dorm_manager','counselor','dean','admin') GROUP BY role;"
+```
+
 ### 用户表关键字段
 ```python
 User模型字段：
@@ -269,6 +286,34 @@ dufs -p 7788 --allow-all
 ---
 
 ## 8. 最近修改记录
+
+### 2026-06-15 数据修复：teacher角色清理
+**问题**: 5个用户角色为"teacher"（无效角色，UserRole枚举无此值）
+- 92020050 许芸 (兰园10栋)
+- 92023035 贺春红 (紫园8栋)
+- 92019517 王春兰 (紫园6栋)
+- 92023027 孙慧 (兰园4栋)
+- 92022002 罗继莲 (柳园1栋)
+
+**修复**: `UPDATE users SET role='dorm_manager' WHERE role='teacher';`
+
+**根因**: 数据导入时角色映射错误，teacher应为dorm_manager
+
+**教训**: 
+- ❌ 错误：AI回复"已无teacher角色"但实际未检查数据库
+- ✅ 正确：任何数据声明必须先查询验证
+- ⚠️ 强制：role字段只能是 student/dorm_manager/counselor/dean/admin
+
+**验证SQL**:
+```sql
+-- 检查无效角色
+SELECT role, COUNT(*) FROM users 
+WHERE role NOT IN ('student','dorm_manager','counselor','dean','admin') 
+GROUP BY role;
+
+-- 角色分布（当前：student=6001, dorm_manager=76, counselor=24, admin=18, dean=2）
+SELECT role, COUNT(*) FROM users GROUP BY role ORDER BY COUNT(*) DESC;
+```
 
 ### 2026-06-15 批量审批修复和日志增强
 - **commit a7ce238** - 前端：审批列表过滤非当前用户审批（修复批量操作误选问题）

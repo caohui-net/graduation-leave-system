@@ -74,3 +74,4 @@ celerybeat.pid
 *.bak
 *.backup
 PRD/backup/
+backups/

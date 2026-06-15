@@ -8,16 +8,20 @@ def can_view_application(user, application):
         return application.student_id == user.user_id
 
     if user.role == UserRole.DORM_MANAGER:
-        student = User.objects.filter(user_id=application.student_id).first()
-        if not student or not student.building:
-            return False
-        return user.building == student.building
+        # Check if user has dorm manager approval assigned for this application
+        return Approval.objects.filter(
+            application=application,
+            approver=user,
+            step=ApprovalStep.DORM_MANAGER
+        ).exists()
 
     if user.role == UserRole.COUNSELOR:
-        student = User.objects.filter(user_id=application.student_id).first()
-        if not student or not student.department:
-            return False
-        return user.department == student.department
+        # Check if user has counselor approval assigned for this application
+        return Approval.objects.filter(
+            application=application,
+            approver=user,
+            step=ApprovalStep.COUNSELOR
+        ).exists()
 
     if user.role in [UserRole.DEAN, UserRole.ADMIN]:
         # Dean/Admin can view all applications

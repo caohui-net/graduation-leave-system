@@ -31,6 +31,10 @@ def sso_callback(request):
     real_name = params.get('real_name', '')
     identity_name = params.get('identity_name', '管理员')
 
+    # 容错：去除"bearer "前缀（SAAS平台可能错误添加）
+    if authorization and authorization.lower().startswith('bearer '):
+        authorization = authorization[7:].strip()
+
     if not authorization or not username:
         logger.error(f"SSO callback missing params: {dict(params)}")
         return HttpResponse("""
@@ -40,7 +44,7 @@ def sso_callback(request):
             <body style="text-align:center; padding-top:100px; font-family: Arial;">
                 <h2>缺少认证信息</h2>
                 <p>未找到authorization或username参数</p>
-                <button onclick="window.location.href='/'">返回首页</button>
+                <button onclick="window.location.href='http://218.75.196.218:7788/'">返回首页</button>
             </body>
             </html>
         """, status=400)
@@ -60,7 +64,7 @@ def sso_callback(request):
                 <body style="text-align:center; padding-top:100px; font-family: Arial;">
                     <h2>用户不存在</h2>
                     <p>您的账号未在系统中注册，请联系管理员</p>
-                    <button onclick="window.location.href='/'">返回首页</button>
+                    <button onclick="window.location.href='http://218.75.196.218:7788/'">返回首页</button>
                 </body>
                 </html>
             """, status=403)
@@ -125,7 +129,7 @@ def sso_callback(request):
             <body style="text-align:center; padding-top:100px; font-family: Arial;">
                 <h2>登录失败</h2>
                 <p>{str(e)}</p>
-                <button onclick="window.location.href='/'">返回首页</button>
+                <button onclick="window.location.href='http://218.75.196.218:7788/'">返回首页</button>
             </body>
             </html>
         """, status=500)

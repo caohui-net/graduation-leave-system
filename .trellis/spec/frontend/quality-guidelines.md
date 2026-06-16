@@ -95,6 +95,59 @@ from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer as HTTPSer
 
 ---
 
+## Deployment: systemd User Service (graduation-frontend.service)
+
+### Configuration Location
+- Service file: `~/.config/systemd/user/graduation-frontend.service`
+- Alert service: `~/.config/systemd/user/alert-graduation-frontend.service`
+- Alert script: `~/.local/bin/alert-graduation-frontend.sh`
+
+### Service Configuration
+```ini
+[Unit]
+Description=Graduation Leave System Frontend Service
+After=network.target
+OnFailure=alert-graduation-frontend.service
+StartLimitIntervalSec=300
+StartLimitBurst=5
+
+[Service]
+Type=simple
+WorkingDirectory=/home/caohui/projects/graduation-leave-system/demo-web
+ExecStart=/usr/bin/python3 -m http.server 7788
+Restart=always
+RestartSec=10s
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=default.target
+```
+
+### Key Design Decisions
+1. **Simple http.server over custom script**: Changed from `serve-frontend.py` to `python3 -m http.server` for simplicity and maintainability
+2. **User-level systemd**: Uses `systemctl --user` to avoid sudo requirements and run under user context
+3. **Auto-restart policy**: 10-second delay, max 5 failures in 300 seconds before stopping
+4. **OnFailure alert**: Triggers alert service to log failures to `/tmp/graduation-frontend-alerts.log`
+5. **Journal logging**: stdout/stderr to systemd journal for centralized log access
+
+### Management Commands
+```bash
+systemctl --user status graduation-frontend
+systemctl --user start graduation-frontend
+systemctl --user stop graduation-frontend
+systemctl --user restart graduation-frontend
+journalctl --user -u graduation-frontend -f
+```
+
+### Verification
+- Service active: `systemctl --user is-active graduation-frontend` → `active`
+- Auto-start enabled: `systemctl --user is-enabled graduation-frontend` → `enabled`
+- HTTP accessible: `curl http://127.0.0.1:7788/` → `200`
+- Auto-restart: Kill process → recovers within 12s
+
+---
+
 ## Testing Requirements
 
 - Any change to `scripts/serve-frontend.py` must run `pytest tests/test_serve_frontend.py -q` or equivalent raw pytest command.

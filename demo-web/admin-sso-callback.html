@@ -46,14 +46,46 @@
     // 与mobile-sso-callback.html统一流程
     window.onload = function() {
       // 获取当前URL的所有参数
-      const currentParams = window.location.search;
+      const params = new URLSearchParams(window.location.search);
 
-      // 直接跳转到后端callback，保留所有参数
-      // callback_views.py会处理管理端参数（authorization+username）
+      // 提取Authorization token（支持大小写）
+      let authorization = params.get('authorization') || params.get('Authorization');
+
+      // 去除bearer前缀
+      if (authorization && authorization.toLowerCase().startsWith('bearer ')) {
+        authorization = authorization.substring(7).trim();
+      }
+
+      // 如果缺少username，尝试从JWT token的sub字段提取
+      if (authorization && !params.get('username') && !params.get('user_id')) {
+        try {
+          // 简单JWT解析（不验证签名，只读取payload）
+          const parts = authorization.split('.');
+          if (parts.length === 3) {
+            const payload = JSON.parse(atob(parts[1]));
+            const userId = payload.sub || payload.user_id || payload.username;
+            if (userId) {
+              params.set('username', String(userId));
+              console.log('Extracted username from JWT:', userId);
+            }
+          }
+        } catch (e) {
+          console.warn('Failed to extract username from JWT:', e);
+        }
+      }
+
+      // 重新构造参数（确保authorization是小写）
+      params.delete('Authorization');  // 删除大写版本
+      if (authorization) {
+        params.set('authorization', authorization);  // 使用小写
+      }
+
       // 添加时间戳避免callback接口被缓存
-      const timestamp = '_t=' + Date.now();
-      const separator = currentParams ? '&' : '?';
-      window.location.href = 'http://218.75.196.218:7787/api/sso/qingganlian/callback' + currentParams + separator + timestamp;
+      params.set('_t', Date.now());
+
+      // 跳转到后端callback
+      const backendUrl = `http://${window.location.hostname}:7787/api/sso/qingganlian/callback`;
+      window.location.href = backendUrl + '?' + params.toString();
     };
   </script>
 </body>

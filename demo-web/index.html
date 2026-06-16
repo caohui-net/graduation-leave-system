@@ -213,6 +213,12 @@
             }
         }
 
+        // Handle empty list
+        if (uniqueApps.length === 0) {
+            listContainer.innerHTML = '<div style="text-align:center; padding: 20px; color:#999;">暂无符合条件的记录</div>';
+            return;
+        }
+
         // Status display map
         const statusMap = {
             'pending_dorm_manager': { text: '待宿管审批', cls: 'tag-pending' },

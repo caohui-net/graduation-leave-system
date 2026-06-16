@@ -111,7 +111,10 @@
             : API_BASE_URL + '/approvals/?limit=' + BATCH_SIZE + '&offset=' + approvalOffset;
 
         if (currentFilter && currentFilter !== 'all') {
-            url += isAdminOrDean ? '&status=' + currentFilter : '&decision=' + currentFilter;
+            if (!isAdminOrDean) {
+                url += '&decision=' + currentFilter;
+            }
+            // Admin/Dean: don't send status param, filter on frontend
         }
 
         try {
@@ -201,7 +204,14 @@
         });
         let uniqueApps = Array.from(studentMap.values());
 
-        // Filter already applied in loadApprovals() - don't filter again
+        // Apply status filter for admin/dean (backend doesn't filter for them)
+        if (skipApproverFilter && currentFilter && currentFilter !== 'all') {
+            if (currentFilter === 'pending') {
+                uniqueApps = uniqueApps.filter(app => app.status && app.status.startsWith('pending_'));
+            } else {
+                uniqueApps = uniqueApps.filter(app => app.status === currentFilter);
+            }
+        }
 
         // Status display map
         const statusMap = {

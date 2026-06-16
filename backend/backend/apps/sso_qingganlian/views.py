@@ -122,10 +122,15 @@ def mobile_login(request):
         return Response({
             'token': token,
             'user': {
-                'id': user.id,
-                'username': user.username,
+                'id': user.user_id,
+                'user_id': user.user_id,
+                'username': user.user_id,
+                'name': mapping.real_name,
                 'real_name': mapping.real_name,
-                'role': ut
+                'role': ut,
+                'phone': mapping.phone or '',
+                'building': user.building or '',
+                'room_number': user.room_number or ''
             }
         })
 

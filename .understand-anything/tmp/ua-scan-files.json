@@ -1,0 +1,1136 @@
+{
+  "scriptCompleted": true,
+  "files": [
+    {
+      "path": ".codex/agents/trellis-check.toml",
+      "language": "toml",
+      "sizeLines": 84,
+      "fileCategory": "config"
+    },
+    {
+      "path": ".codex/agents/trellis-implement.toml",
+      "language": "toml",
+      "sizeLines": 65,
+      "fileCategory": "config"
+    },
+    {
+      "path": ".codex/agents/trellis-research.toml",
+      "language": "toml",
+      "sizeLines": 73,
+      "fileCategory": "config"
+    },
+    {
+      "path": ".codex/config.toml",
+      "language": "toml",
+      "sizeLines": 28,
+      "fileCategory": "config"
+    },
+    {
+      "path": ".codex/hooks.json",
+      "language": "json",
+      "sizeLines": 15,
+      "fileCategory": "config"
+    },
+    {
+      "path": ".codex/hooks/inject-workflow-state.py",
+      "language": "python",
+      "sizeLines": 363,
+      "fileCategory": "code"
+    },
+    {
+      "path": ".codex/hooks/session-start.py",
+      "language": "python",
+      "sizeLines": 545,
+      "fileCategory": "code"
+    },
+    {
+      "path": ".collab/events.jsonl",
+      "language": "jsonl",
+      "sizeLines": 0,
+      "fileCategory": "code"
+    },
+    {
+      "path": ".collab/state.json",
+      "language": "json",
+      "sizeLines": 8,
+      "fileCategory": "config"
+    },
+    {
+      "path": ".env.example",
+      "language": "config",
+      "sizeLines": 29,
+      "fileCategory": "config"
+    },
+    {
+      "path": ".github/workflows/deploy.yml",
+      "language": "yaml",
+      "sizeLines": 133,
+      "fileCategory": "infra"
+    },
+    {
+      "path": "backend/.env.example",
+      "language": "config",
+      "sizeLines": 23,
+      "fileCategory": "config"
+    },
+    {
+      "path": "backend/apps/__init__.py",
+      "language": "python",
+      "sizeLines": 1,
+      "fileCategory": "code"
+    },
+    {
+      "path": "backend/apps/applications/__init__.py",
+      "language": "python",
+      "sizeLines": 0,
+      "fileCategory": "code"
+    },
+    {
+      "path": "backend/apps/applications/admin.py",
+      "language": "python",
+      "sizeLines": 10,
+      "fileCategory": "code"
+    },
+    {
+      "path": "backend/apps/applications/management/__init__.py",
+      "language": "python",
+      "sizeLines": 1,
+      "fileCategory": "code"
+    },
+    {
+      "path": "backend/apps/applications/management/commands/__init__.py",
+      "language": "python",
+      "sizeLines": 1,
+      "fileCategory": "code"
+    },
+    {
+      "path": "backend/apps/applications/management/commands/reset_test_data.py",
+      "language": "python",
+      "sizeLines": 26,
+      "fileCategory": "code"
+    },
+    {
+      "path": "backend/apps/applications/migrations/__init__.py",
+      "language": "python",
+      "sizeLines": 0,
+      "fileCategory": "code"
+    },
+    {
+      "path": "backend/apps/applications/migrations/0001_initial.py",
+      "language": "python",
+      "sizeLines": 31,
+      "fileCategory": "code"
+    },
+    {
+      "path": "backend/apps/applications/migrations/0002_allow_null_class_id.py",
+      "language": "python",
+      "sizeLines": 16,
+      "fileCategory": "code"
+    },
+    {
+      "path": "backend/apps/applications/migrations/0002_initial.py",
+      "language": "python",
+      "sizeLines": 23,
+      "fileCategory": "code"
+    },
+    {
+      "path": "backend/apps/applications/migrations/0003_application_unique_student_application.py",
+      "language": "python",
+      "sizeLines": 17,
+      "fileCategory": "code"
+    },
+    {
+      "path": "backend/apps/applications/migrations/0004_remove_unique_student_constraint.py",
+      "language": "python",
+      "sizeLines": 17,
+      "fileCategory": "code"
+    },
+    {
+      "path": "backend/apps/applications/migrations/0005_alter_application_status.py",
+      "language": "python",
+      "sizeLines": 18,
+      "fileCategory": "code"
+    },
+    {
+      "path": "backend/apps/applications/migrations/0006_application_contact_phone_and_more.py",
+      "language": "python",
+      "sizeLines": 33,
+      "fileCategory": "code"
+    },
+    {
+      "path": "backend/apps/applications/models.py",
+      "language": "python",
+      "sizeLines": 50,
+      "fileCategory": "code"
+    },
+    {
+      "path": "backend/apps/applications/pagination.py",
+      "language": "python",
+      "sizeLines": 14,
+      "fileCategory": "code"
+    },
+    {
+      "path": "backend/apps/applications/permissions.py",
+      "language": "python",
+      "sizeLines": 30,
+      "fileCategory": "code"
+    },
+    {
+      "path": "backend/apps/applications/providers.py",
+      "language": "python",
+      "sizeLines": 110,
+      "fileCategory": "code"
+    },
+    {
+      "path": "backend/apps/applications/serializers.py",
+      "language": "python",
+      "sizeLines": 62,
+      "fileCategory": "code"
+    },
+    {
+      "path": "backend/apps/applications/urls.py",
+      "language": "python",
+      "sizeLines": 9,
+      "fileCategory": "code"
+    },
+    {
+      "path": "backend/apps/applications/views.py",
+      "language": "python",
+      "sizeLines": 360,
+      "fileCategory": "code"
+    },
+    {
+      "path": "backend/apps/approvals/__init__.py",
+      "language": "python",
+      "sizeLines": 0,
+      "fileCategory": "code"
+    },
+    {
+      "path": "backend/apps/approvals/admin.py",
+      "language": "python",
+      "sizeLines": 10,
+      "fileCategory": "code"
+    },
+    {
+      "path": "backend/apps/approvals/migrations/__init__.py",
+      "language": "python",
+      "sizeLines": 0,
+      "fileCategory": "code"
+    },
+    {
+      "path": "backend/apps/approvals/migrations/0001_initial.py",
+      "language": "python",
+      "sizeLines": 33,
+      "fileCategory": "code"
+    },
+    {
+      "path": "backend/apps/approvals/migrations/0002_initial.py",
+      "language": "python",
+      "sizeLines": 23,
+      "fileCategory": "code"
+    },
+    {
+      "path": "backend/apps/approvals/migrations/0003_alter_approval_step.py",
+      "language": "python",
+      "sizeLines": 18,
+      "fileCategory": "code"
+    },
+    {
+      "path": "backend/apps/approvals/migrations/0004_add_decided_by_field.py",
+      "language": "python",
+      "sizeLines": 21,
+      "fileCategory": "code"
+    },
+    {
+      "path": "backend/apps/approvals/models.py",
+      "language": "python",
+      "sizeLines": 32,
+      "fileCategory": "code"
+    },
+    {
+      "path": "backend/apps/approvals/pagination.py",
+      "language": "python",
+      "sizeLines": 14,
+      "fileCategory": "code"
+    },
+    {
+      "path": "backend/apps/approvals/serializers.py",
+      "language": "python",
+      "sizeLines": 86,
+      "fileCategory": "code"
+    },
+    {
+      "path": "backend/apps/approvals/urls.py",
+      "language": "python",
+      "sizeLines": 12,
+      "fileCategory": "code"
+    },
+    {
+      "path": "backend/apps/approvals/validators.py",
+      "language": "python",
+      "sizeLines": 14,
+      "fileCategory": "code"
+    },
+    {
+      "path": "backend/apps/approvals/views.py",
+      "language": "python",
+      "sizeLines": 673,
+      "fileCategory": "code"
+    },
+    {
+      "path": "backend/apps/attachments/__init__.py",
+      "language": "python",
+      "sizeLines": 0,
+      "fileCategory": "code"
+    },
+    {
+      "path": "backend/apps/attachments/migrations/__init__.py",
+      "language": "python",
+      "sizeLines": 0,
+      "fileCategory": "code"
+    },
+    {
+      "path": "backend/apps/attachments/migrations/0001_initial.py",
+      "language": "python",
+      "sizeLines": 38,
+      "fileCategory": "code"
+    },
+    {
+      "path": "backend/apps/attachments/models.py",
+      "language": "python",
+      "sizeLines": 31,
+      "fileCategory": "code"
+    },
+    {
+      "path": "backend/apps/attachments/serializers.py",
+      "language": "python",
+      "sizeLines": 68,
+      "fileCategory": "code"
+    },
+    {
+      "path": "backend/apps/attachments/urls.py",
+      "language": "python",
+      "sizeLines": 8,
+      "fileCategory": "code"
+    },
+    {
+      "path": "backend/apps/attachments/views.py",
+      "language": "python",
+      "sizeLines": 214,
+      "fileCategory": "code"
+    },
+    {
+      "path": "backend/apps/healthcheck/__init__.py",
+      "language": "python",
+      "sizeLines": 0,
+      "fileCategory": "code"
+    },
+    {
+      "path": "backend/apps/healthcheck/views.py",
+      "language": "python",
+      "sizeLines": 23,
+      "fileCategory": "code"
+    },
+    {
+      "path": "backend/apps/middleware/__init__.py",
+      "language": "python",
+      "sizeLines": 3,
+      "fileCategory": "code"
+    },
+    {
+      "path": "backend/apps/middleware/error_logging.py",
+      "language": "python",
+      "sizeLines": 36,
+      "fileCategory": "code"
+    },
+    {
+      "path": "backend/apps/middleware/README.md",
+      "language": "markdown",
+      "sizeLines": 36,
+      "fileCategory": "docs"
+    },
+    {
+      "path": "backend/apps/notifications/__init__.py",
+      "language": "python",
+      "sizeLines": 1,
+      "fileCategory": "code"
+    },
+    {
+      "path": "backend/apps/notifications/admin.py",
+      "language": "python",
+      "sizeLines": 14,
+      "fileCategory": "code"
+    },
+    {
+      "path": "backend/apps/notifications/apps.py",
+      "language": "python",
+      "sizeLines": 7,
+      "fileCategory": "code"
+    },
+    {
+      "path": "backend/apps/notifications/management/__init__.py",
+      "language": "python",
+      "sizeLines": 0,
+      "fileCategory": "code"
+    },
+    {
+      "path": "backend/apps/notifications/management/commands/__init__.py",
+      "language": "python",
+      "sizeLines": 0,
+      "fileCategory": "code"
+    },
+    {
+      "path": "backend/apps/notifications/management/commands/seed_notifications.py",
+      "language": "python",
+      "sizeLines": 42,
+      "fileCategory": "code"
+    },
+    {
+      "path": "backend/apps/notifications/management/commands/send_approval_timeout_warnings.py",
+      "language": "python",
+      "sizeLines": 33,
+      "fileCategory": "code"
+    },
+    {
+      "path": "backend/apps/notifications/migrations/__init__.py",
+      "language": "python",
+      "sizeLines": 0,
+      "fileCategory": "code"
+    },
+    {
+      "path": "backend/apps/notifications/migrations/0001_initial.py",
+      "language": "python",
+      "sizeLines": 44,
+      "fileCategory": "code"
+    },
+    {
+      "path": "backend/apps/notifications/migrations/0002_alter_notification_type.py",
+      "language": "python",
+      "sizeLines": 18,
+      "fileCategory": "code"
+    },
+    {
+      "path": "backend/apps/notifications/models.py",
+      "language": "python",
+      "sizeLines": 96,
+      "fileCategory": "code"
+    },
+    {
+      "path": "backend/apps/notifications/serializers.py",
+      "language": "python",
+      "sizeLines": 29,
+      "fileCategory": "code"
+    },
+    {
+      "path": "backend/apps/notifications/services.py",
+      "language": "python",
+      "sizeLines": 153,
+      "fileCategory": "code"
+    },
+    {
+      "path": "backend/apps/notifications/urls.py",
+      "language": "python",
+      "sizeLines": 9,
+      "fileCategory": "code"
+    },
+    {
+      "path": "backend/apps/notifications/views.py",
+      "language": "python",
+      "sizeLines": 150,
+      "fileCategory": "code"
+    },
+    {
+      "path": "backend/apps/sso_qingganlian/__init__.py",
+      "language": "python",
+      "sizeLines": 1,
+      "fileCategory": "code"
+    },
+    {
+      "path": "backend/apps/sso_qingganlian/apps.py",
+      "language": "python",
+      "sizeLines": 7,
+      "fileCategory": "code"
+    },
+    {
+      "path": "backend/apps/sso_qingganlian/auth.py",
+      "language": "python",
+      "sizeLines": 59,
+      "fileCategory": "code"
+    },
+    {
+      "path": "backend/apps/sso_qingganlian/callback_views.py",
+      "language": "python",
+      "sizeLines": 131,
+      "fileCategory": "code"
+    },
+    {
+      "path": "backend/apps/sso_qingganlian/client.py",
+      "language": "python",
+      "sizeLines": 215,
+      "fileCategory": "code"
+    },
+    {
+      "path": "backend/apps/sso_qingganlian/exceptions.py",
+      "language": "python",
+      "sizeLines": 21,
+      "fileCategory": "code"
+    },
+    {
+      "path": "backend/apps/sso_qingganlian/migrations/__init__.py",
+      "language": "python",
+      "sizeLines": 0,
+      "fileCategory": "code"
+    },
+    {
+      "path": "backend/apps/sso_qingganlian/migrations/0001_initial.py",
+      "language": "python",
+      "sizeLines": 41,
+      "fileCategory": "code"
+    },
+    {
+      "path": "backend/apps/sso_qingganlian/migrations/0002_add_provider_fields.py",
+      "language": "python",
+      "sizeLines": 55,
+      "fileCategory": "code"
+    },
+    {
+      "path": "backend/apps/sso_qingganlian/models.py",
+      "language": "python",
+      "sizeLines": 80,
+      "fileCategory": "code"
+    },
+    {
+      "path": "backend/apps/sso_qingganlian/providers/__init__.py",
+      "language": "python",
+      "sizeLines": 4,
+      "fileCategory": "code"
+    },
+    {
+      "path": "backend/apps/sso_qingganlian/providers/base.py",
+      "language": "python",
+      "sizeLines": 36,
+      "fileCategory": "code"
+    },
+    {
+      "path": "backend/apps/sso_qingganlian/providers/qingganlian.py",
+      "language": "python",
+      "sizeLines": 107,
+      "fileCategory": "code"
+    },
+    {
+      "path": "backend/apps/sso_qingganlian/README.md",
+      "language": "markdown",
+      "sizeLines": 160,
+      "fileCategory": "docs"
+    },
+    {
+      "path": "backend/apps/sso_qingganlian/serializers.py",
+      "language": "python",
+      "sizeLines": 36,
+      "fileCategory": "code"
+    },
+    {
+      "path": "backend/apps/sso_qingganlian/settings.py",
+      "language": "python",
+      "sizeLines": 42,
+      "fileCategory": "code"
+    },
+    {
+      "path": "backend/apps/sso_qingganlian/urls.py",
+      "language": "python",
+      "sizeLines": 12,
+      "fileCategory": "code"
+    },
+    {
+      "path": "backend/apps/sso_qingganlian/views.py",
+      "language": "python",
+      "sizeLines": 396,
+      "fileCategory": "code"
+    },
+    {
+      "path": "backend/apps/users/__init__.py",
+      "language": "python",
+      "sizeLines": 1,
+      "fileCategory": "code"
+    },
+    {
+      "path": "backend/apps/users/admin.py",
+      "language": "python",
+      "sizeLines": 10,
+      "fileCategory": "code"
+    },
+    {
+      "path": "backend/apps/users/apps.py",
+      "language": "python",
+      "sizeLines": 6,
+      "fileCategory": "code"
+    },
+    {
+      "path": "backend/apps/users/class_mapping.py",
+      "language": "python",
+      "sizeLines": 16,
+      "fileCategory": "code"
+    },
+    {
+      "path": "backend/apps/users/integrations/__init__.py",
+      "language": "python",
+      "sizeLines": 4,
+      "fileCategory": "code"
+    },
+    {
+      "path": "backend/apps/users/integrations/xg_user_client.py",
+      "language": "python",
+      "sizeLines": 209,
+      "fileCategory": "code"
+    },
+    {
+      "path": "backend/apps/users/integrations/xg_user_mapper.py",
+      "language": "python",
+      "sizeLines": 107,
+      "fileCategory": "code"
+    },
+    {
+      "path": "backend/apps/users/management/__init__.py",
+      "language": "python",
+      "sizeLines": 1,
+      "fileCategory": "code"
+    },
+    {
+      "path": "backend/apps/users/management/commands/__init__.py",
+      "language": "python",
+      "sizeLines": 1,
+      "fileCategory": "code"
+    },
+    {
+      "path": "backend/apps/users/management/commands/cleanup_test_data.py",
+      "language": "python",
+      "sizeLines": 67,
+      "fileCategory": "code"
+    },
+    {
+      "path": "backend/apps/users/management/commands/seed_data.py",
+      "language": "python",
+      "sizeLines": 116,
+      "fileCategory": "code"
+    },
+    {
+      "path": "backend/apps/users/management/commands/sync_xg_users.py",
+      "language": "python",
+      "sizeLines": 67,
+      "fileCategory": "code"
+    },
+    {
+      "path": "backend/apps/users/migrations/__init__.py",
+      "language": "python",
+      "sizeLines": 0,
+      "fileCategory": "code"
+    },
+    {
+      "path": "backend/apps/users/migrations/0001_initial.py",
+      "language": "python",
+      "sizeLines": 54,
+      "fileCategory": "code"
+    },
+    {
+      "path": "backend/apps/users/migrations/0002_user_department_user_email_user_phone.py",
+      "language": "python",
+      "sizeLines": 28,
+      "fileCategory": "code"
+    },
+    {
+      "path": "backend/apps/users/migrations/0003_classmapping_dorm_manager_and_more.py",
+      "language": "python",
+      "sizeLines": 30,
+      "fileCategory": "code"
+    },
+    {
+      "path": "backend/apps/users/migrations/0004_backfill_dorm_manager.py",
+      "language": "python",
+      "sizeLines": 27,
+      "fileCategory": "code"
+    },
+    {
+      "path": "backend/apps/users/migrations/0005_user_building.py",
+      "language": "python",
+      "sizeLines": 16,
+      "fileCategory": "code"
+    },
+    {
+      "path": "backend/apps/users/migrations/0006_add_admin_role.py",
+      "language": "python",
+      "sizeLines": 27,
+      "fileCategory": "code"
+    },
+    {
+      "path": "backend/apps/users/migrations/0007_user_is_demo_delete_classmapping.py",
+      "language": "python",
+      "sizeLines": 21,
+      "fileCategory": "code"
+    },
+    {
+      "path": "backend/apps/users/migrations/0008_add_room_and_student_info.py",
+      "language": "python",
+      "sizeLines": 38,
+      "fileCategory": "code"
+    },
+    {
+      "path": "backend/apps/users/models.py",
+      "language": "python",
+      "sizeLines": 67,
+      "fileCategory": "code"
+    },
+    {
+      "path": "backend/apps/users/serializers.py",
+      "language": "python",
+      "sizeLines": 88,
+      "fileCategory": "code"
+    },
+    {
+      "path": "backend/apps/users/services/xg_user_sync.py",
+      "language": "python",
+      "sizeLines": 159,
+      "fileCategory": "code"
+    },
+    {
+      "path": "backend/apps/users/urls.py",
+      "language": "python",
+      "sizeLines": 7,
+      "fileCategory": "code"
+    },
+    {
+      "path": "backend/apps/users/views.py",
+      "language": "python",
+      "sizeLines": 77,
+      "fileCategory": "code"
+    },
+    {
+      "path": "backend/backend/apps/sso_qingganlian/client.py",
+      "language": "python",
+      "sizeLines": 75,
+      "fileCategory": "code"
+    },
+    {
+      "path": "backend/backend/apps/sso_qingganlian/models.py",
+      "language": "python",
+      "sizeLines": 43,
+      "fileCategory": "code"
+    },
+    {
+      "path": "backend/backend/apps/sso_qingganlian/serializers.py",
+      "language": "python",
+      "sizeLines": 27,
+      "fileCategory": "code"
+    },
+    {
+      "path": "backend/backend/apps/sso_qingganlian/urls.py",
+      "language": "python",
+      "sizeLines": 9,
+      "fileCategory": "code"
+    },
+    {
+      "path": "backend/backend/apps/sso_qingganlian/views.py",
+      "language": "python",
+      "sizeLines": 202,
+      "fileCategory": "code"
+    },
+    {
+      "path": "backend/backend/apps/users/management/commands/cleanup_test_data.py",
+      "language": "python",
+      "sizeLines": 62,
+      "fileCategory": "code"
+    },
+    {
+      "path": "backend/config/__init__.py",
+      "language": "python",
+      "sizeLines": 1,
+      "fileCategory": "code"
+    },
+    {
+      "path": "backend/config/settings/__init__.py",
+      "language": "python",
+      "sizeLines": 1,
+      "fileCategory": "code"
+    },
+    {
+      "path": "backend/config/settings/base.py",
+      "language": "python",
+      "sizeLines": 189,
+      "fileCategory": "code"
+    },
+    {
+      "path": "backend/config/settings/dev.py",
+      "language": "python",
+      "sizeLines": 12,
+      "fileCategory": "code"
+    },
+    {
+      "path": "backend/config/settings/prod.py",
+      "language": "python",
+      "sizeLines": 27,
+      "fileCategory": "code"
+    },
+    {
+      "path": "backend/config/settings/test.py",
+      "language": "python",
+      "sizeLines": 18,
+      "fileCategory": "code"
+    },
+    {
+      "path": "backend/config/urls.py",
+      "language": "python",
+      "sizeLines": 24,
+      "fileCategory": "code"
+    },
+    {
+      "path": "backend/config/wsgi.py",
+      "language": "python",
+      "sizeLines": 7,
+      "fileCategory": "code"
+    },
+    {
+      "path": "backend/data/1-5830名毕业生（含研究生）.csv",
+      "language": "csv",
+      "sizeLines": 5831,
+      "fileCategory": "data"
+    },
+    {
+      "path": "backend/data/2026届预计毕业生5675人.csv",
+      "language": "csv",
+      "sizeLines": 5676,
+      "fileCategory": "data"
+    },
+    {
+      "path": "backend/data/2026年社区辅导员信息统计表.csv",
+      "language": "csv",
+      "sizeLines": 76,
+      "fileCategory": "data"
+    },
+    {
+      "path": "backend/data/2026年学院辅导员信息统计表.csv",
+      "language": "csv",
+      "sizeLines": 22,
+      "fileCategory": "data"
+    },
+    {
+      "path": "backend/data/additional_staff.csv",
+      "language": "csv",
+      "sizeLines": 4,
+      "fileCategory": "data"
+    },
+    {
+      "path": "backend/data/counselors_processed.csv",
+      "language": "csv",
+      "sizeLines": 21,
+      "fileCategory": "data"
+    },
+    {
+      "path": "backend/data/dorm_managers_processed.csv",
+      "language": "csv",
+      "sizeLines": 73,
+      "fileCategory": "data"
+    },
+    {
+      "path": "backend/data/file5_students_merged_v2.csv",
+      "language": "csv",
+      "sizeLines": 5947,
+      "fileCategory": "data"
+    },
+    {
+      "path": "backend/data/file5_students_merged.csv",
+      "language": "csv",
+      "sizeLines": 5947,
+      "fileCategory": "data"
+    },
+    {
+      "path": "backend/data/merge_report.json",
+      "language": "json",
+      "sizeLines": 9,
+      "fileCategory": "config"
+    },
+    {
+      "path": "backend/data/missing_building_data_request.csv",
+      "language": "csv",
+      "sizeLines": 117,
+      "fileCategory": "data"
+    },
+    {
+      "path": "backend/data/missing_student_no_filled.csv",
+      "language": "csv",
+      "sizeLines": 272,
+      "fileCategory": "data"
+    },
+    {
+      "path": "backend/data/missing_student_no_request.csv",
+      "language": "csv",
+      "sizeLines": 272,
+      "fileCategory": "data"
+    },
+    {
+      "path": "backend/data/routing_coverage_report.json",
+      "language": "json",
+      "sizeLines": 1753,
+      "fileCategory": "config"
+    },
+    {
+      "path": "backend/data/templates/class_mappings_template.csv",
+      "language": "csv",
+      "sizeLines": 3,
+      "fileCategory": "data"
+    },
+    {
+      "path": "backend/data/templates/counselors_template.csv",
+      "language": "csv",
+      "sizeLines": 3,
+      "fileCategory": "data"
+    },
+    {
+      "path": "backend/data/templates/students_template.csv",
+      "language": "csv",
+      "sizeLines": 3,
+      "fileCategory": "data"
+    },
+    {
+      "path": "backend/manage.py",
+      "language": "python",
+      "sizeLines": 22,
+      "fileCategory": "code"
+    },
+    {
+      "path": "backend/reports/xg_collection_test_20260603_033038.json",
+      "language": "json",
+      "sizeLines": 15,
+      "fileCategory": "config"
+    },
+    {
+      "path": "backend/reports/xg_collection_test_20260603_033223.json",
+      "language": "json",
+      "sizeLines": 15,
+      "fileCategory": "config"
+    },
+    {
+      "path": "backend/reports/xg_collection_test_20260603_033437.json",
+      "language": "json",
+      "sizeLines": 80,
+      "fileCategory": "config"
+    },
+    {
+      "path": "backend/requirements.txt",
+      "language": "txt",
+      "sizeLines": 29,
+      "fileCategory": "docs"
+    },
+    {
+      "path": "backend/requirements/base.txt",
+      "language": "txt",
+      "sizeLines": 49,
+      "fileCategory": "docs"
+    },
+    {
+      "path": "backend/requirements/dev.txt",
+      "language": "txt",
+      "sizeLines": 18,
+      "fileCategory": "docs"
+    },
+    {
+      "path": "backend/requirements/prod.txt",
+      "language": "txt",
+      "sizeLines": 8,
+      "fileCategory": "docs"
+    },
+    {
+      "path": "backend/schema.py",
+      "language": "python",
+      "sizeLines": 17,
+      "fileCategory": "code"
+    },
+    {
+      "path": "deploy.config.yml",
+      "language": "yaml",
+      "sizeLines": 29,
+      "fileCategory": "config"
+    },
+    {
+      "path": "frontend-server.service",
+      "language": "service",
+      "sizeLines": 16,
+      "fileCategory": "code"
+    },
+    {
+      "path": "frontend/components/ApprovalDetail.tsx",
+      "language": "typescript",
+      "sizeLines": 114,
+      "fileCategory": "code"
+    },
+    {
+      "path": "frontend/hooks/useAttachment.ts",
+      "language": "typescript",
+      "sizeLines": 46,
+      "fileCategory": "code"
+    },
+    {
+      "path": "frontend/miniprogram/pages/approval-detail/index.js",
+      "language": "javascript",
+      "sizeLines": 148,
+      "fileCategory": "code"
+    },
+    {
+      "path": "frontend/miniprogram/utils/attachment.js",
+      "language": "javascript",
+      "sizeLines": 21,
+      "fileCategory": "code"
+    },
+    {
+      "path": "frontend/miniprogram/utils/request.js",
+      "language": "javascript",
+      "sizeLines": 17,
+      "fileCategory": "code"
+    },
+    {
+      "path": "frontend/mobile/ApprovalDetail.tsx",
+      "language": "typescript",
+      "sizeLines": 213,
+      "fileCategory": "code"
+    },
+    {
+      "path": "frontend/services/api.ts",
+      "language": "typescript",
+      "sizeLines": 172,
+      "fileCategory": "code"
+    },
+    {
+      "path": "frontend/services/attachment.ts",
+      "language": "typescript",
+      "sizeLines": 92,
+      "fileCategory": "code"
+    },
+    {
+      "path": "frontend/services/mock.ts",
+      "language": "typescript",
+      "sizeLines": 89,
+      "fileCategory": "code"
+    },
+    {
+      "path": "frontend/types/api.ts",
+      "language": "typescript",
+      "sizeLines": 127,
+      "fileCategory": "code"
+    },
+    {
+      "path": "frontend/utils/attachment.ts",
+      "language": "typescript",
+      "sizeLines": 21,
+      "fileCategory": "code"
+    },
+    {
+      "path": "miniprogram/app.json",
+      "language": "json",
+      "sizeLines": 15,
+      "fileCategory": "config"
+    },
+    {
+      "path": "miniprogram/app.ts",
+      "language": "typescript",
+      "sizeLines": 15,
+      "fileCategory": "code"
+    },
+    {
+      "path": "miniprogram/pages/approvals/approvals.ts",
+      "language": "typescript",
+      "sizeLines": 76,
+      "fileCategory": "code"
+    },
+    {
+      "path": "miniprogram/pages/detail/detail.ts",
+      "language": "typescript",
+      "sizeLines": 301,
+      "fileCategory": "code"
+    },
+    {
+      "path": "miniprogram/pages/login/login.ts",
+      "language": "typescript",
+      "sizeLines": 58,
+      "fileCategory": "code"
+    },
+    {
+      "path": "miniprogram/pages/student-application/student-application.json",
+      "language": "json",
+      "sizeLines": 3,
+      "fileCategory": "config"
+    },
+    {
+      "path": "miniprogram/pages/student-application/student-application.ts",
+      "language": "typescript",
+      "sizeLines": 237,
+      "fileCategory": "code"
+    },
+    {
+      "path": "miniprogram/project.config.json",
+      "language": "json",
+      "sizeLines": 47,
+      "fileCategory": "config"
+    },
+    {
+      "path": "miniprogram/services/api.ts",
+      "language": "typescript",
+      "sizeLines": 230,
+      "fileCategory": "code"
+    },
+    {
+      "path": "miniprogram/sitemap.json",
+      "language": "json",
+      "sizeLines": 7,
+      "fileCategory": "config"
+    },
+    {
+      "path": "miniprogram/types/api.ts",
+      "language": "typescript",
+      "sizeLines": 125,
+      "fileCategory": "code"
+    },
+    {
+      "path": "miniprogram/utils/date.ts",
+      "language": "typescript",
+      "sizeLines": 13,
+      "fileCategory": "code"
+    },
+    {
+      "path": "miniprogram/utils/role-guard.ts",
+      "language": "typescript",
+      "sizeLines": 28,
+      "fileCategory": "code"
+    },
+    {
+      "path": "README.md",
+      "language": "markdown",
+      "sizeLines": 118,
+      "fileCategory": "docs"
+    }
+  ],
+  "totalFiles": 184,
+  "filteredByIgnore": 1837,
+  "estimatedComplexity": "large",
+  "stats": {
+    "filesScanned": 184,
+    "byCategory": {
+      "config": 18,
+      "code": 143,
+      "infra": 1,
+      "docs": 7,
+      "data": 15
+    },
+    "byLanguage": {
+      "toml": 4,
+      "json": 11,
+      "python": 121,
+      "jsonl": 1,
+      "config": 2,
+      "yaml": 2,
+      "markdown": 3,
+      "csv": 15,
+      "txt": 4,
+      "service": 1,
+      "typescript": 17,
+      "javascript": 3
+    }
+  }
+}

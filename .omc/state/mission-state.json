@@ -1,4 +1,79 @@
 {
-  "updatedAt": "2026-06-12T07:32:43.774Z",
-  "missions": []
+  "updatedAt": "2026-06-16T07:31:44.539Z",
+  "missions": [
+    {
+      "id": "session:1a05c905-554c-4144-8dd9-bbae02628c5e:none",
+      "source": "session",
+      "name": "none",
+      "objective": "Session mission",
+      "createdAt": "2026-06-16T07:22:48.399Z",
+      "updatedAt": "2026-06-16T07:31:44.539Z",
+      "status": "done",
+      "workerCount": 2,
+      "taskCounts": {
+        "total": 2,
+        "pending": 0,
+        "blocked": 0,
+        "inProgress": 0,
+        "completed": 2,
+        "failed": 0
+      },
+      "agents": [
+        {
+          "name": "trellis-implement:a7495b2",
+          "role": "trellis-implement",
+          "ownership": "a7495b289d181264d",
+          "status": "done",
+          "currentStep": null,
+          "latestUpdate": "completed",
+          "completedSummary": null,
+          "updatedAt": "2026-06-16T07:29:54.759Z"
+        },
+        {
+          "name": "trellis-check:a73712d",
+          "role": "trellis-check",
+          "ownership": "a73712d44d553f11f",
+          "status": "done",
+          "currentStep": null,
+          "latestUpdate": "completed",
+          "completedSummary": null,
+          "updatedAt": "2026-06-16T07:31:44.539Z"
+        }
+      ],
+      "timeline": [
+        {
+          "id": "session-start:a7495b289d181264d:2026-06-16T07:22:48.399Z",
+          "at": "2026-06-16T07:22:48.399Z",
+          "kind": "update",
+          "agent": "trellis-implement:a7495b2",
+          "detail": "started trellis-implement:a7495b2",
+          "sourceKey": "session-start:a7495b289d181264d"
+        },
+        {
+          "id": "session-stop:a7495b289d181264d:2026-06-16T07:29:54.759Z",
+          "at": "2026-06-16T07:29:54.759Z",
+          "kind": "completion",
+          "agent": "trellis-implement:a7495b2",
+          "detail": "completed",
+          "sourceKey": "session-stop:a7495b289d181264d"
+        },
+        {
+          "id": "session-start:a73712d44d553f11f:2026-06-16T07:30:01.155Z",
+          "at": "2026-06-16T07:30:01.155Z",
+          "kind": "update",
+          "agent": "trellis-check:a73712d",
+          "detail": "started trellis-check:a73712d",
+          "sourceKey": "session-start:a73712d44d553f11f"
+        },
+        {
+          "id": "session-stop:a73712d44d553f11f:2026-06-16T07:31:44.539Z",
+          "at": "2026-06-16T07:31:44.539Z",
+          "kind": "completion",
+          "agent": "trellis-check:a73712d",
+          "detail": "completed",
+          "sourceKey": "session-stop:a73712d44d553f11f"
+        }
+      ]
+    }
+  ]
 }

@@ -603,7 +603,13 @@ def batch_action_approvals(request):
         return Response({
             'error': {
                 'code': 'VALIDATION_ERROR',
-                'message': f'无法操作 {missing_count} 个审批：不存在、非待审批状态或您无权限（只能操作分配给您的审批）'
+                'message': f'无法操作 {missing_count} 个审批：不存在、非待审批状态或您无权限（只能操作分配给您的审批）',
+                'details': {
+                    'missing_count': missing_count,
+                    'missing_ids': missing_ids[:10],  # 最多返回10个ID
+                    'total_requested': len(approval_ids),
+                    'valid_count': approvals.count()
+                }
             }
         }, status=status.HTTP_400_BAD_REQUEST)
 

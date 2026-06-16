@@ -1,7 +1,7 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-06-16T06:48:07.107Z
-> Files: 724 tracked | Anatomy hits: 0 | Misses: 0
+> Auto-maintained by OpenWolf. Last scanned: 2026-06-16T07:32:59.320Z
+> Files: 729 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../../../tmp/
 
@@ -36,6 +36,15 @@
 
 - `collab_discuss.py` — Discussion orchestration for Claude-Codex-Gemini collaboration. (~12596 tok)
 
+## ../../.config/systemd/user/
+
+- `alert-graduation-frontend.service` (~39 tok)
+- `graduation-frontend.service` (~128 tok)
+
+## ../../.local/bin/
+
+- `alert-graduation-frontend.sh` (~108 tok)
+
 ## ../graduation-leave-system/.claude/skills/claude-codex-collab/
 
 - `SKILL.md` — Claude-Codex Collaboration Skill (~1007 tok)
@@ -53,7 +62,7 @@
 - `frontend-server.service` (~92 tok)
 - `graduation-frontend-nocache.service` (~108 tok)
 - `PRODUCTION-READY.md` — claude-codex-gemini-collab - PRODUCTION READY (~1835 tok)
-- `PROJECT-QUICK-REF.md` — 毕业离校系统 - 项目速查手册 (~2568 tok)
+- `PROJECT-QUICK-REF.md` — 毕业离校系统 - 项目速查手册 (~2676 tok)
 - `pyproject.toml` — Claude-Codex-Gemini Collaboration Framework (~185 tok)
 - `README.md` — Project documentation (~451 tok)
 - `response.json` (~469 tok)
@@ -617,6 +626,11 @@
 
 - `index.md` — Frontend Development Guidelines (~339 tok)
 - `quality-guidelines.md` — Quality Guidelines (~1009 tok)
+
+## .trellis/spec/guides/
+
+- `index.md` — Thinking Guides (~950 tok)
+- `systemd-daemon-setup.md` — systemd User Service 守护进程配置指南 (~1053 tok)
 
 ## .trellis/tasks/06-16-frontend-daemon-setup/
 

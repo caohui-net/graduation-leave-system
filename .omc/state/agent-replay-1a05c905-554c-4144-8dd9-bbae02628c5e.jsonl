@@ -1,0 +1,5 @@
+{"t":0,"agent":"a7495b2","agent_type":"trellis-implement","event":"agent_start","parent_mode":"none"}
+{"t":0,"agent":"a7495b2","agent_type":"trellis-implement","event":"agent_stop","success":true,"duration_ms":426360}
+{"t":0,"agent":"a73712d","agent_type":"trellis-check","event":"agent_start","parent_mode":"none"}
+{"t":0,"agent":"a73712d","agent_type":"trellis-check","event":"agent_stop","success":true,"duration_ms":103384}
+{"t":0,"agent":"system","event":"skill_invoked","skill_name":"trellis-update-spec"}

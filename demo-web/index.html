@@ -7,8 +7,23 @@
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
   <title>毕业离校申请系统 - UI Demo</title>
-  <link rel="stylesheet" href="css/global.css?v=20260614">
-  <script src="js/api.js?v=20260614"></script></script></script>
+  <link rel="stylesheet" href="css/global.css?v=20260616">
+  <script src="js/api.js?v=20260616"></script>
+<script>
+    // 版本检测机制 - 防止缓存导致的bug
+    const APP_VERSION = '20260616-fix2'; // 每次重要修复递增
+    const STORED_VERSION = localStorage.getItem('app_version');
+
+    if (STORED_VERSION && STORED_VERSION !== APP_VERSION) {
+        // 检测到版本不匹配，强制刷新
+        localStorage.setItem('app_version', APP_VERSION);
+        if (!window.location.search.includes('nocache')) {
+            window.location.href = window.location.pathname + '?nocache=' + Date.now();
+        }
+    } else if (!STORED_VERSION) {
+        localStorage.setItem('app_version', APP_VERSION);
+    }
+</script>
 <script>
     let currentFilter = 'all';
     let approvalOffset = 0;
@@ -128,7 +143,8 @@
                 status: approval.application.status,
                 created_at: approval.application.created_at,
                 approvals: [{
-                    approval_id: approval.id,
+                    id: approval.id,  // 保留id字段（主要用于checkbox）
+                    approval_id: approval.id,  // 兼容性保留
                     approver_id: approval.approver_id,
                     decision: approval.decision,
                     step: approval.step
@@ -209,6 +225,18 @@
             );
             const showCheckbox = currentFilter === 'pending' && isPending && myApproval && (currentUser?.role === 'dorm_manager' || currentUser?.role === 'counselor');
 
+            // 诊断日志：记录checkbox生成数据
+            if (showCheckbox) {
+                console.log('[BATCH-DEBUG] Checkbox enabled:', {
+                    approvalId: myApproval.approval_id,
+                    approverId: myApproval.approver_id,
+                    currentUserId: currentUser?.user_id,
+                    decision: myApproval.decision,
+                    step: myApproval.step,
+                    appId: appId
+                });
+            }
+
             if (currentFilter === 'pending' && !showCheckbox) {
                 console.log('[DEBUG] Checkbox hidden for', appId, {
                     isPending,
@@ -224,7 +252,7 @@
             card.style.cssText = 'cursor: pointer; display: flex; gap: 12px;';
 
             card.innerHTML = `
-                ${showCheckbox ? `<input type="checkbox" class="approval-checkbox" data-approval-id="${myApproval.id}" onclick="event.stopPropagation(); toggleBatchBar();" style="width: 20px; height: 20px; cursor: pointer;">` : ''}
+                ${showCheckbox ? `<input type="checkbox" class="approval-checkbox" data-approval-id="${myApproval.approval_id}" data-approver-id="${myApproval.approver_id}" data-decision="${myApproval.decision}" onclick="event.stopPropagation(); toggleBatchBar();" style="width: 20px; height: 20px; cursor: pointer;">` : ''}
                 <div style="flex: 1;" onclick="openApplication('${appId}')">
                     <div class="flex-row justify-between align-center" style="margin-bottom: 8px;">
                         <span style="font-size: 16px; font-weight: bold;">申请 ${safeAppId}</span>
@@ -2006,8 +2034,48 @@ function closeBatchModal() {
 
 async function confirmBatchAction() {
   const checkboxes = document.querySelectorAll('.approval-checkbox:checked');
-  const ids = Array.from(checkboxes).map(cb => cb.dataset.approvalId);
+
+  // 方案1：防御性二次过滤，只提交符合条件的审批
+  const validApprovals = Array.from(checkboxes).filter(cb => {
+    const approverId = cb.dataset.approverId;
+    const decision = cb.dataset.decision;
+    const isValid = approverId === currentUser?.user_id && decision === 'pending';
+
+    if (!isValid) {
+      console.warn('[BATCH-DEBUG] Filtered out invalid approval:', {
+        approvalId: cb.dataset.approvalId,
+        approverId: approverId,
+        decision: decision,
+        currentUserId: currentUser?.user_id
+      });
+    }
+
+    return isValid;
+  });
+
+  const ids = validApprovals.map(cb => cb.dataset.approvalId);
   const comment = document.getElementById('batch-comment').value;
+
+  // 检查过滤后是否还有有效审批
+  if (ids.length === 0) {
+    closeBatchModal();
+    showToast('没有可操作的审批（必须是分配给您且待审批状态）', 'error');
+    return;
+  }
+
+  if (ids.length < checkboxes.length) {
+    const filtered = checkboxes.length - ids.length;
+    console.warn(`[BATCH-DEBUG] Filtered ${filtered} invalid approvals`);
+  }
+
+  // 诊断日志：批量操作提交
+  console.log('[BATCH-DEBUG] Submitting batch action:', {
+    action: batchAction,
+    count: ids.length,
+    ids: ids,
+    currentUserId: currentUser?.user_id,
+    currentRole: currentUser?.role
+  });
 
   try {
     const res = await fetchWithTimeout(API_BASE_URL + '/approvals/batch-action/', {

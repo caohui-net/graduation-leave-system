@@ -1,0 +1,29 @@
+{
+  "projectRoot": "/home/caohui/projects/graduation-leave-system",
+  "batchFiles": [
+    {"path": "backend/apps/applications/permissions.py", "language": "python", "sizeLines": 30, "fileCategory": "code"},
+    {"path": "backend/apps/approvals/admin.py", "language": "python", "sizeLines": 10, "fileCategory": "code"},
+    {"path": "backend/apps/approvals/models.py", "language": "python", "sizeLines": 32, "fileCategory": "code"},
+    {"path": "backend/apps/attachments/models.py", "language": "python", "sizeLines": 31, "fileCategory": "code"},
+    {"path": "backend/apps/attachments/serializers.py", "language": "python", "sizeLines": 68, "fileCategory": "code"},
+    {"path": "backend/apps/attachments/urls.py", "language": "python", "sizeLines": 8, "fileCategory": "code"},
+    {"path": "backend/apps/attachments/views.py", "language": "python", "sizeLines": 214, "fileCategory": "code"},
+    {"path": "backend/apps/users/admin.py", "language": "python", "sizeLines": 10, "fileCategory": "code"},
+    {"path": "backend/apps/users/class_mapping.py", "language": "python", "sizeLines": 16, "fileCategory": "code"},
+    {"path": "backend/apps/users/management/commands/seed_data.py", "language": "python", "sizeLines": 116, "fileCategory": "code"},
+    {"path": "backend/apps/users/models.py", "language": "python", "sizeLines": 67, "fileCategory": "code"}
+  ],
+  "batchImportData": {
+    "backend/apps/applications/permissions.py": ["backend/apps/approvals/models.py", "backend/apps/users/models.py"],
+    "backend/apps/approvals/admin.py": ["backend/apps/approvals/models.py"],
+    "backend/apps/approvals/models.py": ["backend/apps/applications/models.py", "backend/apps/users/models.py"],
+    "backend/apps/attachments/models.py": ["backend/apps/applications/models.py", "backend/apps/users/models.py"],
+    "backend/apps/attachments/serializers.py": ["backend/apps/attachments/models.py"],
+    "backend/apps/attachments/urls.py": ["backend/apps/attachments/views.py"],
+    "backend/apps/attachments/views.py": ["backend/apps/applications/models.py", "backend/apps/applications/permissions.py", "backend/apps/approvals/models.py", "backend/apps/attachments/models.py", "backend/apps/attachments/serializers.py", "backend/apps/users/models.py", "backend/schema.py"],
+    "backend/apps/users/admin.py": ["backend/apps/users/models.py"],
+    "backend/apps/users/class_mapping.py": ["backend/apps/users/models.py"],
+    "backend/apps/users/management/commands/seed_data.py": ["backend/apps/users/models.py"],
+    "backend/apps/users/models.py": []
+  }
+}

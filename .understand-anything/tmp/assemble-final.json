@@ -1,0 +1,6 @@
+{
+  "name": "graduation-leave-system",
+  "description": "高校毕业生离校申请审批管理系统，支持学生在线提交离校申请，辅导员和学工部两级审批，附件管理，微信通知推送。注意：此项目包含超过100个源文件，建议针对特定子目录进行分析以获得更快的结果。",
+  "languages": ["css", "csv", "dockerfile", "html", "javascript", "json", "jsonl", "markdown", "python", "shell", "sql", "toml", "typescript", "wxml", "wxss", "yaml"],
+  "frameworks": ["Django", "Django REST Framework", "Docker", "Docker Compose", "GitHub Actions", "PostgreSQL"]
+}

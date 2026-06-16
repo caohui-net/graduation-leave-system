@@ -1,0 +1,991 @@
+{
+  "scriptCompleted": true,
+  "filesAnalyzed": 11,
+  "filesSkipped": [],
+  "results": [
+    {
+      "path": "backend/apps/applications/permissions.py",
+      "language": "python",
+      "fileCategory": "code",
+      "totalLines": 30,
+      "nonEmptyLines": 24,
+      "functions": [
+        {
+          "name": "can_view_application",
+          "startLine": 5,
+          "endLine": 30,
+          "params": [
+            "user",
+            "application"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "can_view_application",
+          "line": 5,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "can_view_application",
+          "callee": "Approval.objects.filter(\n            application=application,\n            approver=user,\n            step=ApprovalStep.DORM_MANAGER\n        ).exists",
+          "lineNumber": 12
+        },
+        {
+          "caller": "can_view_application",
+          "callee": "Approval.objects.filter",
+          "lineNumber": 12
+        },
+        {
+          "caller": "can_view_application",
+          "callee": "Approval.objects.filter(\n            application=application,\n            approver=user,\n            step=ApprovalStep.COUNSELOR\n        ).exists",
+          "lineNumber": 20
+        },
+        {
+          "caller": "can_view_application",
+          "callee": "Approval.objects.filter",
+          "lineNumber": 20
+        }
+      ],
+      "metrics": {
+        "importCount": 2,
+        "exportCount": 1,
+        "functionCount": 1,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "backend/apps/approvals/admin.py",
+      "language": "python",
+      "fileCategory": "code",
+      "totalLines": 10,
+      "nonEmptyLines": 8,
+      "classes": [
+        {
+          "name": "ApprovalAdmin",
+          "startLine": 6,
+          "endLine": 10,
+          "methods": [],
+          "properties": []
+        }
+      ],
+      "exports": [
+        {
+          "name": "ApprovalAdmin",
+          "line": 5,
+          "isDefault": false
+        }
+      ],
+      "metrics": {
+        "importCount": 1,
+        "exportCount": 1,
+        "functionCount": 0,
+        "classCount": 1
+      }
+    },
+    {
+      "path": "backend/apps/approvals/models.py",
+      "language": "python",
+      "fileCategory": "code",
+      "totalLines": 32,
+      "nonEmptyLines": 25,
+      "classes": [
+        {
+          "name": "ApprovalStep",
+          "startLine": 6,
+          "endLine": 9,
+          "methods": [],
+          "properties": []
+        },
+        {
+          "name": "ApprovalDecision",
+          "startLine": 12,
+          "endLine": 15,
+          "methods": [],
+          "properties": []
+        },
+        {
+          "name": "Approval",
+          "startLine": 18,
+          "endLine": 32,
+          "methods": [],
+          "properties": []
+        }
+      ],
+      "exports": [
+        {
+          "name": "ApprovalStep",
+          "line": 6,
+          "isDefault": false
+        },
+        {
+          "name": "ApprovalDecision",
+          "line": 12,
+          "isDefault": false
+        },
+        {
+          "name": "Approval",
+          "line": 18,
+          "isDefault": false
+        }
+      ],
+      "metrics": {
+        "importCount": 2,
+        "exportCount": 3,
+        "functionCount": 0,
+        "classCount": 3
+      }
+    },
+    {
+      "path": "backend/apps/attachments/models.py",
+      "language": "python",
+      "fileCategory": "code",
+      "totalLines": 31,
+      "nonEmptyLines": 25,
+      "classes": [
+        {
+          "name": "AttachmentType",
+          "startLine": 6,
+          "endLine": 10,
+          "methods": [],
+          "properties": []
+        },
+        {
+          "name": "Attachment",
+          "startLine": 13,
+          "endLine": 31,
+          "methods": [
+            "__str__"
+          ],
+          "properties": []
+        }
+      ],
+      "exports": [
+        {
+          "name": "AttachmentType",
+          "line": 6,
+          "isDefault": false
+        },
+        {
+          "name": "Attachment",
+          "line": 13,
+          "isDefault": false
+        }
+      ],
+      "metrics": {
+        "importCount": 2,
+        "exportCount": 2,
+        "functionCount": 0,
+        "classCount": 2
+      }
+    },
+    {
+      "path": "backend/apps/attachments/serializers.py",
+      "language": "python",
+      "fileCategory": "code",
+      "totalLines": 68,
+      "nonEmptyLines": 54,
+      "functions": [
+        {
+          "name": "detect_file_type",
+          "startLine": 5,
+          "endLine": 33,
+          "params": [
+            "file"
+          ]
+        }
+      ],
+      "classes": [
+        {
+          "name": "AttachmentUploadSerializer",
+          "startLine": 36,
+          "endLine": 56,
+          "methods": [
+            "validate_file"
+          ],
+          "properties": []
+        },
+        {
+          "name": "AttachmentSerializer",
+          "startLine": 59,
+          "endLine": 63,
+          "methods": [],
+          "properties": []
+        },
+        {
+          "name": "AttachmentListResponseSerializer",
+          "startLine": 66,
+          "endLine": 68,
+          "methods": [],
+          "properties": []
+        }
+      ],
+      "exports": [
+        {
+          "name": "detect_file_type",
+          "line": 5,
+          "isDefault": false
+        },
+        {
+          "name": "AttachmentUploadSerializer",
+          "line": 36,
+          "isDefault": false
+        },
+        {
+          "name": "AttachmentSerializer",
+          "line": 59,
+          "isDefault": false
+        },
+        {
+          "name": "AttachmentListResponseSerializer",
+          "line": 66,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "detect_file_type",
+          "callee": "file.seek",
+          "lineNumber": 11
+        },
+        {
+          "caller": "detect_file_type",
+          "callee": "file.read",
+          "lineNumber": 12
+        },
+        {
+          "caller": "detect_file_type",
+          "callee": "file.seek",
+          "lineNumber": 13
+        },
+        {
+          "caller": "detect_file_type",
+          "callee": "header.startswith",
+          "lineNumber": 16
+        },
+        {
+          "caller": "detect_file_type",
+          "callee": "header.startswith",
+          "lineNumber": 18
+        },
+        {
+          "caller": "detect_file_type",
+          "callee": "header.startswith",
+          "lineNumber": 20
+        },
+        {
+          "caller": "detect_file_type",
+          "callee": "header.startswith",
+          "lineNumber": 22
+        },
+        {
+          "caller": "detect_file_type",
+          "callee": "file.read",
+          "lineNumber": 24
+        },
+        {
+          "caller": "detect_file_type",
+          "callee": "file.seek",
+          "lineNumber": 25
+        },
+        {
+          "caller": "detect_file_type",
+          "callee": "file.seek",
+          "lineNumber": 27
+        },
+        {
+          "caller": "detect_file_type",
+          "callee": "header.startswith",
+          "lineNumber": 29
+        },
+        {
+          "caller": "validate_file",
+          "callee": "serializers.ValidationError",
+          "lineNumber": 43
+        },
+        {
+          "caller": "validate_file",
+          "callee": "value.name.lower",
+          "lineNumber": 47
+        },
+        {
+          "caller": "validate_file",
+          "callee": "any",
+          "lineNumber": 48
+        },
+        {
+          "caller": "validate_file",
+          "callee": "file_name.endswith",
+          "lineNumber": 48
+        },
+        {
+          "caller": "validate_file",
+          "callee": "serializers.ValidationError",
+          "lineNumber": 49
+        },
+        {
+          "caller": "validate_file",
+          "callee": "\", \".join",
+          "lineNumber": 49
+        },
+        {
+          "caller": "validate_file",
+          "callee": "detect_file_type",
+          "lineNumber": 52
+        },
+        {
+          "caller": "validate_file",
+          "callee": "serializers.ValidationError",
+          "lineNumber": 54
+        }
+      ],
+      "metrics": {
+        "importCount": 1,
+        "exportCount": 4,
+        "functionCount": 1,
+        "classCount": 3
+      }
+    },
+    {
+      "path": "backend/apps/attachments/urls.py",
+      "language": "python",
+      "fileCategory": "code",
+      "totalLines": 8,
+      "nonEmptyLines": 7,
+      "metrics": {
+        "importCount": 1,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "backend/apps/attachments/views.py",
+      "language": "python",
+      "fileCategory": "code",
+      "totalLines": 214,
+      "nonEmptyLines": 185,
+      "functions": [
+        {
+          "name": "attachments_view",
+          "startLine": 48,
+          "endLine": 53,
+          "params": [
+            "request",
+            "application_id"
+          ]
+        },
+        {
+          "name": "upload_attachment",
+          "startLine": 56,
+          "endLine": 91,
+          "params": [
+            "request",
+            "application_id"
+          ]
+        },
+        {
+          "name": "list_attachments",
+          "startLine": 94,
+          "endLine": 112,
+          "params": [
+            "request",
+            "application_id"
+          ]
+        },
+        {
+          "name": "download_attachment",
+          "startLine": 128,
+          "endLine": 172,
+          "params": [
+            "request",
+            "attachment_id"
+          ]
+        },
+        {
+          "name": "delete_attachment",
+          "startLine": 189,
+          "endLine": 214,
+          "params": [
+            "request",
+            "attachment_id"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "attachments_view",
+          "line": 19,
+          "isDefault": false
+        },
+        {
+          "name": "upload_attachment",
+          "line": 56,
+          "isDefault": false
+        },
+        {
+          "name": "list_attachments",
+          "line": 94,
+          "isDefault": false
+        },
+        {
+          "name": "download_attachment",
+          "line": 115,
+          "isDefault": false
+        },
+        {
+          "name": "delete_attachment",
+          "line": 175,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "attachments_view",
+          "callee": "list_attachments",
+          "lineNumber": 51
+        },
+        {
+          "caller": "attachments_view",
+          "callee": "upload_attachment",
+          "lineNumber": 53
+        },
+        {
+          "caller": "upload_attachment",
+          "callee": "Application.objects.get",
+          "lineNumber": 61
+        },
+        {
+          "caller": "upload_attachment",
+          "callee": "Response",
+          "lineNumber": 63
+        },
+        {
+          "caller": "upload_attachment",
+          "callee": "Response",
+          "lineNumber": 68
+        },
+        {
+          "caller": "upload_attachment",
+          "callee": "AttachmentUploadSerializer",
+          "lineNumber": 72
+        },
+        {
+          "caller": "upload_attachment",
+          "callee": "serializer.is_valid",
+          "lineNumber": 73
+        },
+        {
+          "caller": "upload_attachment",
+          "callee": "Response",
+          "lineNumber": 74
+        },
+        {
+          "caller": "upload_attachment",
+          "callee": "Attachment.objects.create",
+          "lineNumber": 80
+        },
+        {
+          "caller": "upload_attachment",
+          "callee": "uuid.uuid4",
+          "lineNumber": 81
+        },
+        {
+          "caller": "upload_attachment",
+          "callee": "Response",
+          "lineNumber": 91
+        },
+        {
+          "caller": "upload_attachment",
+          "callee": "AttachmentSerializer",
+          "lineNumber": 91
+        },
+        {
+          "caller": "list_attachments",
+          "callee": "Application.objects.get",
+          "lineNumber": 99
+        },
+        {
+          "caller": "list_attachments",
+          "callee": "Response",
+          "lineNumber": 101
+        },
+        {
+          "caller": "list_attachments",
+          "callee": "can_view_application",
+          "lineNumber": 105
+        },
+        {
+          "caller": "list_attachments",
+          "callee": "Response",
+          "lineNumber": 106
+        },
+        {
+          "caller": "list_attachments",
+          "callee": "Attachment.objects.filter",
+          "lineNumber": 110
+        },
+        {
+          "caller": "list_attachments",
+          "callee": "AttachmentSerializer",
+          "lineNumber": 111
+        },
+        {
+          "caller": "list_attachments",
+          "callee": "Response",
+          "lineNumber": 112
+        },
+        {
+          "caller": "download_attachment",
+          "callee": "Attachment.objects.select_related('application').get",
+          "lineNumber": 133
+        },
+        {
+          "caller": "download_attachment",
+          "callee": "Attachment.objects.select_related",
+          "lineNumber": 133
+        },
+        {
+          "caller": "download_attachment",
+          "callee": "Response",
+          "lineNumber": 135
+        },
+        {
+          "caller": "download_attachment",
+          "callee": "Response",
+          "lineNumber": 140
+        },
+        {
+          "caller": "download_attachment",
+          "callee": "can_view_application",
+          "lineNumber": 145
+        },
+        {
+          "caller": "download_attachment",
+          "callee": "Response",
+          "lineNumber": 146
+        },
+        {
+          "caller": "download_attachment",
+          "callee": "request.GET.get('preview', 'false').lower",
+          "lineNumber": 152
+        },
+        {
+          "caller": "download_attachment",
+          "callee": "request.GET.get",
+          "lineNumber": 152
+        },
+        {
+          "caller": "download_attachment",
+          "callee": "FileResponse",
+          "lineNumber": 159
+        },
+        {
+          "caller": "download_attachment",
+          "callee": "attachment.file.open",
+          "lineNumber": 160
+        },
+        {
+          "caller": "download_attachment",
+          "callee": "Response",
+          "lineNumber": 171
+        },
+        {
+          "caller": "delete_attachment",
+          "callee": "Attachment.objects.select_related('application').get",
+          "lineNumber": 194
+        },
+        {
+          "caller": "delete_attachment",
+          "callee": "Attachment.objects.select_related",
+          "lineNumber": 194
+        },
+        {
+          "caller": "delete_attachment",
+          "callee": "Response",
+          "lineNumber": 196
+        },
+        {
+          "caller": "delete_attachment",
+          "callee": "Response",
+          "lineNumber": 201
+        },
+        {
+          "caller": "delete_attachment",
+          "callee": "Response",
+          "lineNumber": 206
+        },
+        {
+          "caller": "delete_attachment",
+          "callee": "timezone.now",
+          "lineNumber": 211
+        },
+        {
+          "caller": "delete_attachment",
+          "callee": "attachment.save",
+          "lineNumber": 212
+        },
+        {
+          "caller": "delete_attachment",
+          "callee": "Response",
+          "lineNumber": 214
+        }
+      ],
+      "metrics": {
+        "importCount": 7,
+        "exportCount": 5,
+        "functionCount": 5,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "backend/apps/users/admin.py",
+      "language": "python",
+      "fileCategory": "code",
+      "totalLines": 10,
+      "nonEmptyLines": 8,
+      "classes": [
+        {
+          "name": "UserAdmin",
+          "startLine": 6,
+          "endLine": 10,
+          "methods": [],
+          "properties": []
+        }
+      ],
+      "exports": [
+        {
+          "name": "UserAdmin",
+          "line": 5,
+          "isDefault": false
+        }
+      ],
+      "metrics": {
+        "importCount": 1,
+        "exportCount": 1,
+        "functionCount": 0,
+        "classCount": 1
+      }
+    },
+    {
+      "path": "backend/apps/users/class_mapping.py",
+      "language": "python",
+      "fileCategory": "code",
+      "totalLines": 16,
+      "nonEmptyLines": 13,
+      "classes": [
+        {
+          "name": "ClassMapping",
+          "startLine": 5,
+          "endLine": 16,
+          "methods": [],
+          "properties": []
+        }
+      ],
+      "exports": [
+        {
+          "name": "ClassMapping",
+          "line": 5,
+          "isDefault": false
+        }
+      ],
+      "metrics": {
+        "importCount": 1,
+        "exportCount": 1,
+        "functionCount": 0,
+        "classCount": 1
+      }
+    },
+    {
+      "path": "backend/apps/users/management/commands/seed_data.py",
+      "language": "python",
+      "fileCategory": "code",
+      "totalLines": 116,
+      "nonEmptyLines": 103,
+      "classes": [
+        {
+          "name": "Command",
+          "startLine": 5,
+          "endLine": 116,
+          "methods": [
+            "add_arguments",
+            "handle"
+          ],
+          "properties": []
+        }
+      ],
+      "exports": [
+        {
+          "name": "Command",
+          "line": 5,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "add_arguments",
+          "callee": "parser.add_argument",
+          "lineNumber": 9
+        },
+        {
+          "caller": "handle",
+          "callee": "self.stdout.write",
+          "lineNumber": 17
+        },
+        {
+          "caller": "handle",
+          "callee": "Approval.objects.all().delete",
+          "lineNumber": 20
+        },
+        {
+          "caller": "handle",
+          "callee": "Approval.objects.all",
+          "lineNumber": 20
+        },
+        {
+          "caller": "handle",
+          "callee": "Application.objects.all().delete",
+          "lineNumber": 21
+        },
+        {
+          "caller": "handle",
+          "callee": "Application.objects.all",
+          "lineNumber": 21
+        },
+        {
+          "caller": "handle",
+          "callee": "self.stdout.write",
+          "lineNumber": 22
+        },
+        {
+          "caller": "handle",
+          "callee": "self.style.SUCCESS",
+          "lineNumber": 22
+        },
+        {
+          "caller": "handle",
+          "callee": "self.stdout.write",
+          "lineNumber": 24
+        },
+        {
+          "caller": "handle",
+          "callee": "User.objects.update_or_create",
+          "lineNumber": 41
+        },
+        {
+          "caller": "handle",
+          "callee": "student_data.get",
+          "lineNumber": 47
+        },
+        {
+          "caller": "handle",
+          "callee": "student_data.get",
+          "lineNumber": 48
+        },
+        {
+          "caller": "handle",
+          "callee": "user.set_password",
+          "lineNumber": 55
+        },
+        {
+          "caller": "handle",
+          "callee": "user.save",
+          "lineNumber": 56
+        },
+        {
+          "caller": "handle",
+          "callee": "self.stdout.write",
+          "lineNumber": 57
+        },
+        {
+          "caller": "handle",
+          "callee": "User.objects.get_or_create",
+          "lineNumber": 66
+        },
+        {
+          "caller": "handle",
+          "callee": "counselor_data.get",
+          "lineNumber": 71
+        },
+        {
+          "caller": "handle",
+          "callee": "user.set_password",
+          "lineNumber": 76
+        },
+        {
+          "caller": "handle",
+          "callee": "user.save",
+          "lineNumber": 77
+        },
+        {
+          "caller": "handle",
+          "callee": "self.stdout.write",
+          "lineNumber": 78
+        },
+        {
+          "caller": "handle",
+          "callee": "User.objects.update_or_create",
+          "lineNumber": 88
+        },
+        {
+          "caller": "handle",
+          "callee": "dm_data.get",
+          "lineNumber": 93
+        },
+        {
+          "caller": "handle",
+          "callee": "user.set_password",
+          "lineNumber": 98
+        },
+        {
+          "caller": "handle",
+          "callee": "user.save",
+          "lineNumber": 99
+        },
+        {
+          "caller": "handle",
+          "callee": "self.stdout.write",
+          "lineNumber": 100
+        },
+        {
+          "caller": "handle",
+          "callee": "User.objects.get_or_create",
+          "lineNumber": 103
+        },
+        {
+          "caller": "handle",
+          "callee": "user.set_password",
+          "lineNumber": 112
+        },
+        {
+          "caller": "handle",
+          "callee": "user.save",
+          "lineNumber": 113
+        },
+        {
+          "caller": "handle",
+          "callee": "self.stdout.write",
+          "lineNumber": 114
+        },
+        {
+          "caller": "handle",
+          "callee": "self.stdout.write",
+          "lineNumber": 116
+        },
+        {
+          "caller": "handle",
+          "callee": "self.style.SUCCESS",
+          "lineNumber": 116
+        }
+      ],
+      "metrics": {
+        "importCount": 1,
+        "exportCount": 1,
+        "functionCount": 0,
+        "classCount": 1
+      }
+    },
+    {
+      "path": "backend/apps/users/models.py",
+      "language": "python",
+      "fileCategory": "code",
+      "totalLines": 67,
+      "nonEmptyLines": 52,
+      "classes": [
+        {
+          "name": "UserRole",
+          "startLine": 5,
+          "endLine": 10,
+          "methods": [],
+          "properties": []
+        },
+        {
+          "name": "UserManager",
+          "startLine": 13,
+          "endLine": 26,
+          "methods": [
+            "create_user",
+            "create_superuser"
+          ],
+          "properties": []
+        },
+        {
+          "name": "User",
+          "startLine": 29,
+          "endLine": 67,
+          "methods": [
+            "__str__"
+          ],
+          "properties": []
+        }
+      ],
+      "exports": [
+        {
+          "name": "UserRole",
+          "line": 5,
+          "isDefault": false
+        },
+        {
+          "name": "UserManager",
+          "line": 13,
+          "isDefault": false
+        },
+        {
+          "name": "User",
+          "line": 29,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "create_user",
+          "callee": "ValueError",
+          "lineNumber": 16
+        },
+        {
+          "caller": "create_user",
+          "callee": "self.model",
+          "lineNumber": 17
+        },
+        {
+          "caller": "create_user",
+          "callee": "user.set_password",
+          "lineNumber": 18
+        },
+        {
+          "caller": "create_user",
+          "callee": "user.save",
+          "lineNumber": 19
+        },
+        {
+          "caller": "create_superuser",
+          "callee": "extra_fields.setdefault",
+          "lineNumber": 23
+        },
+        {
+          "caller": "create_superuser",
+          "callee": "extra_fields.setdefault",
+          "lineNumber": 24
+        },
+        {
+          "caller": "create_superuser",
+          "callee": "extra_fields.setdefault",
+          "lineNumber": 25
+        },
+        {
+          "caller": "create_superuser",
+          "callee": "self.create_user",
+          "lineNumber": 26
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 3,
+        "functionCount": 0,
+        "classCount": 3
+      }
+    }
+  ]
+}

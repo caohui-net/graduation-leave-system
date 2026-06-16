@@ -1,0 +1,26 @@
+{
+  "agents": [
+    {
+      "agent_id": "a7495b289d181264d",
+      "agent_type": "trellis-implement",
+      "started_at": "2026-06-16T07:22:48.399Z",
+      "parent_mode": "none",
+      "status": "completed",
+      "completed_at": "2026-06-16T07:29:54.759Z",
+      "duration_ms": 426360
+    },
+    {
+      "agent_id": "a73712d44d553f11f",
+      "agent_type": "trellis-check",
+      "started_at": "2026-06-16T07:30:01.155Z",
+      "parent_mode": "none",
+      "status": "completed",
+      "completed_at": "2026-06-16T07:31:44.539Z",
+      "duration_ms": 103384
+    }
+  ],
+  "total_spawned": 2,
+  "total_completed": 2,
+  "total_failed": 0,
+  "last_updated": "2026-06-16T07:31:44.640Z"
+}

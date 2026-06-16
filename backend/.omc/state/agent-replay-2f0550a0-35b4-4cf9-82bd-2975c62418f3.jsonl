@@ -7,3 +7,5 @@
 {"t":0,"agent":"a5081d8","agent_type":"designer","event":"agent_stop","success":true,"duration_ms":14589}
 {"t":0,"agent":"a5081d8","agent_type":"designer","event":"agent_start","parent_mode":"none"}
 {"t":0,"agent":"a5081d8","agent_type":"designer","event":"agent_stop","success":true,"duration_ms":15579}
+{"t":0,"agent":"system","event":"skill_invoked","skill_name":"liteparse"}
+{"t":0,"agent":"system","event":"skill_invoked","skill_name":"claude-codex-gemini-collab"}

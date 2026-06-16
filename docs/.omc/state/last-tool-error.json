@@ -1,7 +1,7 @@
 {
   "tool_name": "Bash",
-  "tool_input_preview": "{\"command\":\"kill 353766 && sleep 2 && sudo rtk systemctl status graduation-frontend --no-pager\",\"description\":\"Kill old process and check systemd service\"}",
-  "error": "Exit code 1\nsudo: 'rtk': command not found",
-  "timestamp": "2026-06-10T09:58:37.535Z",
+  "tool_input_preview": "{\"command\":\"source venv/bin/activate && python manage.py shell << 'PYEOF'\\nfrom apps.users.models import User\\n\\n# 修复高原的角色\\ngaoyuan = User.objects.get(user_id='92024014')\\nprint(f\\\"修复前: {gaoyuan.user_...",
+  "error": "Exit code 1\n/bin/bash: 行 37: venv/bin/activate: 没有那个文件或目录",
+  "timestamp": "2026-06-14T13:57:44.341Z",
   "retry_count": 1
 }

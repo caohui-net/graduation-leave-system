@@ -1,0 +1,306 @@
+{
+  "task_id": "DISCUSS-\u6bd5\u4e1a\u79bb\u6821\u7cfb\u7edf\u6574\u4f53\u8bc4\u4f30\u5ba1\u8ba1-\u67b6\u6784\u8bbe\u8ba1-\u4ee3\u7801\u8d28\u91cf-1781455153",
+  "topic": "\u6bd5\u4e1a\u79bb\u6821\u7cfb\u7edf\u6574\u4f53\u8bc4\u4f30\u5ba1\u8ba1\uff1a\u67b6\u6784\u8bbe\u8ba1\u3001\u4ee3\u7801\u8d28\u91cf\u3001\u6280\u672f\u503a\u52a1\u3001\u5b89\u5168\u6027\u3001\u6027\u80fd\u74f6\u9888\u3002\u7ed9\u51fa\u5171\u8bc6\u8bc4\u7ea7\u548c\u6539\u8fdb\u8def\u7ebf\u56fe",
+  "status": "running",
+  "created_at": "2026-06-14T16:39:13.594590+00:00",
+  "updated_at": "2026-06-14T16:47:58.446334+00:00",
+  "completed_at": null,
+  "limits": {
+    "max_rounds": 5,
+    "hard_max_rounds": 10
+  },
+  "rounds": [
+    {
+      "round_number": 1,
+      "status": "completed",
+      "consensus_reached": null,
+      "decision": null,
+      "blocking_issues": [],
+      "_compacted": true
+    },
+    {
+      "round_number": 2,
+      "status": "completed",
+      "consensus_reached": false,
+      "decision": null,
+      "blocking_issues": [
+        "Not all required participants completed successfully (some failed or were skipped)."
+      ],
+      "_compacted": true
+    },
+    {
+      "round_number": 3,
+      "status": "completed",
+      "started_at": "2026-06-14T16:43:23.950432+00:00",
+      "completed_at": "2026-06-14T16:45:02.184883+00:00",
+      "participants": [
+        {
+          "agent": "codex",
+          "status": "failed",
+          "started_at": "2026-06-14T16:43:23.960428+00:00",
+          "completed_at": "2026-06-14T16:45:02.183743+00:00",
+          "response_file": null,
+          "parsed_response": null,
+          "error": {
+            "type": "format_error",
+            "message": "missing markers",
+            "timestamp": "2026-06-14T16:45:02.183743+00:00"
+          }
+        },
+        {
+          "agent": "gemini",
+          "status": "completed",
+          "started_at": "2026-06-14T16:43:23.961504+00:00",
+          "completed_at": "2026-06-14T16:43:46.641679+00:00",
+          "response_file": ".collab/artifacts/DISCUSS-\u6bd5\u4e1a\u79bb\u6821\u7cfb\u7edf\u6574\u4f53\u8bc4\u4f30\u5ba1\u8ba1-\u67b6\u6784\u8bbe\u8ba1-\u4ee3\u7801\u8d28\u91cf-1781455153-discuss-r3-gemini-20260614-164346.md",
+          "parsed_response": {
+            "raw": "Ripgrep is not available. Falling back to GrepTool.\n{\n  \"session_id\": \"b51dbba9-9acb-464c-807d-8111caf4b471\",\n  \"response\": \"[RESPONSE_START]\\n{\\n  \\\"consensus\\\": true,\\n  \\\"decision\\\": \\\"Ag\nree on establishing a structured assessment framework. The system is functional\nbut requires significant structural improvements. We assign a provisional 'B-' c\nonsensus rating. The roadmap must prioritize SSO security enhancements, resolvin\ng hardcoded workarounds, and implementing a robust testing/CI pipeline.\\\",\\n  \\\"\nblocking_issues\\\": [],\\n  \\\"reasoning\\\": \\\"Claude's initial framing correctly em\nphasizes evidence-based auditing and preserving compatibility contracts. The evi\ndence from the directory structure shows a heavy reliance on ad-hoc scripts (e.g\n., replace_script.js, import_students.py, fix_wangnana_role.sql) and manual DB p\natches, indicating technical debt. The frontend-backend SSO integration relies o\nn scattered callback HTMLs which need consolidation. Stabilizing these interface\ns is the prerequisite before major refactoring.\\\",\\n  \\\"previous_responses\\\": [\\\nn    \\\"DISCUSS-\u6bd5\u4e1a\u79bb\u6821\u7cfb\u7edf\u6574\u4f53\u8bc4\u4f30\u5ba1\u8ba1-\u67b6\u6784\u8bbe\u8ba1-\u4ee3\u7801\u8d28\u91cf-1781455153-r0-claude\\\"\n,\\n    \\\"DISCUSS-\u6bd5\u4e1a\u79bb\u6821\u7cfb\u7edf\u6574\u4f53\u8bc4\u4f30\u5ba1\u8ba1-\u67b6\u6784\u8bbe\u8ba1-\u4ee3\u7801\u8d28\u91cf-1781455153-r2-gemini\n\\\"\\n  ],\\n  \\\"targeted_challenges\\\": [\\n    {\\n      \\\"target_agent\\\": \\\"claude\\\n\",\\n      \\\"target_response_id\\\": \\\"DISCUSS-\u6bd5\u4e1a\u79bb\u6821\u7cfb\u7edf\u6574\u4f53\u8bc4\u4f30\u5ba1\u8ba1-\u67b6\u6784\u8bbe\u8ba1-\u4ee3\n\u7801\u8d28\u91cf-1781455153-r0-claude\\\",\\n      \\\"question\\\": \\\"Which specific backward co\nmpatibility contracts are most critical to preserve during the SSO and API refac\ntoring phase?\\\",\\n      \\\"rationale\\\": \\\"We need to ensure external systems (lik\ne Qingganlan) are not broken during security and architecture improvements.\\\"\\n\n   }\\n  ],\\n  \\\"dissent\\\": null,\\n  \\\"evidence\\\": [\\n    \\\"Presence of multiple\none-off data patching scripts (fix_wangnana_role.sql, check_user_19970545.py) hi\nghlights fragile data integrity.\\\",\\n    \\\"SSO and API documentation exists (\u9752\n\u6a44\u6984SSO\u5bf9\u63a5\u6280\u672f\u65b9\u6848.md), but implementation is scattered across demo-web/ HTMLs\nand backend mock scripts.\\\",\\n    \\\"Lack of automated deployment pipelines in .g\nithub/workflows indicates operational technical debt.\\\"\\n  ],\\n  \\\"action_items\\\n\": [\\n    {\\n      \\\"owner\\\": \\\"gemini\\\",\\n      \\\"task\\\": \\\"Generate the final\nAudit Report & Improvement Roadmap document detailing the B- rating and phased r\nefactoring plan.\\\",\\n      \\\"verification\\\": \\\"Document published in .planning/2\n026-06-15-code-audit/ and approved.\\\"\\n    }\\n  ]\\n}\\n[RESPONSE_END]\",\n  \"stats\": {\n    \"models\": {\n      \"gemini-3.1-pro-preview\": {\n        \"api\": {\n          \"totalRequests\": 1,\n          \"totalErrors\": 0,\n          \"totalLatencyMs\": 19945\n        },\n        \"tokens\": {\n          \"input\": 13576,\n          \"prompt\": 13576,\n          \"candidates\": 2020,\n          \"total\": 15596,\n          \"cached\": 0,\n          \"thoughts\": 0,\n          \"tool\": 0\n        },\n        \"roles\": {\n          \"main\": {\n            \"totalRequests\": 1,\n            \"totalErrors\": 0,\n            \"totalLatencyMs\": 19945,\n            \"tokens\": {\n              \"input\": 13576,\n              \"prompt\": 13576,\n              \"candidates\": 2020,\n              \"total\": 15596,\n              \"cached\": 0,\n              \"thoughts\": 0,\n              \"tool\": 0\n            }\n          }\n        }\n      }\n    },\n    \"tools\": {\n      \"totalCalls\": 0,\n      \"totalSuccess\": 0,\n      \"totalFail\": 0,\n      \"totalDurationMs\": 0,\n      \"totalDecisions\": {\n        \"accept\": 0,\n        \"reject\": 0,\n        \"modify\": 0,\n        \"auto_accept\": 0\n      },\n      \"byName\": {}\n    },\n    \"files\": {\n      \"totalLinesAdded\": 0,\n      \"totalLinesRemoved\": 0\n    }\n  }\n}\n",
+            "id": "DISCUSS-\u6bd5\u4e1a\u79bb\u6821\u7cfb\u7edf\u6574\u4f53\u8bc4\u4f30\u5ba1\u8ba1-\u67b6\u6784\u8bbe\u8ba1-\u4ee3\u7801\u8d28\u91cf-1781455153-r3-gemini",
+            "previous_responses": [],
+            "targeted_challenges": [],
+            "blocking_issues": [],
+            "evidence": [],
+            "action_items": []
+          },
+          "error": null
+        }
+      ],
+      "consensus_check": {
+        "all_responded": false,
+        "actual_responded": 1,
+        "expected_count": 2,
+        "consensus_reached": false,
+        "decision": null,
+        "blocking_issues": [
+          "Not all required participants completed successfully (some failed or were skipped)."
+        ],
+        "dissent": "Not all required participants completed successfully.",
+        "agreeing_agents": [],
+        "dissenting_agents": [
+          "codex"
+        ],
+        "evidence": [],
+        "action_items": []
+      }
+    },
+    {
+      "round_number": 4,
+      "status": "completed",
+      "started_at": "2026-06-14T16:45:02.194641+00:00",
+      "completed_at": "2026-06-14T16:46:30.831577+00:00",
+      "participants": [
+        {
+          "agent": "codex",
+          "status": "failed",
+          "started_at": "2026-06-14T16:45:02.203028+00:00",
+          "completed_at": "2026-06-14T16:46:30.830747+00:00",
+          "response_file": null,
+          "parsed_response": null,
+          "error": {
+            "type": "format_error",
+            "message": "missing markers",
+            "timestamp": "2026-06-14T16:46:30.830747+00:00"
+          }
+        },
+        {
+          "agent": "gemini",
+          "status": "failed",
+          "started_at": "2026-06-14T16:45:02.204055+00:00",
+          "completed_at": "2026-06-14T16:45:27.893088+00:00",
+          "response_file": null,
+          "parsed_response": null,
+          "error": {
+            "type": "format_error",
+            "message": "missing markers",
+            "timestamp": "2026-06-14T16:45:27.893088+00:00"
+          }
+        }
+      ],
+      "consensus_check": {
+        "all_responded": false,
+        "actual_responded": 0,
+        "expected_count": 2,
+        "consensus_reached": false,
+        "decision": null,
+        "blocking_issues": [
+          "Not all required participants completed successfully (some failed or were skipped)."
+        ],
+        "dissent": "Not all required participants completed successfully.",
+        "agreeing_agents": [],
+        "dissenting_agents": [
+          "codex",
+          "gemini"
+        ],
+        "evidence": [],
+        "action_items": []
+      }
+    },
+    {
+      "round_number": 5,
+      "status": "completed",
+      "started_at": "2026-06-14T16:46:30.837706+00:00",
+      "completed_at": "2026-06-14T16:47:58.446307+00:00",
+      "participants": [
+        {
+          "agent": "codex",
+          "status": "failed",
+          "started_at": "2026-06-14T16:46:30.844193+00:00",
+          "completed_at": "2026-06-14T16:47:58.445622+00:00",
+          "response_file": null,
+          "parsed_response": null,
+          "error": {
+            "type": "format_error",
+            "message": "missing markers",
+            "timestamp": "2026-06-14T16:47:58.445622+00:00"
+          }
+        },
+        {
+          "agent": "gemini",
+          "status": "completed",
+          "started_at": "2026-06-14T16:46:30.846939+00:00",
+          "completed_at": "2026-06-14T16:46:56.906192+00:00",
+          "response_file": ".collab/artifacts/DISCUSS-\u6bd5\u4e1a\u79bb\u6821\u7cfb\u7edf\u6574\u4f53\u8bc4\u4f30\u5ba1\u8ba1-\u67b6\u6784\u8bbe\u8ba1-\u4ee3\u7801\u8d28\u91cf-1781455153-discuss-r5-gemini-20260614-164656.md",
+          "parsed_response": {
+            "raw": "Ripgrep is not available. Falling back to GrepTool.\n{\n  \"session_id\": \"947ba7c4-245c-4814-9fbf-8fc56a2f0651\",\n  \"response\": \"[RESPONSE_START]\\n{\\n  \\\"consensus\\\": true,\\n  \\\"decision\\\": \\\"We\n have reached a consensus on the overall audit. The graduation leave system is f\nunctional but requires immediate addressing of technical debt in testing, perfor\nmance bottlenecks in SSO/approvals, and security hardening (rate limiting, secre\nts management). The improvement roadmap should prioritize non-breaking, incremen\ntal enhancements over sweeping rewrites to protect compatibility contracts.\\\",\\n\n  \\\"blocking_issues\\\": [],\\n  \\\"reasoning\\\": \\\"Claude's initial framing correctl\ny highlights the need to preserve compatibility contracts (especially SSO and ex\nternal system integrations). The weakest assumption might be that we can refacto\nr core flows without extensive regression tests. We must establish baseline end-\nto-end tests for SSO and API approvals before any structural changes. Therefore,\n our roadmap must start with establishing robust testing and monitoring.\\\",\\n  \\\n\"previous_responses\\\": [\\n    \\\"DISCUSS-\u6bd5\u4e1a\u79bb\u6821\u7cfb\u7edf\u6574\u4f53\u8bc4\u4f30\u5ba1\u8ba1-\u67b6\u6784\u8bbe\u8ba1-\u4ee3\u7801\u8d28\n\u91cf-1781455153-r0-claude\\\",\\n    \\\"DISCUSS-\u6bd5\u4e1a\u79bb\u6821\u7cfb\u7edf\u6574\u4f53\u8bc4\u4f30\u5ba1\u8ba1-\u67b6\u6784\u8bbe\u8ba1-\u4ee3\u7801\n\u8d28\u91cf-1781455153-r3-gemini\\\"\\n  ],\\n  \\\"targeted_challenges\\\": [\\n    {\\n      \\\"\ntarget_agent\\\": \\\"claude\\\",\\n      \\\"target_response_id\\\": \\\"DISCUSS-\u6bd5\u4e1a\u79bb\u6821\u7cfb\n\u7edf\u6574\u4f53\u8bc4\u4f30\u5ba1\u8ba1-\u67b6\u6784\u8bbe\u8ba1-\u4ee3\u7801\u8d28\u91cf-1781455153-r0-claude\\\",\\n      \\\"question\\\": \\\"\nAre there specific legacy external integrations besides SSO that we absolutely c\nannot modify the schema for?\\\",\\n      \\\"rationale\\\": \\\"To ensure we don't break\n existing data syncs while addressing technical debt in the data layer.\\\"\\n    }\n\\n  ],\\n  \\\"dissent\\\": null,\\n  \\\"evidence\\\": [\\n    \\\"API analysis indicates sy\nnchronous external dependency calls.\\\",\\n    \\\"Partial test coverage identified\nin previous backend audits.\\\",\\n    \\\"SSO callback and redirect flows are tightl\ny coupled in the current implementation.\\\"\\n  ],\\n  \\\"action_items\\\": [\\n    {\\n\n      \\\"owner\\\": \\\"gemini\\\",\\n      \\\"task\\\": \\\"Finalize the improvement roadmap\n document incorporating the audit findings and phased execution plan.\\\",\\n\n\\\"due\\\": \\\"2026-06-16\\\",\\n      \\\"verification\\\": \\\"A comprehensive markdown roa\ndmap document is created and approved.\\\"\\n    }\\n  ]\\n}\\n[RESPONSE_END]\",\n  \"stats\": {\n    \"models\": {\n      \"gemini-3.1-pro-preview\": {\n        \"api\": {\n          \"totalRequests\": 1,\n          \"totalErrors\": 0,\n          \"totalLatencyMs\": 23580\n        },\n        \"tokens\": {\n          \"input\": 13609,\n          \"prompt\": 13609,\n          \"candidates\": 2374,\n          \"total\": 15983,\n          \"cached\": 0,\n          \"thoughts\": 0,\n          \"tool\": 0\n        },\n        \"roles\": {\n          \"main\": {\n            \"totalRequests\": 1,\n            \"totalErrors\": 0,\n            \"totalLatencyMs\": 23580,\n            \"tokens\": {\n              \"input\": 13609,\n              \"prompt\": 13609,\n              \"candidates\": 2374,\n              \"total\": 15983,\n              \"cached\": 0,\n              \"thoughts\": 0,\n              \"tool\": 0\n            }\n          }\n        }\n      }\n    },\n    \"tools\": {\n      \"totalCalls\": 0,\n      \"totalSuccess\": 0,\n      \"totalFail\": 0,\n      \"totalDurationMs\": 0,\n      \"totalDecisions\": {\n        \"accept\": 0,\n        \"reject\": 0,\n        \"modify\": 0,\n        \"auto_accept\": 0\n      },\n      \"byName\": {}\n    },\n    \"files\": {\n      \"totalLinesAdded\": 0,\n      \"totalLinesRemoved\": 0\n    }\n  }\n}\n",
+            "id": "DISCUSS-\u6bd5\u4e1a\u79bb\u6821\u7cfb\u7edf\u6574\u4f53\u8bc4\u4f30\u5ba1\u8ba1-\u67b6\u6784\u8bbe\u8ba1-\u4ee3\u7801\u8d28\u91cf-1781455153-r5-gemini",
+            "previous_responses": [],
+            "targeted_challenges": [],
+            "blocking_issues": [],
+            "evidence": [],
+            "action_items": []
+          },
+          "error": null
+        }
+      ],
+      "consensus_check": {
+        "all_responded": false,
+        "actual_responded": 1,
+        "expected_count": 2,
+        "consensus_reached": false,
+        "decision": null,
+        "blocking_issues": [
+          "Not all required participants completed successfully (some failed or were skipped)."
+        ],
+        "dissent": "Not all required participants completed successfully.",
+        "agreeing_agents": [],
+        "dissenting_agents": [
+          "codex"
+        ],
+        "evidence": [],
+        "action_items": []
+      }
+    }
+  ],
+  "final_consensus": {
+    "reached": false,
+    "decision": null,
+    "blocking_issues": [],
+    "round_number": null
+  },
+  "failures": [
+    {
+      "timestamp": "2026-06-14T16:41:13.912384+00:00",
+      "round_number": 1,
+      "agent": "codex",
+      "error_type": "format_error",
+      "error_message": "missing markers",
+      "recoverable": true
+    },
+    {
+      "timestamp": "2026-06-14T16:43:23.936050+00:00",
+      "round_number": 2,
+      "agent": "codex",
+      "error_type": "format_error",
+      "error_message": "missing markers",
+      "recoverable": true
+    },
+    {
+      "timestamp": "2026-06-14T16:45:02.183743+00:00",
+      "round_number": 3,
+      "agent": "codex",
+      "error_type": "format_error",
+      "error_message": "missing markers",
+      "recoverable": true
+    },
+    {
+      "timestamp": "2026-06-14T16:45:27.893088+00:00",
+      "round_number": 4,
+      "agent": "gemini",
+      "error_type": "format_error",
+      "error_message": "missing markers",
+      "recoverable": true
+    },
+    {
+      "timestamp": "2026-06-14T16:46:30.830747+00:00",
+      "round_number": 4,
+      "agent": "codex",
+      "error_type": "format_error",
+      "error_message": "missing markers",
+      "recoverable": true
+    },
+    {
+      "timestamp": "2026-06-14T16:47:58.445622+00:00",
+      "round_number": 5,
+      "agent": "codex",
+      "error_type": "format_error",
+      "error_message": "missing markers",
+      "recoverable": true
+    }
+  ],
+  "retry_attempts": [],
+  "artifacts": {
+    "directory": ".collab/artifacts/",
+    "files": [
+      ".collab/artifacts/DISCUSS-\u6bd5\u4e1a\u79bb\u6821\u7cfb\u7edf\u6574\u4f53\u8bc4\u4f30\u5ba1\u8ba1-\u67b6\u6784\u8bbe\u8ba1-\u4ee3\u7801\u8d28\u91cf-1781455153-discuss-r0-claude-20260614-163913.md",
+      ".collab/artifacts/DISCUSS-\u6bd5\u4e1a\u79bb\u6821\u7cfb\u7edf\u6574\u4f53\u8bc4\u4f30\u5ba1\u8ba1-\u67b6\u6784\u8bbe\u8ba1-\u4ee3\u7801\u8d28\u91cf-1781455153-discuss-r1-gemini-20260614-163937.md",
+      ".collab/artifacts/DISCUSS-\u6bd5\u4e1a\u79bb\u6821\u7cfb\u7edf\u6574\u4f53\u8bc4\u4f30\u5ba1\u8ba1-\u67b6\u6784\u8bbe\u8ba1-\u4ee3\u7801\u8d28\u91cf-1781455153-discuss-r2-gemini-20260614-164138.md",
+      ".collab/artifacts/DISCUSS-\u6bd5\u4e1a\u79bb\u6821\u7cfb\u7edf\u6574\u4f53\u8bc4\u4f30\u5ba1\u8ba1-\u67b6\u6784\u8bbe\u8ba1-\u4ee3\u7801\u8d28\u91cf-1781455153-discuss-r3-gemini-20260614-164346.md",
+      ".collab/artifacts/DISCUSS-\u6bd5\u4e1a\u79bb\u6821\u7cfb\u7edf\u6574\u4f53\u8bc4\u4f30\u5ba1\u8ba1-\u67b6\u6784\u8bbe\u8ba1-\u4ee3\u7801\u8d28\u91cf-1781455153-discuss-r5-gemini-20260614-164656.md"
+    ]
+  },
+  "participants": [
+    "codex",
+    "gemini"
+  ],
+  "agentmemory": {
+    "recall_attempted": true,
+    "recall_enabled": false,
+    "recall_projects": [
+      "graduation-leave-system",
+      "cross-project",
+      "global"
+    ],
+    "related_consensus": [],
+    "expired_consensus": [],
+    "potential_conflicts": [],
+    "recall_error": "iii-sdk is not installed"
+  },
+  "pre_discuss": {
+    "response_id": "DISCUSS-\u6bd5\u4e1a\u79bb\u6821\u7cfb\u7edf\u6574\u4f53\u8bc4\u4f30\u5ba1\u8ba1-\u67b6\u6784\u8bbe\u8ba1-\u4ee3\u7801\u8d28\u91cf-1781455153-r0-claude",
+    "agent": "claude",
+    "artifact": ".collab/artifacts/DISCUSS-\u6bd5\u4e1a\u79bb\u6821\u7cfb\u7edf\u6574\u4f53\u8bc4\u4f30\u5ba1\u8ba1-\u67b6\u6784\u8bbe\u8ba1-\u4ee3\u7801\u8d28\u91cf-1781455153-discuss-r0-claude-20260614-163913.md",
+    "summary": "Claude initial framing: clarify scope, challenge assumptions, preserve compatibility, and require evidence.",
+    "content": "# Pre-Discuss Initial Analysis\n\nResponse ID: DISCUSS-\u6bd5\u4e1a\u79bb\u6821\u7cfb\u7edf\u6574\u4f53\u8bc4\u4f30\u5ba1\u8ba1-\u67b6\u6784\u8bbe\u8ba1-\u4ee3\u7801\u8d28\u91cf-1781455153-r0-claude\nAgent: claude\n\n## Topic\n\n\u6bd5\u4e1a\u79bb\u6821\u7cfb\u7edf\u6574\u4f53\u8bc4\u4f30\u5ba1\u8ba1\uff1a\u67b6\u6784\u8bbe\u8ba1\u3001\u4ee3\u7801\u8d28\u91cf\u3001\u6280\u672f\u503a\u52a1\u3001\u5b89\u5168\u6027\u3001\u6027\u80fd\u74f6\u9888\u3002\u7ed9\u51fa\u5171\u8bc6\u8bc4\u7ea7\u548c\u6539\u8fdb\u8def\u7ebf\u56fe\n\n## Initial Analysis\n\n- Clarify the decision or implementation change requested by the topic.\n- Identify compatibility, state persistence, and verification risks before participants respond.\n- Ask Codex and Gemini to challenge this framing directly and cite prior response IDs.\n\n## Open Questions\n\n- What assumptions in the initial framing are weakest?\n- Which compatibility contracts must remain stable?\n- What evidence or tests are required before concluding?\n"
+  },
+  "pre_discuss_event_logged": true,
+  "quality_metrics": {
+    "citation_rate": {
+      "cited_responses": 0,
+      "total_responses": 2,
+      "rate": 0.0,
+      "target": 0.6
+    },
+    "action_item_executable_rate": {
+      "executable_action_items": 0,
+      "total_action_items": 0,
+      "rate": 0.0,
+      "target": 0.8
+    },
+    "history_reuse_hit_rate": {
+      "hit": false,
+      "related_consensus_count": 0,
+      "rate": 0.0,
+      "target": 0.4
+    }
+  }
+}

@@ -57,16 +57,31 @@ docker ps | grep graduation-leave-system
 ### 前端 (HTML静态)
 ```bash
 路径: /home/caohui/projects/graduation-leave-system/demo-web
-服务器: systemd + scripts/serve-frontend.py（ThreadingHTTPServer，带HTML no-cache头）
-服务名: graduation-frontend-nocache.service
+服务器: systemd --user + scripts/serve-frontend.py（ThreadingHTTPServer，带HTML no-cache头）
+服务名: graduation-frontend.service
 端口: 7788
 入口: index.html (管理端)
 移动端回调: mobile-sso-callback.html
 
-# 管理前端服务（当前为系统级systemd服务）
-systemctl status graduation-frontend-nocache --no-pager
-systemctl restart graduation-frontend-nocache
-journalctl -u graduation-frontend-nocache -f
+# 守护进程管理（用户级systemd服务）
+systemctl --user status graduation-frontend
+systemctl --user start graduation-frontend
+systemctl --user stop graduation-frontend
+systemctl --user restart graduation-frontend
+
+# 日志查看
+journalctl --user -u graduation-frontend -f              # 实时日志
+journalctl --user -u graduation-frontend -n 100          # 最近100行
+journalctl --user -u graduation-frontend --since "1 hour ago"  # 指定时间
+
+# 告警日志
+cat /tmp/graduation-frontend-alerts.log
+
+# 自动重启配置
+# - 失败后10秒自动重启
+# - 5分钟内失败≥5次则停止重启，需手动干预：
+#   systemctl --user reset-failed graduation-frontend
+#   systemctl --user start graduation-frontend
 
 # 本机/内网/外网访问验证
 curl --noproxy '*' http://127.0.0.1:7788/

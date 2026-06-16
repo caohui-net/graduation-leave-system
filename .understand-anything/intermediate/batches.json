@@ -1,0 +1,1752 @@
+{
+  "schemaVersion": 1,
+  "algorithm": "louvain",
+  "totalFiles": 112,
+  "totalBatches": 11,
+  "exportsByPath": {
+    "backend/apps/__init__.py": [],
+    "backend/apps/applications/__init__.py": [],
+    "backend/apps/applications/admin.py": [
+      "ApplicationAdmin"
+    ],
+    "backend/apps/applications/management/__init__.py": [],
+    "backend/apps/applications/management/commands/__init__.py": [],
+    "backend/apps/applications/migrations/__init__.py": [],
+    "backend/apps/applications/migrations/0001_initial.py": [
+      "Migration"
+    ],
+    "backend/apps/applications/migrations/0002_allow_null_class_id.py": [
+      "Migration"
+    ],
+    "backend/apps/applications/migrations/0002_initial.py": [
+      "Migration"
+    ],
+    "backend/apps/applications/migrations/0003_application_unique_student_application.py": [
+      "Migration"
+    ],
+    "backend/apps/applications/migrations/0004_remove_unique_student_constraint.py": [
+      "Migration"
+    ],
+    "backend/apps/applications/migrations/0005_alter_application_status.py": [
+      "Migration"
+    ],
+    "backend/apps/applications/migrations/0006_application_contact_phone_and_more.py": [
+      "Migration"
+    ],
+    "backend/apps/applications/models.py": [
+      "ApplicationStatus",
+      "DormCheckoutStatus",
+      "Application"
+    ],
+    "backend/apps/applications/pagination.py": [
+      "ApplicationLimitOffsetPagination"
+    ],
+    "backend/apps/applications/permissions.py": [
+      "can_view_application"
+    ],
+    "backend/apps/applications/providers.py": [
+      "DormCheckoutStatusDTO",
+      "MockDormCheckoutProvider"
+    ],
+    "backend/apps/applications/serializers.py": [
+      "ApplicationListSerializer",
+      "ApplicationSerializer",
+      "ApplicationCreateSerializer",
+      "ApplicationListResponseSerializer"
+    ],
+    "backend/apps/applications/tests/__init__.py": [],
+    "backend/apps/applications/urls.py": [],
+    "backend/apps/applications/views.py": [
+      "applications_view",
+      "list_applications",
+      "create_application",
+      "get_application",
+      "get_or_create_draft",
+      "get_stats"
+    ],
+    "backend/apps/approvals/__init__.py": [],
+    "backend/apps/approvals/admin.py": [
+      "ApprovalAdmin"
+    ],
+    "backend/apps/approvals/migrations/__init__.py": [],
+    "backend/apps/approvals/migrations/0001_initial.py": [
+      "Migration"
+    ],
+    "backend/apps/approvals/migrations/0002_initial.py": [
+      "Migration"
+    ],
+    "backend/apps/approvals/migrations/0003_alter_approval_step.py": [
+      "Migration"
+    ],
+    "backend/apps/approvals/migrations/0004_add_decided_by_field.py": [
+      "Migration"
+    ],
+    "backend/apps/approvals/models.py": [
+      "ApprovalStep",
+      "ApprovalDecision",
+      "Approval"
+    ],
+    "backend/apps/approvals/pagination.py": [
+      "ApprovalLimitOffsetPagination"
+    ],
+    "backend/apps/approvals/serializers.py": [
+      "ApplicationBriefSerializer",
+      "ApprovalListSerializer",
+      "ApprovalBriefSerializer",
+      "ApprovalSerializer",
+      "ApprovalActionSerializer",
+      "ApprovalListResponseSerializer"
+    ],
+    "backend/apps/approvals/tests/__init__.py": [],
+    "backend/apps/approvals/urls.py": [],
+    "backend/apps/approvals/validators.py": [
+      "approval_step_matches_application_status"
+    ],
+    "backend/apps/approvals/views.py": [
+      "sanitize_excel_formula",
+      "list_approvals",
+      "get_approval",
+      "approve_approval",
+      "reject_approval",
+      "export_approvals",
+      "get_statistics",
+      "batch_action_approvals"
+    ],
+    "backend/apps/attachments/__init__.py": [],
+    "backend/apps/attachments/migrations/__init__.py": [],
+    "backend/apps/attachments/migrations/0001_initial.py": [
+      "Migration"
+    ],
+    "backend/apps/attachments/models.py": [
+      "AttachmentType",
+      "Attachment"
+    ],
+    "backend/apps/attachments/serializers.py": [
+      "detect_file_type",
+      "AttachmentUploadSerializer",
+      "AttachmentSerializer",
+      "AttachmentListResponseSerializer"
+    ],
+    "backend/apps/attachments/tests/__init__.py": [],
+    "backend/apps/attachments/urls.py": [],
+    "backend/apps/attachments/views.py": [
+      "attachments_view",
+      "upload_attachment",
+      "list_attachments",
+      "download_attachment",
+      "delete_attachment"
+    ],
+    "backend/apps/healthcheck/__init__.py": [],
+    "backend/apps/healthcheck/views.py": [
+      "healthz",
+      "readyz"
+    ],
+    "backend/apps/middleware/__init__.py": [],
+    "backend/apps/middleware/error_logging.py": [
+      "ErrorLoggingMiddleware"
+    ],
+    "backend/apps/notifications/__init__.py": [],
+    "backend/apps/notifications/admin.py": [
+      "NotificationAdmin"
+    ],
+    "backend/apps/notifications/apps.py": [
+      "NotificationsConfig"
+    ],
+    "backend/apps/notifications/management/__init__.py": [],
+    "backend/apps/notifications/management/commands/__init__.py": [],
+    "backend/apps/notifications/management/commands/seed_notifications.py": [
+      "Command"
+    ],
+    "backend/apps/notifications/management/commands/send_approval_timeout_warnings.py": [
+      "Command"
+    ],
+    "backend/apps/notifications/migrations/__init__.py": [],
+    "backend/apps/notifications/migrations/0001_initial.py": [
+      "Migration"
+    ],
+    "backend/apps/notifications/migrations/0002_alter_notification_type.py": [
+      "Migration"
+    ],
+    "backend/apps/notifications/models.py": [
+      "generate_notification_id",
+      "NotificationType",
+      "EntityType",
+      "Notification"
+    ],
+    "backend/apps/notifications/serializers.py": [
+      "NotificationSerializer",
+      "NotificationListResponseSerializer"
+    ],
+    "backend/apps/notifications/services.py": [
+      "notify_application_submitted",
+      "notify_approval_decided",
+      "create_approval_timeout_warnings"
+    ],
+    "backend/apps/notifications/tests/__init__.py": [],
+    "backend/apps/notifications/urls.py": [],
+    "backend/apps/notifications/views.py": [
+      "list_notifications",
+      "unread_count",
+      "mark_as_read",
+      "mark_all_read"
+    ],
+    "backend/apps/sso_qingganlian/__init__.py": [],
+    "backend/apps/sso_qingganlian/apps.py": [
+      "SsoQingganlianConfig"
+    ],
+    "backend/apps/sso_qingganlian/auth.py": [
+      "generate_rand_str",
+      "generate_signature",
+      "generate_request_params"
+    ],
+    "backend/apps/sso_qingganlian/callback_views.py": [
+      "sso_callback"
+    ],
+    "backend/apps/sso_qingganlian/client.py": [
+      "QingganlanClient"
+    ],
+    "backend/apps/sso_qingganlian/exceptions.py": [
+      "SSOAPIError",
+      "SSOTokenExpiredError",
+      "SSOUserInfoError"
+    ],
+    "backend/apps/sso_qingganlian/migrations/__init__.py": [],
+    "backend/apps/sso_qingganlian/migrations/0001_initial.py": [
+      "Migration"
+    ],
+    "backend/apps/sso_qingganlian/migrations/0002_add_provider_fields.py": [
+      "backfill_provider_data",
+      "reverse_backfill",
+      "Migration"
+    ],
+    "backend/apps/sso_qingganlian/models.py": [
+      "SSOUserMapping"
+    ],
+    "backend/apps/sso_qingganlian/providers/__init__.py": [],
+    "backend/apps/sso_qingganlian/providers/base.py": [
+      "BaseSSOProvider"
+    ],
+    "backend/apps/sso_qingganlian/providers/qingganlian.py": [
+      "QingganlanProvider"
+    ],
+    "backend/apps/sso_qingganlian/serializers.py": [
+      "MobileLoginRequestSerializer",
+      "UserInfoSerializer",
+      "MobileLoginResponseSerializer",
+      "AdminLoginRequestSerializer",
+      "AdminLoginResponseSerializer"
+    ],
+    "backend/apps/sso_qingganlian/settings.py": [],
+    "backend/apps/sso_qingganlian/tests/__init__.py": [],
+    "backend/apps/sso_qingganlian/urls.py": [],
+    "backend/apps/sso_qingganlian/views.py": [
+      "mobile_saas_login",
+      "mobile_login",
+      "admin_login"
+    ],
+    "backend/apps/users/__init__.py": [],
+    "backend/apps/users/admin.py": [
+      "UserAdmin"
+    ],
+    "backend/apps/users/apps.py": [
+      "UsersConfig"
+    ],
+    "backend/apps/users/class_mapping.py": [
+      "ClassMapping"
+    ],
+    "backend/apps/users/integrations/__init__.py": [],
+    "backend/apps/users/integrations/xg_user_client.py": [
+      "generate_sign",
+      "XGUserAPIConfig",
+      "XGUserAPIClient"
+    ],
+    "backend/apps/users/integrations/xg_user_mapper.py": [
+      "map_xg_user_to_internal"
+    ],
+    "backend/apps/users/management/__init__.py": [],
+    "backend/apps/users/management/commands/__init__.py": [],
+    "backend/apps/users/management/commands/seed_data.py": [
+      "Command"
+    ],
+    "backend/apps/users/management/commands/sync_xg_users.py": [
+      "Command"
+    ],
+    "backend/apps/users/migrations/__init__.py": [],
+    "backend/apps/users/migrations/0001_initial.py": [
+      "Migration"
+    ],
+    "backend/apps/users/migrations/0002_user_department_user_email_user_phone.py": [
+      "Migration"
+    ],
+    "backend/apps/users/migrations/0003_classmapping_dorm_manager_and_more.py": [
+      "Migration"
+    ],
+    "backend/apps/users/migrations/0004_backfill_dorm_manager.py": [
+      "backfill_dorm_manager",
+      "reverse_backfill",
+      "Migration"
+    ],
+    "backend/apps/users/migrations/0005_user_building.py": [
+      "Migration"
+    ],
+    "backend/apps/users/migrations/0006_add_admin_role.py": [
+      "Migration"
+    ],
+    "backend/apps/users/migrations/0007_user_is_demo_delete_classmapping.py": [
+      "Migration"
+    ],
+    "backend/apps/users/migrations/0008_add_room_and_student_info.py": [
+      "Migration"
+    ],
+    "backend/apps/users/models.py": [
+      "UserRole",
+      "UserManager",
+      "User"
+    ],
+    "backend/apps/users/serializers.py": [
+      "UserSerializer",
+      "AuthUserSerializer",
+      "LoginSerializer",
+      "LoginResponseSerializer",
+      "DemoLoginSerializer"
+    ],
+    "backend/apps/users/services/xg_user_sync.py": [
+      "plan_xg_user_sync",
+      "apply_xg_user_sync"
+    ],
+    "backend/apps/users/tests/__init__.py": [],
+    "backend/apps/users/urls.py": [],
+    "backend/apps/users/views.py": [
+      "LoginRateThrottle",
+      "login",
+      "demo_login"
+    ],
+    "backend/backend/apps/sso_qingganlian/client.py": [
+      "QingganlanAPIError",
+      "QingganlanClient"
+    ],
+    "backend/backend/apps/sso_qingganlian/models.py": [
+      "SSOUserMapping"
+    ],
+    "backend/backend/apps/sso_qingganlian/serializers.py": [
+      "MobileLoginSerializer",
+      "AdminLoginSerializer",
+      "UserSerializer",
+      "LoginResponseSerializer"
+    ],
+    "backend/backend/apps/sso_qingganlian/urls.py": [],
+    "backend/backend/apps/sso_qingganlian/views.py": [
+      "generate_jwt_token",
+      "get_or_create_user_from_qgl",
+      "mobile_login",
+      "admin_login"
+    ]
+  },
+  "batches": [
+    {
+      "batchIndex": 1,
+      "files": [
+        {
+          "path": "backend/apps/applications/permissions.py",
+          "language": "python",
+          "sizeLines": 30,
+          "fileCategory": "code"
+        },
+        {
+          "path": "backend/apps/approvals/admin.py",
+          "language": "python",
+          "sizeLines": 10,
+          "fileCategory": "code"
+        },
+        {
+          "path": "backend/apps/approvals/models.py",
+          "language": "python",
+          "sizeLines": 32,
+          "fileCategory": "code"
+        },
+        {
+          "path": "backend/apps/attachments/models.py",
+          "language": "python",
+          "sizeLines": 31,
+          "fileCategory": "code"
+        },
+        {
+          "path": "backend/apps/attachments/serializers.py",
+          "language": "python",
+          "sizeLines": 68,
+          "fileCategory": "code"
+        },
+        {
+          "path": "backend/apps/attachments/urls.py",
+          "language": "python",
+          "sizeLines": 8,
+          "fileCategory": "code"
+        },
+        {
+          "path": "backend/apps/attachments/views.py",
+          "language": "python",
+          "sizeLines": 214,
+          "fileCategory": "code"
+        },
+        {
+          "path": "backend/apps/users/admin.py",
+          "language": "python",
+          "sizeLines": 10,
+          "fileCategory": "code"
+        },
+        {
+          "path": "backend/apps/users/class_mapping.py",
+          "language": "python",
+          "sizeLines": 16,
+          "fileCategory": "code"
+        },
+        {
+          "path": "backend/apps/users/management/commands/seed_data.py",
+          "language": "python",
+          "sizeLines": 116,
+          "fileCategory": "code"
+        },
+        {
+          "path": "backend/apps/users/models.py",
+          "language": "python",
+          "sizeLines": 67,
+          "fileCategory": "code"
+        }
+      ],
+      "batchImportData": {
+        "backend/apps/applications/permissions.py": [
+          "backend/apps/approvals/models.py",
+          "backend/apps/users/models.py"
+        ],
+        "backend/apps/approvals/admin.py": [
+          "backend/apps/approvals/models.py"
+        ],
+        "backend/apps/approvals/models.py": [
+          "backend/apps/applications/models.py",
+          "backend/apps/users/models.py"
+        ],
+        "backend/apps/attachments/models.py": [
+          "backend/apps/applications/models.py",
+          "backend/apps/users/models.py"
+        ],
+        "backend/apps/attachments/serializers.py": [
+          "backend/apps/attachments/models.py"
+        ],
+        "backend/apps/attachments/urls.py": [
+          "backend/apps/attachments/views.py"
+        ],
+        "backend/apps/attachments/views.py": [
+          "backend/apps/applications/models.py",
+          "backend/apps/applications/permissions.py",
+          "backend/apps/approvals/models.py",
+          "backend/apps/attachments/models.py",
+          "backend/apps/attachments/serializers.py",
+          "backend/apps/users/models.py",
+          "backend/schema.py"
+        ],
+        "backend/apps/users/admin.py": [
+          "backend/apps/users/models.py"
+        ],
+        "backend/apps/users/class_mapping.py": [
+          "backend/apps/users/models.py"
+        ],
+        "backend/apps/users/management/commands/seed_data.py": [
+          "backend/apps/users/models.py"
+        ],
+        "backend/apps/users/models.py": []
+      },
+      "neighborMap": {
+        "backend/apps/applications/permissions.py": [
+          {
+            "path": "backend/apps/applications/views.py",
+            "batchIndex": 3,
+            "symbols": [
+              "applications_view",
+              "list_applications",
+              "create_application",
+              "get_application",
+              "get_or_create_draft",
+              "get_stats"
+            ]
+          }
+        ],
+        "backend/apps/approvals/models.py": [
+          {
+            "path": "backend/apps/applications/models.py",
+            "batchIndex": 3,
+            "symbols": [
+              "ApplicationStatus",
+              "DormCheckoutStatus",
+              "Application"
+            ]
+          },
+          {
+            "path": "backend/apps/applications/views.py",
+            "batchIndex": 3,
+            "symbols": [
+              "applications_view",
+              "list_applications",
+              "create_application",
+              "get_application",
+              "get_or_create_draft",
+              "get_stats"
+            ]
+          },
+          {
+            "path": "backend/apps/approvals/serializers.py",
+            "batchIndex": 4,
+            "symbols": [
+              "ApplicationBriefSerializer",
+              "ApprovalListSerializer",
+              "ApprovalBriefSerializer",
+              "ApprovalSerializer",
+              "ApprovalActionSerializer",
+              "ApprovalListResponseSerializer"
+            ]
+          },
+          {
+            "path": "backend/apps/approvals/views.py",
+            "batchIndex": 4,
+            "symbols": [
+              "sanitize_excel_formula",
+              "list_approvals",
+              "get_approval",
+              "approve_approval",
+              "reject_approval",
+              "export_approvals",
+              "get_statistics",
+              "batch_action_approvals"
+            ]
+          },
+          {
+            "path": "backend/apps/notifications/services.py",
+            "batchIndex": 4,
+            "symbols": [
+              "notify_application_submitted",
+              "notify_approval_decided",
+              "create_approval_timeout_warnings"
+            ]
+          }
+        ],
+        "backend/apps/attachments/models.py": [
+          {
+            "path": "backend/apps/applications/models.py",
+            "batchIndex": 3,
+            "symbols": [
+              "ApplicationStatus",
+              "DormCheckoutStatus",
+              "Application"
+            ]
+          }
+        ],
+        "backend/apps/attachments/views.py": [
+          {
+            "path": "backend/apps/applications/models.py",
+            "batchIndex": 3,
+            "symbols": [
+              "ApplicationStatus",
+              "DormCheckoutStatus",
+              "Application"
+            ]
+          }
+        ],
+        "backend/apps/users/models.py": [
+          {
+            "path": "backend/apps/applications/models.py",
+            "batchIndex": 3,
+            "symbols": [
+              "ApplicationStatus",
+              "DormCheckoutStatus",
+              "Application"
+            ]
+          },
+          {
+            "path": "backend/apps/applications/views.py",
+            "batchIndex": 3,
+            "symbols": [
+              "applications_view",
+              "list_applications",
+              "create_application",
+              "get_application",
+              "get_or_create_draft",
+              "get_stats"
+            ]
+          },
+          {
+            "path": "backend/apps/approvals/views.py",
+            "batchIndex": 4,
+            "symbols": [
+              "sanitize_excel_formula",
+              "list_approvals",
+              "get_approval",
+              "approve_approval",
+              "reject_approval",
+              "export_approvals",
+              "get_statistics",
+              "batch_action_approvals"
+            ]
+          },
+          {
+            "path": "backend/apps/notifications/management/commands/seed_notifications.py",
+            "batchIndex": 5,
+            "symbols": [
+              "Command"
+            ]
+          },
+          {
+            "path": "backend/apps/sso_qingganlian/callback_views.py",
+            "batchIndex": 2,
+            "symbols": [
+              "sso_callback"
+            ]
+          },
+          {
+            "path": "backend/apps/sso_qingganlian/views.py",
+            "batchIndex": 2,
+            "symbols": [
+              "mobile_saas_login",
+              "mobile_login",
+              "admin_login"
+            ]
+          },
+          {
+            "path": "backend/apps/users/serializers.py",
+            "batchIndex": 8,
+            "symbols": [
+              "UserSerializer",
+              "AuthUserSerializer",
+              "LoginSerializer",
+              "LoginResponseSerializer",
+              "DemoLoginSerializer"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "batchIndex": 2,
+      "files": [
+        {
+          "path": "backend/apps/sso_qingganlian/auth.py",
+          "language": "python",
+          "sizeLines": 59,
+          "fileCategory": "code"
+        },
+        {
+          "path": "backend/apps/sso_qingganlian/callback_views.py",
+          "language": "python",
+          "sizeLines": 131,
+          "fileCategory": "code"
+        },
+        {
+          "path": "backend/apps/sso_qingganlian/client.py",
+          "language": "python",
+          "sizeLines": 215,
+          "fileCategory": "code"
+        },
+        {
+          "path": "backend/apps/sso_qingganlian/exceptions.py",
+          "language": "python",
+          "sizeLines": 21,
+          "fileCategory": "code"
+        },
+        {
+          "path": "backend/apps/sso_qingganlian/models.py",
+          "language": "python",
+          "sizeLines": 80,
+          "fileCategory": "code"
+        },
+        {
+          "path": "backend/apps/sso_qingganlian/providers/__init__.py",
+          "language": "python",
+          "sizeLines": 4,
+          "fileCategory": "code"
+        },
+        {
+          "path": "backend/apps/sso_qingganlian/providers/base.py",
+          "language": "python",
+          "sizeLines": 36,
+          "fileCategory": "code"
+        },
+        {
+          "path": "backend/apps/sso_qingganlian/providers/qingganlian.py",
+          "language": "python",
+          "sizeLines": 107,
+          "fileCategory": "code"
+        },
+        {
+          "path": "backend/apps/sso_qingganlian/serializers.py",
+          "language": "python",
+          "sizeLines": 36,
+          "fileCategory": "code"
+        },
+        {
+          "path": "backend/apps/sso_qingganlian/urls.py",
+          "language": "python",
+          "sizeLines": 12,
+          "fileCategory": "code"
+        },
+        {
+          "path": "backend/apps/sso_qingganlian/views.py",
+          "language": "python",
+          "sizeLines": 396,
+          "fileCategory": "code"
+        }
+      ],
+      "batchImportData": {
+        "backend/apps/sso_qingganlian/auth.py": [],
+        "backend/apps/sso_qingganlian/callback_views.py": [
+          "backend/apps/sso_qingganlian/models.py",
+          "backend/apps/users/models.py"
+        ],
+        "backend/apps/sso_qingganlian/client.py": [
+          "backend/apps/sso_qingganlian/auth.py",
+          "backend/apps/sso_qingganlian/exceptions.py"
+        ],
+        "backend/apps/sso_qingganlian/exceptions.py": [],
+        "backend/apps/sso_qingganlian/models.py": [],
+        "backend/apps/sso_qingganlian/providers/__init__.py": [
+          "backend/apps/sso_qingganlian/providers/base.py",
+          "backend/apps/sso_qingganlian/providers/qingganlian.py"
+        ],
+        "backend/apps/sso_qingganlian/providers/base.py": [],
+        "backend/apps/sso_qingganlian/providers/qingganlian.py": [
+          "backend/apps/sso_qingganlian/client.py",
+          "backend/apps/sso_qingganlian/exceptions.py",
+          "backend/apps/sso_qingganlian/providers/base.py"
+        ],
+        "backend/apps/sso_qingganlian/serializers.py": [],
+        "backend/apps/sso_qingganlian/urls.py": [
+          "backend/apps/sso_qingganlian/callback_views.py",
+          "backend/apps/sso_qingganlian/views.py"
+        ],
+        "backend/apps/sso_qingganlian/views.py": [
+          "backend/apps/sso_qingganlian/client.py",
+          "backend/apps/sso_qingganlian/exceptions.py",
+          "backend/apps/sso_qingganlian/models.py",
+          "backend/apps/sso_qingganlian/serializers.py",
+          "backend/apps/users/models.py"
+        ]
+      },
+      "neighborMap": {
+        "backend/apps/sso_qingganlian/callback_views.py": [
+          {
+            "path": "backend/apps/users/models.py",
+            "batchIndex": 1,
+            "symbols": [
+              "UserRole",
+              "UserManager",
+              "User"
+            ]
+          }
+        ],
+        "backend/apps/sso_qingganlian/views.py": [
+          {
+            "path": "backend/apps/users/models.py",
+            "batchIndex": 1,
+            "symbols": [
+              "UserRole",
+              "UserManager",
+              "User"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "batchIndex": 3,
+      "files": [
+        {
+          "path": "backend/apps/applications/admin.py",
+          "language": "python",
+          "sizeLines": 10,
+          "fileCategory": "code"
+        },
+        {
+          "path": "backend/apps/applications/models.py",
+          "language": "python",
+          "sizeLines": 50,
+          "fileCategory": "code"
+        },
+        {
+          "path": "backend/apps/applications/pagination.py",
+          "language": "python",
+          "sizeLines": 14,
+          "fileCategory": "code"
+        },
+        {
+          "path": "backend/apps/applications/providers.py",
+          "language": "python",
+          "sizeLines": 110,
+          "fileCategory": "code"
+        },
+        {
+          "path": "backend/apps/applications/serializers.py",
+          "language": "python",
+          "sizeLines": 62,
+          "fileCategory": "code"
+        },
+        {
+          "path": "backend/apps/applications/urls.py",
+          "language": "python",
+          "sizeLines": 9,
+          "fileCategory": "code"
+        },
+        {
+          "path": "backend/apps/applications/views.py",
+          "language": "python",
+          "sizeLines": 360,
+          "fileCategory": "code"
+        }
+      ],
+      "batchImportData": {
+        "backend/apps/applications/admin.py": [
+          "backend/apps/applications/models.py"
+        ],
+        "backend/apps/applications/models.py": [
+          "backend/apps/users/models.py"
+        ],
+        "backend/apps/applications/pagination.py": [],
+        "backend/apps/applications/providers.py": [
+          "backend/apps/applications/models.py"
+        ],
+        "backend/apps/applications/serializers.py": [
+          "backend/apps/applications/models.py"
+        ],
+        "backend/apps/applications/urls.py": [
+          "backend/apps/applications/views.py"
+        ],
+        "backend/apps/applications/views.py": [
+          "backend/apps/applications/models.py",
+          "backend/apps/applications/pagination.py",
+          "backend/apps/applications/permissions.py",
+          "backend/apps/applications/providers.py",
+          "backend/apps/applications/serializers.py",
+          "backend/apps/approvals/models.py",
+          "backend/apps/notifications/services.py",
+          "backend/apps/users/models.py",
+          "backend/schema.py"
+        ]
+      },
+      "neighborMap": {
+        "backend/apps/applications/models.py": [
+          {
+            "path": "backend/apps/users/models.py",
+            "batchIndex": 1,
+            "symbols": [
+              "UserRole",
+              "UserManager",
+              "User"
+            ]
+          },
+          {
+            "path": "backend/apps/approvals/models.py",
+            "batchIndex": 1,
+            "symbols": [
+              "ApprovalStep",
+              "ApprovalDecision",
+              "Approval"
+            ]
+          },
+          {
+            "path": "backend/apps/approvals/validators.py",
+            "batchIndex": 4,
+            "symbols": [
+              "approval_step_matches_application_status"
+            ]
+          },
+          {
+            "path": "backend/apps/approvals/views.py",
+            "batchIndex": 4,
+            "symbols": [
+              "sanitize_excel_formula",
+              "list_approvals",
+              "get_approval",
+              "approve_approval",
+              "reject_approval",
+              "export_approvals",
+              "get_statistics",
+              "batch_action_approvals"
+            ]
+          },
+          {
+            "path": "backend/apps/attachments/models.py",
+            "batchIndex": 1,
+            "symbols": [
+              "AttachmentType",
+              "Attachment"
+            ]
+          },
+          {
+            "path": "backend/apps/attachments/views.py",
+            "batchIndex": 1,
+            "symbols": [
+              "attachments_view",
+              "upload_attachment",
+              "list_attachments",
+              "download_attachment",
+              "delete_attachment"
+            ]
+          }
+        ],
+        "backend/apps/applications/views.py": [
+          {
+            "path": "backend/apps/applications/permissions.py",
+            "batchIndex": 1,
+            "symbols": [
+              "can_view_application"
+            ]
+          },
+          {
+            "path": "backend/apps/approvals/models.py",
+            "batchIndex": 1,
+            "symbols": [
+              "ApprovalStep",
+              "ApprovalDecision",
+              "Approval"
+            ]
+          },
+          {
+            "path": "backend/apps/notifications/services.py",
+            "batchIndex": 4,
+            "symbols": [
+              "notify_application_submitted",
+              "notify_approval_decided",
+              "create_approval_timeout_warnings"
+            ]
+          },
+          {
+            "path": "backend/apps/users/models.py",
+            "batchIndex": 1,
+            "symbols": [
+              "UserRole",
+              "UserManager",
+              "User"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "batchIndex": 4,
+      "files": [
+        {
+          "path": "backend/apps/approvals/pagination.py",
+          "language": "python",
+          "sizeLines": 14,
+          "fileCategory": "code"
+        },
+        {
+          "path": "backend/apps/approvals/serializers.py",
+          "language": "python",
+          "sizeLines": 86,
+          "fileCategory": "code"
+        },
+        {
+          "path": "backend/apps/approvals/urls.py",
+          "language": "python",
+          "sizeLines": 12,
+          "fileCategory": "code"
+        },
+        {
+          "path": "backend/apps/approvals/validators.py",
+          "language": "python",
+          "sizeLines": 14,
+          "fileCategory": "code"
+        },
+        {
+          "path": "backend/apps/approvals/views.py",
+          "language": "python",
+          "sizeLines": 673,
+          "fileCategory": "code"
+        },
+        {
+          "path": "backend/apps/notifications/management/commands/send_approval_timeout_warnings.py",
+          "language": "python",
+          "sizeLines": 33,
+          "fileCategory": "code"
+        },
+        {
+          "path": "backend/apps/notifications/services.py",
+          "language": "python",
+          "sizeLines": 153,
+          "fileCategory": "code"
+        }
+      ],
+      "batchImportData": {
+        "backend/apps/approvals/pagination.py": [],
+        "backend/apps/approvals/serializers.py": [
+          "backend/apps/approvals/models.py"
+        ],
+        "backend/apps/approvals/urls.py": [
+          "backend/apps/approvals/views.py"
+        ],
+        "backend/apps/approvals/validators.py": [
+          "backend/apps/applications/models.py"
+        ],
+        "backend/apps/approvals/views.py": [
+          "backend/apps/applications/models.py",
+          "backend/apps/approvals/models.py",
+          "backend/apps/approvals/pagination.py",
+          "backend/apps/approvals/serializers.py",
+          "backend/apps/approvals/validators.py",
+          "backend/apps/notifications/services.py",
+          "backend/apps/users/models.py",
+          "backend/schema.py"
+        ],
+        "backend/apps/notifications/management/commands/send_approval_timeout_warnings.py": [
+          "backend/apps/notifications/services.py"
+        ],
+        "backend/apps/notifications/services.py": [
+          "backend/apps/approvals/models.py",
+          "backend/apps/notifications/models.py"
+        ]
+      },
+      "neighborMap": {
+        "backend/apps/approvals/serializers.py": [
+          {
+            "path": "backend/apps/approvals/models.py",
+            "batchIndex": 1,
+            "symbols": [
+              "ApprovalStep",
+              "ApprovalDecision",
+              "Approval"
+            ]
+          }
+        ],
+        "backend/apps/approvals/validators.py": [
+          {
+            "path": "backend/apps/applications/models.py",
+            "batchIndex": 3,
+            "symbols": [
+              "ApplicationStatus",
+              "DormCheckoutStatus",
+              "Application"
+            ]
+          }
+        ],
+        "backend/apps/approvals/views.py": [
+          {
+            "path": "backend/apps/applications/models.py",
+            "batchIndex": 3,
+            "symbols": [
+              "ApplicationStatus",
+              "DormCheckoutStatus",
+              "Application"
+            ]
+          },
+          {
+            "path": "backend/apps/approvals/models.py",
+            "batchIndex": 1,
+            "symbols": [
+              "ApprovalStep",
+              "ApprovalDecision",
+              "Approval"
+            ]
+          },
+          {
+            "path": "backend/apps/users/models.py",
+            "batchIndex": 1,
+            "symbols": [
+              "UserRole",
+              "UserManager",
+              "User"
+            ]
+          }
+        ],
+        "backend/apps/notifications/services.py": [
+          {
+            "path": "backend/apps/approvals/models.py",
+            "batchIndex": 1,
+            "symbols": [
+              "ApprovalStep",
+              "ApprovalDecision",
+              "Approval"
+            ]
+          },
+          {
+            "path": "backend/apps/notifications/models.py",
+            "batchIndex": 5,
+            "symbols": [
+              "generate_notification_id",
+              "NotificationType",
+              "EntityType",
+              "Notification"
+            ]
+          },
+          {
+            "path": "backend/apps/applications/views.py",
+            "batchIndex": 3,
+            "symbols": [
+              "applications_view",
+              "list_applications",
+              "create_application",
+              "get_application",
+              "get_or_create_draft",
+              "get_stats"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "batchIndex": 5,
+      "files": [
+        {
+          "path": "backend/apps/notifications/admin.py",
+          "language": "python",
+          "sizeLines": 14,
+          "fileCategory": "code"
+        },
+        {
+          "path": "backend/apps/notifications/management/commands/seed_notifications.py",
+          "language": "python",
+          "sizeLines": 42,
+          "fileCategory": "code"
+        },
+        {
+          "path": "backend/apps/notifications/migrations/0001_initial.py",
+          "language": "python",
+          "sizeLines": 44,
+          "fileCategory": "code"
+        },
+        {
+          "path": "backend/apps/notifications/models.py",
+          "language": "python",
+          "sizeLines": 96,
+          "fileCategory": "code"
+        },
+        {
+          "path": "backend/apps/notifications/serializers.py",
+          "language": "python",
+          "sizeLines": 29,
+          "fileCategory": "code"
+        },
+        {
+          "path": "backend/apps/notifications/urls.py",
+          "language": "python",
+          "sizeLines": 9,
+          "fileCategory": "code"
+        },
+        {
+          "path": "backend/apps/notifications/views.py",
+          "language": "python",
+          "sizeLines": 150,
+          "fileCategory": "code"
+        }
+      ],
+      "batchImportData": {
+        "backend/apps/notifications/admin.py": [
+          "backend/apps/notifications/models.py"
+        ],
+        "backend/apps/notifications/management/commands/seed_notifications.py": [
+          "backend/apps/notifications/models.py",
+          "backend/apps/users/models.py"
+        ],
+        "backend/apps/notifications/migrations/0001_initial.py": [
+          "backend/apps/notifications/models.py"
+        ],
+        "backend/apps/notifications/models.py": [],
+        "backend/apps/notifications/serializers.py": [
+          "backend/apps/notifications/models.py"
+        ],
+        "backend/apps/notifications/urls.py": [
+          "backend/apps/notifications/views.py"
+        ],
+        "backend/apps/notifications/views.py": [
+          "backend/apps/notifications/models.py",
+          "backend/apps/notifications/serializers.py",
+          "backend/schema.py"
+        ]
+      },
+      "neighborMap": {
+        "backend/apps/notifications/management/commands/seed_notifications.py": [
+          {
+            "path": "backend/apps/users/models.py",
+            "batchIndex": 1,
+            "symbols": [
+              "UserRole",
+              "UserManager",
+              "User"
+            ]
+          }
+        ],
+        "backend/apps/notifications/models.py": [
+          {
+            "path": "backend/apps/notifications/services.py",
+            "batchIndex": 4,
+            "symbols": [
+              "notify_application_submitted",
+              "notify_approval_decided",
+              "create_approval_timeout_warnings"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "batchIndex": 6,
+      "files": [
+        {
+          "path": "backend/apps/users/integrations/__init__.py",
+          "language": "python",
+          "sizeLines": 4,
+          "fileCategory": "code"
+        },
+        {
+          "path": "backend/apps/users/integrations/xg_user_client.py",
+          "language": "python",
+          "sizeLines": 209,
+          "fileCategory": "code"
+        },
+        {
+          "path": "backend/apps/users/integrations/xg_user_mapper.py",
+          "language": "python",
+          "sizeLines": 107,
+          "fileCategory": "code"
+        },
+        {
+          "path": "backend/apps/users/management/commands/sync_xg_users.py",
+          "language": "python",
+          "sizeLines": 67,
+          "fileCategory": "code"
+        },
+        {
+          "path": "backend/apps/users/services/xg_user_sync.py",
+          "language": "python",
+          "sizeLines": 159,
+          "fileCategory": "code"
+        }
+      ],
+      "batchImportData": {
+        "backend/apps/users/integrations/__init__.py": [
+          "backend/apps/users/integrations/xg_user_client.py"
+        ],
+        "backend/apps/users/integrations/xg_user_client.py": [],
+        "backend/apps/users/integrations/xg_user_mapper.py": [],
+        "backend/apps/users/management/commands/sync_xg_users.py": [
+          "backend/apps/users/integrations/xg_user_client.py",
+          "backend/apps/users/services/xg_user_sync.py"
+        ],
+        "backend/apps/users/services/xg_user_sync.py": [
+          "backend/apps/users/integrations/xg_user_mapper.py"
+        ]
+      },
+      "neighborMap": {}
+    },
+    {
+      "batchIndex": 7,
+      "files": [
+        {
+          "path": "backend/backend/apps/sso_qingganlian/client.py",
+          "language": "python",
+          "sizeLines": 75,
+          "fileCategory": "code"
+        },
+        {
+          "path": "backend/backend/apps/sso_qingganlian/models.py",
+          "language": "python",
+          "sizeLines": 43,
+          "fileCategory": "code"
+        },
+        {
+          "path": "backend/backend/apps/sso_qingganlian/serializers.py",
+          "language": "python",
+          "sizeLines": 27,
+          "fileCategory": "code"
+        },
+        {
+          "path": "backend/backend/apps/sso_qingganlian/urls.py",
+          "language": "python",
+          "sizeLines": 9,
+          "fileCategory": "code"
+        },
+        {
+          "path": "backend/backend/apps/sso_qingganlian/views.py",
+          "language": "python",
+          "sizeLines": 202,
+          "fileCategory": "code"
+        }
+      ],
+      "batchImportData": {
+        "backend/backend/apps/sso_qingganlian/client.py": [],
+        "backend/backend/apps/sso_qingganlian/models.py": [],
+        "backend/backend/apps/sso_qingganlian/serializers.py": [],
+        "backend/backend/apps/sso_qingganlian/urls.py": [
+          "backend/backend/apps/sso_qingganlian/views.py"
+        ],
+        "backend/backend/apps/sso_qingganlian/views.py": [
+          "backend/backend/apps/sso_qingganlian/client.py",
+          "backend/backend/apps/sso_qingganlian/models.py",
+          "backend/backend/apps/sso_qingganlian/serializers.py"
+        ]
+      },
+      "neighborMap": {}
+    },
+    {
+      "batchIndex": 8,
+      "files": [
+        {
+          "path": "backend/apps/users/serializers.py",
+          "language": "python",
+          "sizeLines": 88,
+          "fileCategory": "code"
+        },
+        {
+          "path": "backend/apps/users/urls.py",
+          "language": "python",
+          "sizeLines": 7,
+          "fileCategory": "code"
+        },
+        {
+          "path": "backend/apps/users/views.py",
+          "language": "python",
+          "sizeLines": 77,
+          "fileCategory": "code"
+        }
+      ],
+      "batchImportData": {
+        "backend/apps/users/serializers.py": [
+          "backend/apps/users/models.py"
+        ],
+        "backend/apps/users/urls.py": [
+          "backend/apps/users/views.py"
+        ],
+        "backend/apps/users/views.py": [
+          "backend/apps/users/serializers.py"
+        ]
+      },
+      "neighborMap": {
+        "backend/apps/users/serializers.py": [
+          {
+            "path": "backend/apps/users/models.py",
+            "batchIndex": 1,
+            "symbols": [
+              "UserRole",
+              "UserManager",
+              "User"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "batchIndex": 9,
+      "files": [
+        {
+          "path": "backend/apps/__init__.py",
+          "language": "python",
+          "sizeLines": 1,
+          "fileCategory": "code"
+        },
+        {
+          "path": "backend/apps/applications/__init__.py",
+          "language": "python",
+          "sizeLines": 0,
+          "fileCategory": "code"
+        },
+        {
+          "path": "backend/apps/applications/management/__init__.py",
+          "language": "python",
+          "sizeLines": 1,
+          "fileCategory": "code"
+        },
+        {
+          "path": "backend/apps/applications/management/commands/__init__.py",
+          "language": "python",
+          "sizeLines": 1,
+          "fileCategory": "code"
+        },
+        {
+          "path": "backend/apps/applications/migrations/__init__.py",
+          "language": "python",
+          "sizeLines": 0,
+          "fileCategory": "code"
+        },
+        {
+          "path": "backend/apps/applications/migrations/0001_initial.py",
+          "language": "python",
+          "sizeLines": 31,
+          "fileCategory": "code"
+        },
+        {
+          "path": "backend/apps/applications/migrations/0002_allow_null_class_id.py",
+          "language": "python",
+          "sizeLines": 16,
+          "fileCategory": "code"
+        },
+        {
+          "path": "backend/apps/applications/migrations/0002_initial.py",
+          "language": "python",
+          "sizeLines": 23,
+          "fileCategory": "code"
+        },
+        {
+          "path": "backend/apps/applications/migrations/0003_application_unique_student_application.py",
+          "language": "python",
+          "sizeLines": 17,
+          "fileCategory": "code"
+        },
+        {
+          "path": "backend/apps/applications/migrations/0004_remove_unique_student_constraint.py",
+          "language": "python",
+          "sizeLines": 17,
+          "fileCategory": "code"
+        },
+        {
+          "path": "backend/apps/applications/migrations/0005_alter_application_status.py",
+          "language": "python",
+          "sizeLines": 18,
+          "fileCategory": "code"
+        },
+        {
+          "path": "backend/apps/applications/migrations/0006_application_contact_phone_and_more.py",
+          "language": "python",
+          "sizeLines": 33,
+          "fileCategory": "code"
+        },
+        {
+          "path": "backend/apps/applications/tests/__init__.py",
+          "language": "python",
+          "sizeLines": 0,
+          "fileCategory": "code"
+        },
+        {
+          "path": "backend/apps/approvals/__init__.py",
+          "language": "python",
+          "sizeLines": 0,
+          "fileCategory": "code"
+        },
+        {
+          "path": "backend/apps/approvals/migrations/__init__.py",
+          "language": "python",
+          "sizeLines": 0,
+          "fileCategory": "code"
+        },
+        {
+          "path": "backend/apps/approvals/migrations/0001_initial.py",
+          "language": "python",
+          "sizeLines": 33,
+          "fileCategory": "code"
+        },
+        {
+          "path": "backend/apps/approvals/migrations/0002_initial.py",
+          "language": "python",
+          "sizeLines": 23,
+          "fileCategory": "code"
+        },
+        {
+          "path": "backend/apps/approvals/migrations/0003_alter_approval_step.py",
+          "language": "python",
+          "sizeLines": 18,
+          "fileCategory": "code"
+        },
+        {
+          "path": "backend/apps/approvals/migrations/0004_add_decided_by_field.py",
+          "language": "python",
+          "sizeLines": 21,
+          "fileCategory": "code"
+        },
+        {
+          "path": "backend/apps/approvals/tests/__init__.py",
+          "language": "python",
+          "sizeLines": 0,
+          "fileCategory": "code"
+        },
+        {
+          "path": "backend/apps/attachments/__init__.py",
+          "language": "python",
+          "sizeLines": 0,
+          "fileCategory": "code"
+        },
+        {
+          "path": "backend/apps/attachments/migrations/__init__.py",
+          "language": "python",
+          "sizeLines": 0,
+          "fileCategory": "code"
+        },
+        {
+          "path": "backend/apps/attachments/migrations/0001_initial.py",
+          "language": "python",
+          "sizeLines": 38,
+          "fileCategory": "code"
+        },
+        {
+          "path": "backend/apps/attachments/tests/__init__.py",
+          "language": "python",
+          "sizeLines": 0,
+          "fileCategory": "code"
+        },
+        {
+          "path": "backend/apps/healthcheck/__init__.py",
+          "language": "python",
+          "sizeLines": 0,
+          "fileCategory": "code"
+        }
+      ],
+      "batchImportData": {
+        "backend/apps/__init__.py": [],
+        "backend/apps/applications/__init__.py": [],
+        "backend/apps/applications/management/__init__.py": [],
+        "backend/apps/applications/management/commands/__init__.py": [],
+        "backend/apps/applications/migrations/__init__.py": [],
+        "backend/apps/applications/migrations/0001_initial.py": [],
+        "backend/apps/applications/migrations/0002_allow_null_class_id.py": [],
+        "backend/apps/applications/migrations/0002_initial.py": [],
+        "backend/apps/applications/migrations/0003_application_unique_student_application.py": [],
+        "backend/apps/applications/migrations/0004_remove_unique_student_constraint.py": [],
+        "backend/apps/applications/migrations/0005_alter_application_status.py": [],
+        "backend/apps/applications/migrations/0006_application_contact_phone_and_more.py": [],
+        "backend/apps/applications/tests/__init__.py": [],
+        "backend/apps/approvals/__init__.py": [],
+        "backend/apps/approvals/migrations/__init__.py": [],
+        "backend/apps/approvals/migrations/0001_initial.py": [],
+        "backend/apps/approvals/migrations/0002_initial.py": [],
+        "backend/apps/approvals/migrations/0003_alter_approval_step.py": [],
+        "backend/apps/approvals/migrations/0004_add_decided_by_field.py": [],
+        "backend/apps/approvals/tests/__init__.py": [],
+        "backend/apps/attachments/__init__.py": [],
+        "backend/apps/attachments/migrations/__init__.py": [],
+        "backend/apps/attachments/migrations/0001_initial.py": [],
+        "backend/apps/attachments/tests/__init__.py": [],
+        "backend/apps/healthcheck/__init__.py": []
+      },
+      "neighborMap": {}
+    },
+    {
+      "batchIndex": 10,
+      "files": [
+        {
+          "path": "backend/apps/healthcheck/views.py",
+          "language": "python",
+          "sizeLines": 23,
+          "fileCategory": "code"
+        },
+        {
+          "path": "backend/apps/middleware/__init__.py",
+          "language": "python",
+          "sizeLines": 3,
+          "fileCategory": "code"
+        },
+        {
+          "path": "backend/apps/middleware/error_logging.py",
+          "language": "python",
+          "sizeLines": 36,
+          "fileCategory": "code"
+        },
+        {
+          "path": "backend/apps/notifications/__init__.py",
+          "language": "python",
+          "sizeLines": 1,
+          "fileCategory": "code"
+        },
+        {
+          "path": "backend/apps/notifications/apps.py",
+          "language": "python",
+          "sizeLines": 7,
+          "fileCategory": "code"
+        },
+        {
+          "path": "backend/apps/notifications/management/__init__.py",
+          "language": "python",
+          "sizeLines": 0,
+          "fileCategory": "code"
+        },
+        {
+          "path": "backend/apps/notifications/management/commands/__init__.py",
+          "language": "python",
+          "sizeLines": 0,
+          "fileCategory": "code"
+        },
+        {
+          "path": "backend/apps/notifications/migrations/__init__.py",
+          "language": "python",
+          "sizeLines": 0,
+          "fileCategory": "code"
+        },
+        {
+          "path": "backend/apps/notifications/migrations/0002_alter_notification_type.py",
+          "language": "python",
+          "sizeLines": 18,
+          "fileCategory": "code"
+        },
+        {
+          "path": "backend/apps/notifications/tests/__init__.py",
+          "language": "python",
+          "sizeLines": 1,
+          "fileCategory": "code"
+        },
+        {
+          "path": "backend/apps/sso_qingganlian/__init__.py",
+          "language": "python",
+          "sizeLines": 1,
+          "fileCategory": "code"
+        },
+        {
+          "path": "backend/apps/sso_qingganlian/apps.py",
+          "language": "python",
+          "sizeLines": 7,
+          "fileCategory": "code"
+        },
+        {
+          "path": "backend/apps/sso_qingganlian/migrations/__init__.py",
+          "language": "python",
+          "sizeLines": 0,
+          "fileCategory": "code"
+        },
+        {
+          "path": "backend/apps/sso_qingganlian/migrations/0001_initial.py",
+          "language": "python",
+          "sizeLines": 41,
+          "fileCategory": "code"
+        },
+        {
+          "path": "backend/apps/sso_qingganlian/migrations/0002_add_provider_fields.py",
+          "language": "python",
+          "sizeLines": 55,
+          "fileCategory": "code"
+        },
+        {
+          "path": "backend/apps/sso_qingganlian/settings.py",
+          "language": "python",
+          "sizeLines": 42,
+          "fileCategory": "code"
+        },
+        {
+          "path": "backend/apps/sso_qingganlian/tests/__init__.py",
+          "language": "python",
+          "sizeLines": 1,
+          "fileCategory": "code"
+        },
+        {
+          "path": "backend/apps/users/__init__.py",
+          "language": "python",
+          "sizeLines": 1,
+          "fileCategory": "code"
+        },
+        {
+          "path": "backend/apps/users/apps.py",
+          "language": "python",
+          "sizeLines": 6,
+          "fileCategory": "code"
+        },
+        {
+          "path": "backend/apps/users/management/__init__.py",
+          "language": "python",
+          "sizeLines": 1,
+          "fileCategory": "code"
+        },
+        {
+          "path": "backend/apps/users/management/commands/__init__.py",
+          "language": "python",
+          "sizeLines": 1,
+          "fileCategory": "code"
+        },
+        {
+          "path": "backend/apps/users/migrations/__init__.py",
+          "language": "python",
+          "sizeLines": 0,
+          "fileCategory": "code"
+        },
+        {
+          "path": "backend/apps/users/migrations/0001_initial.py",
+          "language": "python",
+          "sizeLines": 54,
+          "fileCategory": "code"
+        },
+        {
+          "path": "backend/apps/users/migrations/0002_user_department_user_email_user_phone.py",
+          "language": "python",
+          "sizeLines": 28,
+          "fileCategory": "code"
+        },
+        {
+          "path": "backend/apps/users/migrations/0003_classmapping_dorm_manager_and_more.py",
+          "language": "python",
+          "sizeLines": 30,
+          "fileCategory": "code"
+        }
+      ],
+      "batchImportData": {
+        "backend/apps/healthcheck/views.py": [],
+        "backend/apps/middleware/__init__.py": [
+          "backend/apps/middleware/error_logging.py"
+        ],
+        "backend/apps/middleware/error_logging.py": [],
+        "backend/apps/notifications/__init__.py": [],
+        "backend/apps/notifications/apps.py": [],
+        "backend/apps/notifications/management/__init__.py": [],
+        "backend/apps/notifications/management/commands/__init__.py": [],
+        "backend/apps/notifications/migrations/__init__.py": [],
+        "backend/apps/notifications/migrations/0002_alter_notification_type.py": [],
+        "backend/apps/notifications/tests/__init__.py": [],
+        "backend/apps/sso_qingganlian/__init__.py": [],
+        "backend/apps/sso_qingganlian/apps.py": [],
+        "backend/apps/sso_qingganlian/migrations/__init__.py": [],
+        "backend/apps/sso_qingganlian/migrations/0001_initial.py": [],
+        "backend/apps/sso_qingganlian/migrations/0002_add_provider_fields.py": [],
+        "backend/apps/sso_qingganlian/settings.py": [],
+        "backend/apps/sso_qingganlian/tests/__init__.py": [],
+        "backend/apps/users/__init__.py": [],
+        "backend/apps/users/apps.py": [],
+        "backend/apps/users/management/__init__.py": [],
+        "backend/apps/users/management/commands/__init__.py": [],
+        "backend/apps/users/migrations/__init__.py": [],
+        "backend/apps/users/migrations/0001_initial.py": [],
+        "backend/apps/users/migrations/0002_user_department_user_email_user_phone.py": [],
+        "backend/apps/users/migrations/0003_classmapping_dorm_manager_and_more.py": []
+      },
+      "neighborMap": {}
+    },
+    {
+      "batchIndex": 11,
+      "files": [
+        {
+          "path": "backend/apps/users/migrations/0004_backfill_dorm_manager.py",
+          "language": "python",
+          "sizeLines": 27,
+          "fileCategory": "code"
+        },
+        {
+          "path": "backend/apps/users/migrations/0005_user_building.py",
+          "language": "python",
+          "sizeLines": 16,
+          "fileCategory": "code"
+        },
+        {
+          "path": "backend/apps/users/migrations/0006_add_admin_role.py",
+          "language": "python",
+          "sizeLines": 27,
+          "fileCategory": "code"
+        },
+        {
+          "path": "backend/apps/users/migrations/0007_user_is_demo_delete_classmapping.py",
+          "language": "python",
+          "sizeLines": 21,
+          "fileCategory": "code"
+        },
+        {
+          "path": "backend/apps/users/migrations/0008_add_room_and_student_info.py",
+          "language": "python",
+          "sizeLines": 38,
+          "fileCategory": "code"
+        },
+        {
+          "path": "backend/apps/users/tests/__init__.py",
+          "language": "python",
+          "sizeLines": 0,
+          "fileCategory": "code"
+        }
+      ],
+      "batchImportData": {
+        "backend/apps/users/migrations/0004_backfill_dorm_manager.py": [],
+        "backend/apps/users/migrations/0005_user_building.py": [],
+        "backend/apps/users/migrations/0006_add_admin_role.py": [],
+        "backend/apps/users/migrations/0007_user_is_demo_delete_classmapping.py": [],
+        "backend/apps/users/migrations/0008_add_room_and_student_info.py": [],
+        "backend/apps/users/tests/__init__.py": []
+      },
+      "neighborMap": {}
+    }
+  ]
+}

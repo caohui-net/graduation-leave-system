@@ -75,3 +75,4 @@ celerybeat.pid
 *.backup
 PRD/backup/
 backups/
+.claude/worktrees/

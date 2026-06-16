@@ -57,7 +57,7 @@ docker ps | grep graduation-leave-system
 ### 前端 (HTML静态)
 ```bash
 路径: /home/caohui/projects/graduation-leave-system/demo-web
-服务器: systemd --user + scripts/serve-frontend.py（ThreadingHTTPServer，带HTML no-cache头）
+服务器: systemd --user + python3 -m http.server 7788
 服务名: graduation-frontend.service
 端口: 7788
 入口: index.html (管理端)

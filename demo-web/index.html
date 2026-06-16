@@ -103,11 +103,15 @@
         const loadMoreBtn = document.getElementById('load-more-approvals');
 
         const BATCH_SIZE = 20;
+        const isAdminOrDean = currentUser && (currentUser.role === 'admin' || currentUser.role === 'dean');
 
         // Build API URL with filters
-        let url = API_BASE_URL + '/approvals/?limit=' + BATCH_SIZE + '&offset=' + approvalOffset;
+        let url = isAdminOrDean
+            ? API_BASE_URL + '/applications/?limit=' + BATCH_SIZE + '&offset=' + approvalOffset
+            : API_BASE_URL + '/approvals/?limit=' + BATCH_SIZE + '&offset=' + approvalOffset;
+
         if (currentFilter && currentFilter !== 'all') {
-            url += '&decision=' + currentFilter;
+            url += isAdminOrDean ? '&status=' + currentFilter : '&decision=' + currentFilter;
         }
 
         try {
@@ -132,26 +136,28 @@
             }
 
             // Transform approval objects to application objects for rendering
-            const applications = data.results.map(approval => ({
-                application_id: approval.application.id,
-                student_name: approval.application.student_name,
-                student_id: approval.application.student_id,
-                contact_phone: approval.application.contact_phone,
-                leave_date: approval.application.leave_date,
-                building: approval.application.building,
-                room_number: approval.application.room_number,
-                status: approval.application.status,
-                created_at: approval.application.created_at,
-                approvals: [{
-                    id: approval.id,  // 保留id字段（主要用于checkbox）
-                    approval_id: approval.id,  // 兼容性保留
-                    approver_id: approval.approver_id,
-                    decision: approval.decision,
-                    step: approval.step
-                }]
-            }));
+            const applications = isAdminOrDean
+                ? data.results  // Admin/Dean: already application objects
+                : data.results.map(approval => ({
+                    application_id: approval.application.id,
+                    student_name: approval.application.student_name,
+                    student_id: approval.application.student_id,
+                    contact_phone: approval.application.contact_phone,
+                    leave_date: approval.application.leave_date,
+                    building: approval.application.building,
+                    room_number: approval.application.room_number,
+                    status: approval.application.status,
+                    created_at: approval.application.created_at,
+                    approvals: [{
+                        id: approval.id,
+                        approval_id: approval.id,
+                        approver_id: approval.approver_id,
+                        decision: approval.decision,
+                        step: approval.step
+                    }]
+                }));
 
-            renderApplications(applications);
+            renderApplications(applications, isAdminOrDean);
 
             if (approvalHasMore) {
                 loadMoreBtn.style.display = 'block';
@@ -167,12 +173,11 @@
         }
     }
 
-    function renderApplications(applications) {
+    function renderApplications(applications, skipApproverFilter = false) {
         const listContainer = document.getElementById('approval-list-container');
 
-        // Filter: only show approvals belonging to current user
-        // Backend already filters by approver=user, but validate to prevent data inconsistency
-        const myApps = applications.filter(app => {
+        // Filter: only show approvals belonging to current user (skip for admin/dean)
+        const myApps = skipApproverFilter ? applications : applications.filter(app => {
             const myApproval = app.approvals?.find(ap => ap.approver_id === currentUser?.user_id);
             if (!myApproval) {
                 console.warn('[FILTER] Skipping app not assigned to current user:', app.application_id, 'approvals:', app.approvals);

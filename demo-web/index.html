@@ -111,10 +111,16 @@
             : API_BASE_URL + '/approvals/?limit=' + BATCH_SIZE + '&offset=' + approvalOffset;
 
         if (currentFilter && currentFilter !== 'all') {
-            if (!isAdminOrDean) {
+            if (isAdminOrDean) {
+                // Admin/Dean: map filter to status param (pending → pending_*, others direct)
+                if (currentFilter === 'pending') {
+                    // Backend doesn't support prefix filter, get all and filter frontend
+                } else {
+                    url += '&status=' + currentFilter;
+                }
+            } else {
                 url += '&decision=' + currentFilter;
             }
-            // Admin/Dean: don't send status param, filter on frontend
         }
 
         try {
@@ -204,13 +210,9 @@
         });
         let uniqueApps = Array.from(studentMap.values());
 
-        // Apply status filter for admin/dean (backend doesn't filter for them)
-        if (skipApproverFilter && currentFilter && currentFilter !== 'all') {
-            if (currentFilter === 'pending') {
-                uniqueApps = uniqueApps.filter(app => app.status && app.status.startsWith('pending_'));
-            } else {
-                uniqueApps = uniqueApps.filter(app => app.status === currentFilter);
-            }
+        // Apply status filter for admin/dean only when backend can't filter (pending prefix)
+        if (skipApproverFilter && currentFilter === 'pending') {
+            uniqueApps = uniqueApps.filter(app => app.status && app.status.startsWith('pending_'));
         }
 
         // Handle empty list

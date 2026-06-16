@@ -10,5 +10,29 @@
     "related_bugs": [],
     "occurrences": 1,
     "last_seen": "2026-06-14T01:00:00Z"
+  },
+  {
+    "id": "bug-002",
+    "timestamp": "2026-06-16T03:19:22Z",
+    "error_message": "用户20230039批量审批时出现400错误：missing_ids: ['undefined', 'undefined']",
+    "file": "demo-web/index.html",
+    "root_cause": "前端数据转换时丢失id字段：API返回approval.id，转换后只保留approval_id，但checkbox使用myApproval.id导致undefined",
+    "fix": "1) index.html:131行：数据转换时同时保留id和approval_id字段 2) 239行：checkbox使用myApproval.approval_id（兼容两种字段名） 3) 后端views.py:603行：增强错误详情返回missing_ids 4) 添加前端防御性过滤和诊断日志",
+    "tags": ["frontend", "batch-approval", "data-transformation", "undefined", "caching"],
+    "related_bugs": [],
+    "occurrences": 1,
+    "last_seen": "2026-06-16T03:19:22Z"
+  },
+  {
+    "id": "bug-003",
+    "timestamp": "2026-06-16T14:38:54+08:00",
+    "error_message": "外部访问 http://218.75.196.218:7788 正常，内部访问 http://172.17.12.199:7788 无响应",
+    "file": "scripts/serve-frontend.py",
+    "root_cause": "前端静态服务使用单线程 HTTPServer，慢连接占用唯一请求处理线程，导致后续本机/内网请求排队超时；ss 显示多个 CLOSE-WAIT 和一个 ESTAB 连接占用处理线程",
+    "fix": "将 HTTPServer 替换为 ThreadingHTTPServer as HTTPServer，并添加 tests/test_serve_frontend.py 回归测试覆盖慢连接不阻塞正常请求；重启 graduation-frontend-nocache.service 后验证 127.0.0.1、172.17.12.199、218.75.196.218 均返回 200",
+    "tags": ["frontend", "http-server", "threading", "slow-client", "internal-access", "systemd"],
+    "related_bugs": [],
+    "occurrences": 1,
+    "last_seen": "2026-06-16T14:38:54+08:00"
   }
 ]

@@ -1,12 +1,13 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-06-14T02:12:46.832Z
-> Files: 699 tracked | Anatomy hits: 0 | Misses: 0
+> Auto-maintained by OpenWolf. Last scanned: 2026-06-16T06:48:07.107Z
+> Files: 724 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../../../tmp/
 
 - `check_graduate_users.py` (~349 tok)
 - `create_failed_app.py` (~181 tok)
+- `create_skip_dorm.py` (~628 tok)
 - `create_test_app.py` — 测试为张官芯创建申请 (~472 tok)
 - `delete_test_app.py` (~116 tok)
 - `golive-integration-revised-plan.md` — 青橄榄平台对接方案（修订版） (~2529 tok)
@@ -50,12 +51,14 @@
 - `docker-compose.prod.yml` — Docker Compose: 5 services (~410 tok)
 - `docker-compose.yml` — Docker Compose services (~232 tok)
 - `frontend-server.service` (~92 tok)
+- `graduation-frontend-nocache.service` (~108 tok)
 - `PRODUCTION-READY.md` — claude-codex-gemini-collab - PRODUCTION READY (~1835 tok)
-- `PROJECT-QUICK-REF.md` — 毕业离校系统 - 项目速查手册 (~1266 tok)
+- `PROJECT-QUICK-REF.md` — 毕业离校系统 - 项目速查手册 (~2568 tok)
 - `pyproject.toml` — Claude-Codex-Gemini Collaboration Framework (~185 tok)
 - `README.md` — Project documentation (~451 tok)
 - `response.json` (~469 tok)
 - `SKILL.md` — Claude-Codex-Gemini Collaboration Skill (~3072 tok)
+- `STABLE-STATE-2026-06-15.md` — 稳定状态快照 - 2026-06-15 (~887 tok)
 
 ## .claude/
 
@@ -66,6 +69,14 @@
 
 - `openwolf.md` (~313 tok)
 
+## .claude/scripts/
+
+- `verify-quick-ref-read.sh` — 验证是否已读取快速文档的辅助脚本 (~183 tok)
+
+## .collab/artifacts/
+
+- `DISCUSS-异地DOCKER自动化部署方案V2-0技术评审-基于RSYNC选择性同步替代NFS方案-1781442271-discuss-r3-claude-20260614-133629.md` (~792 tok)
+
 ## .github/workflows/
 
 - `deploy.yml` — CI: CI/CD Pipeline (~1207 tok)
@@ -74,7 +85,7 @@
 
 - `daemon-audit.log` (~125609 tok)
 - `project-memory.json` (~2513 tok)
-- `session-context.json` (~453 tok)
+- `session-context.json` (~947 tok)
 
 ## .omc/artifacts/ask/
 
@@ -598,6 +609,25 @@
 - `auto-routing-taxonomy.md` — 任务分类Taxonomy - 自动智能路由 (~396 tok)
 - `auto-routing-ui-rules.md` — UI任务识别规则 - Gemini专用 (~277 tok)
 
+## .omc/issues/
+
+- `codex-api-failure-20260614.md` — Codex API连接失败问题记录 (~737 tok)
+
+## .trellis/spec/frontend/
+
+- `index.md` — Frontend Development Guidelines (~339 tok)
+- `quality-guidelines.md` — Quality Guidelines (~1009 tok)
+
+## .trellis/tasks/06-16-frontend-daemon-setup/
+
+- `design.md` — 技术设计：前端服务守护进程 (~768 tok)
+- `implement.md` — 执行计划：前端服务守护进程配置 (~1549 tok)
+- `prd.md` — 为毕业离校系统前端服务配置守护进程保证业务连续性 (~429 tok)
+
+## .understand-anything/
+
+- `.understandignore` — .understandignore — patterns for files/dirs to exclude from analysis (~451 tok)
+
 ## PRD/
 
 - `异地Docker自动部署方案.md` — 毕业离校系统异地Docker自动部署方案 (~357 tok)
@@ -626,11 +656,11 @@
 ## backend/apps/applications/
 
 - `models.py` — Model: Application, 11 fields (~574 tok)
-- `permissions.py` — can_view_application (~273 tok)
+- `permissions.py` — can_view_application (~296 tok)
 - `providers.py` — from: check_status (~1187 tok)
 - `serializers.py` — ApplicationListSerializer: get_approvals, get_approvals, validate_leave_date (~890 tok)
 - `urls.py` (~98 tok)
-- `views.py` — applications_view, list_applications, create_application, get_application (~3826 tok)
+- `views.py` — applications_view, list_applications, create_application, get_application (~3888 tok)
 
 ## backend/apps/applications/management/
 
@@ -651,7 +681,7 @@
 - `pagination.py` — ApprovalLimitOffsetPagination: get_paginated_response (~116 tok)
 - `serializers.py` — ApplicationBriefSerializer: get_attachments (~1326 tok)
 - `urls.py` (~173 tok)
-- `views.py` — sanitize_excel_formula, list_approvals, get_approval, approve_approval (~6968 tok)
+- `views.py` — sanitize_excel_formula, list_approvals, get_approval, approve_approval (~7899 tok)
 
 ## backend/apps/approvals/migrations/
 
@@ -663,12 +693,19 @@
 
 ## backend/apps/attachments/
 
-- `views.py` — attachments_view, upload_attachment, list_attachments, download_attachment (~2168 tok)
+- `serializers.py` — AttachmentUploadSerializer: detect_file_type, validate_file (~668 tok)
+- `views.py` — attachments_view, upload_attachment, list_attachments, download_attachment (~2250 tok)
 
 ## backend/apps/healthcheck/
 
 - `__init__.py` (~0 tok)
 - `views.py` — healthz, readyz (~193 tok)
+
+## backend/apps/middleware/
+
+- `__init__.py` (~26 tok)
+- `error_logging.py` — ErrorLoggingMiddleware: process_exception (~287 tok)
+- `README.md` — Project documentation (~147 tok)
 
 ## backend/apps/notifications/
 
@@ -679,16 +716,17 @@
 - `__init__.py` — 青橄榄平台SSO对接模块 (~26 tok)
 - `apps.py` — Declares SsoQingganlianConfig (~57 tok)
 - `auth.py` — generate_rand_str, generate_signature, generate_request_params (~391 tok)
-- `callback_views.py` — SSO HTML Callback Views - 直接跳转业务页面 (~1305 tok)
-- `client.py` — QingganlanClient: get_user_code_by_token, get_user_info, verify_admin_user (~1419 tok)
+- `callback_views.py` — SSO HTML Callback Views - 直接跳转业务页面 (~1282 tok)
+- `client.py` — QingganlanClient: get_user_code_by_token, get_user_info, verify_admin_user (~1712 tok)
 - `exceptions.py` — 青橄榄SSO异常类 (~123 tok)
 - `models.py` — Model: SSOUserMapping, 16 fields (~715 tok)
 - `README_SECURITY.md` — SSO安全配置说明 (~216 tok)
 - `README.md` — Project documentation (~639 tok)
 - `serializers.py` — Declares MobileLoginRequestSerializer (~431 tok)
-- `settings.py` — 青橄榄SSO配置管理 (~214 tok)
+- `settings.py` — 青橄榄SSO配置管理 (~374 tok)
+- `test_token_verify.py` — 验证移动端token提取 (~879 tok)
 - `urls.py` (~124 tok)
-- `views.py` — mobile_saas_login, mobile_login, admin_login (~3438 tok)
+- `views.py` — mobile_saas_login, mobile_login, admin_login (~4128 tok)
 
 ## backend/apps/sso_qingganlian/migrations/
 
@@ -725,15 +763,15 @@
 - `models.py` — Model: SSOUserMapping, 13 fields (~396 tok)
 - `serializers.py` — Declares MobileLoginSerializer (~216 tok)
 - `urls.py` (~66 tok)
-- `views.py` — generate_jwt_token, get_or_create_user_from_qgl, mobile_login, admin_login (~1717 tok)
+- `views.py` — generate_jwt_token, get_or_create_user_from_qgl, mobile_login, admin_login (~1785 tok)
 
 ## backend/config/
 
-- `urls.py` — URL Configuration (~305 tok)
+- `urls.py` — URL Configuration (~312 tok)
 
 ## backend/config/settings/
 
-- `base.py` — Declares DEFAULT_AUTO_FIELD (~1541 tok)
+- `base.py` — Declares DEFAULT_AUTO_FIELD (~1640 tok)
 - `prod.py` — Production settings. (~302 tok)
 
 ## backend/requirements/
@@ -742,6 +780,7 @@
 
 ## backend/scripts/
 
+- `create_application_skip_dorm.py` — create_application_skip_dorm (~998 tok)
 - `verify_qgl_admin.py` — generate_signature, test_admin_endpoint (~475 tok)
 - `verify_qgl_endpoint.py` — generate_signature, test_endpoint (~516 tok)
 
@@ -761,8 +800,9 @@
 ## demo-web/
 
 - `admin-sso-callback.html` — SSO登录中... (~402 tok)
-- `index.html` — 毕业离校申请系统 - UI Demo (~23109 tok)
-- `mobile-sso-callback.html` — SSO登录中... (~614 tok)
+- `batch-fix-console.js` — 临时修复脚本 - 在浏览器控制台粘贴执行 (~1042 tok)
+- `index.html` — 毕业离校申请系统 - UI Demo (~24091 tok)
+- `mobile-sso-callback.html` — SSO登录中... (~659 tok)
 - `responsive-adapter-example.html` — Declares deviceAdapter (~579 tok)
 - `sso-receiver.html` — 登录中... (~410 tok)
 - `test-integration.sh` — Integration Test Script for Graduation Leave System (~1144 tok)
@@ -793,12 +833,16 @@
 - `移动端界面适配问题总结.md` — 移动端界面适配问题总结 (~1186 tok)
 - `移动端SSO故障排除.md` — 移动端SSO故障排除 (~481 tok)
 - `移动端SSO修复测试方案.md` — 移动端SSO修复验证测试方案 (~882 tok)
+- `异地Docker自动化部署方案.md` — 异地Docker自动化部署方案 (~3938 tok)
 - `agentmemory-integration-progress.md` — agentmemory Integration Progress (~1168 tok)
 - `architecture-integration-consensus.md` — 多智能体协作架构整合共识 (~1514 tok)
+- `cache-control-guide.md` — 前端缓存控制配置指南 (~955 tok)
+- `code-review-request-2026-06-16.md` — 代码审查请求 - P0/P1安全性能修复 (~688 tok)
 - `DEPLOYMENT_AUTO.md` — 异地自动化部署指南 (~932 tok)
 - `DEPLOYMENT_PROD.md` — 生产环境部署指南 (~803 tok)
 - `PERFORMANCE.md` — 数据库性能优化指南 (~455 tok)
-- `PROJECT-SUMMARY.md` — 毕业生离校申请审批系统 - 项目总结 (~29851 tok)
+- `project-audit-consolidated-report-2026-06-15.md` — 毕业生离校系统综合审计报告（Codex + Gemini 共识版） (~2032 tok)
+- `PROJECT-SUMMARY.md` — 毕业生离校申请审批系统 - 项目总结 (~30066 tok)
 - `qingganlian-api-structure-fix-20260609.md` — 青橄榄SSO API结构修复记录 (~478 tok)
 - `qingganlian-bug-fixes-20260609.md` — 青橄榄SSO代码审计 - Bug修复记录 (~300 tok)
 - `qingganlian-endpoint-verification-results.md` — 青橄榄API Endpoint验证结果 (~209 tok)
@@ -856,6 +900,7 @@
 - `install_skill.py` — Install claude-codex-gemini-collab skill with all dependencies. (~514 tok)
 - `performance_test.sh` — 性能测试脚本 (~374 tok)
 - `rollback.sh` — 回滚脚本 - 恢复配置+数据库+容器 (~472 tok)
+- `serve-frontend.py` — NoCacheHTTPRequestHandler: end_headers, main (~415 tok)
 - `setup_server.sh` — 首次服务器初始化脚本 (~410 tok)
 - `setup-systemd.sh` — 配置systemd服务（需要sudo权限） (~119 tok)
 - `start-services.sh` — 启动毕业离校系统所有服务 (~131 tok)
@@ -868,4 +913,5 @@
 - `debug_signal.py` — Debug signal operations. (~433 tok)
 - `test_agentmemory_integration.py` — Test agentmemory backend integration with iii-sdk. (~735 tok)
 - `test_routing_cli_integration.py` — Integration tests for routing CLI persistence. (~1550 tok)
+- `test_serve_frontend.py` — load_server_module, static_site, test_slow_client_does_not_block_other_requests (~439 tok)
 - `test_task_classifier.py` — Tests for task classifier. (~950 tok)

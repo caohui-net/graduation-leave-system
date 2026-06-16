@@ -12,6 +12,7 @@
 
 ## Key Learnings
 
+- **Frontend static service:** `scripts/serve-frontend.py` backs live `graduation-frontend-nocache.service` on port 7788. Use `ThreadingHTTPServer`, not single-thread `HTTPServer`; slow external clients can otherwise block internal/local requests.
 - **Project:** ccg-collab
 - **Description:** Tri-model collaboration protocol for autonomous multi-agent project construction.
 

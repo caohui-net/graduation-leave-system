@@ -57,14 +57,21 @@ docker ps | grep graduation-leave-system
 ### 前端 (HTML静态)
 ```bash
 路径: /home/caohui/projects/graduation-leave-system/demo-web
-服务器: dufs (文件服务器) - 宿主机直接运行，非Docker
+服务器: systemd + scripts/serve-frontend.py（ThreadingHTTPServer，带HTML no-cache头）
+服务名: graduation-frontend-nocache.service
 端口: 7788
 入口: index.html (管理端)
 移动端回调: mobile-sso-callback.html
 
-# 启动前端（手动）
-cd demo-web
-dufs -p 7788 --allow-all
+# 管理前端服务（当前为系统级systemd服务）
+systemctl status graduation-frontend-nocache --no-pager
+systemctl restart graduation-frontend-nocache
+journalctl -u graduation-frontend-nocache -f
+
+# 本机/内网/外网访问验证
+curl --noproxy '*' http://127.0.0.1:7788/
+curl --noproxy '*' http://172.17.12.199:7788/
+curl --noproxy '*' http://218.75.196.218:7788/
 ```
 
 ### Docker容器状态
@@ -286,6 +293,20 @@ dufs -p 7788 --allow-all
 ---
 
 ## 8. 最近修改记录
+
+### 2026-06-16 前端内网访问无响应修复
+**问题**: 外部 `http://218.75.196.218:7788` 正常，但本机内网 `http://172.17.12.199:7788` 无响应。
+
+**根因**: `scripts/serve-frontend.py` 使用单线程 `HTTPServer`，慢连接占用唯一请求处理线程，导致后续本机/内网请求排队超时。
+
+**修复**: `scripts/serve-frontend.py` 改用 `ThreadingHTTPServer as HTTPServer`，保留原 Cache-Control 逻辑。
+
+**验证**:
+- `pytest tests/test_serve_frontend.py -q` → `1 passed`
+- `http://127.0.0.1:7788/` → 200
+- `http://172.17.12.199:7788/` → 200
+- `http://218.75.196.218:7788/` → 200
+- 慢连接并发探针 → 正常请求 0.008s 返回 200
 
 ### 2026-06-15 数据修复与验证：teacher角色清理
 **问题**: 5个用户角色为"teacher"（无效角色，UserRole枚举无此值）

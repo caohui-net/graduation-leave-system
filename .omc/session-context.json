@@ -1,11 +1,15 @@
 {
-  "last_updated": "2026-06-15T20:30:00Z",
+  "last_updated": "2026-06-16T14:38:54+08:00",
   "session_start_checklist": [
     "⚠️ MANDATORY: Read PROJECT-QUICK-REF.md FIRST (env/ports/deploy/config)",
     "Read .wolf/cerebrum.md (user preferences, do-not-repeat)",
     "Read .wolf/anatomy.md if accessing files"
   ],
   "completed": [
+    "【2026-06-16】修复前端内网访问无响应：scripts/serve-frontend.py 改用 ThreadingHTTPServer",
+    "【2026-06-16】新增 tests/test_serve_frontend.py 回归测试：慢连接不阻塞正常请求",
+    "【2026-06-16】重启 graduation-frontend-nocache.service 并验证 127.0.0.1、172.17.12.199、218.75.196.218:7788 均返回 200",
+    "【2026-06-16】更新 PROJECT-QUICK-REF.md、docs/PROJECT-SUMMARY.md、.wolf/buglog.json 记录前端服务运行事实和修复证据",
     "【2026-06-15】P0安全漏洞修复：SSO认证绕过、密钥硬编码、敏感日志泄漏",
     "【2026-06-15】P1性能优化：N+1查询优化、根路由配置化",
     "【2026-06-15】P1附件安全：magic number类型检测、安全响应头",
@@ -16,145 +20,47 @@
     "【2026-06-15】外部接口监控告警：失败率>30%触发logger.error",
     "【2026-06-15】负载测试脚本：验证快速失败行为",
     "【2026-06-15】ADR文档：归档断路器决策过程和理由",
-    "【2026-06-15】验证宿管员和辅导员数据与原始Excel文档一致性",
-    "【2026-06-15】确认数据库用户信息完全匹配Excel源文档（20辅导员+76宿管员）",
-    "【2026-06-14】排查用户19970545（李桃花）登录后无数据问题",
-    "【2026-06-14】确认根因：角色为counselor但department=None，无法分配审批",
-    "【2026-06-14】修改李桃花role从counselor改为admin（学生事务管理科长）",
-    "【2026-06-14】清理18个测试管理员账号（保留2个真实管理员：肖延量、李桃花）",
-    "【2026-06-14】更新联系方式：肖延量13636001781、李桃花15907258727",
-    "【2026-06-14】验证兜底宿管员机制：程婷（92008149）正常工作，处理159个无building学生",
-    "【2026-06-14】审批数据分析：8517条=5896宿管员+2621辅导员，88.7%申请有2个宿管员",
-    "【2026-06-14】确认504个申请无辅导员审批原因：422个待宿管审批+82个已驳回（正常流程）",
-    "【2026-06-14】项目技术审计：架构/数据完整性/安全性/代码质量/性能评估",
-    "【2026-06-14】修正审计错误：数据库为PostgreSQL非SQLite（PROJECT-QUICK-REF.md信息过时）"
+    "【2026-06-15】验证宿管员和辅导员数据与原始Excel文档一致性"
   ],
   "pending": [
+    "Trellis daemon任务剩余验收差异：当前运行的是系统级 graduation-frontend-nocache.service，不是PRD中的user级 graduation-frontend.service",
+    "补齐 daemon task 的 StartLimitBurst/StartLimitIntervalSec/OnFailure 告警链路或更新任务设计以匹配现状",
     "修复辅导员兜底机制缺失（🔴P0）：26个无department学生宿管员通过后报错",
     "配置SSO端点IP白名单（🔴P0）：nginx限制青橄榄IP访问",
-    "补充测试覆盖（🟡P1）：当前<20%，目标60%",
-    "数据完整性校验（🟡P1）：添加必填字段验证命令",
-    "更新PROJECT-QUICK-REF.md：修正数据库信息（PostgreSQL非SQLite）"
+    "补充测试覆盖（🟡P1）：当前<20%，目标60%"
   ],
   "evidence": [
-    "数据库：PostgreSQL，graduation_leave@localhost（非SQLite）",
-    "用户数据：6081人（5830学生+71宿管员+25辅导员+2管理员）",
-    "审批数据：3126申请，8517审批（5896宿管+2621辅导员）",
-    "李桃花修改：role=counselor→admin, department=None清空, phone=15907258727",
-    "管理员清理：19个→2个（20144020肖延量+19970545李桃花）",
-    "兜底宿管员：程婷92008149，building=None，处理48条审批（20条空building+28条历史遗留）",
-    "无department学生：26人，宿管员通过后无法分配辅导员（报错：该学院辅导员不存在）",
-    "多宿管员机制：88.7%申请有2个宿管员（2771/3125），同楼栋多人配置"
+    "RED: /usr/bin/python3 -m pytest tests/test_serve_frontend.py -q 在单线程 HTTPServer 下失败：AssertionError: slow client blocked another request",
+    "GREEN: /usr/bin/python3 -m pytest tests/test_serve_frontend.py -q -> 1 passed in 0.54s",
+    "service: systemctl status graduation-frontend-nocache --no-pager -> Active: active (running), Main PID 2174399, ExecStart scripts/serve-frontend.py 7788 demo-web",
+    "curl 127.0.0.1:7788 -> HTTP 200 total=0.004444",
+    "curl 172.17.12.199:7788 -> HTTP 200 total=0.001146",
+    "curl 218.75.196.218:7788 -> HTTP 200 total=0.059190",
+    "live slow-client probe against 127.0.0.1:7788 -> status=200 elapsed=0.008s",
+    "trellis-check agent verified regression test, live service, all three access paths, and slow-client probe; no code defects found in hang fix"
   ],
-  "next_focus": "生产部署验证，负载测试执行（2026-06-17前），监控SSO失败率",
+  "next_focus": "Decide whether to finish remaining Trellis daemon acceptance gaps (user service + alert hook) or archive current system-level service as accepted runtime design.",
   "artifacts": {
-    "audit_report": "三方技术审计报告（Claude+Codex+Gemini联合评估）- 内存中",
-    "data_analysis": "审批数据组成分析：8517条审批的step/decision/approver分布",
-    "circuit_breaker_discussion": ".collab/artifacts/fast/DISCUSS-断路器决策-6000用户系统-超时30S-1781554606-*",
-    "adr_document": "docs/adr/0001-reject-circuit-breaker.md",
-    "load_test_script": "tests/load_test_timeout.py",
-    "code_review_doc": "docs/code-review-request-2026-06-16.md",
-    "commits": {
-      "p0_p1_fixes": ["167e76d", "b7f2dda", "0f3bf16"],
-      "timeout_optimization": "e7453e0",
-      "followup_tasks": "0a59542"
-    },
-    "issue_findings": [
-      "🔴严重：辅导员兜底机制缺失（26学生受影响）",
-      "🟡中等：数据完整性校验不足（159无building+26无department）",
-      "🟡中等：测试覆盖<20%",
-      "🟢轻微：SSO端点无IP白名单"
-    ]
+    "active_task": ".trellis/tasks/06-16-frontend-daemon-setup",
+    "frontend_hang_fix": [
+      "scripts/serve-frontend.py",
+      "tests/test_serve_frontend.py"
+    ],
+    "runtime_service": "/etc/systemd/system/graduation-frontend-nocache.service",
+    "docs_updated": [
+      "PROJECT-QUICK-REF.md",
+      "docs/PROJECT-SUMMARY.md"
+    ],
+    "independent_check": "trellis-check agent a8cf94ab0dcfe7c4d"
   },
   "session_summary": {
-    "task": "用户19970545数据问题排查 + 项目整体技术审计",
-    "approach": "数据库查询分析 → 角色权限修复 → 审批流程验证 → 三方协作审计",
-    "result": "修复管理员配置（2人），发现辅导员兜底缺失（P0问题），完成技术审计报告（3.6/5分）"
-  },
-  "blocking_issues": [
-    {
-      "issue": "辅导员兜底机制缺失",
-      "root_cause": "apps/approvals/views.py approve_or_reject函数，当student.department=None时无法匹配辅导员",
-      "impact": "26个无department学生宿管员通过后报错，无法完成审批流程",
-      "severity": "🔴严重（P0）",
-      "proposed_fix": "添加FALLBACK_COUNSELOR_USER_ID=19970545（李桃花），修改counselor查询逻辑添加fallback",
-      "code_location": "backend/apps/approvals/views.py line ~230",
-      "estimated_effort": "2小时"
-    },
-    {
-      "issue": "PROJECT-QUICK-REF.md数据库信息错误",
-      "root_cause": "文档显示SQLite，实际为PostgreSQL",
-      "impact": "误导技术审计，产生错误的数据库迁移建议",
-      "severity": "🟡中等",
-      "proposed_fix": "更新PROJECT-QUICK-REF.md第16行：数据库: PostgreSQL (graduation_leave@localhost)",
-      "estimated_effort": "5分钟"
-    }
-  ],
-  "key_decisions": [
-    {
-      "decision": "拒绝实施通用断路器模式",
-      "rationale": "Claude+Codex+Gemini共识：6000用户规模，快速失败达90%断路器效果，无架构复杂度",
-      "alternatives": "超时优化(3,5)、前端控制、监控告警",
-      "date": "2026-06-15"
-    },
-    {
-      "decision": "超时配置优化：backend 30s→(3,5)秒，frontend 8秒",
-      "rationale": "30s超时是根源问题，快速失败防止线程池耗尽",
-      "date": "2026-06-15"
-    },
-    {
-      "decision": "学工管理员只保留2人：肖延量（20144020）和李桃花（19970545）",
-      "rationale": "用户明确要求，清理18个测试账号",
-      "date": "2026-06-14"
-    },
-    {
-      "decision": "李桃花角色从counselor改为admin",
-      "rationale": "用户确认为学生事务管理科长，应为管理员角色",
-      "date": "2026-06-14"
-    },
-    {
-      "decision": "程婷（92008149）为兜底宿管员，不是管理员",
-      "rationale": "用户明确：处理无building学生，role=dorm_manager",
-      "date": "2026-06-14"
-    },
-    {
-      "decision": "暂不处理辅导员兜底问题",
-      "rationale": "用户说'暂不处理'，但已识别为P0问题，待后续处理",
-      "date": "2026-06-14"
-    }
-  ],
-  "technical_findings": {
-    "database": "PostgreSQL (graduation_leave@localhost)",
-    "users_count": 6081,
-    "applications_count": 3126,
-    "approvals_count": 8517,
-    "approval_breakdown": {
-      "dorm_manager": 5896,
-      "counselor": 2621
-    },
-    "multi_dorm_manager_rate": "88.7% (2771/3125 applications)",
-    "fallback_dorm_manager": {
-      "user_id": "92008149",
-      "name": "程婷",
-      "building": null,
-      "approvals_count": 48,
-      "handles_no_building_students": 159
-    },
-    "data_quality_issues": {
-      "students_no_building": 159,
-      "students_no_department": 26,
-      "counselors_no_department": 4
-    }
-  },
-  "performance_metrics": {
-    "database_engine": "PostgreSQL (production-ready)",
-    "query_optimization": "select_related/prefetch_related ✓",
-    "pagination": "LimitOffsetPagination ✓",
-    "caching": "无（建议引入Redis）",
-    "async_tasks": "无（建议Celery）"
+    "task": "前端内网访问无响应排查与修复",
+    "approach": "systematic-debugging：监听/进程/连接状态取证 → TDD慢连接复现 → ThreadingHTTPServer最小修复 → 服务重启与三路径验证 → 独立trellis-check复核",
+    "result": "原始内网无响应症状已通过真实服务验证解决；Trellis daemon任务仍有service命名/告警链路验收差异待定"
   },
   "suggested_skills": [
-    "oh-my-claudecode:verify",
-    "oh-my-claudecode:wiki"
+    "trellis-check",
+    "trellis-update-spec",
+    "oh-my-claudecode:verify"
   ]
 }

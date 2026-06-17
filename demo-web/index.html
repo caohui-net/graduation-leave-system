@@ -343,6 +343,46 @@
         }
     }
 
+    async function previewAttachment(attachmentId) {
+        try {
+            const response = await fetch(API_BASE_URL + '/attachments/' + attachmentId + '/download/?preview=true', {
+                headers: getAuthHeaders()
+            });
+            if (response.ok) {
+                const blob = await response.blob();
+                const url = URL.createObjectURL(blob);
+                window.open(url, '_blank');
+            } else {
+                alert('预览失败：' + response.status);
+            }
+        } catch (e) {
+            console.error('Preview failed:', e);
+            alert('预览失败：网络错误');
+        }
+    }
+
+    async function downloadAttachment(attachmentId, fileName) {
+        try {
+            const response = await fetch(API_BASE_URL + '/attachments/' + attachmentId + '/download/', {
+                headers: getAuthHeaders()
+            });
+            if (response.ok) {
+                const blob = await response.blob();
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = fileName || 'attachment';
+                a.click();
+                URL.revokeObjectURL(url);
+            } else {
+                alert('下载失败：' + response.status);
+            }
+        } catch (e) {
+            console.error('Download failed:', e);
+            alert('下载失败：网络错误');
+        }
+    }
+
     async function showApplicationDetail(appData) {
         console.log('[DEBUG] showApplicationDetail called with:', appData);
         console.log('[DEBUG] building:', appData.building, 'room_number:', appData.room_number);
@@ -456,14 +496,14 @@
                     <div style="font-weight: 500;">${att.file_name}</div>
                     <div style="font-size: 12px; color: #999;">${sizeKB} KB</div>
                   </div>
-                  <a href="${API_BASE_URL}/attachments/${att.attachment_id}/download/?preview=true" target="_blank"
-                     style="padding: 10px 16px; background: #1890ff; color: white; border: none; border-radius: 4px; text-decoration: none; margin-right: 8px; min-height: 44px; display: inline-flex; align-items: center;">
+                  <button onclick="previewAttachment('${att.attachment_id}')"
+                     style="padding: 10px 16px; background: #1890ff; color: white; border: none; border-radius: 4px; cursor: pointer; margin-right: 8px; min-height: 44px;">
                     预览
-                  </a>
-                  <a href="${API_BASE_URL}/attachments/${att.attachment_id}/download/" target="_blank"
-                     style="padding: 10px 16px; background: #52c41a; color: white; border: none; border-radius: 4px; text-decoration: none; min-height: 44px; display: inline-flex; align-items: center;">
+                  </button>
+                  <button onclick="downloadAttachment('${att.attachment_id}', '${att.file_name}')"
+                     style="padding: 10px 16px; background: #52c41a; color: white; border: none; border-radius: 4px; cursor: pointer; min-height: 44px;">
                     下载
-                  </a>
+                  </button>
                 </div>
                 `;
             });

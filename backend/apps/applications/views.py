@@ -110,7 +110,7 @@ def list_applications(request):
 
         student_id = request.query_params.get('student_id')
         if student_id:
-            queryset = queryset.filter(student__user_id=student_id)
+            queryset = queryset.filter(student__user_id__icontains=student_id)
 
         class_id = request.query_params.get('class_id')
         if class_id:

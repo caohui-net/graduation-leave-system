@@ -250,9 +250,14 @@ async function apiUploadAttachment(applicationId, file, attachmentType = 'other'
         });
         if (response.ok) {
             return await response.json();
+        } else {
+            const error = await response.json().catch(() => ({error: {message: '上传失败'}}));
+            console.error('[ERROR] Upload failed:', response.status, error);
+            alert('附件上传失败：' + (error.error?.message || '服务器错误(' + response.status + ')'));
         }
     } catch (e) {
-        console.error("Upload attachment failed:", e);
+        console.error('[ERROR] Upload exception:', e);
+        alert('附件上传失败：网络错误');
     }
     return null;
 }

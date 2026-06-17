@@ -102,13 +102,17 @@ def list_approvals(request):
         queryset = queryset.filter(decision=decision_param)
 
     # 查询过滤
-    name = request.query_params.get('name')
-    if name:
-        queryset = queryset.filter(application__student_name__icontains=name)
+    student_name = request.query_params.get('student_name')
+    if student_name:
+        queryset = queryset.filter(application__student_name__icontains=student_name)
 
     student_id = request.query_params.get('student_id')
     if student_id:
         queryset = queryset.filter(application__student__user_id__icontains=student_id)
+
+    class_id = request.query_params.get('class_id')
+    if class_id:
+        queryset = queryset.filter(application__class_id__icontains=class_id)
 
     building = request.query_params.get('building')
     if building:
@@ -377,9 +381,9 @@ def reject_approval(request, approval_id):
 @permission_classes([IsAuthenticated])
 def export_approvals(request):
     try:
-        if request.user.role not in [UserRole.DEAN, UserRole.ADMIN]:
+        if request.user.role not in [UserRole.DEAN, UserRole.ADMIN, UserRole.COUNSELOR, UserRole.DORM_MANAGER]:
             return Response(
-                {'error': {'code': 'FORBIDDEN', 'message': '仅学工部/管理员可导出数据'}},
+                {'error': {'code': 'FORBIDDEN', 'message': '仅管理人员可导出数据'}},
                 status=status.HTTP_403_FORBIDDEN
             )
 

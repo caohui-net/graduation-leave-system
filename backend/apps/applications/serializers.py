@@ -7,16 +7,21 @@ class ApplicationListSerializer(serializers.ModelSerializer):
     student_id = serializers.CharField(source='student.user_id', read_only=True)
     building = serializers.CharField(source='student.building', read_only=True, allow_null=True, required=False)
     room_number = serializers.CharField(source='student.room_number', read_only=True, allow_null=True, required=False)
+    department = serializers.CharField(source='student.department', read_only=True, allow_null=True, required=False)
+    has_attachments = serializers.SerializerMethodField()
     approvals = serializers.SerializerMethodField()
 
     class Meta:
         model = Application
         fields = ['application_id', 'student_id', 'student_name', 'class_id',
                   'contact_phone', 'reason', 'leave_date', 'status', 'building',
-                  'room_number', 'created_at', 'updated_at', 'approvals']
+                  'room_number', 'department', 'has_attachments', 'created_at', 'updated_at', 'approvals']
         read_only_fields = ['application_id', 'student_id', 'student_name',
-                            'class_id', 'status', 'building', 'room_number',
+                            'class_id', 'status', 'building', 'room_number', 'department',
                             'created_at', 'updated_at']
+
+    def get_has_attachments(self, obj):
+        return obj.attachments.exists()
 
     def get_approvals(self, obj):
         from apps.approvals.serializers import ApprovalBriefSerializer
@@ -27,16 +32,21 @@ class ApplicationSerializer(serializers.ModelSerializer):
     student_id = serializers.CharField(source='student.user_id', read_only=True)
     building = serializers.CharField(source='student.building', read_only=True, allow_null=True, required=False)
     room_number = serializers.CharField(source='student.room_number', read_only=True, allow_null=True, required=False)
+    department = serializers.CharField(source='student.department', read_only=True, allow_null=True, required=False)
+    has_attachments = serializers.SerializerMethodField()
     approvals = serializers.SerializerMethodField()
 
     class Meta:
         model = Application
         fields = ['application_id', 'student_id', 'student_name', 'class_id',
                   'contact_phone', 'reason', 'leave_date', 'status', 'dorm_checkout_status',
-                  'building', 'room_number', 'approvals', 'created_at', 'updated_at']
+                  'building', 'room_number', 'department', 'has_attachments', 'approvals', 'created_at', 'updated_at']
         read_only_fields = ['application_id', 'student_id', 'student_name',
                             'class_id', 'status', 'dorm_checkout_status',
-                            'building', 'room_number', 'created_at', 'updated_at']
+                            'building', 'room_number', 'department', 'created_at', 'updated_at']
+
+    def get_has_attachments(self, obj):
+        return obj.attachments.exists()
 
     def get_approvals(self, obj):
         from apps.approvals.serializers import ApprovalBriefSerializer

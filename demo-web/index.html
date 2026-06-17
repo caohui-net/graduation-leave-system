@@ -103,6 +103,7 @@
         const loadMoreBtn = document.getElementById('load-more-approvals');
 
         const BATCH_SIZE = 20;
+        const isManager = currentUser && ['admin', 'dean', 'counselor', 'dorm_manager'].includes(currentUser.role);
         const isAdminOrDean = currentUser && (currentUser.role === 'admin' || currentUser.role === 'dean');
 
         // Build API URL with filters
@@ -120,6 +121,13 @@
                 }
             } else {
                 url += '&decision=' + currentFilter;
+            }
+        }
+
+        // Add admin filters (student_id, student_name, class_id, building)
+        if (isManager && Object.keys(adminFilters).length > 0) {
+            for (const [key, value] of Object.entries(adminFilters)) {
+                url += '&' + encodeURIComponent(key) + '=' + encodeURIComponent(value);
             }
         }
 
@@ -274,19 +282,27 @@
             card.className = 'card';
             card.style.cssText = 'cursor: pointer; display: flex; gap: 12px;';
 
+            const safeDepartment = escapeHtml(app.department || '-');
+            const safeBuilding = escapeHtml(app.building || '-');
+            const safeRoomNumber = escapeHtml(app.room_number || '-');
+            const attachmentIcon = app.has_attachments ? '📎' : '';
+
             card.innerHTML = `
                 ${showCheckbox ? `<input type="checkbox" class="approval-checkbox" data-approval-id="${myApproval.approval_id}" data-approver-id="${myApproval.approver_id}" data-decision="${myApproval.decision}" onclick="event.stopPropagation(); toggleBatchBar();" style="width: 20px; height: 20px; cursor: pointer;">` : ''}
                 <div style="flex: 1;" onclick="openApplication('${appId}')">
                     <div class="flex-row justify-between align-center" style="margin-bottom: 8px;">
-                        <span style="font-size: 16px; font-weight: bold;">申请 ${safeAppId}</span>
+                        <span style="font-size: 16px; font-weight: bold;">${safeStudentName} ${attachmentIcon}</span>
                         <span class="tag ${statusInfo.cls}">${statusInfo.text}</span>
                     </div>
-                    <div style="margin-bottom: 4px;">
-                        <span style="font-size: 14px; color: #999; margin-right: 8px;">学生:</span>
-                        <span style="font-size: 14px; color: #333;">${safeStudentName} (${safeStudentId})</span>
+                    <div style="margin-bottom: 4px; font-size: 14px; color: #666;">
+                        <span style="margin-right: 12px;">学号: ${safeStudentId}</span>
+                        <span>学院: ${safeDepartment}</span>
+                    </div>
+                    <div style="margin-bottom: 4px; font-size: 14px; color: #666;">
+                        宿舍: ${safeBuilding} ${safeRoomNumber}
                     </div>
                     <div style="font-size: 12px; color: #999;">
-                        创建: ${app.created_at ? new Date(app.created_at).toLocaleString('zh-CN') : '-'}
+                        ${app.created_at ? new Date(app.created_at).toLocaleString('zh-CN') : '-'}
                     </div>
                 </div>
             `;
@@ -1813,10 +1829,11 @@
         approvalSection.style.display = (isStudent || isDean || isAdmin) ? 'none' : 'block';
       }
 
-      // Show export button for dean and admin roles
+      // Show export button for all manager roles
       const exportBtn = document.getElementById('export-btn');
       if (exportBtn) {
-        exportBtn.style.display = (isDean || isAdmin) ? 'block' : 'none';
+        const isManager = currentUser && ['admin', 'dean', 'counselor', 'dorm_manager'].includes(currentUser.role);
+        exportBtn.style.display = isManager ? 'block' : 'none';
       }
 
       // Show/hide statistics for non-student roles

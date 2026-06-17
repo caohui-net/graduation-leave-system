@@ -151,6 +151,9 @@ def create_application(request):
                                     'details': serializer.errors}},
                         status=status.HTTP_400_BAD_REQUEST)
 
+    # 获取草稿ID参数（可选）
+    application_id = request.data.get('application_id')
+
     with transaction.atomic():
         # Check for existing pending/approved applications
         existing = Application.objects.select_for_update().filter(
@@ -194,7 +197,19 @@ def create_application(request):
                                 status=status.HTTP_404_NOT_FOUND)
 
         # Check for existing draft, convert if exists
-        draft = Application.objects.select_for_update().filter(student=user, status=ApplicationStatus.DRAFT).first()
+        if application_id:
+            # 精确查找指定草稿
+            draft = Application.objects.select_for_update().filter(
+                student=user,
+                application_id=application_id,
+                status=ApplicationStatus.DRAFT
+            ).first()
+            if not draft:
+                return Response({'error': {'code': 'NOT_FOUND', 'message': '草稿不存在或已提交'}},
+                                status=status.HTTP_404_NOT_FOUND)
+        else:
+            # 回退：自动查找任意草稿（向后兼容）
+            draft = Application.objects.select_for_update().filter(student=user, status=ApplicationStatus.DRAFT).first()
 
         if draft:
             # Update draft to submitted application

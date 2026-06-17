@@ -142,11 +142,14 @@ async function apiGetOrCreateDraft() {
     }
 }
 
-async function apiSubmitApplication(phone, reason, leaveDate) {
+async function apiSubmitApplication(phone, reason, leaveDate, applicationId) {
     const formData = new FormData();
     formData.append('contact_phone', phone);
     formData.append('reason', reason);
     formData.append('leave_date', leaveDate);
+    if (applicationId) {
+        formData.append('application_id', applicationId);
+    }
 
     try {
         const response = await fetch(API_BASE_URL + '/applications/', {

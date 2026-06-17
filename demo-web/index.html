@@ -285,13 +285,15 @@
             const safeDepartment = escapeHtml(app.department || '-');
             const safeBuilding = escapeHtml(app.building || '-');
             const safeRoomNumber = escapeHtml(app.room_number || '-');
-            const attachmentIcon = app.has_attachments ? '📎' : '';
+            const attachmentInfo = app.has_attachments
+                ? `<span style="color: #1890ff; font-size: 12px; margin-left: 8px;">📎 ${app.attachment_count || ''}个附件</span>`
+                : '';
 
             card.innerHTML = `
                 ${showCheckbox ? `<input type="checkbox" class="approval-checkbox" data-approval-id="${myApproval.approval_id}" data-approver-id="${myApproval.approver_id}" data-decision="${myApproval.decision}" onclick="event.stopPropagation(); toggleBatchBar();" style="width: 20px; height: 20px; cursor: pointer;">` : ''}
                 <div style="flex: 1;" onclick="openApplication('${appId}')">
                     <div class="flex-row justify-between align-center" style="margin-bottom: 8px;">
-                        <span style="font-size: 16px; font-weight: bold;">${safeStudentName} ${attachmentIcon}</span>
+                        <span style="font-size: 16px; font-weight: bold;">${safeStudentName}${attachmentInfo}</span>
                         <span class="tag ${statusInfo.cls}">${statusInfo.text}</span>
                     </div>
                     <div style="margin-bottom: 4px; font-size: 14px; color: #666;">
@@ -443,13 +445,30 @@
         approvalsHtml += '</div>';
 
         // Render attachments
-        let attachmentsHtml = '<div class="card"><div style="font-size: 16px; font-weight: bold; margin-bottom: 10px;">附件</div>';
+        let attachmentsHtml = `<div class="card"><div style="font-size: 16px; font-weight: bold; margin-bottom: 10px;">附件 ${attachments.length > 0 ? `(${attachments.length}个)` : ''}</div>`;
         if (attachments && attachments.length > 0) {
             attachments.forEach(att => {
-                attachmentsHtml += '<div style="margin-bottom: 8px;"><a href="' + att.file_url + '" target="_blank">' + att.file_name + '</a></div>';
+                const sizeKB = (att.file_size / 1024).toFixed(1);
+                attachmentsHtml += `
+                <div style="display: flex; align-items: center; padding: 8px; border: 1px solid #f0f0f0; border-radius: 4px; margin-bottom: 8px;">
+                  <span style="font-size: 20px; margin-right: 10px;">📄</span>
+                  <div style="flex: 1;">
+                    <div style="font-weight: 500;">${att.file_name}</div>
+                    <div style="font-size: 12px; color: #999;">${sizeKB} KB</div>
+                  </div>
+                  <a href="${API_BASE_URL}/applications/${appData.application_id}/attachments/${att.attachment_id}/download/?preview=true" target="_blank"
+                     style="padding: 4px 12px; background: #1890ff; color: white; border: none; border-radius: 4px; text-decoration: none; margin-right: 8px;">
+                    预览
+                  </a>
+                  <a href="${API_BASE_URL}/applications/${appData.application_id}/attachments/${att.attachment_id}/download/" target="_blank"
+                     style="padding: 4px 12px; background: #52c41a; color: white; border: none; border-radius: 4px; text-decoration: none;">
+                    下载
+                  </a>
+                </div>
+                `;
             });
         } else {
-            attachmentsHtml += '<div style="color: #999;">无附件</div>';
+            attachmentsHtml += '<div style="color: #999; padding: 20px; text-align: center;">暂无附件</div>';
         }
         attachmentsHtml += '</div>';
 
@@ -1198,7 +1217,7 @@
 
             // 步骤3: 提交申请
             btn.textContent = '提交申请中...';
-            const result = await apiSubmitApplication(phone, reason, leaveDate);
+            const result = await apiSubmitApplication(phone, reason, leaveDate, draftId);
             if (result.success) {
                 showToast('申请提交成功', 'success');
                 document.getElementById('contactPhone').value = '';

@@ -1,7 +1,7 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-06-17T07:41:55.799Z
-> Files: 739 tracked | Anatomy hits: 0 | Misses: 0
+> Auto-maintained by OpenWolf. Last scanned: 2026-06-17T08:46:45.891Z
+> Files: 743 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../../../tmp/
 
@@ -66,7 +66,7 @@
 - `frontend-server.service` (~92 tok)
 - `graduation-frontend-nocache.service` (~108 tok)
 - `PRODUCTION-READY.md` — claude-codex-gemini-collab - PRODUCTION READY (~1835 tok)
-- `PROJECT-QUICK-REF.md` — 毕业离校系统 - 项目速查手册 (~2667 tok)
+- `PROJECT-QUICK-REF.md` — 毕业离校系统 - 项目速查手册 (~2685 tok)
 - `pyproject.toml` — Claude-Codex-Gemini Collaboration Framework (~185 tok)
 - `README.md` — Project documentation (~451 tok)
 - `response.json` (~469 tok)
@@ -626,6 +626,11 @@
 
 - `codex-api-failure-20260614.md` — Codex API连接失败问题记录 (~737 tok)
 
+## .trellis/spec/backend/
+
+- `api-contracts.md` — API Contracts (~1092 tok)
+- `index.md` — Backend Development Guidelines (~331 tok)
+
 ## .trellis/spec/frontend/
 
 - `index.md` — Frontend Development Guidelines (~339 tok)
@@ -641,6 +646,14 @@
 - `design.md` — 技术设计：前端服务守护进程 (~768 tok)
 - `implement.md` — 执行计划：前端服务守护进程配置 (~1549 tok)
 - `prd.md` — 为毕业离校系统前端服务配置守护进程保证业务连续性 (~429 tok)
+
+## .trellis/tasks/06-17-06-17-admin-attachment-display/
+
+- `prd.md` — 完善管理员端附件显示功能 (~160 tok)
+
+## .trellis/tasks/06-17-06-17-fix-export-permission/
+
+- `prd.md` — 修复导出功能权限漏洞 (~139 tok)
 
 ## .trellis/tasks/06-17-fix-attachment-upload-draft-flow/
 
@@ -688,9 +701,9 @@
 - `models.py` — Model: Application, 11 fields (~574 tok)
 - `permissions.py` — can_view_application (~296 tok)
 - `providers.py` — from: check_status (~1187 tok)
-- `serializers.py` — ApplicationListSerializer: get_has_attachments, get_approvals, get_has_attachments, get_approvals + (~1064 tok)
+- `serializers.py` — ApplicationListSerializer: get_has_attachments, get_attachment_count, get_approvals, get_has_attachm (~1122 tok)
 - `urls.py` (~98 tok)
-- `views.py` — applications_view, list_applications, create_application, get_application (~3891 tok)
+- `views.py` — applications_view, list_applications, create_application, get_application (~4055 tok)
 
 ## backend/apps/applications/management/
 
@@ -711,7 +724,7 @@
 - `pagination.py` — ApprovalLimitOffsetPagination: get_paginated_response (~116 tok)
 - `serializers.py` — ApplicationBriefSerializer: get_attachments (~1326 tok)
 - `urls.py` (~173 tok)
-- `views.py` — sanitize_excel_formula, list_approvals, get_approval, approve_approval (~8022 tok)
+- `views.py` — sanitize_excel_formula, list_approvals, get_approval, approve_approval (~8272 tok)
 
 ## backend/apps/approvals/migrations/
 
@@ -831,7 +844,7 @@
 
 - `admin-sso-callback.html` — SSO登录中... (~735 tok)
 - `batch-fix-console.js` — 临时修复脚本 - 在浏览器控制台粘贴执行 (~1042 tok)
-- `index.html` — 毕业离校申请系统 - UI Demo (~24685 tok)
+- `index.html` — 毕业离校申请系统 - UI Demo (~25409 tok)
 - `mobile-sso-callback.html` — SSO登录中... (~659 tok)
 - `responsive-adapter-example.html` — Declares deviceAdapter (~579 tok)
 - `sso-receiver.html` — 登录中... (~410 tok)
@@ -843,7 +856,7 @@
 
 ## demo-web/js/
 
-- `api.js` — API Integration Layer (~3174 tok)
+- `api.js` — API Integration Layer (~3217 tok)
 - `responsive-adapter.js` — 响应式适配器 - 移动端自动适配模块 (~1783 tok)
 
 ## docs/

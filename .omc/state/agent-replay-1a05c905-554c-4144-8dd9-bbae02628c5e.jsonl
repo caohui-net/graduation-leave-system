@@ -8,3 +8,4 @@
 {"t":0,"agent":"system","event":"skill_invoked","skill_name":"trellis-update-spec"}
 {"t":0,"agent":"system","event":"skill_invoked","skill_name":"trellis:finish-work"}
 {"t":0,"agent":"system","event":"skill_invoked","skill_name":"trellis-update-spec"}
+{"t":0,"agent":"system","event":"skill_invoked","skill_name":"trellis-update-spec"}

@@ -2500,3 +2500,54 @@
 | 15:40 | Edited .trellis/tasks/06-17-fix-attachment-workflow-and-ui/prd.md | expanded (+159 lines) | ~779 |
 | 15:41 | Created .trellis/tasks/06-17-fix-attachment-workflow-and-ui/design.md | — | ~2306 |
 | 15:41 | Created .trellis/tasks/06-17-fix-attachment-workflow-and-ui/implement.md | — | ~1403 |
+| 15:42 | Edited backend/apps/applications/views.py | modified is_valid() | ~931 |
+| 15:43 | Edited backend/apps/applications/serializers.py | modified get_has_attachments() | ~481 |
+| 15:43 | Edited demo-web/js/api.js | added 1 condition(s) | ~96 |
+| 15:43 | Edited demo-web/index.html | 3→3 lines | ~42 |
+| 15:43 | Edited demo-web/index.html | 12→14 lines | ~314 |
+| 15:44 | Edited demo-web/index.html | modified if() | ~485 |
+
+## Session: 2026-06-17 15:46
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 15:50 | Created .trellis/spec/backend/api-contracts.md | — | ~1165 |
+| 15:50 | Edited .trellis/spec/backend/index.md | 7→8 lines | ~171 |
+| 15:50 | Session end: 2 writes across 2 files (api-contracts.md, index.md) | 3 reads | ~26483 tok |
+| 15:51 | Session end: 2 writes across 2 files (api-contracts.md, index.md) | 3 reads | ~26483 tok |
+| 15:53 | Session end: 2 writes across 2 files (api-contracts.md, index.md) | 3 reads | ~26483 tok |
+| 15:54 | Edited .trellis/tasks/06-17-06-17-admin-attachment-display/prd.md | expanded (+20 lines) | ~170 |
+| 15:56 | Edited demo-web/index.html | 8→8 lines | ~217 |
+| 15:57 | Session end: 4 writes across 4 files (api-contracts.md, index.md, prd.md, index.html) | 5 reads | ~30953 tok |
+| 16:00 | Edited demo-web/js/api.js | modified apiGetAttachments() | ~125 |
+| 16:01 | Session end: 5 writes across 5 files (api-contracts.md, index.md, prd.md, index.html, api.js) | 6 reads | ~34281 tok |
+| 16:03 | Edited demo-web/index.html | 8→8 lines | ~196 |
+| 16:04 | Session end: 6 writes across 5 files (api-contracts.md, index.md, prd.md, index.html, api.js) | 6 reads | ~34524 tok |
+| 16:06 | Edited demo-web/index.html | added error handling | ~396 |
+| 16:06 | Edited demo-web/index.html | 8→8 lines | ~162 |
+| 16:07 | Session end: 8 writes across 5 files (api-contracts.md, index.md, prd.md, index.html, api.js) | 6 reads | ~35100 tok |
+| 16:09 | Session end: 8 writes across 5 files (api-contracts.md, index.md, prd.md, index.html, api.js) | 6 reads | ~35100 tok |
+| 16:11 | Session end: 8 writes across 5 files (api-contracts.md, index.md, prd.md, index.html, api.js) | 6 reads | ~35100 tok |
+| 16:12 | Session end: 8 writes across 5 files (api-contracts.md, index.md, prd.md, index.html, api.js) | 6 reads | ~35100 tok |
+| 16:15 | Session end: 8 writes across 5 files (api-contracts.md, index.md, prd.md, index.html, api.js) | 6 reads | ~35100 tok |
+| 16:16 | Session end: 8 writes across 5 files (api-contracts.md, index.md, prd.md, index.html, api.js) | 6 reads | ~35100 tok |
+| 16:18 | Session end: 8 writes across 5 files (api-contracts.md, index.md, prd.md, index.html, api.js) | 6 reads | ~35100 tok |
+| 16:20 | Session end: 8 writes across 5 files (api-contracts.md, index.md, prd.md, index.html, api.js) | 7 reads | ~39228 tok |
+| 16:21 | Session end: 8 writes across 5 files (api-contracts.md, index.md, prd.md, index.html, api.js) | 7 reads | ~39228 tok |
+| 16:21 | Session end: 8 writes across 5 files (api-contracts.md, index.md, prd.md, index.html, api.js) | 7 reads | ~39228 tok |
+| 16:24 | Session end: 8 writes across 5 files (api-contracts.md, index.md, prd.md, index.html, api.js) | 7 reads | ~39228 tok |
+| 16:26 | Session end: 8 writes across 5 files (api-contracts.md, index.md, prd.md, index.html, api.js) | 7 reads | ~39228 tok |
+| 16:30 | Session end: 8 writes across 5 files (api-contracts.md, index.md, prd.md, index.html, api.js) | 8 reads | ~39887 tok |
+| 16:33 | Session end: 8 writes across 5 files (api-contracts.md, index.md, prd.md, index.html, api.js) | 10 reads | ~42319 tok |
+| 16:34 | Session end: 8 writes across 5 files (api-contracts.md, index.md, prd.md, index.html, api.js) | 10 reads | ~42319 tok |
+| 16:36 | Session end: 8 writes across 5 files (api-contracts.md, index.md, prd.md, index.html, api.js) | 10 reads | ~42319 tok |
+| 16:37 | Edited .trellis/tasks/06-17-06-17-fix-export-permission/prd.md | expanded (+15 lines) | ~148 |
+| 16:39 | Edited backend/apps/approvals/views.py | modified export_approvals() | ~430 |
+| 16:43 | Session end: 10 writes across 6 files (api-contracts.md, index.md, prd.md, index.html, api.js) | 12 reads | ~51274 tok |
+| 16:44 | Session end: 10 writes across 6 files (api-contracts.md, index.md, prd.md, index.html, api.js) | 12 reads | ~51274 tok |
+| 16:46 | Edited PROJECT-QUICK-REF.md | 5→7 lines | ~43 |
+
+## Session: 2026-06-17 16:53
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|

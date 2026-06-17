@@ -243,44 +243,44 @@
   "hotPaths": [
     {
       "path": "demo-web/index.html",
-      "accessCount": 544,
-      "lastAccessed": 1781681692138,
+      "accessCount": 562,
+      "lastAccessed": 1781685506614,
       "type": "file"
     },
     {
       "path": "backend/apps/approvals/views.py",
-      "accessCount": 104,
-      "lastAccessed": 1781677169613,
+      "accessCount": 107,
+      "lastAccessed": 1781685555614,
       "type": "file"
     },
     {
       "path": "backend/apps/sso_qingganlian/views.py",
-      "accessCount": 89,
-      "lastAccessed": 1781598329075,
+      "accessCount": 91,
+      "lastAccessed": 1781684393964,
       "type": "file"
     },
     {
       "path": "demo-web/mobile-sso-callback.html",
-      "accessCount": 65,
-      "lastAccessed": 1781603110979,
+      "accessCount": 66,
+      "lastAccessed": 1781684998613,
       "type": "file"
     },
     {
       "path": "backend/apps/applications/views.py",
-      "accessCount": 48,
-      "lastAccessed": 1781681754146,
+      "accessCount": 51,
+      "lastAccessed": 1781682944020,
       "type": "file"
     },
     {
       "path": "PROJECT-QUICK-REF.md",
-      "accessCount": 44,
-      "lastAccessed": 1781599925247,
+      "accessCount": 48,
+      "lastAccessed": 1781686459534,
       "type": "file"
     },
     {
       "path": "demo-web/js/api.js",
-      "accessCount": 37,
-      "lastAccessed": 1781681767154,
+      "accessCount": 40,
+      "lastAccessed": 1781683242986,
       "type": "file"
     },
     {
@@ -291,8 +291,14 @@
     },
     {
       "path": "backend/apps/sso_qingganlian/callback_views.py",
-      "accessCount": 27,
-      "lastAccessed": 1781598352413,
+      "accessCount": 28,
+      "lastAccessed": 1781685183197,
+      "type": "file"
+    },
+    {
+      "path": "demo-web/admin-sso-callback.html",
+      "accessCount": 20,
+      "lastAccessed": 1781685149745,
       "type": "file"
     },
     {
@@ -302,15 +308,9 @@
       "type": "file"
     },
     {
-      "path": "demo-web/admin-sso-callback.html",
-      "accessCount": 18,
-      "lastAccessed": 1781598142330,
-      "type": "file"
-    },
-    {
       "path": "backend/apps/applications/serializers.py",
-      "accessCount": 15,
-      "lastAccessed": 1781602958319,
+      "accessCount": 16,
+      "lastAccessed": 1781682185288,
       "type": "file"
     },
     {

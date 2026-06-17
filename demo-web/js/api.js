@@ -292,7 +292,8 @@ async function apiGetAttachments(applicationId) {
             headers: getAuthHeaders()
         });
         if (response.ok) {
-            return await response.json();
+            const data = await response.json();
+            return data.attachments || [];
         }
     } catch (e) {
         console.error("Get attachments failed:", e);

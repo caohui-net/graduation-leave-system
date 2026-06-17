@@ -2385,3 +2385,93 @@
 | 15:27 | Edited PROJECT-QUICK-REF.md | expanded (+15 lines) | ~273 |
 | 15:32 | Created .trellis/spec/guides/systemd-daemon-setup.md | — | ~1124 |
 | 15:32 | Edited .trellis/spec/guides/index.md | 4→5 lines | ~133 |
+| 16:20 | Session end: 8 writes across 6 files (graduation-frontend.service, alert-graduation-frontend.sh, alert-graduation-frontend.service, PROJECT-QUICK-REF.md, systemd-daemon-setup.md) | 5 reads | ~5591 tok |
+| 16:22 | Edited demo-web/admin-sso-callback.html | added error handling | ~435 |
+| 16:22 | Session end: 9 writes across 7 files (graduation-frontend.service, alert-graduation-frontend.sh, alert-graduation-frontend.service, PROJECT-QUICK-REF.md, systemd-daemon-setup.md) | 6 reads | ~6459 tok |
+| 16:24 | Session end: 9 writes across 7 files (graduation-frontend.service, alert-graduation-frontend.sh, alert-graduation-frontend.service, PROJECT-QUICK-REF.md, systemd-daemon-setup.md) | 6 reads | ~6459 tok |
+| 16:25 | Edited backend/apps/sso_qingganlian/callback_views.py | added 3 import(s) | ~153 |
+| 16:25 | Edited backend/apps/sso_qingganlian/callback_views.py | modified startswith() | ~367 |
+
+## Session: 2026-06-16 16:26
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 16:29 | Edited PROJECT-QUICK-REF.md | 8→8 lines | ~61 |
+| 16:30 | Session end: 1 writes across 1 files (PROJECT-QUICK-REF.md) | 2 reads | ~4290 tok |
+| 16:34 | Edited demo-web/index.html | modified loadApprovals() | ~270 |
+| 16:34 | Edited demo-web/index.html | modified if() | ~349 |
+| 16:35 | Edited demo-web/index.html | modified renderApplications() | ~175 |
+| 16:35 | Session end: 4 writes across 2 files (PROJECT-QUICK-REF.md, index.html) | 3 reads | ~29232 tok |
+| 16:38 | Edited demo-web/index.html | added 1 condition(s) | ~133 |
+| 16:38 | Edited demo-web/index.html | added 2 condition(s) | ~141 |
+| 16:41 | Session end: 6 writes across 2 files (PROJECT-QUICK-REF.md, index.html) | 3 reads | ~29659 tok |
+| 16:42 | Edited demo-web/index.html | added 1 condition(s) | ~158 |
+| 16:46 | Session end: 7 writes across 2 files (PROJECT-QUICK-REF.md, index.html) | 3 reads | ~29927 tok |
+| 16:46 | Edited demo-web/index.html | modified if() | ~57 |
+| 16:47 | Session end: 8 writes across 2 files (PROJECT-QUICK-REF.md, index.html) | 3 reads | ~30045 tok |
+| 16:49 | Edited demo-web/index.html | added 1 condition(s) | ~209 |
+| 16:49 | Edited demo-web/index.html | modified if() | ~96 |
+| 16:49 | Session end: 10 writes across 2 files (PROJECT-QUICK-REF.md, index.html) | 3 reads | ~30371 tok |
+| 16:50 | Session end: 10 writes across 2 files (PROJECT-QUICK-REF.md, index.html) | 3 reads | ~30371 tok |
+| 16:53 | Edited .trellis/spec/frontend/quality-guidelines.md | expanded (+53 lines) | ~504 |
+| 16:53 | Session end: 11 writes across 3 files (PROJECT-QUICK-REF.md, index.html, quality-guidelines.md) | 9 reads | ~33200 tok |
+| 16:55 | Session end: 11 writes across 3 files (PROJECT-QUICK-REF.md, index.html, quality-guidelines.md) | 9 reads | ~33200 tok |
+| 16:55 | Session end: 11 writes across 3 files (PROJECT-QUICK-REF.md, index.html, quality-guidelines.md) | 9 reads | ~33200 tok |
+| 16:57 | Session end: 11 writes across 3 files (PROJECT-QUICK-REF.md, index.html, quality-guidelines.md) | 9 reads | ~33200 tok |
+| 17:01 | Session end: 11 writes across 3 files (PROJECT-QUICK-REF.md, index.html, quality-guidelines.md) | 9 reads | ~33230 tok |
+| 17:04 | Session end: 11 writes across 3 files (PROJECT-QUICK-REF.md, index.html, quality-guidelines.md) | 9 reads | ~33230 tok |
+| 17:06 | Session end: 11 writes across 3 files (PROJECT-QUICK-REF.md, index.html, quality-guidelines.md) | 9 reads | ~33230 tok |
+| 17:14 | Session end: 11 writes across 3 files (PROJECT-QUICK-REF.md, index.html, quality-guidelines.md) | 9 reads | ~33230 tok |
+| 17:17 | Session end: 11 writes across 3 files (PROJECT-QUICK-REF.md, index.html, quality-guidelines.md) | 9 reads | ~33230 tok |
+| 17:19 | Session end: 11 writes across 3 files (PROJECT-QUICK-REF.md, index.html, quality-guidelines.md) | 9 reads | ~33230 tok |
+| 17:21 | Session end: 11 writes across 3 files (PROJECT-QUICK-REF.md, index.html, quality-guidelines.md) | 9 reads | ~33230 tok |
+
+## Session: 2026-06-16 17:37
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 17:42 | Edited backend/apps/applications/serializers.py | modified get_has_attachments() | ~371 |
+| 17:42 | Edited backend/apps/applications/serializers.py | modified get_has_attachments() | ~360 |
+| 17:42 | Edited demo-web/index.html | modified toLocaleString() | ~453 |
+| 17:43 | Session end: 3 writes across 2 files (serializers.py, index.html) | 5 reads | ~27231 tok |
+| 17:45 | Session end: 3 writes across 2 files (serializers.py, index.html) | 7 reads | ~27890 tok |
+| 17:47 | Edited demo-web/index.html | added 1 condition(s) | ~296 |
+| 17:47 | Session end: 4 writes across 2 files (serializers.py, index.html) | 7 reads | ~28323 tok |
+| 17:50 | Edited backend/apps/applications/views.py | 3→3 lines | ~46 |
+| 17:50 | Session end: 5 writes across 3 files (serializers.py, index.html, views.py) | 8 reads | ~32257 tok |
+| 17:55 | Edited demo-web/js/api.js | added optional chaining | ~262 |
+| 17:55 | Session end: 6 writes across 4 files (serializers.py, index.html, views.py, api.js) | 11 reads | ~37502 tok |
+| 17:55 | Session end: 6 writes across 4 files (serializers.py, index.html, views.py, api.js) | 11 reads | ~37502 tok |
+| 17:56 | Session end: 6 writes across 4 files (serializers.py, index.html, views.py, api.js) | 11 reads | ~37502 tok |
+| 10:29 | Session end: 6 writes across 4 files (serializers.py, index.html, views.py, api.js) | 11 reads | ~37502 tok |
+| 10:30 | Session end: 6 writes across 4 files (serializers.py, index.html, views.py, api.js) | 11 reads | ~37502 tok |
+| 10:33 | Edited demo-web/index.html | 2→3 lines | ~68 |
+| 10:33 | Edited demo-web/index.html | 6→6 lines | ~87 |
+| 10:34 | Session end: 8 writes across 4 files (serializers.py, index.html, views.py, api.js) | 11 reads | ~37789 tok |
+| 10:37 | Edited backend/apps/approvals/views.py | 4→4 lines | ~51 |
+| 10:38 | Edited backend/apps/approvals/views.py | 7→11 lines | ~134 |
+| 10:38 | Session end: 10 writes across 4 files (serializers.py, index.html, views.py, api.js) | 12 reads | ~45882 tok |
+| 10:39 | Session end: 10 writes across 4 files (serializers.py, index.html, views.py, api.js) | 12 reads | ~45882 tok |
+| 14:01 | Session end: 10 writes across 4 files (serializers.py, index.html, views.py, api.js) | 12 reads | ~45882 tok |
+| 14:03 | Session end: 10 writes across 4 files (serializers.py, index.html, views.py, api.js) | 12 reads | ~45882 tok |
+| 14:05 | Edited backend/apps/approvals/views.py | modified export_approvals() | ~91 |
+| 14:05 | Edited demo-web/index.html | modified if() | ~87 |
+| 14:06 | Session end: 12 writes across 4 files (serializers.py, index.html, views.py, api.js) | 12 reads | ~46108 tok |
+| 14:08 | Session end: 12 writes across 4 files (serializers.py, index.html, views.py, api.js) | 12 reads | ~46108 tok |
+| 14:16 | Edited backend/apps/approvals/views.py | modified get_statistics() | ~413 |
+| 14:16 | Edited demo-web/index.html | 20→20 lines | ~191 |
+| 14:17 | Session end: 14 writes across 4 files (serializers.py, index.html, views.py, api.js) | 12 reads | ~46765 tok |
+| 14:19 | Edited backend/apps/approvals/views.py | 12→12 lines | ~176 |
+| 14:19 | Session end: 15 writes across 4 files (serializers.py, index.html, views.py, api.js) | 12 reads | ~46941 tok |
+| 14:23 | Session end: 15 writes across 4 files (serializers.py, index.html, views.py, api.js) | 12 reads | ~46941 tok |
+| 14:24 | Session end: 15 writes across 4 files (serializers.py, index.html, views.py, api.js) | 12 reads | ~46942 tok |
+| 14:27 | Edited demo-web/index.html | 13→9 lines | ~195 |
+| 14:28 | Edited demo-web/index.html | 9→5 lines | ~118 |
+| 14:28 | Edited demo-web/index.html | 9→5 lines | ~83 |
+| 14:29 | Session end: 18 writes across 4 files (serializers.py, index.html, views.py, api.js) | 12 reads | ~47203 tok |
+| 14:51 | Session end: 18 writes across 4 files (serializers.py, index.html, views.py, api.js) | 12 reads | ~47203 tok |
+
+## Session: 2026-06-17 14:55
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|

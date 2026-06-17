@@ -8,6 +8,9 @@ from rest_framework_simplejwt.tokens import RefreshToken
 
 from apps.users.models import User
 from .models import SSOUserMapping
+from .client import QingganlanClient
+from . import settings as sso_settings
+from .exceptions import SSOAPIError, SSOTokenExpiredError
 
 logger = logging.getLogger(__name__)
 
@@ -34,6 +37,31 @@ def sso_callback(request):
     # 容错：去除"bearer "前缀（SAAS平台可能错误添加）
     if authorization and authorization.lower().startswith('bearer '):
         authorization = authorization[7:].strip()
+
+    # 容错：如果没有username，调用青橄榄API获取user_code
+    if authorization and not username:
+        try:
+            client = QingganlanClient(
+                app_key=sso_settings.MOBILE_APP_KEY,
+                app_secret=sso_settings.MOBILE_APP_SECRET,
+                env='prod',
+                api_type='mobile'
+            )
+            # 使用移动端API获取user_code
+            token_response = client.get_user_code_by_token(
+                tenant_code=sso_settings.MOBILE_TENANT_CODE,
+                appid=sso_settings.MOBILE_APPID,
+                saas_wap_token=authorization
+            )
+            username = token_response.get('data', {}).get('user_code')
+            if username:
+                logger.info(f"Extracted user_code from API: {username}")
+            else:
+                logger.error(f"API returned no user_code: {token_response}")
+        except (SSOAPIError, SSOTokenExpiredError) as e:
+            logger.error(f"Failed to get user_code from API: {e.code} - {e.message}")
+        except Exception as e:
+            logger.error(f"Failed to call SSO API: {str(e)}")
 
     if not authorization or not username:
         logger.error(f"SSO callback missing params: {dict(params)}")

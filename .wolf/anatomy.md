@@ -1,6 +1,6 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-06-16T07:32:59.320Z
+> Auto-maintained by OpenWolf. Last scanned: 2026-06-17T06:28:41.306Z
 > Files: 729 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../../../tmp/
@@ -62,7 +62,7 @@
 - `frontend-server.service` (~92 tok)
 - `graduation-frontend-nocache.service` (~108 tok)
 - `PRODUCTION-READY.md` — claude-codex-gemini-collab - PRODUCTION READY (~1835 tok)
-- `PROJECT-QUICK-REF.md` — 毕业离校系统 - 项目速查手册 (~2676 tok)
+- `PROJECT-QUICK-REF.md` — 毕业离校系统 - 项目速查手册 (~2667 tok)
 - `pyproject.toml` — Claude-Codex-Gemini Collaboration Framework (~185 tok)
 - `README.md` — Project documentation (~451 tok)
 - `response.json` (~469 tok)
@@ -625,7 +625,7 @@
 ## .trellis/spec/frontend/
 
 - `index.md` — Frontend Development Guidelines (~339 tok)
-- `quality-guidelines.md` — Quality Guidelines (~1009 tok)
+- `quality-guidelines.md` — Quality Guidelines (~1473 tok)
 
 ## .trellis/spec/guides/
 
@@ -672,9 +672,9 @@
 - `models.py` — Model: Application, 11 fields (~574 tok)
 - `permissions.py` — can_view_application (~296 tok)
 - `providers.py` — from: check_status (~1187 tok)
-- `serializers.py` — ApplicationListSerializer: get_approvals, get_approvals, validate_leave_date (~890 tok)
+- `serializers.py` — ApplicationListSerializer: get_has_attachments, get_approvals, get_has_attachments, get_approvals + (~1064 tok)
 - `urls.py` (~98 tok)
-- `views.py` — applications_view, list_applications, create_application, get_application (~3888 tok)
+- `views.py` — applications_view, list_applications, create_application, get_application (~3891 tok)
 
 ## backend/apps/applications/management/
 
@@ -695,7 +695,7 @@
 - `pagination.py` — ApprovalLimitOffsetPagination: get_paginated_response (~116 tok)
 - `serializers.py` — ApplicationBriefSerializer: get_attachments (~1326 tok)
 - `urls.py` (~173 tok)
-- `views.py` — sanitize_excel_formula, list_approvals, get_approval, approve_approval (~7899 tok)
+- `views.py` — sanitize_excel_formula, list_approvals, get_approval, approve_approval (~8022 tok)
 
 ## backend/apps/approvals/migrations/
 
@@ -730,7 +730,7 @@
 - `__init__.py` — 青橄榄平台SSO对接模块 (~26 tok)
 - `apps.py` — Declares SsoQingganlianConfig (~57 tok)
 - `auth.py` — generate_rand_str, generate_signature, generate_request_params (~391 tok)
-- `callback_views.py` — SSO HTML Callback Views - 直接跳转业务页面 (~1282 tok)
+- `callback_views.py` — SSO HTML Callback Views - 直接跳转业务页面 (~1697 tok)
 - `client.py` — QingganlanClient: get_user_code_by_token, get_user_info, verify_admin_user (~1712 tok)
 - `exceptions.py` — 青橄榄SSO异常类 (~123 tok)
 - `models.py` — Model: SSOUserMapping, 16 fields (~715 tok)
@@ -813,9 +813,9 @@
 
 ## demo-web/
 
-- `admin-sso-callback.html` — SSO登录中... (~402 tok)
+- `admin-sso-callback.html` — SSO登录中... (~735 tok)
 - `batch-fix-console.js` — 临时修复脚本 - 在浏览器控制台粘贴执行 (~1042 tok)
-- `index.html` — 毕业离校申请系统 - UI Demo (~24091 tok)
+- `index.html` — 毕业离校申请系统 - UI Demo (~24446 tok)
 - `mobile-sso-callback.html` — SSO登录中... (~659 tok)
 - `responsive-adapter-example.html` — Declares deviceAdapter (~579 tok)
 - `sso-receiver.html` — 登录中... (~410 tok)
@@ -827,7 +827,7 @@
 
 ## demo-web/js/
 
-- `api.js` — API Integration Layer (~2733 tok)
+- `api.js` — API Integration Layer (~2994 tok)
 - `responsive-adapter.js` — 响应式适配器 - 移动端自动适配模块 (~1783 tok)
 
 ## docs/

@@ -17,10 +17,19 @@
       "status": "completed",
       "completed_at": "2026-06-16T07:31:44.539Z",
       "duration_ms": 103384
+    },
+    {
+      "agent_id": "a2aeddf7bbed90126",
+      "agent_type": "trellis-check",
+      "started_at": "2026-06-16T08:51:33.187Z",
+      "parent_mode": "none",
+      "status": "completed",
+      "completed_at": "2026-06-16T08:52:44.580Z",
+      "duration_ms": 71393
     }
   ],
-  "total_spawned": 2,
-  "total_completed": 2,
+  "total_spawned": 3,
+  "total_completed": 3,
   "total_failed": 0,
-  "last_updated": "2026-06-16T07:31:44.640Z"
+  "last_updated": "2026-06-16T08:52:44.733Z"
 }

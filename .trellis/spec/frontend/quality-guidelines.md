@@ -148,6 +148,69 @@ journalctl --user -u graduation-frontend -f
 
 ---
 
+## API Integration Patterns
+
+### Required: Multi-step Form Submission with Attachments
+
+**Context**: User form submissions that include file uploads must follow a multi-step flow to ensure data integrity and provide proper user feedback.
+
+**Pattern**: Draft → Upload → Submit
+
+```javascript
+async function submitApplication() {
+    // Step 1: Create draft
+    btn.textContent = '创建草稿中...';
+    const draft = await apiGetOrCreateDraft();
+    if (!draft || draft.error) {
+        showToast('创建草稿失败：' + draft.error.message, 'error');
+        return;
+    }
+
+    // Step 2: Upload attachments
+    if (uploadedFiles.length > 0) {
+        for (let i = 0; i < uploadedFiles.length; i++) {
+            btn.textContent = `上传附件 ${i+1}/${uploadedFiles.length}...`;
+            const result = await apiUploadAttachment(draft.application_id, uploadedFiles[i]);
+            if (!result) {
+                showToast(`附件上传失败。草稿已保存(ID: ${draft.application_id})，请重试`, 'error');
+                return; // Stop on failure, preserve draft
+            }
+        }
+    }
+
+    // Step 3: Submit final application
+    btn.textContent = '提交申请中...';
+    const result = await apiSubmitApplication(phone, reason, leaveDate);
+}
+```
+
+**Why**: 
+- Backend APIs are separated: `/applications/draft/` → `/applications/{id}/attachments/` → `/applications/`
+- Fail-fast with preserved state: draft + uploaded files remain on failure
+- Clear user feedback at each step
+
+**Wrong: One-shot submission with ignored attachments**
+```javascript
+// ❌ Don't send files directly in FormData - backend ignores them
+const formData = new FormData();
+formData.append('contact_phone', phone);
+files.forEach(f => formData.append('attachments', f)); // Silently dropped
+await fetch('/applications/', {method: 'POST', body: formData});
+```
+
+**API timeout for file uploads**: Use 30-second timeout (not default 8s)
+```javascript
+const response = await fetchWithTimeout(url, options, 30000);
+```
+
+**Tested**: 
+- Normal flow (2 attachments): ✓ All steps complete, attachments saved
+- No attachments: ✓ Skips upload step
+- Upload failure: ✓ Preserves draft, prompts retry
+- Verified: commit `3d83628`, test script `/tmp/test_attachment_upload.py`
+
+---
+
 ## Testing Requirements
 
 - Any change to `scripts/serve-frontend.py` must run `pytest tests/test_serve_frontend.py -q` or equivalent raw pytest command.

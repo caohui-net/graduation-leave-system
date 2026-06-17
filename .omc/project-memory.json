@@ -243,8 +243,8 @@
   "hotPaths": [
     {
       "path": "demo-web/index.html",
-      "accessCount": 540,
-      "lastAccessed": 1781679676658,
+      "accessCount": 544,
+      "lastAccessed": 1781681692138,
       "type": "file"
     },
     {
@@ -267,8 +267,8 @@
     },
     {
       "path": "backend/apps/applications/views.py",
-      "accessCount": 47,
-      "lastAccessed": 1781679298017,
+      "accessCount": 48,
+      "lastAccessed": 1781681754146,
       "type": "file"
     },
     {
@@ -278,15 +278,15 @@
       "type": "file"
     },
     {
-      "path": "backend/apps/sso_qingganlian/client.py",
-      "accessCount": 31,
-      "lastAccessed": 1781555807779,
+      "path": "demo-web/js/api.js",
+      "accessCount": 37,
+      "lastAccessed": 1781681767154,
       "type": "file"
     },
     {
-      "path": "demo-web/js/api.js",
-      "accessCount": 30,
-      "lastAccessed": 1781603702872,
+      "path": "backend/apps/sso_qingganlian/client.py",
+      "accessCount": 31,
+      "lastAccessed": 1781555807779,
       "type": "file"
     },
     {

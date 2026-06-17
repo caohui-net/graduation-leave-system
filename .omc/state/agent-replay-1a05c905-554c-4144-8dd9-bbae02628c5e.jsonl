@@ -7,3 +7,4 @@
 {"t":0,"agent":"a2aeddf","agent_type":"trellis-check","event":"agent_stop","success":true,"duration_ms":71393}
 {"t":0,"agent":"system","event":"skill_invoked","skill_name":"trellis-update-spec"}
 {"t":0,"agent":"system","event":"skill_invoked","skill_name":"trellis:finish-work"}
+{"t":0,"agent":"system","event":"skill_invoked","skill_name":"trellis-update-spec"}

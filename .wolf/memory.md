@@ -2475,3 +2475,28 @@
 
 | Time | Action | File(s) | Outcome | ~Tokens |
 |------|--------|---------|---------|--------|
+| 15:07 | Edited .trellis/tasks/06-17-fix-attachment-upload-draft-flow/prd.md | expanded (+90 lines) | ~544 |
+| 15:08 | Created .trellis/tasks/06-17-fix-attachment-upload-draft-flow/design.md | — | ~1872 |
+| 15:09 | Created .trellis/tasks/06-17-fix-attachment-upload-draft-flow/implement.md | — | ~1897 |
+| 15:09 | Edited demo-web/js/api.js | added error handling | ~225 |
+| 15:10 | Edited demo-web/js/api.js | modified apiSubmitApplication() | ~66 |
+| 15:10 | Edited demo-web/js/api.js | fetch() → fetchWithTimeout() | ~147 |
+| 15:10 | Edited demo-web/index.html | added 3 condition(s) | ~504 |
+| 15:12 | Session end: 7 writes across 5 files (prd.md, design.md, implement.md, api.js, index.html) | 4 reads | ~35446 tok |
+| 15:16 | Session end: 7 writes across 5 files (prd.md, design.md, implement.md, api.js, index.html) | 4 reads | ~35446 tok |
+| 15:21 | Created ../../../../tmp/clean_user_applications.py | — | ~379 |
+| 15:22 | Created ../../../../tmp/clean_via_api.py | — | ~410 |
+| 15:22 | Created ../../../../tmp/clean_user_2021140140429.sh | — | ~214 |
+| 15:22 | Session end: 10 writes across 8 files (prd.md, design.md, implement.md, api.js, index.html) | 4 reads | ~36464 tok |
+| 15:25 | Created ../../../../tmp/test_attachment_upload.py | — | ~337 |
+| 15:25 | Edited ../../../../tmp/test_attachment_upload.py | modified enumerate() | ~758 |
+| 15:26 | Edited ../../../../tmp/test_attachment_upload.py | 6→6 lines | ~61 |
+| 15:26 | Session end: 13 writes across 9 files (prd.md, design.md, implement.md, api.js, index.html) | 4 reads | ~37620 tok |
+| 15:26 | Edited ../../../../tmp/test_attachment_upload.py | reduced (-20 lines) | ~120 |
+| 15:27 | Edited .trellis/spec/frontend/quality-guidelines.md | added 3 condition(s) | ~593 |
+| 15:28 | Session end: 15 writes across 10 files (prd.md, design.md, implement.md, api.js, index.html) | 6 reads | ~40188 tok |
+| 15:29 | Session end: 15 writes across 10 files (prd.md, design.md, implement.md, api.js, index.html) | 6 reads | ~40188 tok |
+| 15:36 | Session end: 15 writes across 10 files (prd.md, design.md, implement.md, api.js, index.html) | 7 reads | ~44341 tok |
+| 15:40 | Edited .trellis/tasks/06-17-fix-attachment-workflow-and-ui/prd.md | expanded (+159 lines) | ~779 |
+| 15:41 | Created .trellis/tasks/06-17-fix-attachment-workflow-and-ui/design.md | — | ~2306 |
+| 15:41 | Created .trellis/tasks/06-17-fix-attachment-workflow-and-ui/implement.md | — | ~1403 |

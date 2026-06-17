@@ -1,11 +1,14 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-06-17T06:28:41.306Z
-> Files: 729 tracked | Anatomy hits: 0 | Misses: 0
+> Auto-maintained by OpenWolf. Last scanned: 2026-06-17T07:41:55.799Z
+> Files: 739 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../../../tmp/
 
 - `check_graduate_users.py` (~349 tok)
+- `clean_user_2021140140429.sh` — 清理用户 2021140140429 的所有申请数据 (~214 tok)
+- `clean_user_applications.py` (~379 tok)
+- `clean_via_api.py` — 通过API清理用户申请数据 (~410 tok)
 - `create_failed_app.py` (~181 tok)
 - `create_skip_dorm.py` (~628 tok)
 - `create_test_app.py` — 测试为张官芯创建申请 (~472 tok)
@@ -15,6 +18,7 @@
 - `mobile-sso-404-analysis.md` — 移动端SSO登录404问题分析 (~283 tok)
 - `restore_test_data.sh` — Restore test data after rejection testing (~315 tok)
 - `sso-fix-review.md` — SSO登录修复代码审查 (~475 tok)
+- `test_attachment_upload.py` (~926 tok)
 - `test_graduate_submit.py` (~317 tok)
 - `test_qgl_api.py` — generate_rand_str, generate_signature, generate_headers (~852 tok)
 - `test_submit.py` (~421 tok)
@@ -625,7 +629,7 @@
 ## .trellis/spec/frontend/
 
 - `index.md` — Frontend Development Guidelines (~339 tok)
-- `quality-guidelines.md` — Quality Guidelines (~1473 tok)
+- `quality-guidelines.md` — Quality Guidelines (~2022 tok)
 
 ## .trellis/spec/guides/
 
@@ -637,6 +641,18 @@
 - `design.md` — 技术设计：前端服务守护进程 (~768 tok)
 - `implement.md` — 执行计划：前端服务守护进程配置 (~1549 tok)
 - `prd.md` — 为毕业离校系统前端服务配置守护进程保证业务连续性 (~429 tok)
+
+## .trellis/tasks/06-17-fix-attachment-upload-draft-flow/
+
+- `design.md` — 技术设计：草稿流程附件上传 (~1755 tok)
+- `implement.md` — 执行计划：草稿流程附件上传 (~1778 tok)
+- `prd.md` — 修复附件上传问题-实施草稿流程 (~511 tok)
+
+## .trellis/tasks/06-17-fix-attachment-workflow-and-ui/
+
+- `design.md` — 技术设计：附件流程修复与UI完善 (~2162 tok)
+- `implement.md` — 执行计划：附件流程修复与UI完善 (~1315 tok)
+- `prd.md` — 修复附件流程bug并完善附件功能 (~731 tok)
 
 ## .understand-anything/
 
@@ -815,7 +831,7 @@
 
 - `admin-sso-callback.html` — SSO登录中... (~735 tok)
 - `batch-fix-console.js` — 临时修复脚本 - 在浏览器控制台粘贴执行 (~1042 tok)
-- `index.html` — 毕业离校申请系统 - UI Demo (~24446 tok)
+- `index.html` — 毕业离校申请系统 - UI Demo (~24685 tok)
 - `mobile-sso-callback.html` — SSO登录中... (~659 tok)
 - `responsive-adapter-example.html` — Declares deviceAdapter (~579 tok)
 - `sso-receiver.html` — 登录中... (~410 tok)
@@ -827,7 +843,7 @@
 
 ## demo-web/js/
 
-- `api.js` — API Integration Layer (~2994 tok)
+- `api.js` — API Integration Layer (~3174 tok)
 - `responsive-adapter.js` — 响应式适配器 - 移动端自动适配模块 (~1783 tok)
 
 ## docs/

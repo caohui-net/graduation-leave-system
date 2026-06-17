@@ -2,14 +2,14 @@
   "version": 1,
   "created_at": "2026-06-06T16:25:30.583Z",
   "lifetime": {
-    "total_tokens_estimated": 22347937,
-    "total_reads": 7767,
-    "total_writes": 9915,
+    "total_tokens_estimated": 22617630,
+    "total_reads": 7802,
+    "total_writes": 9997,
     "total_sessions": 125,
-    "anatomy_hits": 4551,
-    "anatomy_misses": 2978,
-    "repeated_reads_blocked": 6312,
-    "estimated_savings_vs_bare_cli": 77052474
+    "anatomy_hits": 4579,
+    "anatomy_misses": 2985,
+    "repeated_reads_blocked": 6337,
+    "estimated_savings_vs_bare_cli": 77478594
   },
   "sessions": [
     {
@@ -115979,6 +115979,745 @@
         "writes_count": 0,
         "repeated_reads_blocked": 1,
         "anatomy_lookups": 2
+      }
+    },
+    {
+      "id": "session-2026-06-17-1455",
+      "started": "2026-06-17T06:55:54.521Z",
+      "ended": "2026-06-17T07:12:11.379Z",
+      "reads": [
+        {
+          "file": "/home/caohui/projects/graduation-leave-system/backend/apps/attachments/views.py",
+          "tokens_estimated": 2250,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/caohui/projects/graduation-leave-system/demo-web/index.html",
+          "tokens_estimated": 24446,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/caohui/projects/graduation-leave-system/.trellis/tasks/06-17-fix-attachment-upload-draft-flow/prd.md",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/caohui/projects/graduation-leave-system/demo-web/js/api.js",
+          "tokens_estimated": 3151,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        }
+      ],
+      "writes": [
+        {
+          "file": "/home/caohui/projects/graduation-leave-system/.trellis/tasks/06-17-fix-attachment-upload-draft-flow/prd.md",
+          "tokens_estimated": 583,
+          "action": "edit"
+        },
+        {
+          "file": "/home/caohui/projects/graduation-leave-system/.trellis/tasks/06-17-fix-attachment-upload-draft-flow/design.md",
+          "tokens_estimated": 2006,
+          "action": "create"
+        },
+        {
+          "file": "/home/caohui/projects/graduation-leave-system/.trellis/tasks/06-17-fix-attachment-upload-draft-flow/implement.md",
+          "tokens_estimated": 2032,
+          "action": "create"
+        },
+        {
+          "file": "/home/caohui/projects/graduation-leave-system/demo-web/js/api.js",
+          "tokens_estimated": 225,
+          "action": "edit"
+        },
+        {
+          "file": "/home/caohui/projects/graduation-leave-system/demo-web/js/api.js",
+          "tokens_estimated": 66,
+          "action": "edit"
+        },
+        {
+          "file": "/home/caohui/projects/graduation-leave-system/demo-web/js/api.js",
+          "tokens_estimated": 147,
+          "action": "edit"
+        },
+        {
+          "file": "/home/caohui/projects/graduation-leave-system/demo-web/index.html",
+          "tokens_estimated": 540,
+          "action": "edit"
+        }
+      ],
+      "totals": {
+        "input_tokens_estimated": 29847,
+        "output_tokens_estimated": 5599,
+        "reads_count": 4,
+        "writes_count": 7,
+        "repeated_reads_blocked": 3,
+        "anatomy_lookups": 3
+      }
+    },
+    {
+      "id": "session-2026-06-17-1455",
+      "started": "2026-06-17T06:55:54.521Z",
+      "ended": "2026-06-17T07:16:55.065Z",
+      "reads": [
+        {
+          "file": "/home/caohui/projects/graduation-leave-system/backend/apps/attachments/views.py",
+          "tokens_estimated": 2250,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/caohui/projects/graduation-leave-system/demo-web/index.html",
+          "tokens_estimated": 24446,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/caohui/projects/graduation-leave-system/.trellis/tasks/06-17-fix-attachment-upload-draft-flow/prd.md",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/caohui/projects/graduation-leave-system/demo-web/js/api.js",
+          "tokens_estimated": 3151,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        }
+      ],
+      "writes": [
+        {
+          "file": "/home/caohui/projects/graduation-leave-system/.trellis/tasks/06-17-fix-attachment-upload-draft-flow/prd.md",
+          "tokens_estimated": 583,
+          "action": "edit"
+        },
+        {
+          "file": "/home/caohui/projects/graduation-leave-system/.trellis/tasks/06-17-fix-attachment-upload-draft-flow/design.md",
+          "tokens_estimated": 2006,
+          "action": "create"
+        },
+        {
+          "file": "/home/caohui/projects/graduation-leave-system/.trellis/tasks/06-17-fix-attachment-upload-draft-flow/implement.md",
+          "tokens_estimated": 2032,
+          "action": "create"
+        },
+        {
+          "file": "/home/caohui/projects/graduation-leave-system/demo-web/js/api.js",
+          "tokens_estimated": 225,
+          "action": "edit"
+        },
+        {
+          "file": "/home/caohui/projects/graduation-leave-system/demo-web/js/api.js",
+          "tokens_estimated": 66,
+          "action": "edit"
+        },
+        {
+          "file": "/home/caohui/projects/graduation-leave-system/demo-web/js/api.js",
+          "tokens_estimated": 147,
+          "action": "edit"
+        },
+        {
+          "file": "/home/caohui/projects/graduation-leave-system/demo-web/index.html",
+          "tokens_estimated": 540,
+          "action": "edit"
+        }
+      ],
+      "totals": {
+        "input_tokens_estimated": 29847,
+        "output_tokens_estimated": 5599,
+        "reads_count": 4,
+        "writes_count": 7,
+        "repeated_reads_blocked": 3,
+        "anatomy_lookups": 3
+      }
+    },
+    {
+      "id": "session-2026-06-17-1455",
+      "started": "2026-06-17T06:55:54.521Z",
+      "ended": "2026-06-17T07:22:33.087Z",
+      "reads": [
+        {
+          "file": "/home/caohui/projects/graduation-leave-system/backend/apps/attachments/views.py",
+          "tokens_estimated": 2250,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/caohui/projects/graduation-leave-system/demo-web/index.html",
+          "tokens_estimated": 24446,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/caohui/projects/graduation-leave-system/.trellis/tasks/06-17-fix-attachment-upload-draft-flow/prd.md",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/caohui/projects/graduation-leave-system/demo-web/js/api.js",
+          "tokens_estimated": 3151,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        }
+      ],
+      "writes": [
+        {
+          "file": "/home/caohui/projects/graduation-leave-system/.trellis/tasks/06-17-fix-attachment-upload-draft-flow/prd.md",
+          "tokens_estimated": 583,
+          "action": "edit"
+        },
+        {
+          "file": "/home/caohui/projects/graduation-leave-system/.trellis/tasks/06-17-fix-attachment-upload-draft-flow/design.md",
+          "tokens_estimated": 2006,
+          "action": "create"
+        },
+        {
+          "file": "/home/caohui/projects/graduation-leave-system/.trellis/tasks/06-17-fix-attachment-upload-draft-flow/implement.md",
+          "tokens_estimated": 2032,
+          "action": "create"
+        },
+        {
+          "file": "/home/caohui/projects/graduation-leave-system/demo-web/js/api.js",
+          "tokens_estimated": 225,
+          "action": "edit"
+        },
+        {
+          "file": "/home/caohui/projects/graduation-leave-system/demo-web/js/api.js",
+          "tokens_estimated": 66,
+          "action": "edit"
+        },
+        {
+          "file": "/home/caohui/projects/graduation-leave-system/demo-web/js/api.js",
+          "tokens_estimated": 147,
+          "action": "edit"
+        },
+        {
+          "file": "/home/caohui/projects/graduation-leave-system/demo-web/index.html",
+          "tokens_estimated": 540,
+          "action": "edit"
+        },
+        {
+          "file": "/tmp/clean_user_applications.py",
+          "tokens_estimated": 379,
+          "action": "create"
+        },
+        {
+          "file": "/tmp/clean_via_api.py",
+          "tokens_estimated": 410,
+          "action": "create"
+        },
+        {
+          "file": "/tmp/clean_user_2021140140429.sh",
+          "tokens_estimated": 229,
+          "action": "create"
+        }
+      ],
+      "totals": {
+        "input_tokens_estimated": 29847,
+        "output_tokens_estimated": 6617,
+        "reads_count": 4,
+        "writes_count": 10,
+        "repeated_reads_blocked": 3,
+        "anatomy_lookups": 3
+      }
+    },
+    {
+      "id": "session-2026-06-17-1455",
+      "started": "2026-06-17T06:55:54.521Z",
+      "ended": "2026-06-17T07:26:33.517Z",
+      "reads": [
+        {
+          "file": "/home/caohui/projects/graduation-leave-system/backend/apps/attachments/views.py",
+          "tokens_estimated": 2250,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/caohui/projects/graduation-leave-system/demo-web/index.html",
+          "tokens_estimated": 24446,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/caohui/projects/graduation-leave-system/.trellis/tasks/06-17-fix-attachment-upload-draft-flow/prd.md",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/caohui/projects/graduation-leave-system/demo-web/js/api.js",
+          "tokens_estimated": 3151,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        }
+      ],
+      "writes": [
+        {
+          "file": "/home/caohui/projects/graduation-leave-system/.trellis/tasks/06-17-fix-attachment-upload-draft-flow/prd.md",
+          "tokens_estimated": 583,
+          "action": "edit"
+        },
+        {
+          "file": "/home/caohui/projects/graduation-leave-system/.trellis/tasks/06-17-fix-attachment-upload-draft-flow/design.md",
+          "tokens_estimated": 2006,
+          "action": "create"
+        },
+        {
+          "file": "/home/caohui/projects/graduation-leave-system/.trellis/tasks/06-17-fix-attachment-upload-draft-flow/implement.md",
+          "tokens_estimated": 2032,
+          "action": "create"
+        },
+        {
+          "file": "/home/caohui/projects/graduation-leave-system/demo-web/js/api.js",
+          "tokens_estimated": 225,
+          "action": "edit"
+        },
+        {
+          "file": "/home/caohui/projects/graduation-leave-system/demo-web/js/api.js",
+          "tokens_estimated": 66,
+          "action": "edit"
+        },
+        {
+          "file": "/home/caohui/projects/graduation-leave-system/demo-web/js/api.js",
+          "tokens_estimated": 147,
+          "action": "edit"
+        },
+        {
+          "file": "/home/caohui/projects/graduation-leave-system/demo-web/index.html",
+          "tokens_estimated": 540,
+          "action": "edit"
+        },
+        {
+          "file": "/tmp/clean_user_applications.py",
+          "tokens_estimated": 379,
+          "action": "create"
+        },
+        {
+          "file": "/tmp/clean_via_api.py",
+          "tokens_estimated": 410,
+          "action": "create"
+        },
+        {
+          "file": "/tmp/clean_user_2021140140429.sh",
+          "tokens_estimated": 229,
+          "action": "create"
+        },
+        {
+          "file": "/tmp/test_attachment_upload.py",
+          "tokens_estimated": 337,
+          "action": "create"
+        },
+        {
+          "file": "/tmp/test_attachment_upload.py",
+          "tokens_estimated": 758,
+          "action": "edit"
+        },
+        {
+          "file": "/tmp/test_attachment_upload.py",
+          "tokens_estimated": 61,
+          "action": "edit"
+        }
+      ],
+      "totals": {
+        "input_tokens_estimated": 29847,
+        "output_tokens_estimated": 7773,
+        "reads_count": 4,
+        "writes_count": 13,
+        "repeated_reads_blocked": 3,
+        "anatomy_lookups": 3
+      }
+    },
+    {
+      "id": "session-2026-06-17-1455",
+      "started": "2026-06-17T06:55:54.521Z",
+      "ended": "2026-06-17T07:28:31.840Z",
+      "reads": [
+        {
+          "file": "/home/caohui/projects/graduation-leave-system/backend/apps/attachments/views.py",
+          "tokens_estimated": 2250,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/caohui/projects/graduation-leave-system/demo-web/index.html",
+          "tokens_estimated": 24446,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/caohui/projects/graduation-leave-system/.trellis/tasks/06-17-fix-attachment-upload-draft-flow/prd.md",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/caohui/projects/graduation-leave-system/demo-web/js/api.js",
+          "tokens_estimated": 3151,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/caohui/projects/graduation-leave-system/.trellis/spec/frontend/index.md",
+          "tokens_estimated": 339,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/caohui/projects/graduation-leave-system/.trellis/spec/frontend/quality-guidelines.md",
+          "tokens_estimated": 1473,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        }
+      ],
+      "writes": [
+        {
+          "file": "/home/caohui/projects/graduation-leave-system/.trellis/tasks/06-17-fix-attachment-upload-draft-flow/prd.md",
+          "tokens_estimated": 583,
+          "action": "edit"
+        },
+        {
+          "file": "/home/caohui/projects/graduation-leave-system/.trellis/tasks/06-17-fix-attachment-upload-draft-flow/design.md",
+          "tokens_estimated": 2006,
+          "action": "create"
+        },
+        {
+          "file": "/home/caohui/projects/graduation-leave-system/.trellis/tasks/06-17-fix-attachment-upload-draft-flow/implement.md",
+          "tokens_estimated": 2032,
+          "action": "create"
+        },
+        {
+          "file": "/home/caohui/projects/graduation-leave-system/demo-web/js/api.js",
+          "tokens_estimated": 225,
+          "action": "edit"
+        },
+        {
+          "file": "/home/caohui/projects/graduation-leave-system/demo-web/js/api.js",
+          "tokens_estimated": 66,
+          "action": "edit"
+        },
+        {
+          "file": "/home/caohui/projects/graduation-leave-system/demo-web/js/api.js",
+          "tokens_estimated": 147,
+          "action": "edit"
+        },
+        {
+          "file": "/home/caohui/projects/graduation-leave-system/demo-web/index.html",
+          "tokens_estimated": 540,
+          "action": "edit"
+        },
+        {
+          "file": "/tmp/clean_user_applications.py",
+          "tokens_estimated": 379,
+          "action": "create"
+        },
+        {
+          "file": "/tmp/clean_via_api.py",
+          "tokens_estimated": 410,
+          "action": "create"
+        },
+        {
+          "file": "/tmp/clean_user_2021140140429.sh",
+          "tokens_estimated": 229,
+          "action": "create"
+        },
+        {
+          "file": "/tmp/test_attachment_upload.py",
+          "tokens_estimated": 337,
+          "action": "create"
+        },
+        {
+          "file": "/tmp/test_attachment_upload.py",
+          "tokens_estimated": 758,
+          "action": "edit"
+        },
+        {
+          "file": "/tmp/test_attachment_upload.py",
+          "tokens_estimated": 61,
+          "action": "edit"
+        },
+        {
+          "file": "/tmp/test_attachment_upload.py",
+          "tokens_estimated": 120,
+          "action": "edit"
+        },
+        {
+          "file": "/home/caohui/projects/graduation-leave-system/.trellis/spec/frontend/quality-guidelines.md",
+          "tokens_estimated": 636,
+          "action": "edit"
+        }
+      ],
+      "totals": {
+        "input_tokens_estimated": 31659,
+        "output_tokens_estimated": 8529,
+        "reads_count": 6,
+        "writes_count": 15,
+        "repeated_reads_blocked": 3,
+        "anatomy_lookups": 5
+      }
+    },
+    {
+      "id": "session-2026-06-17-1455",
+      "started": "2026-06-17T06:55:54.521Z",
+      "ended": "2026-06-17T07:29:46.954Z",
+      "reads": [
+        {
+          "file": "/home/caohui/projects/graduation-leave-system/backend/apps/attachments/views.py",
+          "tokens_estimated": 2250,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/caohui/projects/graduation-leave-system/demo-web/index.html",
+          "tokens_estimated": 24446,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/caohui/projects/graduation-leave-system/.trellis/tasks/06-17-fix-attachment-upload-draft-flow/prd.md",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/caohui/projects/graduation-leave-system/demo-web/js/api.js",
+          "tokens_estimated": 3151,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/caohui/projects/graduation-leave-system/.trellis/spec/frontend/index.md",
+          "tokens_estimated": 339,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/caohui/projects/graduation-leave-system/.trellis/spec/frontend/quality-guidelines.md",
+          "tokens_estimated": 1473,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        }
+      ],
+      "writes": [
+        {
+          "file": "/home/caohui/projects/graduation-leave-system/.trellis/tasks/06-17-fix-attachment-upload-draft-flow/prd.md",
+          "tokens_estimated": 583,
+          "action": "edit"
+        },
+        {
+          "file": "/home/caohui/projects/graduation-leave-system/.trellis/tasks/06-17-fix-attachment-upload-draft-flow/design.md",
+          "tokens_estimated": 2006,
+          "action": "create"
+        },
+        {
+          "file": "/home/caohui/projects/graduation-leave-system/.trellis/tasks/06-17-fix-attachment-upload-draft-flow/implement.md",
+          "tokens_estimated": 2032,
+          "action": "create"
+        },
+        {
+          "file": "/home/caohui/projects/graduation-leave-system/demo-web/js/api.js",
+          "tokens_estimated": 225,
+          "action": "edit"
+        },
+        {
+          "file": "/home/caohui/projects/graduation-leave-system/demo-web/js/api.js",
+          "tokens_estimated": 66,
+          "action": "edit"
+        },
+        {
+          "file": "/home/caohui/projects/graduation-leave-system/demo-web/js/api.js",
+          "tokens_estimated": 147,
+          "action": "edit"
+        },
+        {
+          "file": "/home/caohui/projects/graduation-leave-system/demo-web/index.html",
+          "tokens_estimated": 540,
+          "action": "edit"
+        },
+        {
+          "file": "/tmp/clean_user_applications.py",
+          "tokens_estimated": 379,
+          "action": "create"
+        },
+        {
+          "file": "/tmp/clean_via_api.py",
+          "tokens_estimated": 410,
+          "action": "create"
+        },
+        {
+          "file": "/tmp/clean_user_2021140140429.sh",
+          "tokens_estimated": 229,
+          "action": "create"
+        },
+        {
+          "file": "/tmp/test_attachment_upload.py",
+          "tokens_estimated": 337,
+          "action": "create"
+        },
+        {
+          "file": "/tmp/test_attachment_upload.py",
+          "tokens_estimated": 758,
+          "action": "edit"
+        },
+        {
+          "file": "/tmp/test_attachment_upload.py",
+          "tokens_estimated": 61,
+          "action": "edit"
+        },
+        {
+          "file": "/tmp/test_attachment_upload.py",
+          "tokens_estimated": 120,
+          "action": "edit"
+        },
+        {
+          "file": "/home/caohui/projects/graduation-leave-system/.trellis/spec/frontend/quality-guidelines.md",
+          "tokens_estimated": 636,
+          "action": "edit"
+        }
+      ],
+      "totals": {
+        "input_tokens_estimated": 31659,
+        "output_tokens_estimated": 8529,
+        "reads_count": 6,
+        "writes_count": 15,
+        "repeated_reads_blocked": 3,
+        "anatomy_lookups": 5
+      }
+    },
+    {
+      "id": "session-2026-06-17-1455",
+      "started": "2026-06-17T06:55:54.521Z",
+      "ended": "2026-06-17T07:36:22.409Z",
+      "reads": [
+        {
+          "file": "/home/caohui/projects/graduation-leave-system/backend/apps/attachments/views.py",
+          "tokens_estimated": 2250,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/caohui/projects/graduation-leave-system/demo-web/index.html",
+          "tokens_estimated": 24685,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/caohui/projects/graduation-leave-system/.trellis/tasks/06-17-fix-attachment-upload-draft-flow/prd.md",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/caohui/projects/graduation-leave-system/demo-web/js/api.js",
+          "tokens_estimated": 3174,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/caohui/projects/graduation-leave-system/.trellis/spec/frontend/index.md",
+          "tokens_estimated": 339,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/caohui/projects/graduation-leave-system/.trellis/spec/frontend/quality-guidelines.md",
+          "tokens_estimated": 1473,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/caohui/projects/graduation-leave-system/backend/apps/applications/views.py",
+          "tokens_estimated": 3891,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        }
+      ],
+      "writes": [
+        {
+          "file": "/home/caohui/projects/graduation-leave-system/.trellis/tasks/06-17-fix-attachment-upload-draft-flow/prd.md",
+          "tokens_estimated": 583,
+          "action": "edit"
+        },
+        {
+          "file": "/home/caohui/projects/graduation-leave-system/.trellis/tasks/06-17-fix-attachment-upload-draft-flow/design.md",
+          "tokens_estimated": 2006,
+          "action": "create"
+        },
+        {
+          "file": "/home/caohui/projects/graduation-leave-system/.trellis/tasks/06-17-fix-attachment-upload-draft-flow/implement.md",
+          "tokens_estimated": 2032,
+          "action": "create"
+        },
+        {
+          "file": "/home/caohui/projects/graduation-leave-system/demo-web/js/api.js",
+          "tokens_estimated": 225,
+          "action": "edit"
+        },
+        {
+          "file": "/home/caohui/projects/graduation-leave-system/demo-web/js/api.js",
+          "tokens_estimated": 66,
+          "action": "edit"
+        },
+        {
+          "file": "/home/caohui/projects/graduation-leave-system/demo-web/js/api.js",
+          "tokens_estimated": 147,
+          "action": "edit"
+        },
+        {
+          "file": "/home/caohui/projects/graduation-leave-system/demo-web/index.html",
+          "tokens_estimated": 540,
+          "action": "edit"
+        },
+        {
+          "file": "/tmp/clean_user_applications.py",
+          "tokens_estimated": 379,
+          "action": "create"
+        },
+        {
+          "file": "/tmp/clean_via_api.py",
+          "tokens_estimated": 410,
+          "action": "create"
+        },
+        {
+          "file": "/tmp/clean_user_2021140140429.sh",
+          "tokens_estimated": 229,
+          "action": "create"
+        },
+        {
+          "file": "/tmp/test_attachment_upload.py",
+          "tokens_estimated": 337,
+          "action": "create"
+        },
+        {
+          "file": "/tmp/test_attachment_upload.py",
+          "tokens_estimated": 758,
+          "action": "edit"
+        },
+        {
+          "file": "/tmp/test_attachment_upload.py",
+          "tokens_estimated": 61,
+          "action": "edit"
+        },
+        {
+          "file": "/tmp/test_attachment_upload.py",
+          "tokens_estimated": 120,
+          "action": "edit"
+        },
+        {
+          "file": "/home/caohui/projects/graduation-leave-system/.trellis/spec/frontend/quality-guidelines.md",
+          "tokens_estimated": 636,
+          "action": "edit"
+        }
+      ],
+      "totals": {
+        "input_tokens_estimated": 35812,
+        "output_tokens_estimated": 8529,
+        "reads_count": 7,
+        "writes_count": 15,
+        "repeated_reads_blocked": 7,
+        "anatomy_lookups": 6
       }
     }
   ],

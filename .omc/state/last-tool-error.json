@@ -1,7 +1,7 @@
 {
   "tool_name": "Bash",
-  "tool_input_preview": "{\"command\":\"python3 ./.trellis/scripts/task.py cancel\",\"description\":\"取消当前任务 frontend-daemon-setup\"}",
-  "error": "Exit code 2\nusage: task.py [-h]\n               {create,add-context,validate,list-context,start,current,finish,set-branch,set-base-branch,set-scope,archive,list,add-subtask,remove-subtask,list-archive} ...\ntask.py: error: argument command: invalid choice: 'cancel' (choose from create, add-context, validate, list-context, start, current, finish, set-branch, set-base-branch, set-scope, archive, list, add-subtask, remove-subtask, list-archive)",
-  "timestamp": "2026-06-17T06:59:22.329Z",
+  "tool_input_preview": "{\"command\":\"cd /home/caohui/projects/graduation-leave-system/backend && python3 manage.py shell << 'EOF'\\nfrom apps.applications.models import Application\\nfrom apps.attachments.models import Attachme...",
+  "error": "Exit code 1\nTraceback (most recent call last):\n  File \"/home/caohui/projects/graduation-leave-system/backend/manage.py\", line 11, in main\n    from django.core.management import execute_from_command_line\nModuleNotFoundError: No module named 'django'\n\nThe above exception was the direct cause of the following exception:\n\nTraceback (most recent call last):\n  File \"/home/caohui/projects/graduation-leave-system/backend/manage.py\", line 22, in <module>\n    main()\n    ~~~~^^\n  File \"/home/caohui/project...",
+  "timestamp": "2026-06-17T07:34:04.279Z",
   "retry_count": 1
 }

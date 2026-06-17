@@ -381,18 +381,37 @@ def reject_approval(request, approval_id):
 @permission_classes([IsAuthenticated])
 def export_approvals(request):
     try:
-        if request.user.role not in [UserRole.DEAN, UserRole.ADMIN, UserRole.COUNSELOR, UserRole.DORM_MANAGER]:
+        user = request.user
+
+        if user.role not in [UserRole.DEAN, UserRole.ADMIN, UserRole.COUNSELOR, UserRole.DORM_MANAGER]:
             return Response(
                 {'error': {'code': 'FORBIDDEN', 'message': '仅管理人员可导出数据'}},
                 status=status.HTTP_403_FORBIDDEN
             )
 
-        # Export all students with their latest application (if any)
-        # Optimized: fetch all data in 3-4 queries instead of N+1
+        # Export with permission filtering (same logic as list_approvals)
         from django.db.models import OuterRef, Subquery, Prefetch
 
-        # Get all students
-        students = User.objects.filter(role=UserRole.STUDENT).order_by('user_id')
+        # Apply role-based filtering
+        if user.role == UserRole.DORM_MANAGER:
+            # Only export students from own approval list
+            my_approval_apps = Approval.objects.filter(
+                approver=user,
+                step=ApprovalStep.DORM_MANAGER
+            ).values_list('application__student_id', flat=True)
+            students = User.objects.filter(role=UserRole.STUDENT, user_id__in=my_approval_apps).order_by('user_id')
+
+        elif user.role == UserRole.COUNSELOR:
+            # Only export students from own approval list
+            my_approval_apps = Approval.objects.filter(
+                approver=user,
+                step=ApprovalStep.COUNSELOR
+            ).values_list('application__student_id', flat=True)
+            students = User.objects.filter(role=UserRole.STUDENT, user_id__in=my_approval_apps).order_by('user_id')
+
+        else:  # DEAN or ADMIN
+            # Export all students
+            students = User.objects.filter(role=UserRole.STUDENT).order_by('user_id')
 
         # Get latest application ID for each student (subquery)
         latest_app_subquery = Application.objects.filter(

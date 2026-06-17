@@ -541,14 +541,14 @@ def get_statistics(request):
             status=status.HTTP_403_FORBIDDEN
         )
 
-    # 统计数据
-    total = queryset.count()
-    pending = queryset.filter(decision=ApprovalDecision.PENDING).count()
-    approved = queryset.filter(decision=ApprovalDecision.APPROVED).count()
-    rejected = queryset.filter(decision=ApprovalDecision.REJECTED).count()
+    # 统计数据（按去重的学生计算，避免同一学生多次申请被重复统计）
+    total_students = queryset.values('application__student').distinct().count()
+    pending = queryset.filter(decision=ApprovalDecision.PENDING).values('application__student').distinct().count()
+    approved = queryset.filter(decision=ApprovalDecision.APPROVED).values('application__student').distinct().count()
+    rejected = queryset.filter(decision=ApprovalDecision.REJECTED).values('application__student').distinct().count()
 
     return Response({
-        'total': total,
+        'total': total_students,
         'pending': pending,
         'approved': approved,
         'rejected': rejected

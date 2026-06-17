@@ -395,10 +395,6 @@
         const basicInfoHtml = '<div class="card">' +
             '<div style="font-size: 16px; font-weight: bold; margin-bottom: 10px;">基本信息</div>' +
             '<div style="display: flex; margin-bottom: 8px;">' +
-              '<span style="font-size: 14px; color: #999; width: 80px;">申请ID:</span>' +
-              '<span style="font-size: 14px; color: #333; flex: 1;">' + appData.application_id + '</span>' +
-            '</div>' +
-            '<div style="display: flex; margin-bottom: 8px;">' +
               '<span style="font-size: 14px; color: #999; width: 80px;">学生:</span>' +
               '<span style="font-size: 14px; color: #333; flex: 1;">' + appData.student_name + ' (' + appData.student_id + ')</span>' +
             '</div>' +
@@ -635,10 +631,6 @@
 
             const basicInfoHtml = '<div class="card">' +
                 '<div style="font-size: 16px; font-weight: bold; margin-bottom: 10px;">基本信息</div>' +
-                '<div style="display: flex; margin-bottom: 8px;">' +
-                  '<span style="font-size: 14px; color: #999; width: 80px;">申请ID:</span>' +
-                  '<span style="font-size: 14px; color: #333; flex: 1;">' + (detail.application_id || detail.id.substring(0,8)) + '</span>' +
-                '</div>' +
                 '<div style="display: flex; margin-bottom: 8px;">' +
                   '<span style="font-size: 14px; color: #999; width: 80px;">学生:</span>' +
                   '<span style="font-size: 14px; color: #333; flex: 1;">' + (detail.student_name || '-') + ' (' + (detail.student_id || '-') + ')</span>' +
@@ -1528,7 +1520,7 @@
     <div class="stats-container" id="approval-stats">
       <div class="stats-grid">
         <div class="stat-card">
-          <div class="stat-label">总审批数</div>
+          <div class="stat-label">全部提交人数</div>
           <div class="stat-value" id="stat-total">-</div>
         </div>
         <div class="stat-card">
@@ -1622,10 +1614,6 @@
       <!-- 基本信息 -->
       <div class="card">
         <div style="font-size: 16px; font-weight: bold; margin-bottom: 10px;">基本信息</div>
-        <div style="display: flex; margin-bottom: 8px;">
-          <span style="font-size: 14px; color: #999; width: 80px;">申请ID:</span>
-          <span style="font-size: 14px; color: #333; flex: 1;">-</span>
-        </div>
         <div style="display: flex; margin-bottom: 8px;">
           <span style="font-size: 14px; color: #999; width: 80px;">学生:</span>
           <span style="font-size: 14px; color: #333; flex: 1;">-</span>

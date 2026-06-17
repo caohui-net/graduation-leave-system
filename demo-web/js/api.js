@@ -124,12 +124,29 @@ function getAuthHeaders() {
     };
 }
 
-async function apiSubmitApplication(phone, reason, leaveDate, files) {
+async function apiGetOrCreateDraft() {
+    try {
+        const response = await fetch(API_BASE_URL + '/applications/draft/', {
+            method: 'POST',
+            headers: getAuthHeaders()
+        });
+        if (response.ok) {
+            return await response.json();
+        } else {
+            const error = await response.json().catch(() => ({error: {message: '创建草稿失败'}}));
+            return { success: false, error: error.error || {message: '创建草稿失败'} };
+        }
+    } catch (e) {
+        console.error("Create draft failed:", e);
+        return { success: false, error: {message: '网络错误'} };
+    }
+}
+
+async function apiSubmitApplication(phone, reason, leaveDate) {
     const formData = new FormData();
     formData.append('contact_phone', phone);
     formData.append('reason', reason);
     formData.append('leave_date', leaveDate);
-    files.forEach(f => formData.append('attachments', f));
 
     try {
         const response = await fetch(API_BASE_URL + '/applications/', {
@@ -243,11 +260,15 @@ async function apiUploadAttachment(applicationId, file, attachmentType = 'other'
     formData.append('attachment_type', attachmentType);
 
     try {
-        const response = await fetch(API_BASE_URL + '/applications/' + applicationId + '/attachments/', {
-            method: 'POST',
-            headers: getAuthHeaders(),
-            body: formData
-        });
+        const response = await fetchWithTimeout(
+            API_BASE_URL + '/applications/' + applicationId + '/attachments/',
+            {
+                method: 'POST',
+                headers: getAuthHeaders(),
+                body: formData
+            },
+            30000
+        );
         if (response.ok) {
             return await response.json();
         } else {

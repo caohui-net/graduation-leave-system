@@ -1173,10 +1173,32 @@
         const btn = event?.target || document.querySelector('#screen-0 .btn-primary');
         const originalText = btn.textContent;
         btn.disabled = true;
-        btn.textContent = '提交中...';
 
         try {
-            const result = await apiSubmitApplication(phone, reason, leaveDate, uploadedFiles);
+            // 步骤1: 创建草稿
+            btn.textContent = '创建草稿中...';
+            const draftResult = await apiGetOrCreateDraft();
+            if (!draftResult || draftResult.error) {
+                showToast('创建草稿失败：' + (draftResult?.error?.message || '未知错误'), 'error');
+                return;
+            }
+            const draftId = draftResult.application_id;
+
+            // 步骤2: 上传附件
+            if (uploadedFiles.length > 0) {
+                for (let i = 0; i < uploadedFiles.length; i++) {
+                    btn.textContent = `上传附件 ${i+1}/${uploadedFiles.length}...`;
+                    const uploadResult = await apiUploadAttachment(draftId, uploadedFiles[i]);
+                    if (!uploadResult) {
+                        showToast(`附件上传失败。草稿已保存(ID: ${draftId})，请重试`, 'error');
+                        return;
+                    }
+                }
+            }
+
+            // 步骤3: 提交申请
+            btn.textContent = '提交申请中...';
+            const result = await apiSubmitApplication(phone, reason, leaveDate);
             if (result.success) {
                 showToast('申请提交成功', 'success');
                 document.getElementById('contactPhone').value = '';

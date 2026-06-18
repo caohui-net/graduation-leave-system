@@ -1,14 +1,30 @@
 # 毕业离校系统 - 项目速查手册
 
-**最后更新**: 2026-06-17 16:46
+**最后更新**: 2026-06-18 19:00
 
 **⚠️ 强制规范**: 任何文件查找、路径定位、环境操作前，必须先查看本文档
 
 **📌 重要快照**: `v0.3.0-attachment-security-fix` - 附件功能完善与安全修复（2026-06-17）
 
+**🚀 环境架构**: 三环境分离 - 开发(199) + Staging(196:17787/17788) + 生产(196:7787/7788)
+
 ---
 
 ## 1. 环境配置
+
+### 环境架构总览
+```
+172.17.12.199 (开发机)              172.17.12.196 (测试/生产机)
+├── 开发环境                        ├── Staging环境 (端口 17xxx)
+│   ├── 代码编辑/测试               │   ├── 后端: 17787
+│   └── 自动同步服务                │   ├── 前端: 17788
+│       └── inotify监听             │   └── 数据库: 15432
+│                                   │
+└── sync-to-staging ───────────────>└── Production环境 (端口 7xxx)
+                                        ├── 后端: 7787
+                                        ├── 前端: 7788
+                                        └── 数据库: 5432
+```
 
 ### 系统环境
 ```bash
@@ -110,13 +126,62 @@ docker exec -it graduation-leave-system-backend-1 bash
 docker exec -it graduation-leave-system-db-1 psql -U postgres -d graduation_leave
 ```
 
-### 关键URL
-- 后端API: http://218.75.196.218:7787
-- 前端页面: http://218.75.196.218:7788
+### 环境URL (三环境)
+
+**开发环境 (199)**
+- 后端API: http://172.17.12.199:7787
+- 前端页面: http://172.17.12.199:7788
+
+**Staging环境 (196)**
+- 后端API: http://172.17.12.196:17787
+- 前端页面: http://172.17.12.196:17788
+- 健康检查: /readyz, /healthz
+
+**生产环境 (196，外网可访问)**
+- 后端API: http://218.75.196.218:7787 (内网: http://172.17.12.196:7787)
+- 前端页面: http://218.75.196.218:7788 (内网: http://172.17.12.196:7788)
 - SSO回调: /api/sso/qingganlian/callback
 - 移动端登录: /api/sso/qingganlian/mobile/login
 - SAAS登录: /api/sso/qingganlian/mobile/saas-login
 - 管理端登录: /api/sso/qingganlian/admin/login
+
+### 自动同步服务 (199)
+```bash
+# 查看同步服务状态
+systemctl --user status sync-to-staging.service
+
+# 同步日志
+tail -f /tmp/sync-to-staging.log
+
+# 手动触发同步
+~/scripts/sync-to-staging.sh
+
+# 重启同步服务
+systemctl --user restart sync-to-staging.service
+```
+
+### Staging环境部署 (196)
+```bash
+# SSH登录196
+ssh caohui@172.17.12.196
+
+# 容器状态
+docker ps | grep staging
+# staging-graduation-backend (17787)
+# staging-graduation-db (15432)
+# staging-graduation-frontend (17788)
+
+# 重启staging
+cd /opt/graduation-leave-system/staging
+docker compose restart backend
+
+# 健康检查
+curl http://localhost:17787/readyz
+curl http://localhost:17788/
+
+# 促销到生产
+/opt/graduation-leave-system/scripts/promote-to-prod.sh
+```
 
 ---
 

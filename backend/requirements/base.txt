@@ -47,3 +47,6 @@ cryptography==42.0.5
 
 # Cache
 django-redis==5.4.0
+
+# biz-core
+-e /home/caohui/projects/biz-core

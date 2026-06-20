@@ -1,6 +1,6 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-06-20T08:04:14.305Z
+> Auto-maintained by OpenWolf. Last scanned: 2026-06-20T08:37:53.719Z
 > Files: 818 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../../../tmp/
@@ -17,7 +17,7 @@
 - `golive-integration-revised-plan.md` — 青橄榄平台对接方案（修订版） (~2529 tok)
 - `graduation-frontend.service` (~79 tok)
 - `mobile-sso-404-analysis.md` — 移动端SSO登录404问题分析 (~283 tok)
-- `promote-to-prod.sh` (~533 tok)
+- `promote-to-prod.sh` (~879 tok)
 - `restore_test_data.sh` — Restore test data after rejection testing (~315 tok)
 - `setup-196.sh` — 196机器部署环境安装脚本 (~137 tok)
 - `sso-fix-review.md` — SSO登录修复代码审查 (~475 tok)

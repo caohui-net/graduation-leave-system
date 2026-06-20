@@ -41,6 +41,21 @@
       "count": 2,
       "tokens": 263,
       "first_read": "2026-06-20T07:32:49.531Z"
+    },
+    "/tmp/claude-1000/-home-caohui-projects-graduation-leave-system/1cfe2d0e-fd46-420f-abf6-2da6590939bd/tasks/bqcq1bkyv.output": {
+      "count": 1,
+      "tokens": 0,
+      "first_read": "2026-06-20T08:23:23.336Z"
+    },
+    "/home/caohui/projects/graduation-leave-system/.collab/artifacts/fast/DISCUSS-审核-GRADUATION-LEAVE-1781943795-fast-codex-20260620-082338.md": {
+      "count": 1,
+      "tokens": 0,
+      "first_read": "2026-06-20T08:24:06.933Z"
+    },
+    "/home/caohui/projects/graduation-leave-system/.collab/artifacts/fast/DISCUSS-审核以下-GRADUATION-LEAVE-1781943886-fast-codex-20260620-082531.md": {
+      "count": 1,
+      "tokens": 0,
+      "first_read": "2026-06-20T08:26:05.688Z"
     }
   },
   "files_written": [
@@ -169,6 +184,12 @@
       "action": "edit",
       "tokens": 126,
       "at": "2026-06-20T08:04:14.316Z"
+    },
+    {
+      "file": "/tmp/promote-to-prod.sh",
+      "action": "create",
+      "tokens": 942,
+      "at": "2026-06-20T08:37:53.727Z"
     }
   ],
   "edit_counts": {
@@ -184,11 +205,12 @@
     "backend/apps/users/migrations/0012_remove_sync_test_record.py": 1,
     "docker-compose.prod.yml": 2,
     "backend/apps/users/migrations/0013_sync_test_no_restart.py": 1,
-    "backend/apps/users/migrations/0014_remove_sync_test_no_restart.py": 1
+    "backend/apps/users/migrations/0014_remove_sync_test_no_restart.py": 1,
+    "../../../../tmp/promote-to-prod.sh": 1
   },
   "anatomy_hits": 6,
-  "anatomy_misses": 2,
+  "anatomy_misses": 5,
   "repeated_reads_warned": 5,
   "cerebrum_warnings": 0,
-  "stop_count": 28
+  "stop_count": 31
 }

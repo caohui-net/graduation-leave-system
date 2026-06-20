@@ -1,7 +1,0 @@
-{
-  "tool_name": "Bash",
-  "tool_input_preview": "{\"command\":\"lowfat git push origin main\",\"description\":\"Push security fix to remote\"}",
-  "error": "Exit code 128\n致命错误：无法访问 'https://github.com/caohui-net/graduation-leave-system.git/'：GnuTLS recv error (-110): The TLS connection was non-properly terminated.",
-  "timestamp": "2026-06-17T08:41:24.292Z",
-  "retry_count": 1
-}

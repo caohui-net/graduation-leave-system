@@ -2551,3 +2551,233 @@
 
 | Time | Action | File(s) | Outcome | ~Tokens |
 |------|--------|---------|---------|--------|
+| 04:40 | Created .collab/artifacts/DISCUSS-毕业离校系统异地DOCKER自动化部署方案-199开发机通过NFS共享代码到196测试机-配置自动部署流程.md | — | ~2875 |
+| 04:41 | Session end: 1 writes across 1 files (DISCUSS-毕业离校系统异地DOCKER自动化部署方案-199开发机通过NFS共享代码到196测试机-配置自动部署流程.md) | 3 reads | ~7106 tok |
+| 04:54 | Created .collab/artifacts/DISCUSS-毕业离校系统异地DOCKER自动化部署方案-199开发机通过NFS共享代码到196测试机-配置自动部署流程-1781386286-discuss-r0-claude-20260618-045335.md | — | ~227 |
+| 04:54 | Created .collab/artifacts/DISCUSS-毕业离校系统异地DOCKER自动化部署方案-199开发机通过NFS共享代码到196测试机-配置自动部署流程-1781386286-discuss-r1-codex-20260618-045420.md | — | ~792 |
+| 04:55 | Created .collab/artifacts/DISCUSS-毕业离校系统异地DOCKER自动化部署方案-199开发机通过NFS共享代码到196测试机-配置自动部署流程-1781386286-discuss-r2-gemini-20260618-045530.md | — | ~1692 |
+| 04:57 | Created .collab/artifacts/DISCUSS-毕业离校系统异地DOCKER自动化部署方案-199开发机通过NFS共享代码到196测试机-配置自动部署流程-1781386286-discuss-r3-consensus-20260618-045800.md | — | ~2405 |
+| 04:57 | Session end: 5 writes across 5 files (DISCUSS-毕业离校系统异地DOCKER自动化部署方案-199开发机通过NFS共享代码到196测试机-配置自动部署流程.md, DISCUSS-毕业离校系统异地DOCKER自动化部署方案-199开发机通过NFS共享代码到196测试机-配置自动部署流程-1781386286-discuss-r0-claude-20260618-045335.md, DISCUSS-毕业离校系统异地DOCKER自动化部署方案-199开发机通过NFS共享代码到196测试机-配置自动部署流程-1781386286-discuss-r1-codex-20260618-045420.md, DISCUSS-毕业离校系统异地DOCKER自动化部署方案-199开发机通过NFS共享代码到196测试机-配置自动部署流程-1781386286-discuss-r2-gemini-20260618-045530.md, DISCUSS-毕业离校系统异地DOCKER自动化部署方案-199开发机通过NFS共享代码到196测试机-配置自动部署流程-1781386286-discuss-r3-consensus-20260618-045800.md) | 5 reads | ~15659 tok |
+| 04:58 | Session end: 5 writes across 5 files (DISCUSS-毕业离校系统异地DOCKER自动化部署方案-199开发机通过NFS共享代码到196测试机-配置自动部署流程.md, DISCUSS-毕业离校系统异地DOCKER自动化部署方案-199开发机通过NFS共享代码到196测试机-配置自动部署流程-1781386286-discuss-r0-claude-20260618-045335.md, DISCUSS-毕业离校系统异地DOCKER自动化部署方案-199开发机通过NFS共享代码到196测试机-配置自动部署流程-1781386286-discuss-r1-codex-20260618-045420.md, DISCUSS-毕业离校系统异地DOCKER自动化部署方案-199开发机通过NFS共享代码到196测试机-配置自动部署流程-1781386286-discuss-r2-gemini-20260618-045530.md, DISCUSS-毕业离校系统异地DOCKER自动化部署方案-199开发机通过NFS共享代码到196测试机-配置自动部署流程-1781386286-discuss-r3-consensus-20260618-045800.md) | 5 reads | ~15659 tok |
+| 05:00 | Created .collab/artifacts/REVIEW-环境拆分方案-团队评审摘要-20260618.md | — | ~227 |
+| 05:01 | Edited .collab/artifacts/REVIEW-环境拆分方案-团队评审摘要-20260618.md | expanded (+229 lines) | ~931 |
+| 05:01 | Session end: 7 writes across 6 files (DISCUSS-毕业离校系统异地DOCKER自动化部署方案-199开发机通过NFS共享代码到196测试机-配置自动部署流程.md, DISCUSS-毕业离校系统异地DOCKER自动化部署方案-199开发机通过NFS共享代码到196测试机-配置自动部署流程-1781386286-discuss-r0-claude-20260618-045335.md, DISCUSS-毕业离校系统异地DOCKER自动化部署方案-199开发机通过NFS共享代码到196测试机-配置自动部署流程-1781386286-discuss-r1-codex-20260618-045420.md, DISCUSS-毕业离校系统异地DOCKER自动化部署方案-199开发机通过NFS共享代码到196测试机-配置自动部署流程-1781386286-discuss-r2-gemini-20260618-045530.md, DISCUSS-毕业离校系统异地DOCKER自动化部署方案-199开发机通过NFS共享代码到196测试机-配置自动部署流程-1781386286-discuss-r3-consensus-20260618-045800.md) | 5 reads | ~16900 tok |
+| 05:06 | Created .collab/artifacts/CHECKLIST-196机器部署就绪检查-20260618.md | — | ~1428 |
+| 05:07 | Session end: 8 writes across 7 files (DISCUSS-毕业离校系统异地DOCKER自动化部署方案-199开发机通过NFS共享代码到196测试机-配置自动部署流程.md, DISCUSS-毕业离校系统异地DOCKER自动化部署方案-199开发机通过NFS共享代码到196测试机-配置自动部署流程-1781386286-discuss-r0-claude-20260618-045335.md, DISCUSS-毕业离校系统异地DOCKER自动化部署方案-199开发机通过NFS共享代码到196测试机-配置自动部署流程-1781386286-discuss-r1-codex-20260618-045420.md, DISCUSS-毕业离校系统异地DOCKER自动化部署方案-199开发机通过NFS共享代码到196测试机-配置自动部署流程-1781386286-discuss-r2-gemini-20260618-045530.md, DISCUSS-毕业离校系统异地DOCKER自动化部署方案-199开发机通过NFS共享代码到196测试机-配置自动部署流程-1781386286-discuss-r3-consensus-20260618-045800.md) | 5 reads | ~18430 tok |
+| 05:10 | Session end: 8 writes across 7 files (DISCUSS-毕业离校系统异地DOCKER自动化部署方案-199开发机通过NFS共享代码到196测试机-配置自动部署流程.md, DISCUSS-毕业离校系统异地DOCKER自动化部署方案-199开发机通过NFS共享代码到196测试机-配置自动部署流程-1781386286-discuss-r0-claude-20260618-045335.md, DISCUSS-毕业离校系统异地DOCKER自动化部署方案-199开发机通过NFS共享代码到196测试机-配置自动部署流程-1781386286-discuss-r1-codex-20260618-045420.md, DISCUSS-毕业离校系统异地DOCKER自动化部署方案-199开发机通过NFS共享代码到196测试机-配置自动部署流程-1781386286-discuss-r2-gemini-20260618-045530.md, DISCUSS-毕业离校系统异地DOCKER自动化部署方案-199开发机通过NFS共享代码到196测试机-配置自动部署流程-1781386286-discuss-r3-consensus-20260618-045800.md) | 5 reads | ~18430 tok |
+| 05:12 | Created ../../../../tmp/setup-196.sh | — | ~137 |
+| 05:12 | Session end: 9 writes across 8 files (DISCUSS-毕业离校系统异地DOCKER自动化部署方案-199开发机通过NFS共享代码到196测试机-配置自动部署流程.md, DISCUSS-毕业离校系统异地DOCKER自动化部署方案-199开发机通过NFS共享代码到196测试机-配置自动部署流程-1781386286-discuss-r0-claude-20260618-045335.md, DISCUSS-毕业离校系统异地DOCKER自动化部署方案-199开发机通过NFS共享代码到196测试机-配置自动部署流程-1781386286-discuss-r1-codex-20260618-045420.md, DISCUSS-毕业离校系统异地DOCKER自动化部署方案-199开发机通过NFS共享代码到196测试机-配置自动部署流程-1781386286-discuss-r2-gemini-20260618-045530.md, DISCUSS-毕业离校系统异地DOCKER自动化部署方案-199开发机通过NFS共享代码到196测试机-配置自动部署流程-1781386286-discuss-r3-consensus-20260618-045800.md) | 5 reads | ~18577 tok |
+| 05:23 | Created .collab/artifacts/IMPLEMENTATION-环境拆分实施检查清单-20260618.md | — | ~2768 |
+| 05:23 | Session end: 10 writes across 9 files (DISCUSS-毕业离校系统异地DOCKER自动化部署方案-199开发机通过NFS共享代码到196测试机-配置自动部署流程.md, DISCUSS-毕业离校系统异地DOCKER自动化部署方案-199开发机通过NFS共享代码到196测试机-配置自动部署流程-1781386286-discuss-r0-claude-20260618-045335.md, DISCUSS-毕业离校系统异地DOCKER自动化部署方案-199开发机通过NFS共享代码到196测试机-配置自动部署流程-1781386286-discuss-r1-codex-20260618-045420.md, DISCUSS-毕业离校系统异地DOCKER自动化部署方案-199开发机通过NFS共享代码到196测试机-配置自动部署流程-1781386286-discuss-r2-gemini-20260618-045530.md, DISCUSS-毕业离校系统异地DOCKER自动化部署方案-199开发机通过NFS共享代码到196测试机-配置自动部署流程-1781386286-discuss-r3-consensus-20260618-045800.md) | 5 reads | ~21543 tok |
+| 05:37 | Created ../../scripts/monitor-sync.sh | — | ~312 |
+| 05:38 | Session end: 11 writes across 10 files (DISCUSS-毕业离校系统异地DOCKER自动化部署方案-199开发机通过NFS共享代码到196测试机-配置自动部署流程.md, DISCUSS-毕业离校系统异地DOCKER自动化部署方案-199开发机通过NFS共享代码到196测试机-配置自动部署流程-1781386286-discuss-r0-claude-20260618-045335.md, DISCUSS-毕业离校系统异地DOCKER自动化部署方案-199开发机通过NFS共享代码到196测试机-配置自动部署流程-1781386286-discuss-r1-codex-20260618-045420.md, DISCUSS-毕业离校系统异地DOCKER自动化部署方案-199开发机通过NFS共享代码到196测试机-配置自动部署流程-1781386286-discuss-r2-gemini-20260618-045530.md, DISCUSS-毕业离校系统异地DOCKER自动化部署方案-199开发机通过NFS共享代码到196测试机-配置自动部署流程-1781386286-discuss-r3-consensus-20260618-045800.md) | 5 reads | ~21877 tok |
+| 05:50 | Session end: 11 writes across 10 files (DISCUSS-毕业离校系统异地DOCKER自动化部署方案-199开发机通过NFS共享代码到196测试机-配置自动部署流程.md, DISCUSS-毕业离校系统异地DOCKER自动化部署方案-199开发机通过NFS共享代码到196测试机-配置自动部署流程-1781386286-discuss-r0-claude-20260618-045335.md, DISCUSS-毕业离校系统异地DOCKER自动化部署方案-199开发机通过NFS共享代码到196测试机-配置自动部署流程-1781386286-discuss-r1-codex-20260618-045420.md, DISCUSS-毕业离校系统异地DOCKER自动化部署方案-199开发机通过NFS共享代码到196测试机-配置自动部署流程-1781386286-discuss-r2-gemini-20260618-045530.md, DISCUSS-毕业离校系统异地DOCKER自动化部署方案-199开发机通过NFS共享代码到196测试机-配置自动部署流程-1781386286-discuss-r3-consensus-20260618-045800.md) | 5 reads | ~21877 tok |
+| 05:51 | Session end: 11 writes across 10 files (DISCUSS-毕业离校系统异地DOCKER自动化部署方案-199开发机通过NFS共享代码到196测试机-配置自动部署流程.md, DISCUSS-毕业离校系统异地DOCKER自动化部署方案-199开发机通过NFS共享代码到196测试机-配置自动部署流程-1781386286-discuss-r0-claude-20260618-045335.md, DISCUSS-毕业离校系统异地DOCKER自动化部署方案-199开发机通过NFS共享代码到196测试机-配置自动部署流程-1781386286-discuss-r1-codex-20260618-045420.md, DISCUSS-毕业离校系统异地DOCKER自动化部署方案-199开发机通过NFS共享代码到196测试机-配置自动部署流程-1781386286-discuss-r2-gemini-20260618-045530.md, DISCUSS-毕业离校系统异地DOCKER自动化部署方案-199开发机通过NFS共享代码到196测试机-配置自动部署流程-1781386286-discuss-r3-consensus-20260618-045800.md) | 5 reads | ~21877 tok |
+| 05:55 | Created ../../scripts/sync-to-staging.sh | — | ~213 |
+| 05:56 | Created ../../scripts/sync-watch.sh | — | ~126 |
+| 06:01 | Session end: 13 writes across 12 files (DISCUSS-毕业离校系统异地DOCKER自动化部署方案-199开发机通过NFS共享代码到196测试机-配置自动部署流程.md, DISCUSS-毕业离校系统异地DOCKER自动化部署方案-199开发机通过NFS共享代码到196测试机-配置自动部署流程-1781386286-discuss-r0-claude-20260618-045335.md, DISCUSS-毕业离校系统异地DOCKER自动化部署方案-199开发机通过NFS共享代码到196测试机-配置自动部署流程-1781386286-discuss-r1-codex-20260618-045420.md, DISCUSS-毕业离校系统异地DOCKER自动化部署方案-199开发机通过NFS共享代码到196测试机-配置自动部署流程-1781386286-discuss-r2-gemini-20260618-045530.md, DISCUSS-毕业离校系统异地DOCKER自动化部署方案-199开发机通过NFS共享代码到196测试机-配置自动部署流程-1781386286-discuss-r3-consensus-20260618-045800.md) | 6 reads | ~22239 tok |
+
+## Session: 2026-06-17 06:03
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 06:12 | Edited ../../scripts/sync-to-staging.sh | 15→20 lines | ~130 |
+| 06:13 | Created ../../../../tmp/promote-to-prod.sh | — | ~383 |
+| 06:17 | Edited ../../../../tmp/promote-to-prod.sh | expanded (+15 lines) | ~285 |
+| 06:19 | Session end: 3 writes across 2 files (sync-to-staging.sh, promote-to-prod.sh) | 2 reads | ~855 tok |
+| 06:44 | Edited ../../scripts/monitor-sync.sh | 2→3 lines | ~26 |
+| 06:45 | Session end: 4 writes across 3 files (sync-to-staging.sh, promote-to-prod.sh, monitor-sync.sh) | 2 reads | ~883 tok |
+| 06:47 | Session end: 4 writes across 3 files (sync-to-staging.sh, promote-to-prod.sh, monitor-sync.sh) | 2 reads | ~883 tok |
+| 06:49 | Session end: 4 writes across 3 files (sync-to-staging.sh, promote-to-prod.sh, monitor-sync.sh) | 2 reads | ~883 tok |
+| 06:49 | Session end: 4 writes across 3 files (sync-to-staging.sh, promote-to-prod.sh, monitor-sync.sh) | 2 reads | ~883 tok |
+| 06:53 | Session end: 4 writes across 3 files (sync-to-staging.sh, promote-to-prod.sh, monitor-sync.sh) | 2 reads | ~883 tok |
+| 06:55 | Session end: 4 writes across 3 files (sync-to-staging.sh, promote-to-prod.sh, monitor-sync.sh) | 2 reads | ~883 tok |
+| 06:58 | Session end: 4 writes across 3 files (sync-to-staging.sh, promote-to-prod.sh, monitor-sync.sh) | 2 reads | ~883 tok |
+| 06:59 | Session end: 4 writes across 3 files (sync-to-staging.sh, promote-to-prod.sh, monitor-sync.sh) | 2 reads | ~883 tok |
+| 07:05 | Session end: 4 writes across 3 files (sync-to-staging.sh, promote-to-prod.sh, monitor-sync.sh) | 2 reads | ~883 tok |
+| 10:34 | Session end: 4 writes across 3 files (sync-to-staging.sh, promote-to-prod.sh, monitor-sync.sh) | 2 reads | ~883 tok |
+| 10:38 | Created ../../../../tmp/CONFIG-MANAGEMENT.md | — | ~288 |
+| 11:11 | Session end: 5 writes across 4 files (sync-to-staging.sh, promote-to-prod.sh, monitor-sync.sh, CONFIG-MANAGEMENT.md) | 3 reads | ~1192 tok |
+
+## Session: 2026-06-18 13:07
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-06-18 13:10
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-06-18 14:51
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 15:06 | Created feishu-wiki-export/extract-wiki.sh | — | ~759 |
+| 15:06 | Edited feishu-wiki-export/extract-wiki.sh | 6→7 lines | ~40 |
+| 15:07 | Created feishu-wiki-export/extract-wiki.sh | — | ~784 |
+| 15:20 | Created feishu-wiki-export/README.md | — | ~331 |
+| 15:21 | Session end: 4 writes across 2 files (extract-wiki.sh, README.md) | 1 reads | ~2049 tok |
+| 15:26 | Created feishu-wiki-export/extract-with-cn-names.sh | — | ~857 |
+| 15:35 | Session end: 5 writes across 3 files (extract-wiki.sh, README.md, extract-with-cn-names.sh) | 1 reads | ~2967 tok |
+| 15:36 | Created feishu-wiki-export/export-to-docx.sh | — | ~1067 |
+| 15:39 | Session end: 6 writes across 4 files (extract-wiki.sh, README.md, extract-with-cn-names.sh, export-to-docx.sh) | 1 reads | ~4111 tok |
+| 15:41 | Session end: 6 writes across 4 files (extract-wiki.sh, README.md, extract-with-cn-names.sh, export-to-docx.sh) | 1 reads | ~4111 tok |
+| 15:47 | Session end: 6 writes across 4 files (extract-wiki.sh, README.md, extract-with-cn-names.sh, export-to-docx.sh) | 1 reads | ~4111 tok |
+| 15:54 | Session end: 6 writes across 4 files (extract-wiki.sh, README.md, extract-with-cn-names.sh, export-to-docx.sh) | 1 reads | ~4111 tok |
+| 15:58 | Session end: 6 writes across 4 files (extract-wiki.sh, README.md, extract-with-cn-names.sh, export-to-docx.sh) | 1 reads | ~4111 tok |
+| 16:00 | Session end: 6 writes across 4 files (extract-wiki.sh, README.md, extract-with-cn-names.sh, export-to-docx.sh) | 1 reads | ~4111 tok |
+| 16:02 | Session end: 6 writes across 4 files (extract-wiki.sh, README.md, extract-with-cn-names.sh, export-to-docx.sh) | 1 reads | ~4111 tok |
+
+## Session: 2026-06-18 16:06
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-06-18 18:35
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 19:01 | Created docs/环境部署说明-三环境架构.md | — | ~1798 |
+| 19:01 | Edited PROJECT-QUICK-REF.md | expanded (+16 lines) | ~208 |
+| 19:02 | Edited PROJECT-QUICK-REF.md | expanded (+49 lines) | ~323 |
+| 19:02 | Session end: 3 writes across 2 files (环境部署说明-三环境架构.md, PROJECT-QUICK-REF.md) | 4 reads | ~10469 tok |
+| 19:04 | Session end: 3 writes across 2 files (环境部署说明-三环境架构.md, PROJECT-QUICK-REF.md) | 4 reads | ~10469 tok |
+| 19:16 | Session end: 3 writes across 2 files (环境部署说明-三环境架构.md, PROJECT-QUICK-REF.md) | 4 reads | ~10469 tok |
+
+## Session: 2026-06-19 08:59
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 13:09 | Created ../biz-core/README.md | — | ~176 |
+| 13:09 | Created ../biz-core/docs/architecture.md | — | ~574 |
+| 13:10 | Created ../biz-core/docs/feature-flags.md | — | ~622 |
+| 13:10 | Created ../biz-core/PRD/ExecutionPlan.md | — | ~138 |
+| 13:10 | Created ../biz-core/PRD/CHANGELOG.md | — | ~48 |
+| 13:11 | Session end: 5 writes across 5 files (README.md, architecture.md, feature-flags.md, ExecutionPlan.md, CHANGELOG.md) | 0 reads | ~1667 tok |
+| 13:12 | Edited ../biz-core/README.md | expanded (+6 lines) | ~60 |
+| 13:12 | Session end: 6 writes across 5 files (README.md, architecture.md, feature-flags.md, ExecutionPlan.md, CHANGELOG.md) | 1 reads | ~2182 tok |
+| 13:14 | Edited ../biz-core/README.md | expanded (+17 lines) | ~185 |
+| 13:14 | Session end: 7 writes across 5 files (README.md, architecture.md, feature-flags.md, ExecutionPlan.md, CHANGELOG.md) | 1 reads | ~2380 tok |
+| 13:16 | Edited ../biz-core/README.md | expanded (+28 lines) | ~140 |
+| 13:17 | Session end: 8 writes across 5 files (README.md, architecture.md, feature-flags.md, ExecutionPlan.md, CHANGELOG.md) | 2 reads | ~2530 tok |
+| 13:37 | Created ../biz-core/docs/implementation-plan.md | — | ~1217 |
+| 13:43 | Session end: 9 writes across 6 files (README.md, architecture.md, feature-flags.md, ExecutionPlan.md, CHANGELOG.md) | 3 reads | ~3834 tok |
+| 13:43 | Session end: 9 writes across 6 files (README.md, architecture.md, feature-flags.md, ExecutionPlan.md, CHANGELOG.md) | 4 reads | ~3834 tok |
+| 14:03 | Session end: 9 writes across 6 files (README.md, architecture.md, feature-flags.md, ExecutionPlan.md, CHANGELOG.md) | 4 reads | ~3834 tok |
+| 14:16 | Created ../biz-core/docs/architecture.md | — | ~789 |
+| 14:17 | Session end: 10 writes across 6 files (README.md, architecture.md, feature-flags.md, ExecutionPlan.md, CHANGELOG.md) | 5 reads | ~7751 tok |
+| 14:18 | Session end: 10 writes across 6 files (README.md, architecture.md, feature-flags.md, ExecutionPlan.md, CHANGELOG.md) | 5 reads | ~7751 tok |
+| 14:24 | Created ../biz-core/docs/discussion-summary.md | — | ~744 |
+| 14:26 | Session end: 11 writes across 7 files (README.md, architecture.md, feature-flags.md, ExecutionPlan.md, CHANGELOG.md) | 5 reads | ~8548 tok |
+| 14:38 | Edited ../biz-core/docs/implementation-plan.md | expanded (+6 lines) | ~226 |
+| 14:39 | Edited ../biz-core/docs/implementation-plan.md | expanded (+39 lines) | ~518 |
+| 14:40 | Session end: 13 writes across 7 files (README.md, architecture.md, feature-flags.md, ExecutionPlan.md, CHANGELOG.md) | 6 reads | ~9345 tok |
+| 14:42 | Created ../biz-core/pyproject.toml | — | ~127 |
+| 14:42 | Created ../biz-core/biz_core/__init__.py | — | ~8 |
+| 14:44 | Created ../biz-core/tests/settings.py | — | ~136 |
+| 14:45 | Created ../biz-core/.github/workflows/biz-core-tests.yml | — | ~88 |
+| 14:45 | Created ../biz-core/.github/workflows/integration-tests.yml | — | ~152 |
+| 14:49 | Edited ../biz-core/pyproject.toml | 2→2 lines | ~21 |
+| 14:52 | Session end: 19 writes across 12 files (README.md, architecture.md, feature-flags.md, ExecutionPlan.md, CHANGELOG.md) | 6 reads | ~9888 tok |
+| 14:56 | Session end: 19 writes across 12 files (README.md, architecture.md, feature-flags.md, ExecutionPlan.md, CHANGELOG.md) | 22 reads | ~37570 tok |
+| 15:09 | Edited ../biz-core/docs/implementation-plan.md | 6→10 lines | ~233 |
+| 15:09 | Edited ../biz-core/docs/implementation-plan.md | 10→13 lines | ~124 |
+| 15:10 | Edited ../biz-core/docs/implementation-plan.md | expanded (+7 lines) | ~176 |
+| 15:10 | Session end: 22 writes across 12 files (README.md, architecture.md, feature-flags.md, ExecutionPlan.md, CHANGELOG.md) | 23 reads | ~38141 tok |
+| 15:11 | Created ../biz-core/biz_core/feature_flags/models.py | — | ~424 |
+| 15:11 | Created ../biz-core/biz_core/feature_flags/checker.py | — | ~259 |
+| 15:12 | Created ../biz-core/biz_core/feature_flags/decorators.py | — | ~198 |
+| 15:12 | Created ../biz-core/biz_core/feature_flags/admin.py | — | ~158 |
+| 15:12 | Edited ../biz-core/biz_core/feature_flags/service.py | 2→5 lines | ~51 |
+| 15:13 | Created ../biz-core/tests/feature_flags/test_feature_flags.py | — | ~654 |
+| 15:14 | Created ../biz-core/conftest.py | — | ~18 |
+| 15:36 | Edited ../biz-core/.github/workflows/biz-core-tests.yml | inline fix | ~15 |
+| 15:43 | Created ../biz-core/biz_core/audit/models.py | — | ~210 |
+| 15:44 | Edited ../biz-core/biz_core/audit/service.py | modified log() | ~160 |
+| 15:44 | Created ../biz-core/biz_core/audit/middleware.py | — | ~308 |
+| 15:49 | Created ../biz-core/tests/audit/test_audit.py | — | ~251 |
+| 16:05 | Session end: 34 writes across 21 files (README.md, architecture.md, feature-flags.md, ExecutionPlan.md, CHANGELOG.md) | 26 reads | ~40847 tok |
+| 16:10 | Created ../biz-core/biz_core/rbac/models.py | — | ~166 |
+| 16:12 | Edited ../biz-core/biz_core/rbac/service.py | modified has_permission() | ~350 |
+| 16:20 | Created ../biz-core/biz_core/notify/channels/base.py | — | ~181 |
+| 16:20 | Edited ../biz-core/biz_core/notify/service.py | modified _idem_key() | ~432 |
+| 16:45 | Created ../biz-core/tests/rbac/test_rbac.py | — | ~399 |
+| 16:45 | Created ../biz-core/tests/notify/test_notify.py | — | ~430 |
+| 17:00 | Edited ../biz-core/tests/notify/test_notify.py | modified clear_cache() | ~435 |
+| 17:46 | Session end: 41 writes across 24 files (README.md, architecture.md, feature-flags.md, ExecutionPlan.md, CHANGELOG.md) | 28 reads | ~43240 tok |
+| 17:47 | Edited ../biz-core/biz_core/export/service.py | modified sanitize_excel_formula() | ~475 |
+| 17:47 | Edited ../biz-core/biz_core/workflow/service.py | modified submit() | ~738 |
+| 17:48 | Created ../biz-core/biz_core/workflow/models.py | — | ~413 |
+| 23:09 | Created ../biz-core/tests/export/test_export.py | — | ~332 |
+| 23:09 | Created ../biz-core/tests/workflow/test_workflow.py | — | ~551 |
+| 23:11 | Session end: 46 writes across 26 files (README.md, architecture.md, feature-flags.md, ExecutionPlan.md, CHANGELOG.md) | 30 reads | ~45749 tok |
+| 23:13 | Created ../biz-core/biz_core/attachments/models.py | — | ~339 |
+| 23:13 | Created ../biz-core/biz_core/attachments/service.py | — | ~433 |
+| 23:13 | Created ../biz-core/biz_core/healthcheck/views.py | — | ~127 |
+| 23:39 | Edited ../biz-core/tests/settings.py | 10→12 lines | ~81 |
+| 00:06 | Created ../biz-core/tests/attachments/test_attachments.py | — | ~393 |
+| 00:06 | Created ../biz-core/tests/healthcheck/test_healthcheck.py | — | ~180 |
+| 00:07 | Edited ../biz-core/tests/healthcheck/test_healthcheck.py | modified test_readiness_200() | ~95 |
+| 00:11 | Edited ../biz-core/tests/healthcheck/test_healthcheck.py | modified test_readiness_200() | ~43 |
+| 00:14 | Session end: 54 writes across 29 files (README.md, architecture.md, feature-flags.md, ExecutionPlan.md, CHANGELOG.md) | 34 reads | ~47440 tok |
+| 00:28 | Created ../biz-core/docs/api/README.md | — | ~948 |
+| 00:29 | Edited ../biz-core/pyproject.toml | 2→2 lines | ~20 |
+| 00:29 | Edited ../biz-core/PRD/CHANGELOG.md | expanded (+12 lines) | ~168 |
+| 00:38 | Session end: 57 writes across 29 files (README.md, architecture.md, feature-flags.md, ExecutionPlan.md, CHANGELOG.md) | 36 reads | ~49589 tok |
+| 00:48 | Session end: 57 writes across 29 files (README.md, architecture.md, feature-flags.md, ExecutionPlan.md, CHANGELOG.md) | 36 reads | ~49589 tok |
+| 00:53 | Session end: 57 writes across 29 files (README.md, architecture.md, feature-flags.md, ExecutionPlan.md, CHANGELOG.md) | 36 reads | ~49589 tok |
+| 01:13 | Created ../biz-core/docs/environment-standardization.md | — | ~967 |
+| 01:15 | Session end: 58 writes across 30 files (README.md, architecture.md, feature-flags.md, ExecutionPlan.md, CHANGELOG.md) | 36 reads | ~50625 tok |
+| 01:17 | Session end: 58 writes across 30 files (README.md, architecture.md, feature-flags.md, ExecutionPlan.md, CHANGELOG.md) | 36 reads | ~50625 tok |
+| 01:41 | Session end: 58 writes across 30 files (README.md, architecture.md, feature-flags.md, ExecutionPlan.md, CHANGELOG.md) | 36 reads | ~50625 tok |
+| 01:42 | Session end: 58 writes across 30 files (README.md, architecture.md, feature-flags.md, ExecutionPlan.md, CHANGELOG.md) | 36 reads | ~50625 tok |
+| 01:48 | Edited ../biz-core/pyproject.toml | 3→4 lines | ~16 |
+| 01:49 | Created ../biz-core/biz_core/attachments/storage.py | — | ~474 |
+| 01:49 | Edited ../biz-core/biz_core/attachments/service.py | added 1 import(s) | ~443 |
+| 01:50 | Created ../biz-core/docs/integration-guide.md | — | ~601 |
+| 01:50 | Edited ../biz-core/tests/attachments/test_attachments.py | modified mock_storage() | ~521 |
+| 01:52 | Session end: 63 writes across 32 files (README.md, architecture.md, feature-flags.md, ExecutionPlan.md, CHANGELOG.md) | 37 reads | ~52724 tok |
+| 01:55 | Session end: 63 writes across 32 files (README.md, architecture.md, feature-flags.md, ExecutionPlan.md, CHANGELOG.md) | 37 reads | ~52724 tok |
+| 01:56 | Session end: 63 writes across 32 files (README.md, architecture.md, feature-flags.md, ExecutionPlan.md, CHANGELOG.md) | 37 reads | ~52724 tok |
+| 01:59 | Created ../biz-core/tests/attachments/test_storage.py | — | ~237 |
+| 02:02 | Created ../biz-core/tests/fixtures/test_equipment_requisition.py | — | ~1220 |
+| 02:02 | Created ../biz-core/docs/compatibility-contract.md | — | ~442 |
+| 02:03 | Session end: 66 writes across 35 files (README.md, architecture.md, feature-flags.md, ExecutionPlan.md, CHANGELOG.md) | 37 reads | ~54654 tok |
+| 02:06 | Session end: 66 writes across 35 files (README.md, architecture.md, feature-flags.md, ExecutionPlan.md, CHANGELOG.md) | 37 reads | ~54654 tok |
+| 02:08 | Edited backend/requirements/base.txt | 3→6 lines | ~17 |
+| 02:09 | Edited backend/config/settings/base.py | expanded (+10 lines) | ~108 |
+| 02:11 | Edited backend/requirements/base.txt | 2→2 lines | ~10 |
+| 02:19 | Created backend/test_biz_core_contracts.py | — | ~2394 |
+| 02:21 | Session end: 70 writes across 37 files (README.md, architecture.md, feature-flags.md, ExecutionPlan.md, CHANGELOG.md) | 40 reads | ~58982 tok |
+| 02:22 | Edited ../biz-core/docs/compatibility-contract.md | 13→13 lines | ~414 |
+| 02:23 | Session end: 71 writes across 37 files (README.md, architecture.md, feature-flags.md, ExecutionPlan.md, CHANGELOG.md) | 41 reads | ~59426 tok |
+
+## Session: 2026-06-20 11:09
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 12:52 | Created ../biz-core/.omc/session-context.json | — | ~556 |
+| 13:35 | Session end: 1 writes across 1 files (session-context.json) | 0 reads | ~556 tok |
+| 13:39 | Session end: 1 writes across 1 files (session-context.json) | 0 reads | ~556 tok |
+| 13:46 | Session end: 1 writes across 1 files (session-context.json) | 0 reads | ~556 tok |
+| 13:47 | Session end: 1 writes across 1 files (session-context.json) | 0 reads | ~556 tok |
+| 13:51 | Created backend/apps/users/migrations/0009_merge_user_92005340_into_20240061.py | — | ~220 |
+| 13:56 | Session end: 2 writes across 2 files (session-context.json, 0009_merge_user_92005340_into_20240061.py) | 0 reads | ~776 tok |
+| 13:57 | Session end: 2 writes across 2 files (session-context.json, 0009_merge_user_92005340_into_20240061.py) | 0 reads | ~776 tok |
+| 13:58 | Session end: 2 writes across 2 files (session-context.json, 0009_merge_user_92005340_into_20240061.py) | 0 reads | ~776 tok |
+| 13:59 | Session end: 2 writes across 2 files (session-context.json, 0009_merge_user_92005340_into_20240061.py) | 0 reads | ~776 tok |
+| 14:03 | Session end: 2 writes across 2 files (session-context.json, 0009_merge_user_92005340_into_20240061.py) | 1 reads | ~776 tok |
+| 14:12 | Created docs/deployment/三环境部署体系方案.md | — | ~1129 |
+| 14:12 | Session end: 3 writes across 3 files (session-context.json, 0009_merge_user_92005340_into_20240061.py, 三环境部署体系方案.md) | 2 reads | ~1985 tok |
+| 14:21 | Edited backend/apps/healthcheck/views.py | added 1 import(s) | ~23 |
+| 14:32 | Edited backend/apps/healthcheck/views.py | modified version() | ~132 |
+| 14:32 | Edited backend/config/urls.py | inline fix | ~17 |
+| 14:32 | Edited backend/config/urls.py | 1→2 lines | ~26 |
+| 14:37 | Created docker-compose.staging.yml | — | ~122 |
+| 14:40 | Created docker-compose.staging.yml | — | ~276 |
+| 14:56 | Session end: 9 writes across 6 files (session-context.json, 0009_merge_user_92005340_into_20240061.py, 三环境部署体系方案.md, views.py, urls.py) | 5 reads | ~3318 tok |
+| 14:59 | Session end: 9 writes across 6 files (session-context.json, 0009_merge_user_92005340_into_20240061.py, 三环境部署体系方案.md, views.py, urls.py) | 5 reads | ~3318 tok |
+| 15:00 | Created backend/apps/users/migrations/0010_add_test_temp_user.py | — | ~329 |
+| 15:07 | Session end: 10 writes across 7 files (session-context.json, 0009_merge_user_92005340_into_20240061.py, 三环境部署体系方案.md, views.py, urls.py) | 5 reads | ~3647 tok |
+| 15:11 | Edited ../../scripts/sync-to-staging.sh | expanded (+8 lines) | ~78 |

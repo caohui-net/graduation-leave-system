@@ -1,7 +1,7 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-06-17T08:46:45.891Z
-> Files: 743 tracked | Anatomy hits: 0 | Misses: 0
+> Auto-maintained by OpenWolf. Last scanned: 2026-06-20T07:11:38.625Z
+> Files: 814 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../../../tmp/
 
@@ -9,6 +9,7 @@
 - `clean_user_2021140140429.sh` — 清理用户 2021140140429 的所有申请数据 (~214 tok)
 - `clean_user_applications.py` (~379 tok)
 - `clean_via_api.py` — 通过API清理用户申请数据 (~410 tok)
+- `CONFIG-MANAGEMENT.md` — 配置管理说明 (~270 tok)
 - `create_failed_app.py` (~181 tok)
 - `create_skip_dorm.py` (~628 tok)
 - `create_test_app.py` — 测试为张官芯创建申请 (~472 tok)
@@ -16,7 +17,9 @@
 - `golive-integration-revised-plan.md` — 青橄榄平台对接方案（修订版） (~2529 tok)
 - `graduation-frontend.service` (~79 tok)
 - `mobile-sso-404-analysis.md` — 移动端SSO登录404问题分析 (~283 tok)
+- `promote-to-prod.sh` (~533 tok)
 - `restore_test_data.sh` — Restore test data after rejection testing (~315 tok)
+- `setup-196.sh` — 196机器部署环境安装脚本 (~137 tok)
 - `sso-fix-review.md` — SSO登录修复代码审查 (~475 tok)
 - `test_attachment_upload.py` (~926 tok)
 - `test_graduate_submit.py` (~317 tok)
@@ -49,6 +52,137 @@
 
 - `alert-graduation-frontend.sh` (~108 tok)
 
+## ../../scripts/
+
+- `monitor-sync.sh` — 监控脚本 - 检查同步和服务状态 (~324 tok)
+- `sync-to-staging.sh` — 代码同步脚本 - 199同步到196 staging (~304 tok)
+- `sync-watch.sh` — inotify监听脚本 - 自动检测代码变更并同步 (~126 tok)
+
+## ../biz-core/
+
+- `conftest.py` (~18 tok)
+- `pyproject.toml` — 通用业务模块库 — 审批流、权限、通知、审计、导出、功能开关、文件、健康检查 (~131 tok)
+- `README.md` — Project documentation (~479 tok)
+
+## ../biz-core/.github/workflows/
+
+- `biz-core-tests.yml` — CI: biz-core tests (~89 tok)
+- `integration-tests.yml` — CI: graduation-leave-system integration (~152 tok)
+
+## ../biz-core/.omc/
+
+- `session-context.json` (~556 tok)
+
+## ../biz-core/PRD/
+
+- `CHANGELOG.md` — CHANGELOG (~157 tok)
+- `ExecutionPlan.md` — 执行计划 (~129 tok)
+
+## ../biz-core/biz_core/
+
+- `__init__.py` — biz_core — 通用业务模块库 (~8 tok)
+
+## ../biz-core/biz_core/attachments/
+
+- `models.py` — Magic bytes for common file types (~339 tok)
+- `service.py` — biz_core.attachments — public service interface (~443 tok)
+- `storage.py` — biz_core.attachments.storage — StorageBackend interface + LocalStorageBackend (~474 tok)
+
+## ../biz-core/biz_core/audit/
+
+- `middleware.py` — Declares AuditMiddleware (~308 tok)
+- `models.py` — Model: AuditLog, 7 fields (~210 tok)
+- `service.py` — biz_core.audit — public service interface (~160 tok)
+
+## ../biz-core/biz_core/export/
+
+- `service.py` — biz_core.export — public service interface (~475 tok)
+
+## ../biz-core/biz_core/feature_flags/
+
+- `admin.py` — FeatureFlagAdmin: save_model (~158 tok)
+- `checker.py` — get_flag, flag_enabled, invalidate_flag (~259 tok)
+- `decorators.py` — require_flag, decorator, wrapper (~198 tok)
+- `models.py` — Model: FeatureFlag, 8 fields (~424 tok)
+- `service.py` — biz_core.feature_flags — public service interface (~51 tok)
+
+## ../biz-core/biz_core/healthcheck/
+
+- `views.py` — biz_core.healthcheck — liveness + readiness views (~127 tok)
+
+## ../biz-core/biz_core/notify/
+
+- `service.py` — biz_core.notify — public service interface (~432 tok)
+
+## ../biz-core/biz_core/notify/channels/
+
+- `base.py` — BaseChannel: send, send, send (~181 tok)
+
+## ../biz-core/biz_core/rbac/
+
+- `models.py` — Model: Role, 4 fields (~166 tok)
+- `service.py` — biz_core.rbac — public service interface (~350 tok)
+
+## ../biz-core/biz_core/workflow/
+
+- `models.py` — Model: WorkflowInstance, 13 fields (~413 tok)
+- `service.py` — biz_core.workflow — public service interface (simple_linear) (~738 tok)
+
+## ../biz-core/docs/
+
+- `architecture.md` — 架构设计文档 (~739 tok)
+- `compatibility-contract.md` — graduation-leave-system 兼容合约清单 (~496 tok)
+- `discussion-summary.md` — 三方讨论归总报告 (~698 tok)
+- `environment-standardization.md` — biz-core 支撑环境标准化分析与 CLAUDE.md 优化需求 (~906 tok)
+- `feature-flags.md` — 功能开关（Feature Flag）设计方案 (~583 tok)
+- `implementation-plan.md` — biz-core 实施方案 (~1945 tok)
+- `integration-guide.md` — biz-core 集成指南 (~563 tok)
+
+## ../biz-core/docs/api/
+
+- `README.md` — Project documentation (~889 tok)
+
+## ../biz-core/tests/
+
+- `settings.py` — Standalone test settings — no graduation-leave-system dependency. (~152 tok)
+
+## ../biz-core/tests/attachments/
+
+- `test_attachments.py` — TestDetectFileType: mock_storage, test_jpeg, test_png, test_unknown_returns_none + 4 more (~521 tok)
+- `test_storage.py` — TestLocalStorageBackend: test_save_and_delete, test_delete_missing_no_error, test_url (~237 tok)
+
+## ../biz-core/tests/audit/
+
+- `test_audit.py` — TestAuditService: test_log_basic, test_log_no_user, test_log_extra, test_log_ip (~251 tok)
+
+## ../biz-core/tests/export/
+
+- `test_export.py` — TestSanitize: test_formula_prefixed, test_safe_value_unchanged, test_csv_output, test_csv_sanitizes_ (~332 tok)
+
+## ../biz-core/tests/feature_flags/
+
+- `test_feature_flags.py` — TestFlagEnabled: clear_cache, test_disabled_by_default, test_global_enabled, test_missing_flag_retur (~654 tok)
+
+## ../biz-core/tests/fixtures/
+
+- `test_equipment_requisition.py` — TestEquipmentFeatureFlag: clear_cache, test_equipment_barcode_scan_flag, test_requisition_submit_log (~1220 tok)
+
+## ../biz-core/tests/healthcheck/
+
+- `test_healthcheck.py` — TestHealthcheck: setup_method, test_liveness_200, test_readiness_200, test_readiness_has_db_ok (~196 tok)
+
+## ../biz-core/tests/notify/
+
+- `test_notify.py` — TestNotifyService: clear_cache, test_send_returns_true, test_idempotency_dedup, test_fallback_on_pri (~435 tok)
+
+## ../biz-core/tests/rbac/
+
+- `test_rbac.py` — TestRbacService: test_has_permission_true, test_has_permission_false, test_no_roles_returns_false, t (~399 tok)
+
+## ../biz-core/tests/workflow/
+
+- `test_workflow.py` — TestWorkflowService: test_submit_creates_instance, test_approve_advances_step, test_approve_all_step (~551 tok)
+
 ## ../graduation-leave-system/.claude/skills/claude-codex-collab/
 
 - `SKILL.md` — Claude-Codex Collaboration Skill (~1007 tok)
@@ -62,11 +196,12 @@
 - `deploy.config.yml` (~134 tok)
 - `discussion_ux_proposal.md` — 三方直接讨论交互 UX 设计方案 (~960 tok)
 - `docker-compose.prod.yml` — Docker Compose: 5 services (~410 tok)
+- `docker-compose.staging.yml` — Docker Compose: 4 services (~276 tok)
 - `docker-compose.yml` — Docker Compose services (~232 tok)
 - `frontend-server.service` (~92 tok)
 - `graduation-frontend-nocache.service` (~108 tok)
 - `PRODUCTION-READY.md` — claude-codex-gemini-collab - PRODUCTION READY (~1835 tok)
-- `PROJECT-QUICK-REF.md` — 毕业离校系统 - 项目速查手册 (~2685 tok)
+- `PROJECT-QUICK-REF.md` — 毕业离校系统 - 项目速查手册 (~3079 tok)
 - `pyproject.toml` — Claude-Codex-Gemini Collaboration Framework (~185 tok)
 - `README.md` — Project documentation (~451 tok)
 - `response.json` (~469 tok)
@@ -88,7 +223,15 @@
 
 ## .collab/artifacts/
 
+- `CHECKLIST-196机器部署就绪检查-20260618.md` — 196机器部署就绪检查清单 (~1339 tok)
+- `DISCUSS-毕业离校系统异地DOCKER自动化部署方案-199开发机通过NFS共享代码到196测试机-配置自动部署流程-1781386286-discuss-r0-claude-20260618-045335.md` — 讨论轮次 R0 - 架构师初评（Claude） (~213 tok)
+- `DISCUSS-毕业离校系统异地DOCKER自动化部署方案-199开发机通过NFS共享代码到196测试机-配置自动部署流程-1781386286-discuss-r1-codex-20260618-045420.md` — 讨论轮次 R0 - 安全专家初评（Codex风格） (~742 tok)
+- `DISCUSS-毕业离校系统异地DOCKER自动化部署方案-199开发机通过NFS共享代码到196测试机-配置自动部署流程-1781386286-discuss-r2-gemini-20260618-045530.md` — 讨论轮次 R0 - 运维专家初评（Gemini风格） (~1586 tok)
+- `DISCUSS-毕业离校系统异地DOCKER自动化部署方案-199开发机通过NFS共享代码到196测试机-配置自动部署流程-1781386286-discuss-r3-consensus-20260618-045800.md` — 讨论轮次 R3 - 综合优化方案（多方共识） (~2255 tok)
+- `DISCUSS-毕业离校系统异地DOCKER自动化部署方案-199开发机通过NFS共享代码到196测试机-配置自动部署流程.md` — 毕业离校系统开发/生产环境拆分方案讨论 (~2695 tok)
 - `DISCUSS-异地DOCKER自动化部署方案V2-0技术评审-基于RSYNC选择性同步替代NFS方案-1781442271-discuss-r3-claude-20260614-133629.md` (~792 tok)
+- `IMPLEMENTATION-环境拆分实施检查清单-20260618.md` — 环境拆分实施检查清单 (~2595 tok)
+- `REVIEW-环境拆分方案-团队评审摘要-20260618.md` — 环境拆分方案 - 团队评审摘要 (~1076 tok)
 
 ## .github/workflows/
 
@@ -689,6 +832,7 @@
 - `test_admin_sso_mock.py` — 管理端SSO Mock测试 - 验证凭证配置 (~856 tok)
 - `test_admin_sso.py` — 管理端SSO对接测试脚本 (~550 tok)
 - `test_api_response.py` — 测试API返回数据 (~572 tok)
+- `test_biz_core_contracts.py` — TestContract1Import: test_all_modules_importable, test_biz_app_labels_independent, test_no_cross_app (~2394 tok)
 - `test_mobile_apis.py` — 测试现有SSO移动端接口 (~510 tok)
 - `test_sso_e2e.py` — SSO端到端集成测试 (~753 tok)
 - `test_student_interface.py` — 测试学生界面逻辑 (~678 tok)
@@ -742,7 +886,7 @@
 ## backend/apps/healthcheck/
 
 - `__init__.py` (~0 tok)
-- `views.py` — healthz, readyz (~193 tok)
+- `views.py` — version, healthz, readyz (~305 tok)
 
 ## backend/apps/middleware/
 
@@ -800,6 +944,11 @@
 - `check_graduate_buildings.py` — Command: handle (~441 tok)
 - `check_zi6_managers.py` — Command: handle (~339 tok)
 
+## backend/apps/users/migrations/
+
+- `0009_merge_user_92005340_into_20240061.py` — Migration: merge_user (~220 tok)
+- `0010_add_test_temp_user.py` — Migration: add_test_user, remove_test_user (~329 tok)
+
 ## backend/backend/apps/sso_qingganlian/
 
 - `client.py` — QingganlanAPIError: get_user_code_by_token, get_user_info, verify_admin_user (~717 tok)
@@ -810,16 +959,16 @@
 
 ## backend/config/
 
-- `urls.py` — URL Configuration (~312 tok)
+- `urls.py` — URL Configuration (~328 tok)
 
 ## backend/config/settings/
 
-- `base.py` — Declares DEFAULT_AUTO_FIELD (~1640 tok)
+- `base.py` — Declares DEFAULT_AUTO_FIELD (~1702 tok)
 - `prod.py` — Production settings. (~302 tok)
 
 ## backend/requirements/
 
-- `base.txt` — Django Core (~158 tok)
+- `base.txt` — Django Core (~170 tok)
 
 ## backend/scripts/
 
@@ -863,6 +1012,7 @@
 
 - `测试文档-完整流程测试.html` — 毕业离校申请系统 - 完整流程测试文档 (~716 tok)
 - `后端运行保障方案.md` — 后端服务运行保障方案 (~1023 tok)
+- `环境部署说明-三环境架构.md` — 毕业离校系统 - 三环境部署说明 (~1686 tok)
 - `浏览器缓存更新方案.md` — 浏览器缓存强制更新方案 (~651 tok)
 - `青橄榄配置检查清单.md` — 青橄榄配置检查清单 (~218 tok)
 - `青橄榄平台对接材料-提交版.md` — 青橄榄平台SSO对接材料 (~1055 tok)
@@ -896,10 +1046,21 @@
 - `SSO模块通用化可行性分析报告.md` — SSO模块通用化改造可行性分析报告 (~2291 tok)
 - `UAT-CHECKLIST.md` — 用户验收测试（UAT）检查清单 (~787 tok)
 
+## docs/deployment/
+
+- `三环境部署体系方案.md` — 三环境部署体系方案 (~1058 tok)
+
 ## docs/design/
 
 - `2026-05-27-system-design.md` — 毕业生离校申请审批系统 - 系统设计文档 (~15276 tok)
 - `2026-06-08-sso-qingganlian-integration.md` — 青橄榄平台SSO对接模块技术设计 (~2262 tok)
+
+## feishu-wiki-export/
+
+- `export-to-docx.sh` — Export documents in original docx format with Chinese filenames (~1067 tok)
+- `extract-wiki.sh` — Extract all documents from Feishu wiki space recursively (~784 tok)
+- `extract-with-cn-names.sh` — Extract documents with original format and Chinese filenames (~857 tok)
+- `README.md` — Project documentation (~310 tok)
 
 ## frontend/components/
 

@@ -2,10 +2,27 @@ version: '3.8'
 
 services:
   db:
+    image: postgres:15-alpine
+    restart: always
+    environment:
+      POSTGRES_DB: graduation_leave
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
     ports:
       - "15432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
 
   backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    restart: always
     command: >
       sh -c "pip install -e /biz-core --quiet &&
              python manage.py migrate --noinput &&
@@ -18,3 +35,10 @@ services:
       - "17787:8000"
     env_file:
       - .env.staging
+    depends_on:
+      db:
+        condition: service_healthy
+
+volumes:
+  postgres_data:
+  media_data:

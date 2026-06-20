@@ -1,5 +1,16 @@
+import os
 from django.http import JsonResponse
 from django.db import connection
+
+def version(request):
+    """Return deployed version from VERSION file"""
+    version_file = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))), '..', 'VERSION')
+    try:
+        with open(version_file) as f:
+            ver = f.read().strip()
+    except FileNotFoundError:
+        ver = 'unknown'
+    return JsonResponse({"version": ver})
 
 def healthz(request):
     """Basic liveness check - process is running"""

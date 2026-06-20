@@ -4,12 +4,13 @@ from django.urls import path, include
 from django.http import HttpResponseRedirect
 from django.conf import settings
 from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
-from apps.healthcheck.views import healthz, readyz
+from apps.healthcheck.views import healthz, readyz, version
 
 urlpatterns = [
     path('', lambda request: HttpResponseRedirect(settings.FRONTEND_URL)),
     path('healthz', healthz, name='healthz'),
     path('readyz', readyz, name='readyz'),
+    path('version', version, name='version'),
     path('admin/', admin.site.urls),
     path('api/auth/', include('apps.users.urls')),
     path('api/', include('apps.attachments.urls')),

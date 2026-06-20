@@ -33,7 +33,7 @@ services:
     ports:
       - "17787:8000"
     env_file:
-      - .env.staging
+      - /opt/graduation-leave-system/.envs/staging.env
     depends_on:
       db:
         condition: service_healthy

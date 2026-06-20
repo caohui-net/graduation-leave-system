@@ -31,6 +31,16 @@
       "count": 1,
       "tokens": 0,
       "first_read": "2026-06-20T07:09:23.827Z"
+    },
+    "/home/caohui/projects/graduation-leave-system/docker-compose.staging.yml": {
+      "count": 2,
+      "tokens": 261,
+      "first_read": "2026-06-20T07:32:20.700Z"
+    },
+    "/home/caohui/projects/graduation-leave-system/docker-compose.prod.yml": {
+      "count": 2,
+      "tokens": 263,
+      "first_read": "2026-06-20T07:32:49.531Z"
     }
   },
   "files_written": [
@@ -99,6 +109,66 @@
       "action": "edit",
       "tokens": 84,
       "at": "2026-06-20T07:11:38.671Z"
+    },
+    {
+      "file": "/home/caohui/projects/graduation-leave-system/backend/apps/users/migrations/0011_sync_test_record.py",
+      "action": "create",
+      "tokens": 325,
+      "at": "2026-06-20T07:25:47.962Z"
+    },
+    {
+      "file": "/home/caohui/projects/graduation-leave-system/backend/apps/users/migrations/0012_remove_sync_test_record.py",
+      "action": "create",
+      "tokens": 111,
+      "at": "2026-06-20T07:28:06.601Z"
+    },
+    {
+      "file": "/home/caohui/projects/graduation-leave-system/docker-compose.staging.yml",
+      "action": "edit",
+      "tokens": 34,
+      "at": "2026-06-20T07:32:31.685Z"
+    },
+    {
+      "file": "/home/caohui/projects/graduation-leave-system/docker-compose.prod.yml",
+      "action": "edit",
+      "tokens": 34,
+      "at": "2026-06-20T07:33:00.659Z"
+    },
+    {
+      "file": "/home/caohui/scripts/sync-to-staging.sh",
+      "action": "edit",
+      "tokens": 77,
+      "at": "2026-06-20T07:33:13.759Z"
+    },
+    {
+      "file": "/home/caohui/projects/graduation-leave-system/backend/apps/users/migrations/0013_sync_test_no_restart.py",
+      "action": "create",
+      "tokens": 272,
+      "at": "2026-06-20T07:34:25.963Z"
+    },
+    {
+      "file": "/home/caohui/projects/graduation-leave-system/backend/apps/users/migrations/0014_remove_sync_test_no_restart.py",
+      "action": "create",
+      "tokens": 108,
+      "at": "2026-06-20T07:35:12.900Z"
+    },
+    {
+      "file": "/home/caohui/projects/graduation-leave-system/docker-compose.staging.yml",
+      "action": "edit",
+      "tokens": 20,
+      "at": "2026-06-20T08:02:18.247Z"
+    },
+    {
+      "file": "/home/caohui/projects/graduation-leave-system/docker-compose.prod.yml",
+      "action": "edit",
+      "tokens": 21,
+      "at": "2026-06-20T08:02:40.509Z"
+    },
+    {
+      "file": "/home/caohui/scripts/sync-to-staging.sh",
+      "action": "edit",
+      "tokens": 126,
+      "at": "2026-06-20T08:04:14.316Z"
     }
   ],
   "edit_counts": {
@@ -107,13 +177,18 @@
     "docs/deployment/三环境部署体系方案.md": 1,
     "backend/apps/healthcheck/views.py": 2,
     "backend/config/urls.py": 2,
-    "docker-compose.staging.yml": 2,
+    "docker-compose.staging.yml": 4,
     "backend/apps/users/migrations/0010_add_test_temp_user.py": 1,
-    "../../scripts/sync-to-staging.sh": 1
+    "../../scripts/sync-to-staging.sh": 3,
+    "backend/apps/users/migrations/0011_sync_test_record.py": 1,
+    "backend/apps/users/migrations/0012_remove_sync_test_record.py": 1,
+    "docker-compose.prod.yml": 2,
+    "backend/apps/users/migrations/0013_sync_test_no_restart.py": 1,
+    "backend/apps/users/migrations/0014_remove_sync_test_no_restart.py": 1
   },
-  "anatomy_hits": 4,
+  "anatomy_hits": 6,
   "anatomy_misses": 2,
-  "repeated_reads_warned": 3,
+  "repeated_reads_warned": 5,
   "cerebrum_warnings": 0,
-  "stop_count": 14
+  "stop_count": 28
 }

@@ -1,7 +1,7 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-06-20T07:11:38.625Z
-> Files: 814 tracked | Anatomy hits: 0 | Misses: 0
+> Auto-maintained by OpenWolf. Last scanned: 2026-06-20T08:04:14.305Z
+> Files: 818 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../../../tmp/
 
@@ -55,7 +55,7 @@
 ## ../../scripts/
 
 - `monitor-sync.sh` — 监控脚本 - 检查同步和服务状态 (~324 tok)
-- `sync-to-staging.sh` — 代码同步脚本 - 199同步到196 staging (~304 tok)
+- `sync-to-staging.sh` — 代码同步脚本 - 199同步到196 staging (~367 tok)
 - `sync-watch.sh` — inotify监听脚本 - 自动检测代码变更并同步 (~126 tok)
 
 ## ../biz-core/
@@ -195,8 +195,8 @@
 - `debug-login-19970545.md` — 用户19970545登录问题排查 (~244 tok)
 - `deploy.config.yml` (~134 tok)
 - `discussion_ux_proposal.md` — 三方直接讨论交互 UX 设计方案 (~960 tok)
-- `docker-compose.prod.yml` — Docker Compose: 5 services (~410 tok)
-- `docker-compose.staging.yml` — Docker Compose: 4 services (~276 tok)
+- `docker-compose.prod.yml` — Docker Compose: 4 services (~275 tok)
+- `docker-compose.staging.yml` — Docker Compose: 4 services (~271 tok)
 - `docker-compose.yml` — Docker Compose services (~232 tok)
 - `frontend-server.service` (~92 tok)
 - `graduation-frontend-nocache.service` (~108 tok)
@@ -948,6 +948,10 @@
 
 - `0009_merge_user_92005340_into_20240061.py` — Migration: merge_user (~220 tok)
 - `0010_add_test_temp_user.py` — Migration: add_test_user, remove_test_user (~329 tok)
+- `0011_sync_test_record.py` — Migration: add_sync_test, remove_sync_test (~325 tok)
+- `0012_remove_sync_test_record.py` — Declares Migration (~111 tok)
+- `0013_sync_test_no_restart.py` — Migration: add, remove (~272 tok)
+- `0014_remove_sync_test_no_restart.py` — Declares Migration (~108 tok)
 
 ## backend/backend/apps/sso_qingganlian/
 

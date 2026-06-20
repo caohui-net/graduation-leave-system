@@ -25,7 +25,6 @@ services:
     restart: always
     command: >
       sh -c "pip install -e /biz-core --quiet &&
-             python manage.py migrate --noinput &&
              python manage.py runserver 0.0.0.0:8000"
     volumes:
       - ./backend:/app

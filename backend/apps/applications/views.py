@@ -4,12 +4,14 @@ from rest_framework.parsers import JSONParser, MultiPartParser, FormParser
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from django.utils import timezone
+from django.conf import settings
 from drf_spectacular.utils import extend_schema, OpenApiParameter
-from .models import Application, ApplicationStatus, DormCheckoutStatus
+from .models import Application, ApplicationStatus, DormCheckoutStatus, ApplicationType
 from .serializers import ApplicationSerializer, ApplicationCreateSerializer, ApplicationListSerializer, ApplicationListResponseSerializer
 from .pagination import ApplicationLimitOffsetPagination
 from .providers import MockDormCheckoutProvider
 from .permissions import can_view_application
+from .services import get_initial_status
 from apps.approvals.models import Approval, ApprovalStep, ApprovalDecision
 from apps.users.models import UserRole, User
 from apps.notifications.services import notify_application_submitted
@@ -145,6 +147,15 @@ def create_application(request):
         return Response({'error': {'code': 'FORBIDDEN', 'message': '只有学生可以提交申请'}},
                         status=status.HTTP_403_FORBIDDEN)
 
+    # Feature Flag检查
+    app_type = request.data.get('application_type', ApplicationType.LEAVE_SCHOOL)
+    if app_type == ApplicationType.STAY_SCHOOL and not settings.FEATURE_FLAGS.get('stay_school_approval', False):
+        return Response({'error': {'code': 'FEATURE_DISABLED', 'message': '留校申请功能未开放'}},
+                        status=status.HTTP_403_FORBIDDEN)
+    if app_type == ApplicationType.LEAVE_REQUEST and not settings.FEATURE_FLAGS.get('leave_request_approval', False):
+        return Response({'error': {'code': 'FEATURE_DISABLED', 'message': '请假申请功能未开放'}},
+                        status=status.HTTP_403_FORBIDDEN)
+
     serializer = ApplicationCreateSerializer(data=request.data)
     if not serializer.is_valid():
         return Response({'error': {'code': 'VALIDATION_ERROR', 'message': '请求参数验证失败',
@@ -215,8 +226,12 @@ def create_application(request):
             # Update draft to submitted application
             draft.contact_phone = serializer.validated_data['contact_phone']
             draft.reason = serializer.validated_data.get('reason', '')
-            draft.leave_date = serializer.validated_data['leave_date']
-            draft.status = ApplicationStatus.PENDING_DORM_MANAGER
+            draft.leave_date = serializer.validated_data.get('leave_date')
+            draft.application_type = app_type
+            draft.stay_start_date = serializer.validated_data.get('stay_start_date')
+            draft.stay_end_date = serializer.validated_data.get('stay_end_date')
+            draft.stay_reason = serializer.validated_data.get('stay_reason')
+            draft.status = get_initial_status(app_type)
             draft.dorm_checkout_status = dorm_status.status
             draft.save()
             application = draft
@@ -229,8 +244,12 @@ def create_application(request):
                 class_id=user.class_id,
                 contact_phone=serializer.validated_data['contact_phone'],
                 reason=serializer.validated_data.get('reason', ''),
-                leave_date=serializer.validated_data['leave_date'],
-                status=ApplicationStatus.PENDING_DORM_MANAGER,
+                leave_date=serializer.validated_data.get('leave_date'),
+                application_type=app_type,
+                stay_start_date=serializer.validated_data.get('stay_start_date'),
+                stay_end_date=serializer.validated_data.get('stay_end_date'),
+                stay_reason=serializer.validated_data.get('stay_reason'),
+                status=get_initial_status(app_type),
                 dorm_checkout_status=dorm_status.status
             )
 

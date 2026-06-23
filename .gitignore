@@ -76,3 +76,31 @@ celerybeat.pid
 PRD/backup/
 backups/
 .claude/worktrees/
+
+# Framework State (oh-my-claudecode, OpenWolf, Kiro)
+.omc/
+.wolf/hooks/_session.json
+.wolf/token-ledger.json
+.kiro/
+.claude/skills/
+
+# AI Framework Configs (Cursor, Windsurf, Qoder, Gemini, OpenCode)
+.cursorrules
+.windsurfrules
+.qoder/
+.opencode.json
+.gemini/
+GEMINI.md
+QODER.md
+
+# MCP Config
+.mcp.json
+
+# Collaboration Artifacts
+.collab/
+
+# OS Trash
+.Trash-*/
+
+# Added by code-review-graph
+.code-review-graph/

@@ -1,7 +1,0 @@
-{
-  "tool_name": "Bash",
-  "tool_input_preview": "{\"command\":\"cd /home/caohui/projects/graduation-leave-system && pwd && ls apps/approvals/views.py\",\"description\":\"Navigate to project root and verify file\"}",
-  "error": "Exit code 2\n/home/caohui/projects/graduation-leave-system\nls: cannot access 'apps/approvals/views.py': No such file or directory",
-  "timestamp": "2026-06-15T00:03:48.199Z",
-  "retry_count": 3
-}

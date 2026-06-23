@@ -197,3 +197,9 @@ QGL_MOBILE_APPID = config('QGL_MOBILE_APPID', default='c6qgh2')
 
 QGL_ADMIN_APP_KEY = config('QGL_ADMIN_APP_KEY', default='APPKEY_TBD')
 QGL_ADMIN_APP_SECRET = config('QGL_ADMIN_APP_SECRET', default='APPSECRET_TBD')
+
+# Feature Flags
+FEATURE_FLAGS = {
+    'stay_school_approval': config('ENABLE_STAY_SCHOOL', default=False, cast=bool),
+    'leave_request_approval': config('ENABLE_LEAVE_REQUEST', default=False, cast=bool),
+}

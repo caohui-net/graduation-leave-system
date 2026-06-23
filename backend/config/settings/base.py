@@ -49,16 +49,7 @@ INSTALLED_APPS = [
     'apps.attachments',
     'apps.notifications',
     'apps.sso_qingganlian',
-
-    # biz-core
-    'biz_core.feature_flags',
-    'biz_core.audit',
-    'biz_core.rbac',
-    'biz_core.notify',
-    'biz_core.export',
-    'biz_core.workflow',
-    'biz_core.attachments',
-    'biz_core.healthcheck',
+    'apps.healthcheck',
 ]
 
 MIDDLEWARE = [

@@ -108,10 +108,17 @@ bash tests/smoke_test.sh
 
 ## 文档
 
-- [系统设计文档](docs/design/2026-05-27-system-design.md)
-- [API文档](docs/api/)
-- [数据对接说明](docs/数据对接说明文档.md)
-- [项目总结](docs/PROJECT-SUMMARY.md)
+### 📚 完整文档索引
+
+查看 **[docs/INDEX.md](docs/INDEX.md)** 获取完整分类索引（94+篇技术文档，涵盖部署运维、数据处理、SSO集成、技术审查等9大类）。
+
+### 核心文档快速访问
+
+- **[三环境同步机制详解](docs/三环境同步机制详解.md)** - 部署架构与运维指南
+- **[异地Docker自动化部署方案](docs/异地Docker自动化部署方案.md)** - Docker异地部署
+- **[系统设计文档](docs/design/2026-05-27-system-design.md)** - 系统架构设计
+- **[项目总结](docs/PROJECT-SUMMARY.md)** - 项目完成总结
+- **[操作说明书](docs/操作说明书.md)** - 系统操作指南
 
 ## 许可证
 

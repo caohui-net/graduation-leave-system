@@ -3,7 +3,12 @@ from typing import Dict, Any
 
 
 class BaseSSOProvider(ABC):
-    """SSO提供商抽象基类"""
+    """SSO提供商抽象基类
+
+    保留理由: views.py 依赖此接口契约，提供多SSO扩展点（如未来对接CAS/统一身份认证）
+    删除条件: 确认无第二实现计划 AND 视图层改为直接依赖具体类 AND 单元测试不使用mock替身
+    决策来源: ponytail-audit-final-consensus.md (2026-06-24)
+    """
 
     @abstractmethod
     def authenticate(self, credentials: Dict[str, Any]) -> Dict[str, Any]:

@@ -191,6 +191,6 @@ QGL_ADMIN_APP_SECRET = config('QGL_ADMIN_APP_SECRET', default='APPSECRET_TBD')
 
 # Feature Flags
 FEATURE_FLAGS = {
-    'stay_school_approval': config('ENABLE_STAY_SCHOOL', default=False, cast=bool),
+    'stay_school_approval': config('ENABLE_STAY_SCHOOL', default=True, cast=bool),
     'leave_request_approval': config('ENABLE_LEAVE_REQUEST', default=False, cast=bool),
 }

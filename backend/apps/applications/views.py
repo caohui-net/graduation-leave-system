@@ -11,7 +11,7 @@ from .serializers import ApplicationSerializer, ApplicationCreateSerializer, App
 from .pagination import ApplicationLimitOffsetPagination
 from .providers import MockDormCheckoutProvider
 from .permissions import can_view_application
-from .services import get_initial_status
+from .services import get_initial_status, get_approval_flow
 from apps.approvals.models import Approval, ApprovalStep, ApprovalDecision
 from apps.users.models import UserRole, User
 from apps.notifications.services import notify_application_submitted
@@ -212,6 +212,15 @@ def create_application(request):
                                             'details': {'building': building or '未分配', 'fallback_id': fallback_id}}},
                                 status=status.HTTP_404_NOT_FOUND)
 
+        # Find counselor
+        counselor = None
+        if user.class_id:
+            counselor = User.objects.filter(
+                role=UserRole.COUNSELOR,
+                class_id=user.class_id,
+                active=True
+            ).first()
+
         # Check for existing draft, convert if exists
         if application_id:
             # 精确查找指定草稿
@@ -258,17 +267,35 @@ def create_application(request):
                 dorm_checkout_status=dorm_status.status
             )
 
-        # Create approvals
-        for dorm_manager in dorm_managers:
-            dorm_manager_approval = Approval.objects.create(
+        # Create approvals based on flow
+        approval_flow = get_approval_flow(app_type)
+
+        if 'dorm_manager' in approval_flow:
+            for dorm_manager in dorm_managers:
+                dorm_manager_approval = Approval.objects.create(
+                    approval_id=f'apv_{uuid.uuid4().hex[:8]}',
+                    application=application,
+                    step=ApprovalStep.DORM_MANAGER,
+                    approver=dorm_manager,
+                    approver_name=dorm_manager.name,
+                    decision=ApprovalDecision.PENDING
+                )
+                notify_application_submitted(application, dorm_manager_approval)
+
+        if 'counselor' in approval_flow:
+            if not counselor:
+                return Response({'error': {'code': 'NOT_FOUND', 'message': '未找到辅导员',
+                                            'details': {'class_id': user.class_id}}},
+                                status=status.HTTP_404_NOT_FOUND)
+            counselor_approval = Approval.objects.create(
                 approval_id=f'apv_{uuid.uuid4().hex[:8]}',
                 application=application,
-                step=ApprovalStep.DORM_MANAGER,
-                approver=dorm_manager,
-                approver_name=dorm_manager.name,
+                step=ApprovalStep.COUNSELOR,
+                approver=counselor,
+                approver_name=counselor.name,
                 decision=ApprovalDecision.PENDING
             )
-            notify_application_submitted(application, dorm_manager_approval)
+            notify_application_submitted(application, counselor_approval)
 
         # Sync phone to User table
         if not user.phone:

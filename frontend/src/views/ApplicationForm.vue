@@ -57,10 +57,19 @@
 export default {
   name: 'ApplicationForm',
   data() {
+    const validTypes = ['leave_school', 'stay_school', 'leave_request'];
+    const type = this.$route.query.type;
+
+    // 验证type参数，无效则重定向到选择页
+    if (!type || !validTypes.includes(type)) {
+      this.$router.replace({ name: 'ApplicationTypeSelect' });
+      return { applicationType: 'leave_school', form: {} };
+    }
+
     return {
-      applicationType: this.$route.query.type || 'leave_school',
+      applicationType: type,
       form: {
-        application_type: '',
+        application_type: type,
         contact_phone: '',
         reason: '',
         leave_date: '',
@@ -79,9 +88,6 @@ export default {
       };
       return titles[this.applicationType] || '申请表单';
     }
-  },
-  created() {
-    this.form.application_type = this.applicationType;
   },
   methods: {
     goBack() {

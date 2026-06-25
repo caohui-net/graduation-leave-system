@@ -5,6 +5,6 @@ import os
 
 # Feature Flags
 FEATURE_FLAGS = {
-    'stay_school_approval': os.getenv('ENABLE_STAY_SCHOOL', 'false').lower() == 'true',
+    'stay_school_approval': os.getenv('ENABLE_STAY_SCHOOL', 'true').lower() == 'true',
     'leave_request_approval': os.getenv('ENABLE_LEAVE_REQUEST', 'false').lower() == 'true',
 }

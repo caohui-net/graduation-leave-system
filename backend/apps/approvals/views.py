@@ -439,7 +439,10 @@ def export_approvals(request):
         for f in latest_app_filters:
             q_objects |= Q(**f)
 
-        applications = Application.objects.filter(q_objects).prefetch_related(
+        applications = Application.objects.filter(
+            q_objects,
+            business_type=business_type
+        ).prefetch_related(
             Prefetch('approvals', queryset=Approval.objects.filter(step=ApprovalStep.DORM_MANAGER), to_attr='dorm_approvals_list'),
             Prefetch('approvals', queryset=Approval.objects.filter(step=ApprovalStep.COUNSELOR), to_attr='counselor_approvals_list')
         ).select_related('student').order_by('student__user_id')

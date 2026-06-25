@@ -2030,6 +2030,7 @@
     function logout() {
       currentToken = null;
       currentUser = null;
+      currentApplicationType = null;
       deanDisplayedApps.clear(); // Clear deduplication memory on logout
       approvalOffset = 0;
       approvalHasMore = true;
@@ -2037,10 +2038,12 @@
       // Clear persistent login state to prevent auto-login on refresh
       localStorage.removeItem('auth_token');
       localStorage.removeItem('user_info');
+      localStorage.removeItem('selected_application_type');
       document.getElementById('navTabs').style.display = 'none';
       document.getElementById('userBar').style.display = 'none';
       document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-      document.getElementById('screen-login').classList.add('active');
+      document.querySelectorAll('.login-screen').forEach(s => s.classList.remove('active'));
+      document.getElementById('screen-type').classList.add('active');
       renderFileList();
     }
 
@@ -2048,7 +2051,7 @@
     const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
     const ALLOWED_TYPES = ['.jpg', '.jpeg', '.png', '.pdf', '.doc', '.docx'];
     let uploadedFiles = [];
-    let currentApplicationType = 'leave_school';
+    let currentApplicationType = null;
 
     function showTypeScreen() {
       document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));

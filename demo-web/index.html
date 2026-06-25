@@ -1193,13 +1193,42 @@
 
     async function doSubmitApplication() {
         const phone = document.getElementById('contactPhone').value;
-        const reason = document.getElementById('applicationReason').value;
-        const leaveDate = document.getElementById('leaveDate').value;
+        const isStay = currentApplicationType === 'stay_school';
+
+        // 留校/离校字段
+        const reason = isStay
+            ? (document.getElementById('stayNote').value || '')
+            : document.getElementById('applicationReason').value;
+        const leaveDate = isStay
+            ? document.getElementById('stayStartDate').value
+            : document.getElementById('leaveDate').value;
+        const stayStartDate = isStay ? document.getElementById('stayStartDate').value : null;
+        const stayEndDate = isStay ? document.getElementById('stayEndDate').value : null;
+        const stayReason = isStay ? document.getElementById('stayReason').value : null;
 
         // 验证必填字段
-        if (!phone || !leaveDate) {
-             showToast('请输入联系电话和离校日期', 'error');
-             return;
+        if (!phone) {
+            showToast('请输入联系电话', 'error');
+            return;
+        }
+        if (isStay) {
+            if (!stayStartDate || !stayEndDate) {
+                showToast('请选择留校时间', 'error');
+                return;
+            }
+            if (!stayReason) {
+                showToast('请选择留校原因', 'error');
+                return;
+            }
+            if (new Date(stayEndDate) < new Date(stayStartDate)) {
+                showToast('结束日期不能早于开始日期', 'error');
+                return;
+            }
+        } else {
+            if (!leaveDate) {
+                showToast('请输入联系电话和离校日期', 'error');
+                return;
+            }
         }
 
         // 验证附件（必需）
@@ -1215,18 +1244,20 @@
         }
 
         // 验证原因长度（最多500字符）
-        if (reason && reason.length > 500) {
+        if (!isStay && reason && reason.length > 500) {
              showToast('离校原因不能超过500字', 'error');
              return;
         }
 
         // 验证离校日期（不能早于今天）
-        const today = new Date();
-        today.setHours(0, 0, 0, 0);
-        const selectedDate = new Date(leaveDate);
-        if (selectedDate < today) {
-             showToast('离校日期不能早于今天', 'error');
-             return;
+        if (!isStay) {
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            const selectedDate = new Date(leaveDate);
+            if (selectedDate < today) {
+                showToast('离校日期不能早于今天', 'error');
+                return;
+            }
         }
 
         const btn = event?.target || document.querySelector('#screen-0 .btn-primary');
@@ -1257,12 +1288,13 @@
 
             // 步骤3: 提交申请
             btn.textContent = '提交申请中...';
-            const result = await apiSubmitApplication(phone, reason, leaveDate, draftId);
+            const result = await apiSubmitApplication(phone, reason, leaveDate, draftId,
+                currentApplicationType, stayStartDate, stayEndDate, stayReason);
             if (result.success) {
                 showToast('申请提交成功', 'success');
                 document.getElementById('contactPhone').value = '';
-                document.getElementById('applicationReason').value = '';
-                document.getElementById('leaveDate').value = '';
+                if (!isStay) document.getElementById('applicationReason').value = '';
+                if (!isStay) document.getElementById('leaveDate').value = '';
                 uploadedFiles = [];
                 renderFileList();
 
@@ -1526,6 +1558,32 @@
     </div>
   </div>
 
+  <!-- 流程选择页 -->
+  <div class="login-screen" id="screen-type">
+    <div style="padding: 40px 20px; max-width: 400px; margin: 0 auto;">
+      <div class="card">
+        <div style="text-align: center; margin-bottom: 24px;">
+          <h2 style="color: var(--primary-color); margin-bottom: 8px;">选择申请类型</h2>
+          <p style="color: #666; font-size: 14px;">请选择您要办理的业务</p>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 12px;">
+          <button onclick="selectApplicationType('leave_school')" style="padding: 18px; border: 2px solid var(--primary-color); border-radius: 8px; background: white; cursor: pointer; text-align: left;">
+            <div style="font-size: 16px; font-weight: 600; color: var(--primary-color); margin-bottom: 4px;">🎓 离校审批</div>
+            <div style="font-size: 13px; color: #666;">办理毕业离校手续，需宿管员和辅导员审批</div>
+          </button>
+          <button onclick="selectApplicationType('stay_school')" style="padding: 18px; border: 2px solid #52c41a; border-radius: 8px; background: white; cursor: pointer; text-align: left;">
+            <div style="font-size: 16px; font-weight: 600; color: #389e0d; margin-bottom: 4px;">🏠 留校审批</div>
+            <div style="font-size: 13px; color: #666;">申请暑期留校，仅需辅导员审批</div>
+          </button>
+          <button disabled style="padding: 18px; border: 2px solid #d9d9d9; border-radius: 8px; background: #fafafa; cursor: not-allowed; text-align: left; opacity: 0.6;">
+            <div style="font-size: 16px; font-weight: 600; color: #999; margin-bottom: 4px;">📋 请假审批</div>
+            <div style="font-size: 13px; color: #bbb;">暂未开放</div>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <div class="screen" id="screen-0">
     <div style="padding: 20px;">
       <!-- 用户信息卡片 -->
@@ -1553,18 +1611,54 @@
 
       <!-- 表单卡片 -->
       <div class="card">
+        <div id="form-type-badge" style="margin-bottom: 16px; padding: 8px 12px; border-radius: 4px; font-size: 13px; font-weight: 500; background: #e6f7ff; color: #1677ff;">🎓 离校申请</div>
         <div style="margin-bottom: 20px;">
           <label style="display: block; font-size: 14px; margin-bottom: 8px; font-weight: 500;">联系电话</label>
           <input id="contactPhone" type="tel" name="contact_phone" maxlength="20" inputmode="numeric" style="width: 100%; padding: 12px; border: 1px solid #d9d9d9; border-radius: 4px; font-size: 14px;" placeholder="请输入联系电话" required>
         </div>
-        <div style="margin-bottom: 20px;">
-          <label style="display: block; font-size: 14px; margin-bottom: 8px; font-weight: 500;">离校原因</label>
-          <textarea id="applicationReason" style="width: 100%; min-height: 120px; padding: 12px; border: 1px solid #d9d9d9; border-radius: 4px; font-size: 14px;" placeholder="请输入离校原因"></textarea>
-          <span style="display: block; text-align: right; font-size: 12px; color: #999; margin-top: 4px;">0/500</span>
+
+        <!-- 离校字段 -->
+        <div id="leave-fields">
+          <div style="margin-bottom: 20px;">
+            <label style="display: block; font-size: 14px; margin-bottom: 8px; font-weight: 500;">离校原因</label>
+            <textarea id="applicationReason" style="width: 100%; min-height: 120px; padding: 12px; border: 1px solid #d9d9d9; border-radius: 4px; font-size: 14px;" placeholder="请输入离校原因"></textarea>
+            <span style="display: block; text-align: right; font-size: 12px; color: #999; margin-top: 4px;">0/500</span>
+          </div>
+          <div style="margin-bottom: 20px;">
+            <label style="display: block; font-size: 14px; margin-bottom: 8px; font-weight: 500;">离校日期</label>
+            <input id="leaveDate" type="date" name="leave_date" style="width: 100%; padding: 12px; border: 1px solid #d9d9d9; border-radius: 4px; font-size: 14px;" required>
+          </div>
         </div>
-        <div style="margin-bottom: 20px;">
-          <label style="display: block; font-size: 14px; margin-bottom: 8px; font-weight: 500;">离校日期</label>
-          <input id="leaveDate" type="date" name="leave_date" style="width: 100%; padding: 12px; border: 1px solid #d9d9d9; border-radius: 4px; font-size: 14px;" required>
+
+        <!-- 留校字段 -->
+        <div id="stay-fields" style="display: none;">
+          <div style="margin-bottom: 20px;">
+            <label style="display: block; font-size: 14px; margin-bottom: 8px; font-weight: 500;">留校时间 *</label>
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <input id="stayStartDate" type="date" style="flex: 1; padding: 12px; border: 1px solid #d9d9d9; border-radius: 4px; font-size: 14px;">
+              <span style="color: #666;">至</span>
+              <input id="stayEndDate" type="date" style="flex: 1; padding: 12px; border: 1px solid #d9d9d9; border-radius: 4px; font-size: 14px;">
+            </div>
+          </div>
+          <div style="margin-bottom: 20px;">
+            <label style="display: block; font-size: 14px; margin-bottom: 8px; font-weight: 500;">留校原因 *</label>
+            <select id="stayReason" style="width: 100%; padding: 12px; border: 1px solid #d9d9d9; border-radius: 4px; font-size: 14px; background: white;">
+              <option value="">请选择</option>
+              <option value="exam_prep">考公考研</option>
+              <option value="summer_practice">暑期实践</option>
+              <option value="teacher_exam">考教师编</option>
+              <option value="huangzhou_intern">黄州实习</option>
+              <option value="sports_volunteer">体育比赛志愿服务</option>
+              <option value="challenge_cup">挑战杯竞赛</option>
+              <option value="college_competition">学院组织的比赛</option>
+              <option value="mentor_guidance">导师指导</option>
+              <option value="other">其它</option>
+            </select>
+          </div>
+          <div style="margin-bottom: 20px;">
+            <label style="display: block; font-size: 14px; margin-bottom: 8px; font-weight: 500;">补充说明</label>
+            <textarea id="stayNote" style="width: 100%; min-height: 80px; padding: 12px; border: 1px solid #d9d9d9; border-radius: 4px; font-size: 14px;" placeholder="选填"></textarea>
+          </div>
         </div>
 
         <!-- 附件上传区域 -->
@@ -1847,7 +1941,7 @@
               showScreen(1); // Show application progress
               loadMyApplications();
             } else {
-              showScreen(0); // Show application form (allow submit if no active application)
+              showTypeScreen(); // Let student choose type first
               if (hasApplications) {
                 // Check for failed or rejected applications
                 const hasFailed = applications.results.some(a => a.status === 'failed');
@@ -1967,6 +2061,25 @@
     const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
     const ALLOWED_TYPES = ['.jpg', '.jpeg', '.png', '.pdf', '.doc', '.docx'];
     let uploadedFiles = [];
+    let currentApplicationType = 'leave_school';
+
+    function showTypeScreen() {
+      document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+      document.getElementById('screen-type').classList.add('active');
+    }
+
+    function selectApplicationType(type) {
+      currentApplicationType = type;
+      document.getElementById('screen-type').classList.remove('active');
+      // Update form badge and fields
+      const isStay = type === 'stay_school';
+      document.getElementById('form-type-badge').innerHTML = isStay ? '🏠 留校申请' : '🎓 离校申请';
+      document.getElementById('form-type-badge').style.background = isStay ? '#f6ffed' : '#e6f7ff';
+      document.getElementById('form-type-badge').style.color = isStay ? '#389e0d' : '#1677ff';
+      document.getElementById('leave-fields').style.display = isStay ? 'none' : '';
+      document.getElementById('stay-fields').style.display = isStay ? '' : 'none';
+      showScreen(0);
+    }
 
     const fileInput = document.getElementById('fileInput');
     const fileList = document.getElementById('fileList');

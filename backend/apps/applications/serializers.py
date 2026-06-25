@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Application
+from .models import Application, ApplicationType
 
 
 class ApplicationListSerializer(serializers.ModelSerializer):
@@ -63,17 +63,17 @@ class ApplicationCreateSerializer(serializers.Serializer):
     contact_phone = serializers.CharField(max_length=20, required=True)
     reason = serializers.CharField(max_length=500, required=False, allow_blank=True, default='')
     leave_date = serializers.DateField(required=False, allow_null=True)
-    application_type = serializers.CharField(required=False, default='LEAVE')
+    application_type = serializers.CharField(required=False, default=ApplicationType.LEAVE_SCHOOL)
     stay_start_date = serializers.DateField(required=False, allow_null=True)
     stay_end_date = serializers.DateField(required=False, allow_null=True)
     stay_reason = serializers.CharField(max_length=500, required=False, allow_blank=True)
 
     def validate(self, data):
-        app_type = data.get('application_type', 'LEAVE')
-        if app_type == 'LEAVE':
+        app_type = data.get('application_type', ApplicationType.LEAVE_SCHOOL)
+        if app_type == ApplicationType.LEAVE_SCHOOL:
             if not data.get('leave_date'):
                 raise serializers.ValidationError({'leave_date': '离校申请需要提供离校日期'})
-        elif app_type == 'STAY':
+        elif app_type == ApplicationType.STAY_SCHOOL:
             if not data.get('stay_start_date') or not data.get('stay_end_date'):
                 raise serializers.ValidationError({'stay_start_date': '留校申请需要提供开始和结束日期'})
             if not data.get('stay_reason'):

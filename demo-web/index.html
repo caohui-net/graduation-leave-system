@@ -1950,6 +1950,16 @@
             // Go to application form
             showScreen(0);
           } else {
+            // Role-based application type restriction
+            const type = currentApplicationType || localStorage.getItem('selected_application_type') || 'leave_school';
+
+            // Dorm managers can only access leave_school approvals
+            if (result.user.role === 'dorm_manager' && type === 'stay_school') {
+              currentApplicationType = 'leave_school';
+              localStorage.setItem('selected_application_type', 'leave_school');
+              alert('宿管员只能访问离校审批模块，已自动切换');
+            }
+
             showScreen(1); // Approval list screen
             loadApprovals();
           }

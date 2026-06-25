@@ -117,6 +117,7 @@
         // Add application_type filter
         const type = currentApplicationType || localStorage.getItem('selected_application_type') || 'leave_school';
         url += '&application_type=' + type;
+        console.log('[DEBUG] loadApprovals application_type filter:', type, 'URL:', url);
 
         if (currentFilter && currentFilter !== 'all') {
             if (isAdminOrDean) {
@@ -1958,8 +1959,12 @@
               currentApplicationType = 'leave_school';
               localStorage.setItem('selected_application_type', 'leave_school');
               alert('宿管员只能访问离校审批模块，已自动切换');
+            } else {
+              // Ensure currentApplicationType is set for all roles
+              currentApplicationType = type;
             }
 
+            console.log('[DEBUG] Login successful, currentApplicationType:', currentApplicationType);
             showScreen(1); // Approval list screen
             loadApprovals();
           }

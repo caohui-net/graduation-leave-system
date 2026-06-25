@@ -1554,6 +1554,7 @@
         </div>
         <div id="loginError" style="display: none; padding: 10px; background: #fff2f0; border: 1px solid #ffccc7; border-radius: 4px; color: #cf1322; font-size: 14px; margin-bottom: 16px;"></div>
         <button class="btn-primary" onclick="doLogin()">登录</button>
+        <button onclick="backToTypeSelection()" style="width: 100%; padding: 12px; margin-top: 12px; border: 1px solid #d9d9d9; border-radius: 4px; background: white; color: #666; cursor: pointer; font-size: 14px;">← 返回选择业务类型</button>
       </div>
     </div>
   </div>
@@ -2068,6 +2069,14 @@
       // Hide type selection, show login
       document.getElementById('screen-type').classList.remove('active');
       document.getElementById('screen-login').classList.add('active');
+    }
+
+    function backToTypeSelection() {
+      // Hide login, show type selection
+      document.getElementById('screen-login').classList.remove('active');
+      document.getElementById('screen-type').classList.add('active');
+      // Clear error message
+      document.getElementById('loginError').style.display = 'none';
     }
 
     const fileInput = document.getElementById('fileInput');

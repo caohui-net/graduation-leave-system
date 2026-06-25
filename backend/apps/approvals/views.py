@@ -560,6 +560,11 @@ def get_statistics(request):
             status=status.HTTP_403_FORBIDDEN
         )
 
+    # Filter by application_type
+    app_type = request.query_params.get('application_type')
+    if app_type:
+        queryset = queryset.filter(application__application_type=app_type)
+
     # 统计数据（按去重的学生计算，避免同一学生多次申请被重复统计）
     total_students = queryset.values('application__student').distinct().count()
     pending = queryset.filter(decision=ApprovalDecision.PENDING).values('application__student').distinct().count()

@@ -148,6 +148,11 @@
 
             const data = await res.json();
             console.log('[DEBUG] API returned:', data, 'offset:', approvalOffset);
+            // Debug: check application_type in first 3 results
+            if (data.results && data.results.length > 0) {
+                console.log('[DEBUG] First 3 results application_type:',
+                    data.results.slice(0, 3).map(r => ({id: r.application_id, type: r.application_type})));
+            }
 
             if (!data || !data.results) {
                 return;
@@ -964,8 +969,10 @@
         btn.textContent = '加载中...';
 
         try {
+            // Add application_type filter
+            const type = currentApplicationType || localStorage.getItem('selected_application_type') || 'leave_school';
             // Fetch preview data (limit to 100 records for preview)
-            const res = await fetchWithTimeout(API_BASE_URL + '/approvals/?decision=all&limit=100', {
+            const res = await fetchWithTimeout(API_BASE_URL + '/approvals/?decision=all&limit=100&application_type=' + type, {
                 headers: getAuthHeaders()
             });
 
@@ -1074,7 +1081,8 @@
         closeExcelPreview();
 
         try {
-            const res = await fetchWithTimeout(API_BASE_URL + '/approvals/export/', {
+            const type = currentApplicationType || localStorage.getItem('selected_application_type') || 'leave_school';
+            const res = await fetchWithTimeout(API_BASE_URL + '/approvals/export/?application_type=' + type, {
                 method: 'GET',
                 headers: getAuthHeaders()
             });
@@ -2032,7 +2040,8 @@
     async function loadApprovalStatistics() {
       if (!currentToken) return;
       try {
-        const response = await fetchWithTimeout(API_BASE_URL + '/approvals/statistics/', {
+        const type = currentApplicationType || localStorage.getItem('selected_application_type') || 'leave_school';
+        const response = await fetchWithTimeout(API_BASE_URL + '/approvals/statistics/?application_type=' + type, {
           headers: { 'Authorization': `Bearer ${currentToken}` }
         });
         if (!response.ok) {

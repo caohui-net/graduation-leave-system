@@ -476,18 +476,16 @@ def export_approvals(request):
             ]
             ws.append(row)
 
-        for column in ws.columns:
-            max_length = 0
-            column_letter = column[0].column_letter
-            for cell in column:
-                if cell.value:
-                    max_length = max(max_length, len(str(cell.value)))
-            ws.column_dimensions[column_letter].width = min(max_length + 2, 50)
+        # Set fixed column widths (faster than auto-sizing for large datasets)
+        column_widths = [12, 12, 15, 12, 10, 10, 20, 12, 12, 20, 12, 12, 20, 12]
+        for i, width in enumerate(column_widths, start=1):
+            ws.column_dimensions[ws.cell(1, i).column_letter].width = width
 
         response = HttpResponse(
             content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
         )
-        response['Content-Disposition'] = f'attachment; filename="students_{timezone.now().strftime("%Y%m%d_%H%M%S")}.xlsx"'
+        filename_prefix = '留校申请' if app_type == 'stay_school' else '离校申请'
+        response['Content-Disposition'] = f'attachment; filename="{filename_prefix}_{timezone.now().strftime("%Y%m%d_%H%M%S")}.xlsx"'
         wb.save(response)
 
         return response

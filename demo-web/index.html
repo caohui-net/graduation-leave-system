@@ -46,9 +46,13 @@
         const listContainer = document.getElementById('approval-list-container');
 
         if (data.results && data.results.length > 0) {
+            // Filter by current application type first
+            const type = currentApplicationType || localStorage.getItem('selected_application_type') || 'leave_school';
+            let filtered = data.results.filter(a => a.application_type === type);
+
             // 检查是否有failed或rejected状态，显示横幅
-            const hasFailed = data.results.some(a => a.status === 'failed');
-            const hasRejected = data.results.some(a => a.status === 'rejected');
+            const hasFailed = filtered.some(a => a.status === 'failed');
+            const hasRejected = filtered.some(a => a.status === 'rejected');
 
             if (hasFailed) {
                 showFailedApplicationBanner();
@@ -56,14 +60,13 @@
                 showRejectedApplicationBanner();
             }
 
-            // Apply filter
-            let filtered = data.results;
+            // Apply status filter
             if (currentFilter === 'pending') {
-                filtered = data.results.filter(a => a.status && a.status.startsWith('pending_'));
+                filtered = filtered.filter(a => a.status && a.status.startsWith('pending_'));
             } else if (currentFilter === 'approved') {
-                filtered = data.results.filter(a => a.status === 'approved');
+                filtered = filtered.filter(a => a.status === 'approved');
             } else if (currentFilter === 'rejected') {
-                filtered = data.results.filter(a => a.status === 'rejected');
+                filtered = filtered.filter(a => a.status === 'rejected');
             }
 
             let htmlStr = '';

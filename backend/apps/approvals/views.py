@@ -101,6 +101,11 @@ def list_approvals(request):
     if decision_param and decision_param != 'all':
         queryset = queryset.filter(decision=decision_param)
 
+    # Application type filtering
+    app_type = request.query_params.get('application_type')
+    if app_type:
+        queryset = queryset.filter(application__application_type=app_type)
+
     # 查询过滤
     student_name = request.query_params.get('student_name')
     if student_name:

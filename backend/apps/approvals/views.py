@@ -397,51 +397,52 @@ def export_approvals(request):
         # Export with permission filtering (same logic as list_approvals)
         from django.db.models import OuterRef, Subquery, Prefetch
 
-        # Apply role-based filtering
-        if user.role == UserRole.DORM_MANAGER:
-            # Only export students from own approval list
-            my_approval_apps = Approval.objects.filter(
-                approver=user,
-                step=ApprovalStep.DORM_MANAGER
-            ).values_list('application__student_id', flat=True)
-            students = User.objects.filter(role=UserRole.STUDENT, user_id__in=my_approval_apps).order_by('user_id')
-
-        elif user.role == UserRole.COUNSELOR:
-            # Only export students from own approval list
-            my_approval_apps = Approval.objects.filter(
-                approver=user,
-                step=ApprovalStep.COUNSELOR
-            ).values_list('application__student_id', flat=True)
-            students = User.objects.filter(role=UserRole.STUDENT, user_id__in=my_approval_apps).order_by('user_id')
-
-        else:  # DEAN or ADMIN
-            # Export all students
-            students = User.objects.filter(role=UserRole.STUDENT).order_by('user_id')
-
         # Get application_type filter
         app_type = request.query_params.get('application_type', 'leave_school')
 
-        # Get latest application ID for each student (subquery) with application_type filter
-        latest_app_subquery = Application.objects.filter(
-            student=OuterRef('pk'),
-            application_type=app_type
-        ).order_by('-created_at').values('application_id')[:1]
+        # Apply role-based filtering
+        if user.role == UserRole.DORM_MANAGER:
+            # Only export students from own approval list
+            applications = Application.objects.filter(
+                application_type=app_type,
+                approvals__approver=user,
+                approvals__step=ApprovalStep.DORM_MANAGER
+            ).distinct().select_related('student').order_by('student__user_id')
 
-        students_list = list(students.annotate(latest_app_id=Subquery(latest_app_subquery)))
+        elif user.role == UserRole.COUNSELOR:
+            # Only export students from own approval list
+            applications = Application.objects.filter(
+                application_type=app_type,
+                approvals__approver=user,
+                approvals__step=ApprovalStep.COUNSELOR
+            ).distinct().select_related('student').order_by('student__user_id')
 
-        # Get all latest applications with prefetched approvals
-        latest_app_ids = [s.latest_app_id for s in students_list if s.latest_app_id]
+        else:  # DEAN or ADMIN
+            # Export all applications of this type
+            applications = Application.objects.filter(
+                application_type=app_type
+            ).select_related('student').order_by('student__user_id')
 
-        applications = Application.objects.filter(
-            application_id__in=latest_app_ids,
-            application_type=app_type
-        ).prefetch_related(
-            Prefetch('approvals', queryset=Approval.objects.filter(step=ApprovalStep.DORM_MANAGER), to_attr='dorm_approvals_list'),
-            Prefetch('approvals', queryset=Approval.objects.filter(step=ApprovalStep.COUNSELOR), to_attr='counselor_approvals_list')
+        # Get latest application for each student
+        from django.db.models import Max
+        latest_apps = applications.values('student').annotate(
+            latest_created=Max('created_at')
         )
 
-        # Build mapping: student_id -> application
-        app_map = {app.student_id: app for app in applications}
+        latest_app_filters = [
+            {'student_id': item['student'], 'created_at': item['latest_created']}
+            for item in latest_apps
+        ]
+
+        from django.db.models import Q
+        q_objects = Q()
+        for f in latest_app_filters:
+            q_objects |= Q(**f)
+
+        applications = Application.objects.filter(q_objects).prefetch_related(
+            Prefetch('approvals', queryset=Approval.objects.filter(step=ApprovalStep.DORM_MANAGER), to_attr='dorm_approvals_list'),
+            Prefetch('approvals', queryset=Approval.objects.filter(step=ApprovalStep.COUNSELOR), to_attr='counselor_approvals_list')
+        ).select_related('student').order_by('student__user_id')
 
         wb = Workbook()
         ws = wb.active
@@ -456,35 +457,29 @@ def export_approvals(request):
             cell.font = Font(bold=True)
             cell.alignment = Alignment(horizontal='center')
 
-        for student in students_list:
-            # Get latest application from pre-fetched map (no DB query)
-            latest_app = app_map.get(student.user_id)
+        for app in applications:
+            dorm_approval = app.dorm_approvals_list[0] if app.dorm_approvals_list else None
+            counselor_approval = app.counselor_approvals_list[0] if app.counselor_approvals_list else None
 
-            if latest_app:
-                # Student has submitted application
-                dorm_approval = latest_app.dorm_approvals_list[0] if latest_app.dorm_approvals_list else None
-                counselor_approval = latest_app.counselor_approvals_list[0] if latest_app.counselor_approvals_list else None
-
-                status_display = latest_app.get_status_display()
-                leave_date = latest_app.leave_date.strftime('%Y-%m-%d') if latest_app.leave_date else ''
-                contact_phone = latest_app.contact_phone or student.phone or ''
-                submit_time = latest_app.created_at.strftime('%Y-%m-%d %H:%M:%S')
+            status_display = app.get_status_display()
+            leave_date = app.leave_date.strftime('%Y-%m-%d') if app.leave_date else ''
+            contact_phone = app.contact_phone or app.student.phone or ''
+            submit_time = app.created_at.strftime('%Y-%m-%d %H:%M:%S')
             else:
                 # Student has not submitted
                 dorm_approval = None
                 counselor_approval = None
                 status_display = '未提交'
                 leave_date = ''
-                contact_phone = student.phone or ''
-                submit_time = ''
+            submit_time = app.created_at.strftime('%Y-%m-%d %H:%M:%S')
 
             row = [
-                sanitize_excel_formula(student.name),
-                sanitize_excel_formula(student.user_id),
+                sanitize_excel_formula(app.student.name),
+                sanitize_excel_formula(app.student.user_id),
                 sanitize_excel_formula(contact_phone),
                 leave_date,
-                sanitize_excel_formula(student.building or ''),
-                sanitize_excel_formula(student.room_number or ''),
+                sanitize_excel_formula(app.student.building or ''),
+                sanitize_excel_formula(app.student.room_number or ''),
                 submit_time,
                 status_display,
                 sanitize_excel_formula(dorm_approval.approver_name if dorm_approval else ''),

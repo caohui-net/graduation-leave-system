@@ -428,9 +428,9 @@ def export_approvals(request):
             applications = applications.order_by('student', '-created_at').distinct('student')
 
         # Fetch with prefetch for efficiency
-        application_ids = list(applications.values_list('id', flat=True))
+        application_ids = list(applications.values_list('application_id', flat=True))
         applications = Application.objects.filter(
-            id__in=application_ids
+            application_id__in=application_ids
         ).prefetch_related(
             Prefetch('approvals', queryset=Approval.objects.filter(step=ApprovalStep.DORM_MANAGER), to_attr='dorm_approvals_list'),
             Prefetch('approvals', queryset=Approval.objects.filter(step=ApprovalStep.COUNSELOR), to_attr='counselor_approvals_list')

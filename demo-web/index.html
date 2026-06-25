@@ -1521,7 +1521,7 @@
 <body>
   <!-- 顶部导航 -->
   <div class="nav-tabs" id="navTabs" style="display: none;">
-    <button class="nav-tab active" onclick="showScreen(0)">学生申请</button>
+    <button class="nav-tab active" onclick="showTypeScreen()">学生申请</button>
     <button class="nav-tab" onclick="showScreen(1); loadApprovals();"><span id="nav-approval-text">审批列表</span></button>
     <button class="nav-tab" onclick="showScreen(2)" style="display: none;">申请详情</button>
   </div>
@@ -2066,6 +2066,10 @@
     function showTypeScreen() {
       document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
       document.getElementById('screen-type').classList.add('active');
+      // Reset nav-tab highlight to first tab
+      document.querySelectorAll('.nav-tabs .nav-tab').forEach((t, i) => {
+        t.classList.toggle('active', i === 0);
+      });
     }
 
     function selectApplicationType(type) {

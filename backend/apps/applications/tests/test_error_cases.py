@@ -4,7 +4,6 @@ from rest_framework import status
 from django.utils import timezone
 from datetime import timedelta
 from apps.users.models import User, UserRole
-from apps.users.class_mapping import ClassMapping
 from apps.applications.models import Application, ApplicationStatus
 
 
@@ -54,6 +53,7 @@ class ErrorCasesTestCase(TestCase):
             password='T001',
             name='李老师',
             role=UserRole.COUNSELOR,
+            class_id='CS2020-01',
             department='计算机学院'
         )
         self.dorm_manager = User.objects.create_user(
@@ -69,16 +69,6 @@ class ErrorCasesTestCase(TestCase):
             password='D001',
             name='学工部',
             role=UserRole.DEAN
-        )
-
-        # Create class mapping
-        ClassMapping.objects.create(
-            class_id='CS2020-01',
-            dorm_manager=self.dorm_manager,
-            dorm_manager_name='宿管员',
-            counselor=self.counselor,
-            counselor_name='李老师',
-            active=True
         )
 
     def test_dorm_blocked_error(self):

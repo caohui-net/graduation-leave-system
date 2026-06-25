@@ -3,7 +3,6 @@ from django.contrib.auth import get_user_model
 from apps.applications.models import Application, ApplicationStatus
 from apps.approvals.models import Approval, ApprovalDecision, ApprovalStep
 from apps.users.models import UserRole
-from apps.users.class_mapping import ClassMapping
 
 User = get_user_model()
 
@@ -19,12 +18,8 @@ class ResubmissionAfterRejectionTest(TestCase):
         self.counselor = User.objects.create(
             user_id='C001',
             name='Test Counselor',
-            role=UserRole.COUNSELOR
-        )
-        ClassMapping.objects.create(
-            class_id='CS2020-01',
-            counselor=self.counselor,
-            counselor_name='Test Counselor'
+            role=UserRole.COUNSELOR,
+            class_id='CS2020-01'
         )
 
     def test_can_resubmit_after_rejection(self):
@@ -92,7 +87,8 @@ class ApprovalDecisionFilterTest(TestCase):
         self.counselor = User.objects.create(
             user_id='C001',
             name='Test Counselor',
-            role=UserRole.COUNSELOR
+            role=UserRole.COUNSELOR,
+            class_id='CS2020-01'
         )
 
         # Create applications with different approval states

@@ -5,7 +5,6 @@ from django.utils import timezone
 from datetime import timedelta
 from apps.users.models import User, UserRole
 from apps.applications.models import Application, ApplicationStatus
-from apps.users.class_mapping import ClassMapping
 
 
 class ApplicationConstraintsTestCase(TestCase):
@@ -29,6 +28,7 @@ class ApplicationConstraintsTestCase(TestCase):
             name='李老师',
             role=UserRole.COUNSELOR,
             password='T001',
+            class_id='CS2020-01',
             department='计算机学院'
         )
         self.dorm_manager = User.objects.create_user(
@@ -37,16 +37,6 @@ class ApplicationConstraintsTestCase(TestCase):
             role=UserRole.DORM_MANAGER,
             password='M001',
             building='1号楼'
-        )
-
-        # Create class mapping
-        ClassMapping.objects.create(
-            class_id='CS2020-01',
-            dorm_manager=self.dorm_manager,
-            dorm_manager_name='宿管员',
-            counselor=self.counselor,
-            counselor_name='李老师',
-            active=True
         )
 
         self.client = APIClient()

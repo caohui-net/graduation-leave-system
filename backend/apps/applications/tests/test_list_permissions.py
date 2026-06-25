@@ -1,7 +1,6 @@
 from django.test import TestCase
 from rest_framework.test import APIClient
 from apps.users.models import User, UserRole
-from apps.users.class_mapping import ClassMapping
 from apps.applications.models import Application, ApplicationStatus
 from apps.approvals.models import Approval, ApprovalStep, ApprovalDecision
 
@@ -19,11 +18,11 @@ class ApplicationListPermissionTest(TestCase):
         self.student2.set_password('S002')
         self.student2.save()
 
-        self.counselor1 = User.objects.create(user_id='T001', name='辅导员1', role=UserRole.COUNSELOR)
+        self.counselor1 = User.objects.create(user_id='T001', name='辅导员1', role=UserRole.COUNSELOR, class_id='CS2020-01')
         self.counselor1.set_password('T001')
         self.counselor1.save()
 
-        self.counselor2 = User.objects.create(user_id='T002', name='辅导员2', role=UserRole.COUNSELOR)
+        self.counselor2 = User.objects.create(user_id='T002', name='辅导员2', role=UserRole.COUNSELOR, class_id='CS2020-02')
         self.counselor2.set_password('T002')
         self.counselor2.save()
 
@@ -38,10 +37,6 @@ class ApplicationListPermissionTest(TestCase):
         self.dean = User.objects.create(user_id='D001', name='学工部', role=UserRole.DEAN)
         self.dean.set_password('D001')
         self.dean.save()
-
-        # Create class mappings
-        ClassMapping.objects.create(class_id='CS2020-01', dorm_manager=self.dorm_manager1, dorm_manager_name='宿管员1', counselor=self.counselor1, counselor_name='辅导员1', active=True)
-        ClassMapping.objects.create(class_id='CS2020-02', dorm_manager=self.dorm_manager2, dorm_manager_name='宿管员2', counselor=self.counselor2, counselor_name='辅导员2', active=True)
 
         # Create applications
         self.app1 = Application.objects.create(

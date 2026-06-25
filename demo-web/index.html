@@ -1997,7 +1997,7 @@
       document.getElementById('detail-title').textContent = typeText + '申请详情';
 
       // Update system title
-      document.getElementById('system-title').textContent = '毕业' + typeText + '申请系统';
+      document.getElementById('system-title').textContent = typeText + '申请系统';
 
       // Show/hide approval section for student/dean/admin
       const approvalSection = document.getElementById('approval-section');
@@ -2091,6 +2091,9 @@
     function selectApplicationType(type) {
       currentApplicationType = type;
       localStorage.setItem('selected_application_type', type);
+      // Update system title
+      const typeText = type === 'stay_school' ? '留校' : '离校';
+      document.getElementById('system-title').textContent = typeText + '申请系统';
       // Hide type selection, show login
       document.getElementById('screen-type').classList.remove('active');
       document.getElementById('screen-login').classList.add('active');

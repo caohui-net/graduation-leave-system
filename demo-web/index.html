@@ -1085,7 +1085,7 @@
             const res = await fetchWithTimeout(API_BASE_URL + '/approvals/export/?application_type=' + type, {
                 method: 'GET',
                 headers: getAuthHeaders()
-            });
+            }, 30000);
 
             if (res.ok) {
                 const blob = await res.blob();

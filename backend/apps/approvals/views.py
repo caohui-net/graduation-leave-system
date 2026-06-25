@@ -436,18 +436,13 @@ def export_approvals(request):
             Prefetch('approvals', queryset=Approval.objects.filter(step=ApprovalStep.COUNSELOR), to_attr='counselor_approvals_list')
         ).select_related('student').order_by('student__user_id')
 
-        wb = Workbook()
-        ws = wb.active
-        ws.title = '学生数据'
+        wb = Workbook(write_only=True)
+        ws = wb.create_sheet('学生数据')
 
         headers = ['提交人', '学号', '手机号', '离校日期', '楼栋号', '房间号', '提交时间', '审批状态',
                    '宿管员', '宿管审批时间', '宿管审批结果',
                    '辅导员', '辅导员审批时间', '辅导员审批结果']
         ws.append(headers)
-
-        for cell in ws[1]:
-            cell.font = Font(bold=True)
-            cell.alignment = Alignment(horizontal='center')
 
         for app in applications:
             dorm_approval = app.dorm_approvals_list[0] if app.dorm_approvals_list else None
@@ -476,16 +471,13 @@ def export_approvals(request):
             ]
             ws.append(row)
 
-        # Set fixed column widths (faster than auto-sizing for large datasets)
-        column_widths = [12, 12, 15, 12, 10, 10, 20, 12, 12, 20, 12, 12, 20, 12]
-        for i, width in enumerate(column_widths, start=1):
-            ws.column_dimensions[ws.cell(1, i).column_letter].width = width
-
         response = HttpResponse(
             content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
         )
         filename_prefix = '留校申请' if app_type == 'stay_school' else '离校申请'
-        response['Content-Disposition'] = f'attachment; filename="{filename_prefix}_{timezone.now().strftime("%Y%m%d_%H%M%S")}.xlsx"'
+        filename = f"{filename_prefix}_{timezone.now().strftime('%Y%m%d_%H%M%S')}.xlsx"
+        from urllib.parse import quote
+        response['Content-Disposition'] = f'attachment; filename*=UTF-8\'\'{quote(filename)}'
         wb.save(response)
 
         return response

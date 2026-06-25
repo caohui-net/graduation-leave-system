@@ -962,6 +962,10 @@
         }
     }
 
+    // P0-1: Preview cache
+    let previewCache = {data: null, totalCount: 0, timestamp: 0, type: null};
+    const PREVIEW_CACHE_TTL = 60000; // 1分钟
+
     async function exportApprovals() {
         const btn = document.getElementById('export-btn');
         const originalText = btn.textContent;
@@ -969,22 +973,31 @@
         btn.textContent = '加载中...';
 
         try {
-            // Add application_type filter
             const type = currentApplicationType || localStorage.getItem('selected_application_type') || 'leave_school';
-            // Fetch preview data (limit to 100 records for preview)
+
+            // Check cache
+            const now = Date.now();
+            if (previewCache.data && previewCache.type === type && now - previewCache.timestamp < PREVIEW_CACHE_TTL) {
+                showExcelPreview(previewCache.data, previewCache.totalCount);
+                return;
+            }
+
             const res = await fetchWithTimeout(API_BASE_URL + '/approvals/?decision=all&limit=100&application_type=' + type, {
                 headers: getAuthHeaders()
             });
 
             if (res.ok) {
                 const data = await res.json();
+                // Update cache
+                previewCache = {data: data.results, totalCount: data.count, timestamp: now, type: type};
                 showExcelPreview(data.results, data.count);
             } else {
-                showToast('加载数据失败', 'error');
+                const error = await res.json().catch(() => ({}));
+                showToast(`加载失败(${res.status}): ${error.message || '服务器错误'}`, 'error');
             }
         } catch (err) {
             console.error('Export preview failed:', err);
-            showToast('加载失败', 'error');
+            showToast(`加载失败: ${err.message}`, 'error');
         } finally {
             btn.disabled = false;
             btn.textContent = originalText;
@@ -1077,8 +1090,23 @@
         document.getElementById('excelPreviewModal').style.display = 'none';
     }
 
+    // P0-2: Prevent duplicate download
+    let isExporting = false;
+
     async function confirmExcelDownload() {
-        closeExcelPreview();
+        if (isExporting) {
+            showToast('导出进行中，请稍候', 'warning');
+            return;
+        }
+
+        isExporting = true;
+        const modal = document.getElementById('excelPreviewModal');
+        const btn = modal.querySelector('button[onclick*="confirmExcelDownload"]');
+        const originalText = btn ? btn.textContent : '';
+        if (btn) {
+            btn.disabled = true;
+            btn.textContent = '正在导出...';
+        }
 
         try {
             const type = currentApplicationType || localStorage.getItem('selected_application_type') || 'leave_school';
@@ -1087,23 +1115,33 @@
                 headers: getAuthHeaders()
             }, 30000);
 
-            if (res.ok) {
-                const blob = await res.blob();
-                const url = window.URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = '审批数据_' + new Date().toISOString().split('T')[0] + '.xlsx';
-                document.body.appendChild(a);
-                a.click();
-                document.body.removeChild(a);
-                window.URL.revokeObjectURL(url);
-                showToast('导出成功', 'success');
-            } else {
-                showToast('导出失败', 'error');
+            if (!res.ok) {
+                const error = await res.json().catch(() => ({}));
+                showToast(`导出失败(${res.status}): ${error.message || '服务器错误'}`, 'error');
+                return;
             }
+
+            const blob = await res.blob();
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `审批数据_${type}_${new Date().toISOString().split('T')[0]}.xlsx`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            window.URL.revokeObjectURL(url);
+
+            closeExcelPreview();
+            showToast('导出成功', 'success');
         } catch (err) {
             console.error('Download failed:', err);
-            showToast('下载失败', 'error');
+            showToast(`下载失败: ${err.message}`, 'error');
+        } finally {
+            isExporting = false;
+            if (btn) {
+                btn.disabled = false;
+                btn.textContent = originalText;
+            }
         }
     }
 

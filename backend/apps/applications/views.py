@@ -99,6 +99,11 @@ def list_applications(request):
             status=status.HTTP_403_FORBIDDEN
         )
 
+    # Application type filtering
+    app_type = request.query_params.get('application_type')
+    if app_type:
+        queryset = queryset.filter(application_type=app_type)
+
     # Status filtering
     status_param = request.query_params.get('status')
     if status_param:
@@ -376,10 +381,16 @@ def get_stats(request):
 
     from django.db.models import Count
 
-    stats = Application.objects.values('status').annotate(count=Count('status'))
+    # Filter by application_type
+    queryset = Application.objects.all()
+    app_type = request.query_params.get('application_type')
+    if app_type:
+        queryset = queryset.filter(application_type=app_type)
+
+    stats = queryset.values('status').annotate(count=Count('status'))
 
     result = {
-        'total': Application.objects.count(),
+        'total': queryset.count(),
         'draft': 0,
         'pending_dorm_manager': 0,
         'pending_counselor': 0,

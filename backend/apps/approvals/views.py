@@ -421,27 +421,16 @@ def export_approvals(request):
             # Export all applications of this type
             applications = Application.objects.filter(
                 application_type=app_type
-            ).select_related('student').order_by('student__user_id')
+            ).select_related('student').order_by('student', '-created_at').distinct('student')
 
-        # Get latest application for each student
-        from django.db.models import Max
-        latest_apps = applications.values('student').annotate(
-            latest_created=Max('created_at')
-        )
+        # For role-specific queries, also get latest per student
+        if user.role in [UserRole.DORM_MANAGER, UserRole.COUNSELOR]:
+            applications = applications.order_by('student', '-created_at').distinct('student')
 
-        latest_app_filters = [
-            {'student_id': item['student'], 'created_at': item['latest_created']}
-            for item in latest_apps
-        ]
-
-        from django.db.models import Q
-        q_objects = Q()
-        for f in latest_app_filters:
-            q_objects |= Q(**f)
-
+        # Fetch with prefetch for efficiency
+        application_ids = list(applications.values_list('id', flat=True))
         applications = Application.objects.filter(
-            q_objects,
-            application_type=app_type
+            id__in=application_ids
         ).prefetch_related(
             Prefetch('approvals', queryset=Approval.objects.filter(step=ApprovalStep.DORM_MANAGER), to_attr='dorm_approvals_list'),
             Prefetch('approvals', queryset=Approval.objects.filter(step=ApprovalStep.COUNSELOR), to_attr='counselor_approvals_list')

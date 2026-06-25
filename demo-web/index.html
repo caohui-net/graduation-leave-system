@@ -114,6 +114,10 @@
             ? API_BASE_URL + '/applications/?limit=' + BATCH_SIZE + '&offset=' + approvalOffset
             : API_BASE_URL + '/approvals/?limit=' + BATCH_SIZE + '&offset=' + approvalOffset;
 
+        // Add application_type filter
+        const type = currentApplicationType || localStorage.getItem('selected_application_type') || 'leave_school';
+        url += '&application_type=' + type;
+
         if (currentFilter && currentFilter !== 'all') {
             if (isAdminOrDean) {
                 // Admin/Dean: map filter to status param (pending → pending_*, others direct)
@@ -1567,17 +1571,17 @@
     <div style="padding: 40px 20px; max-width: 400px; margin: 0 auto;">
       <div class="card">
         <div style="text-align: center; margin-bottom: 24px;">
-          <h2 style="color: var(--primary-color); margin-bottom: 8px;">选择申请类型</h2>
-          <p style="color: #666; font-size: 14px;">请选择您要办理的业务</p>
+          <h2 style="color: var(--primary-color); margin-bottom: 8px;">选择业务类型</h2>
+          <p style="color: #666; font-size: 14px;">请选择要进入的业务模块</p>
         </div>
         <div style="display: flex; flex-direction: column; gap: 12px;">
           <button onclick="selectApplicationType('leave_school')" style="padding: 18px; border: 2px solid var(--primary-color); border-radius: 8px; background: white; cursor: pointer; text-align: left;">
             <div style="font-size: 16px; font-weight: 600; color: var(--primary-color); margin-bottom: 4px;">🎓 离校审批</div>
-            <div style="font-size: 13px; color: #666;">办理毕业离校手续，需宿管员和辅导员审批</div>
+            <div style="font-size: 13px; color: #666;">毕业生离校手续办理与审批</div>
           </button>
           <button onclick="selectApplicationType('stay_school')" style="padding: 18px; border: 2px solid #52c41a; border-radius: 8px; background: white; cursor: pointer; text-align: left;">
             <div style="font-size: 16px; font-weight: 600; color: #389e0d; margin-bottom: 4px;">🏠 留校审批</div>
-            <div style="font-size: 13px; color: #666;">申请暑期留校，仅需辅导员审批</div>
+            <div style="font-size: 13px; color: #666;">暑期留校申请与审批管理</div>
           </button>
           <button disabled style="padding: 18px; border: 2px solid #d9d9d9; border-radius: 8px; background: #fafafa; cursor: not-allowed; text-align: left; opacity: 0.6;">
             <div style="font-size: 16px; font-weight: 600; color: #999; margin-bottom: 4px;">📋 请假审批</div>

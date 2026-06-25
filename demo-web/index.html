@@ -1537,7 +1537,7 @@
   </div>
 
   <!-- 登录屏幕 -->
-  <div class="login-screen active" id="screen-login">
+  <div class="login-screen" id="screen-login">
     <div style="padding: 40px 20px; max-width: 400px; margin: 0 auto;">
       <div class="card">
         <div style="text-align: center; margin-bottom: 30px;">
@@ -1559,7 +1559,7 @@
   </div>
 
   <!-- 流程选择页 -->
-  <div class="login-screen" id="screen-type">
+  <div class="login-screen active" id="screen-type">
     <div style="padding: 40px 20px; max-width: 400px; margin: 0 auto;">
       <div class="card">
         <div style="text-align: center; margin-bottom: 24px;">
@@ -1930,30 +1930,17 @@
               document.getElementById('contactPhone').value = result.user.phone;
             }
 
-            // Check if student has applications
-            const applications = await apiGetApplications();
-            const hasApplications = applications.results && applications.results.length > 0;
-            const hasActiveApplication = hasApplications && applications.results.some(app =>
-              app.status.startsWith('pending_') || app.status === 'approved'
-            );
+            // Update form based on selected application type
+            const type = currentApplicationType || localStorage.getItem('selected_application_type') || 'leave_school';
+            const isStay = type === 'stay_school';
+            document.getElementById('form-type-badge').innerHTML = isStay ? '🏠 留校申请' : '🎓 离校申请';
+            document.getElementById('form-type-badge').style.background = isStay ? '#f6ffed' : '#e6f7ff';
+            document.getElementById('form-type-badge').style.color = isStay ? '#389e0d' : '#1677ff';
+            document.getElementById('leave-fields').style.display = isStay ? 'none' : '';
+            document.getElementById('stay-fields').style.display = isStay ? '' : 'none';
 
-            if (hasActiveApplication) {
-              showScreen(1); // Show application progress
-              loadMyApplications();
-            } else {
-              showTypeScreen(); // Let student choose type first
-              if (hasApplications) {
-                // Check for failed or rejected applications
-                const hasFailed = applications.results.some(a => a.status === 'failed');
-                const hasRejected = applications.results.some(a => a.status === 'rejected');
-
-                if (hasFailed) {
-                  showFailedApplicationBanner();
-                } else if (hasRejected) {
-                  showRejectedApplicationBanner();
-                }
-              }
-            }
+            // Go to application form
+            showScreen(0);
           } else {
             showScreen(1); // Approval list screen
             loadApprovals();
@@ -2074,15 +2061,10 @@
 
     function selectApplicationType(type) {
       currentApplicationType = type;
+      localStorage.setItem('selected_application_type', type);
+      // Hide type selection, show login
       document.getElementById('screen-type').classList.remove('active');
-      // Update form badge and fields
-      const isStay = type === 'stay_school';
-      document.getElementById('form-type-badge').innerHTML = isStay ? '🏠 留校申请' : '🎓 离校申请';
-      document.getElementById('form-type-badge').style.background = isStay ? '#f6ffed' : '#e6f7ff';
-      document.getElementById('form-type-badge').style.color = isStay ? '#389e0d' : '#1677ff';
-      document.getElementById('leave-fields').style.display = isStay ? 'none' : '';
-      document.getElementById('stay-fields').style.display = isStay ? '' : 'none';
-      showScreen(0);
+      document.getElementById('screen-login').classList.add('active');
     }
 
     const fileInput = document.getElementById('fileInput');

@@ -418,9 +418,13 @@ def export_approvals(request):
             # Export all students
             students = User.objects.filter(role=UserRole.STUDENT).order_by('user_id')
 
-        # Get latest application ID for each student (subquery)
+        # Get application_type filter
+        app_type = request.query_params.get('application_type', 'leave_school')
+
+        # Get latest application ID for each student (subquery) with application_type filter
         latest_app_subquery = Application.objects.filter(
-            student=OuterRef('pk')
+            student=OuterRef('pk'),
+            application_type=app_type
         ).order_by('-created_at').values('application_id')[:1]
 
         students_list = list(students.annotate(latest_app_id=Subquery(latest_app_subquery)))
@@ -428,7 +432,10 @@ def export_approvals(request):
         # Get all latest applications with prefetched approvals
         latest_app_ids = [s.latest_app_id for s in students_list if s.latest_app_id]
 
-        applications = Application.objects.filter(application_id__in=latest_app_ids).prefetch_related(
+        applications = Application.objects.filter(
+            application_id__in=latest_app_ids,
+            application_type=app_type
+        ).prefetch_related(
             Prefetch('approvals', queryset=Approval.objects.filter(step=ApprovalStep.DORM_MANAGER), to_attr='dorm_approvals_list'),
             Prefetch('approvals', queryset=Approval.objects.filter(step=ApprovalStep.COUNSELOR), to_attr='counselor_approvals_list')
         )

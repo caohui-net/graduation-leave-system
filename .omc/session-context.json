@@ -1,66 +1,41 @@
 {
-  "last_updated": "2026-06-16T14:38:54+08:00",
-  "session_start_checklist": [
-    "⚠️ MANDATORY: Read PROJECT-QUICK-REF.md FIRST (env/ports/deploy/config)",
-    "Read .wolf/cerebrum.md (user preferences, do-not-repeat)",
-    "Read .wolf/anatomy.md if accessing files"
-  ],
+  "last_updated": "2026-06-25T11:06:29.705925+08:00",
   "completed": [
-    "【2026-06-16】修复前端内网访问无响应：scripts/serve-frontend.py 改用 ThreadingHTTPServer",
-    "【2026-06-16】新增 tests/test_serve_frontend.py 回归测试：慢连接不阻塞正常请求",
-    "【2026-06-16】重启 graduation-frontend-nocache.service 并验证 127.0.0.1、172.17.12.199、218.75.196.218:7788 均返回 200",
-    "【2026-06-16】更新 PROJECT-QUICK-REF.md、docs/PROJECT-SUMMARY.md、.wolf/buglog.json 记录前端服务运行事实和修复证据",
-    "【2026-06-15】P0安全漏洞修复：SSO认证绕过、密钥硬编码、敏感日志泄漏",
-    "【2026-06-15】P1性能优化：N+1查询优化、根路由配置化",
-    "【2026-06-15】P1附件安全：magic number类型检测、安全响应头",
-    "【2026-06-15】断路器决策讨论：Claude+Codex+Gemini三方共识达成",
-    "【2026-06-15】技术决策：拒绝断路器实施，优化超时配置",
-    "【2026-06-15】超时优化：backend SSO API 30s→(3,5)秒",
-    "【2026-06-15】前端超时控制：fetchWithTimeout 8秒，11处替换",
-    "【2026-06-15】外部接口监控告警：失败率>30%触发logger.error",
-    "【2026-06-15】负载测试脚本：验证快速失败行为",
-    "【2026-06-15】ADR文档：归档断路器决策过程和理由",
-    "【2026-06-15】验证宿管员和辅导员数据与原始Excel文档一致性"
+    "【2026-06-25】Ponytail审计三方讨论(3轮)达成共识，生成docs/ponytail-audit-final-consensus.md",
+    "【2026-06-25】按审计共识执行修复：删除10个空__init__.py、demo-web临时文件、BaseSSOProvider补注释、MockDormCheckoutProvider移除类壳(-60行)、sanitize_excel_formula补测试10/10通过",
+    "【2026-06-25】留校审批前端集成：demo-web/index.html添加流程选择页、留校表单字段、api.js支持application_type参数",
+    "【2026-06-25】修复serializers.py application_type比较bug(LEAVE→leave_school, STAY→stay_school)",
+    "【2026-06-25】staging部署：修复端口配置(7787→17787, 5432→15432)，启用ENABLE_STAY_SCHOOL=true",
+    "【2026-06-25】production部署：promote-to-prod.sh执行成功，新代码上线，Feature Flag=false",
+    "【2026-06-25】更新docs/留校请假审批部署计划.md检查清单(阶段0-3完成)",
+    "【2026-06-25】修复nav-tab绕过流程选择直接进入screen-0的bug(onclick→showTypeScreen)",
+    "【2026-06-25】staging nginx添加no-cache头解决浏览器缓存问题"
   ],
   "pending": [
-    "Trellis daemon任务剩余验收差异：当前运行的是系统级 graduation-frontend-nocache.service，不是PRD中的user级 graduation-frontend.service",
-    "补齐 daemon task 的 StartLimitBurst/StartLimitIntervalSec/OnFailure 告警链路或更新任务设计以匹配现状",
-    "修复辅导员兜底机制缺失（🔴P0）：26个无department学生宿管员通过后报错",
-    "配置SSO端点IP白名单（🔴P0）：nginx限制青橄榄IP访问",
-    "补充测试覆盖（🟡P1）：当前<20%，目标60%"
+    "验证staging流程选择页面(17788)在用户侧显示正常",
+    "产品验收：在staging测试留校完整流程(提交→辅导员审批)",
+    "生产开启ENABLE_STAY_SCHOOL=true（产品验收通过后执行）",
+    "阶段4监控：24小时无重大问题",
+    "辅导员兜底机制缺失(🔴P0)：26个无department学生宿管员通过后报错",
+    "SSO端点IP白名单(🔴P0)：nginx限制青橄榄IP访问",
+    "补充测试覆盖(🟡P1)：当前<20%，目标60%"
   ],
   "evidence": [
-    "RED: /usr/bin/python3 -m pytest tests/test_serve_frontend.py -q 在单线程 HTTPServer 下失败：AssertionError: slow client blocked another request",
-    "GREEN: /usr/bin/python3 -m pytest tests/test_serve_frontend.py -q -> 1 passed in 0.54s",
-    "service: systemctl status graduation-frontend-nocache --no-pager -> Active: active (running), Main PID 2174399, ExecStart scripts/serve-frontend.py 7788 demo-web",
-    "curl 127.0.0.1:7788 -> HTTP 200 total=0.004444",
-    "curl 172.17.12.199:7788 -> HTTP 200 total=0.001146",
-    "curl 218.75.196.218:7788 -> HTTP 200 total=0.059190",
-    "live slow-client probe against 127.0.0.1:7788 -> status=200 elapsed=0.008s",
-    "trellis-check agent verified regression test, live service, all three access paths, and slow-client probe; no code defects found in hang fix"
+    "10/10 sanitize_excel_formula tests passed",
+    "4/4 stay_school unit tests passed",
+    "staging /readyz: {status: ready, database: connected}",
+    "production /readyz: {status: ready, database: connected}",
+    "curl http://172.17.12.196:17788/ → 200, showTypeScreen出现3次",
+    "staging nginx Cache-Control: no-cache, no-store, must-revalidate",
+    "git log: 4fcf664(nav-tab fix), a4ff872(部署计划), 21e559f(前端集成), 1c834af(审计修复)"
   ],
-  "next_focus": "Decide whether to finish remaining Trellis daemon acceptance gaps (user service + alert hook) or archive current system-level service as accepted runtime design.",
+  "next_focus": "用户验证staging流程选择页正常后，完成产品验收，再开启生产Feature Flag",
   "artifacts": {
-    "active_task": ".trellis/tasks/06-16-frontend-daemon-setup",
-    "frontend_hang_fix": [
-      "scripts/serve-frontend.py",
-      "tests/test_serve_frontend.py"
-    ],
-    "runtime_service": "/etc/systemd/system/graduation-frontend-nocache.service",
-    "docs_updated": [
-      "PROJECT-QUICK-REF.md",
-      "docs/PROJECT-SUMMARY.md"
-    ],
-    "independent_check": "trellis-check agent a8cf94ab0dcfe7c4d"
-  },
-  "session_summary": {
-    "task": "前端内网访问无响应排查与修复",
-    "approach": "systematic-debugging：监听/进程/连接状态取证 → TDD慢连接复现 → ThreadingHTTPServer最小修复 → 服务重启与三路径验证 → 独立trellis-check复核",
-    "result": "原始内网无响应症状已通过真实服务验证解决；Trellis daemon任务仍有service命名/告警链路验收差异待定"
-  },
-  "suggested_skills": [
-    "trellis-check",
-    "trellis-update-spec",
-    "oh-my-claudecode:verify"
-  ]
+    "final_consensus": "docs/ponytail-audit-final-consensus.md",
+    "deploy_plan": "docs/留校请假审批部署计划.md",
+    "stay_school_test": "backend/apps/applications/tests/test_stay_school.py",
+    "excel_sanitize_test": "backend/apps/approvals/tests/test_sanitize_excel_formula.py",
+    "frontend_api": "demo-web/js/api.js",
+    "frontend_html": "demo-web/index.html"
+  }
 }

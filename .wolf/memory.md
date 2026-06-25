@@ -2809,3 +2809,10 @@
 | 16:26 | Session end: 21 writes across 13 files (session-context.json, 0009_merge_user_92005340_into_20240061.py, 三环境部署体系方案.md, views.py, urls.py) | 11 reads | ~5383 tok |
 | 16:37 | Created ../../../../tmp/promote-to-prod.sh | — | ~879 |
 | 16:40 | Session end: 22 writes across 14 files (session-context.json, 0009_merge_user_92005340_into_20240061.py, 三环境部署体系方案.md, views.py, urls.py) | 11 reads | ~6325 tok |
+| 16:43 | Session end: 22 writes across 14 files (session-context.json, 0009_merge_user_92005340_into_20240061.py, 三环境部署体系方案.md, views.py, urls.py) | 11 reads | ~6325 tok |
+
+## Session: 2026-06-20 17:06
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 11:06 | Session end: 留校审批全流程部署+审计修复 | multiple | done | ~12000 |

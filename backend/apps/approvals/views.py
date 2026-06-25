@@ -465,13 +465,6 @@ def export_approvals(request):
             leave_date = app.leave_date.strftime('%Y-%m-%d') if app.leave_date else ''
             contact_phone = app.contact_phone or app.student.phone or ''
             submit_time = app.created_at.strftime('%Y-%m-%d %H:%M:%S')
-            else:
-                # Student has not submitted
-                dorm_approval = None
-                counselor_approval = None
-                status_display = '未提交'
-                leave_date = ''
-            submit_time = app.created_at.strftime('%Y-%m-%d %H:%M:%S')
 
             row = [
                 sanitize_excel_formula(app.student.name),

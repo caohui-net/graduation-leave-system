@@ -441,7 +441,7 @@ def export_approvals(request):
 
         applications = Application.objects.filter(
             q_objects,
-            business_type=business_type
+            application_type=app_type
         ).prefetch_related(
             Prefetch('approvals', queryset=Approval.objects.filter(step=ApprovalStep.DORM_MANAGER), to_attr='dorm_approvals_list'),
             Prefetch('approvals', queryset=Approval.objects.filter(step=ApprovalStep.COUNSELOR), to_attr='counselor_approvals_list')

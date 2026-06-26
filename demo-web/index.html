@@ -191,7 +191,7 @@
                     }]
                 }));
 
-            renderApplications(applications, isAdminOrDean);
+            renderApplications(applications, isStudent || isAdminOrDean);
 
             if (approvalHasMore) {
                 loadMoreBtn.style.display = 'block';

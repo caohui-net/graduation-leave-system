@@ -47,44 +47,49 @@ function restoreAuthState() {
 
 // 恢复登录后初始化UI
 function initializeUIAfterRestore(user) {
-    // 隐藏登录界面
+    // 隐藏登录/类型选择界面（SSO直接到达时screen-type是active）
     const loginScreen = document.getElementById('screen-login');
-    if (loginScreen && loginScreen.classList.contains('active')) {
-        loginScreen.classList.remove('active');
+    const typeScreen = document.getElementById('screen-type');
+    const isLoginActive = loginScreen && loginScreen.classList.contains('active');
+    const isTypeActive = typeScreen && typeScreen.classList.contains('active');
 
-        // 显示导航栏和用户栏
-        const navTabs = document.getElementById('navTabs');
-        const userBar = document.getElementById('userBar');
-        if (navTabs) navTabs.style.display = 'flex';
-        if (userBar) userBar.style.display = 'flex';
+    if (!isLoginActive && !isTypeActive) return;
 
-        // 显示用户信息
-        const userNameEl = document.getElementById('currentUserName');
-        const userRoleEl = document.getElementById('currentUserRole');
-        if (userNameEl && (user.name || user.real_name)) {
-            userNameEl.textContent = user.name || user.real_name;
-        }
-        if (userRoleEl && user.role) {
-            const roleMap = { 'student': '学生', 'dorm_manager': '宿管', 'counselor': '辅导员', 'dean': '学工部', 'admin': '管理员' };
-            userRoleEl.textContent = '(' + (roleMap[user.role] || user.role) + ')';
-        }
+    if (isLoginActive) loginScreen.classList.remove('active');
+    if (isTypeActive) typeScreen.classList.remove('active');
 
-        // 更新界面元素（隐藏学生申请tab等）
-        if (typeof updateUIForRole === 'function') {
-            updateUIForRole(user.role);
-        }
+    // 显示导航栏和用户栏
+    const navTabs = document.getElementById('navTabs');
+    const userBar = document.getElementById('userBar');
+    if (navTabs) navTabs.style.display = 'flex';
+    if (userBar) userBar.style.display = 'flex';
 
-        // 根据角色显示对应界面
-        if (user.role === 'student') {
-            if (typeof showScreen === 'function') showScreen(0);
-            if (typeof loadMyApplications === 'function') loadMyApplications();
-        } else {
-            if (typeof showScreen === 'function') showScreen(1);
-            if (typeof loadApprovals === 'function') loadApprovals();
-        }
-
-        console.log('UI initialized for user:', user.role);
+    // 显示用户信息
+    const userNameEl = document.getElementById('currentUserName');
+    const userRoleEl = document.getElementById('currentUserRole');
+    if (userNameEl && (user.name || user.real_name)) {
+        userNameEl.textContent = user.name || user.real_name;
     }
+    if (userRoleEl && user.role) {
+        const roleMap = { 'student': '学生', 'dorm_manager': '宿管', 'counselor': '辅导员', 'dean': '学工部', 'admin': '管理员' };
+        userRoleEl.textContent = '(' + (roleMap[user.role] || user.role) + ')';
+    }
+
+    // 更新界面元素（隐藏学生申请tab等）
+    if (typeof updateUIForRole === 'function') {
+        updateUIForRole(user.role);
+    }
+
+    // 根据角色显示对应界面
+    if (user.role === 'student') {
+        if (typeof showScreen === 'function') showScreen(0);
+        if (typeof loadMyApplications === 'function') loadMyApplications();
+    } else {
+        if (typeof showScreen === 'function') showScreen(1);
+        if (typeof loadApprovals === 'function') loadApprovals();
+    }
+
+    console.log('UI initialized for user:', user.role);
 }
 
 // 页面加载时立即执行

@@ -49,11 +49,11 @@
       const userInfoStr = params.get('user_info');
 
       if (token && userInfoStr) {
-        // 保存到localStorage
         localStorage.setItem('auth_token', token);
         localStorage.setItem('user_info', userInfoStr);
+        const appType = params.get('application_type') || 'leave_school';
+        localStorage.setItem('selected_application_type', appType);
 
-        // 跳转到首页
         window.location.href = '/index.html';
       } else {
         // 参数缺失

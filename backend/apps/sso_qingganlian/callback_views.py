@@ -129,10 +129,12 @@ def sso_callback(request):
             'room_number': user.room_number or ''
         }
 
+        app_type = params.get('application_type', 'leave_school')
         redirect_url = (
             f'http://218.75.196.218:7788/sso-receiver.html'
             f'?token={urllib.parse.quote(access_token)}'
             f'&user_info={urllib.parse.quote(json.dumps(user_info))}'
+            f'&application_type={urllib.parse.quote(app_type)}'
         )
 
         return HttpResponse(f"""

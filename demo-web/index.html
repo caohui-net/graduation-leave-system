@@ -1581,7 +1581,7 @@
 <body>
   <!-- 顶部导航 -->
   <div class="nav-tabs" id="navTabs" style="display: none;">
-    <button class="nav-tab active" onclick="showScreen(1); loadApprovals();">学生申请</button>
+    <button class="nav-tab active" onclick="showScreen(0);">学生申请</button>
     <button class="nav-tab" onclick="showScreen(1); loadApprovals();"><span id="nav-approval-text">审批列表</span></button>
     <button class="nav-tab" onclick="showScreen(2)" style="display: none;">申请详情</button>
   </div>
@@ -2000,9 +2000,8 @@
             document.getElementById('leave-fields').style.display = isStay ? 'none' : '';
             document.getElementById('stay-fields').style.display = isStay ? '' : 'none';
 
-            // Go to application list (screen1) - if no applications, user can click submit button
-            showScreen(1);
-            loadApprovals();
+            // Go to submit form (screen0) - student can view existing applications via "我的申请" tab
+            showScreen(0);
           } else {
             // Role-based application type restriction
             const type = currentApplicationType || localStorage.getItem('selected_application_type') || 'leave_school';

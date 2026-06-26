@@ -253,45 +253,35 @@ def approve_approval(request, approval_id):
                 f"for application {application.application_id} after approval by {actual_approver.user_id}"
             )
 
-        # Get counselor by department (Phase 3 design: department-based routing)
-        # Note: Original design used ClassMapping (class_id), but Phase 3 user requirements
-        # changed to "按学院向辅导员审批" (approval by department/college).
-        # Multiple counselors per department are allowed (different classes within department).
-        # Selection: order_by('user_id') picks lowest ID for deterministic routing.
-        counselors = User.objects.filter(
-            role=UserRole.COUNSELOR,
-            department=application.student.department,
-            active=True
-        ).order_by('user_id')
-
-        if counselors.count() > 1:
-            logging.warning(
-                f"Multiple counselors found for department {application.student.department}: "
-                f"{counselors.count()} matches. Selected {counselors.first().user_id} via order_by('user_id')"
-            )
-
-        counselor = counselors.first()
-
-        if not counselor:
-            return Response({'error': {'code': 'NOT_FOUND', 'message': '该学院辅导员不存在',
-                                        'details': {'department': application.student.department}}},
-                            status=status.HTTP_404_NOT_FOUND)
-
-        # Atomic counselor approval creation (防止竞态条件)
-        counselor_approval, created = Approval.objects.get_or_create(
+        # Counselor approval is pre-created at application submission time.
+        # Just verify it exists and advance the status.
+        counselor_approval_exists = Approval.objects.filter(
             application=application,
             step=ApprovalStep.COUNSELOR,
-            defaults={
-                'approval_id': f'apv_{uuid.uuid4().hex[:8]}',
-                'approver': counselor,
-                'approver_name': counselor.name,
-                'decision': ApprovalDecision.PENDING
-            }
-        )
+        ).exists()
 
-        if not created:
-            return Response({'error': {'code': 'CONFLICT', 'message': '辅导员审批已存在，不能重复创建'}},
-                            status=status.HTTP_409_CONFLICT)
+        if not counselor_approval_exists:
+            # Fallback: pre-created record missing, create it now
+            counselors = User.objects.filter(
+                role=UserRole.COUNSELOR,
+                department=application.student.department,
+                active=True
+            ).order_by('user_id')
+
+            counselor = counselors.first()
+            if not counselor:
+                return Response({'error': {'code': 'NOT_FOUND', 'message': '该学院辅导员不存在',
+                                            'details': {'department': application.student.department}}},
+                                status=status.HTTP_404_NOT_FOUND)
+
+            Approval.objects.create(
+                approval_id=f'apv_{uuid.uuid4().hex[:8]}',
+                application=application,
+                step=ApprovalStep.COUNSELOR,
+                approver=counselor,
+                approver_name=counselor.name,
+                decision=ApprovalDecision.PENDING
+            )
 
         application.status = ApplicationStatus.PENDING_COUNSELOR
         application.save()

@@ -170,8 +170,8 @@
             }
 
             // Transform approval objects to application objects for rendering
-            const applications = isAdminOrDean
-                ? data.results  // Admin/Dean: already application objects
+            const applications = (isStudent || isAdminOrDean)
+                ? data.results  // Student/Admin/Dean: already application objects
                 : data.results.map(approval => ({
                     application_id: approval.application.id,
                     student_name: approval.application.student_name,
@@ -1998,8 +1998,9 @@
             document.getElementById('leave-fields').style.display = isStay ? 'none' : '';
             document.getElementById('stay-fields').style.display = isStay ? '' : 'none';
 
-            // Go to application form
-            showScreen(0);
+            // Go to application list (screen1) - if no applications, user can click submit button
+            showScreen(1);
+            loadMyApplications();
           } else {
             // Role-based application type restriction
             const type = currentApplicationType || localStorage.getItem('selected_application_type') || 'leave_school';

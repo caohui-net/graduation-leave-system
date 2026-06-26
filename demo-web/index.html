@@ -123,17 +123,13 @@
         url += '&application_type=' + type;
         console.log('[DEBUG] loadApprovals application_type filter:', type, 'URL:', url);
 
-        if (currentFilter && currentFilter !== 'all') {
-            if (isAdminOrDean) {
-                // Admin/Dean: map filter to status param (pending → pending_*, others direct)
-                if (currentFilter === 'pending') {
-                    // Backend doesn't support prefix filter, get all and filter frontend
-                } else {
-                    url += '&status=' + currentFilter;
-                }
-            } else {
-                url += '&decision=' + currentFilter;
+        if (isAdminOrDean) {
+            if (currentFilter && currentFilter !== 'all' && currentFilter !== 'pending') {
+                url += '&status=' + currentFilter;
             }
+        } else {
+            // Always pass decision param: backend defaults to 'pending' if omitted
+            url += '&decision=' + (currentFilter === 'all' ? 'all' : (currentFilter || 'all'));
         }
 
         // Add admin filters (student_id, student_name, class_id, building)

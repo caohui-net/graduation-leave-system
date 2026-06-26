@@ -151,16 +151,23 @@ def download_attachment(request, attachment_id):
         # Check if preview mode (query param: ?preview=true)
         preview_mode = request.GET.get('preview', 'false').lower() == 'true'
 
-        # Restrict preview to safe MIME types
+        # Restrict preview to safe MIME types; infer from extension if stored as octet-stream
         ALLOWED_PREVIEW_TYPES = ['image/jpeg', 'image/png', 'image/gif', 'application/pdf']
-        if preview_mode and attachment.content_type not in ALLOWED_PREVIEW_TYPES:
+        EXT_MIME = {'.jpg': 'image/jpeg', '.jpeg': 'image/jpeg', '.png': 'image/png',
+                    '.gif': 'image/gif', '.pdf': 'application/pdf'}
+        content_type = attachment.content_type
+        if preview_mode and content_type not in ALLOWED_PREVIEW_TYPES:
+            import os
+            ext = os.path.splitext(attachment.file_name)[1].lower()
+            content_type = EXT_MIME.get(ext, content_type)
+        if preview_mode and content_type not in ALLOWED_PREVIEW_TYPES:
             preview_mode = False
 
         response = FileResponse(
             attachment.file.open('rb'),
             as_attachment=not preview_mode,
             filename=attachment.file_name,
-            content_type=attachment.content_type
+            content_type=content_type
         )
         # 安全响应头
         response['X-Content-Type-Options'] = 'nosniff'

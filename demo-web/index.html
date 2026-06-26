@@ -2157,12 +2157,24 @@
     function selectApplicationType(type) {
       currentApplicationType = type;
       localStorage.setItem('selected_application_type', type);
-      // Update system title
       const typeText = type === 'stay_school' ? '留校' : '离校';
       document.getElementById('system-title').textContent = typeText + '申请系统';
-      // Hide type selection, show login
       document.getElementById('screen-type').classList.remove('active');
-      document.getElementById('screen-login').classList.add('active');
+
+      // 已通过SSO登录（token存在），直接进入业务界面
+      if (currentToken && currentUser) {
+        document.getElementById('navTabs').style.display = 'flex';
+        document.getElementById('userBar').style.display = 'flex';
+        if (typeof updateUIForRole === 'function') updateUIForRole(currentUser.role);
+        if (currentUser.role === 'student') {
+          showScreen(0);
+        } else {
+          showScreen(1);
+          loadApprovals();
+        }
+      } else {
+        document.getElementById('screen-login').classList.add('active');
+      }
     }
 
     function backToTypeSelection() {

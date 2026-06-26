@@ -1027,7 +1027,7 @@
 
         // Build table header with total count info
         const isStayExport = (currentApplicationType || localStorage.getItem('selected_application_type')) === 'stay_school';
-        const headers = ['提交人', '学号', '手机号', isStayExport ? '留校时间' : '离校日期', '楼栋号', '房间号', '提交时间', '审批状态',
+        const headers = ['提交人', '学号', '手机号', ...(isStayExport ? ['留校开始日期', '留校结束日期'] : ['离校日期']), '楼栋号', '房间号', '提交时间', '审批状态',
                         '宿管员', '宿管审批时间', '宿管审批结果', '辅导员', '辅导员审批时间', '辅导员审批结果'];
 
         const previewNote = totalCount > approvals.length ?
@@ -1073,9 +1073,9 @@
                 <td style="padding: 8px; border: 1px solid #ddd;">${escapeHtml(app.student_name || '-')}</td>
                 <td style="padding: 8px; border: 1px solid #ddd;">${escapeHtml(app.student_id || '-')}</td>
                 <td style="padding: 8px; border: 1px solid #ddd;">${escapeHtml(app.contact_phone || '-')}</td>
-                <td style="padding: 8px; border: 1px solid #ddd;">${isStayExport
-                    ? escapeHtml((app.stay_start_date || '-') + (app.stay_end_date ? ' ~ ' + app.stay_end_date : ''))
-                    : escapeHtml(app.leave_date || '-')}</td>
+                ${isStayExport
+                    ? `<td style="padding: 8px; border: 1px solid #ddd;">${escapeHtml(app.stay_start_date || '-')}</td><td style="padding: 8px; border: 1px solid #ddd;">${escapeHtml(app.stay_end_date || '-')}</td>`
+                    : `<td style="padding: 8px; border: 1px solid #ddd;">${escapeHtml(app.leave_date || '-')}</td>`}
                 <td style="padding: 8px; border: 1px solid #ddd;">${escapeHtml(app.building || '-')}</td>
                 <td style="padding: 8px; border: 1px solid #ddd;">${escapeHtml(app.room_number || '-')}</td>
                 <td style="padding: 8px; border: 1px solid #ddd;">${formatDate(app.created_at)}</td>

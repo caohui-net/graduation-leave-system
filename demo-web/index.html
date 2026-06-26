@@ -233,9 +233,15 @@
         });
         let uniqueApps = Array.from(studentMap.values());
 
-        // Apply status filter for admin/dean only when backend can't filter (pending prefix)
-        if (skipApproverFilter && currentFilter === 'pending') {
-            uniqueApps = uniqueApps.filter(app => app.status && app.status.startsWith('pending_'));
+        // Apply status filter for student/admin/dean (frontend filtering)
+        if (skipApproverFilter) {
+            if (currentFilter === 'pending') {
+                uniqueApps = uniqueApps.filter(app => app.status && app.status.startsWith('pending_'));
+            } else if (currentFilter === 'approved') {
+                uniqueApps = uniqueApps.filter(app => app.status === 'approved');
+            } else if (currentFilter === 'rejected') {
+                uniqueApps = uniqueApps.filter(app => app.status === 'rejected');
+            }
         }
 
         // Handle empty list
@@ -573,11 +579,7 @@
         document.getElementById('batch-action-bar').style.display = 'none';
 
         // Reload list with filter
-        if (currentUser && currentUser.role === 'student') {
-            loadMyApplications();
-        } else {
-            loadApprovals();
-        }
+        loadApprovals();
     }
 
     function applyAdminFilters() {
@@ -928,7 +930,7 @@
 
     async function handleAttachmentPreview(attachmentId) {
         try {
-            const url = API_BASE_URL + '/api/attachments/' + attachmentId + '/download/?preview=true';
+            const url = API_BASE_URL + '/attachments/' + attachmentId + '/download/?preview=true';
             const response = await fetchWithTimeout(url, {
                 headers: { 'Authorization': 'Bearer ' + currentToken }
             });
@@ -944,7 +946,7 @@
 
     async function handleAttachmentDownload(attachmentId, fileName) {
         try {
-            const url = API_BASE_URL + '/api/attachments/' + attachmentId + '/download/';
+            const url = API_BASE_URL + '/attachments/' + attachmentId + '/download/';
             const response = await fetchWithTimeout(url, {
                 headers: { 'Authorization': 'Bearer ' + currentToken }
             });
@@ -1024,7 +1026,8 @@
         };
 
         // Build table header with total count info
-        const headers = ['提交人', '学号', '手机号', '离校日期', '楼栋号', '房间号', '提交时间', '审批状态',
+        const isStayExport = (currentApplicationType || localStorage.getItem('selected_application_type')) === 'stay_school';
+        const headers = ['提交人', '学号', '手机号', isStayExport ? '留校时间' : '离校日期', '楼栋号', '房间号', '提交时间', '审批状态',
                         '宿管员', '宿管审批时间', '宿管审批结果', '辅导员', '辅导员审批时间', '辅导员审批结果'];
 
         const previewNote = totalCount > approvals.length ?
@@ -1070,7 +1073,9 @@
                 <td style="padding: 8px; border: 1px solid #ddd;">${escapeHtml(app.student_name || '-')}</td>
                 <td style="padding: 8px; border: 1px solid #ddd;">${escapeHtml(app.student_id || '-')}</td>
                 <td style="padding: 8px; border: 1px solid #ddd;">${escapeHtml(app.contact_phone || '-')}</td>
-                <td style="padding: 8px; border: 1px solid #ddd;">${escapeHtml(app.leave_date || '-')}</td>
+                <td style="padding: 8px; border: 1px solid #ddd;">${isStayExport
+                    ? escapeHtml((app.stay_start_date || '-') + (app.stay_end_date ? ' ~ ' + app.stay_end_date : ''))
+                    : escapeHtml(app.leave_date || '-')}</td>
                 <td style="padding: 8px; border: 1px solid #ddd;">${escapeHtml(app.building || '-')}</td>
                 <td style="padding: 8px; border: 1px solid #ddd;">${escapeHtml(app.room_number || '-')}</td>
                 <td style="padding: 8px; border: 1px solid #ddd;">${formatDate(app.created_at)}</td>

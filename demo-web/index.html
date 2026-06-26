@@ -2000,8 +2000,15 @@
             document.getElementById('leave-fields').style.display = isStay ? 'none' : '';
             document.getElementById('stay-fields').style.display = isStay ? '' : 'none';
 
-            // Go to submit form (screen0) - student can view existing applications via "我的申请" tab
-            showScreen(0);
+            // Check existing submissions: none → form (screen0), has records → list (screen1)
+            const appData = await apiGetApplications();
+            const hasApplications = appData && appData.results && appData.results.length > 0;
+            if (hasApplications) {
+              showScreen(1);
+              loadApprovals();
+            } else {
+              showScreen(0);
+            }
           } else {
             // Role-based application type restriction
             const type = currentApplicationType || localStorage.getItem('selected_application_type') || 'leave_school';

@@ -1,5 +1,7 @@
 // API Integration Layer
-const API_BASE_URL = `http://${window.location.hostname}:7787/api`;
+// Auto-detect backend port: staging (17788→17787) / production (7788→7787)
+const BACKEND_PORT = window.location.port === '17788' ? '17787' : '7787';
+const API_BASE_URL = `http://${window.location.hostname}:${BACKEND_PORT}/api`;
 
 let currentToken = null;
 let currentUser = null;

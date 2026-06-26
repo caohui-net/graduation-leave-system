@@ -214,7 +214,9 @@
         const myApps = skipApproverFilter ? applications : applications.filter(app => {
             const myApproval = app.approvals?.find(ap => ap.approver_id === currentUser?.user_id);
             if (!myApproval) {
-                console.warn('[FILTER] Skipping app not assigned to current user:', app.application_id, 'approvals:', app.approvals);
+                console.warn('[FILTER] Skipping app not assigned to current user:', app.application_id);
+                console.warn('[FILTER] currentUser.user_id:', currentUser?.user_id, 'type:', typeof currentUser?.user_id);
+                console.warn('[FILTER] approvals:', app.approvals?.map(ap => ({approver_id: ap.approver_id, type: typeof ap.approver_id})));
             }
             return !!myApproval;
         });

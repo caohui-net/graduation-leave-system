@@ -114,17 +114,17 @@ class QingganlanClient:
                     logger.info(f"[SSO API] POST {url} (form-data)")
                     logger.debug(f"[SSO API] Headers: {self._sanitize_headers(headers)}")
                     logger.debug(f"[SSO API] Data: {self._sanitize_data(data)}")
-                    response = self.session.post(url, headers=headers, data=data, timeout=(3, 5))
+                    response = self.session.post(url, headers=headers, data=data, timeout=(8, 15))
                 else:
                     logger.info(f"[SSO API] POST {url} (json)")
                     logger.debug(f"[SSO API] Headers: {self._sanitize_headers(headers)}")
                     logger.debug(f"[SSO API] Data: {self._sanitize_data(data)}")
-                    response = self.session.post(url, headers=headers, json=data, timeout=(3, 5))
+                    response = self.session.post(url, headers=headers, json=data, timeout=(8, 15))
             else:
                 logger.info(f"[SSO API] GET {url}")
                 logger.debug(f"[SSO API] Headers: {self._sanitize_headers(headers)}")
                 logger.debug(f"[SSO API] Params: {self._sanitize_data(data)}")
-                response = self.session.get(url, headers=headers, params=data, timeout=(3, 5))
+                response = self.session.get(url, headers=headers, params=data, timeout=(8, 15))
 
             # Log status (response content only in debug mode, truncated)
             logger.info(f"[SSO API] Status: {response.status_code}")

@@ -238,6 +238,8 @@ def create_application(request):
 
         if draft:
             # Update draft to submitted application
+            if not draft.application_id:
+                draft.application_id = f'app_{uuid.uuid4().hex[:8]}'
             draft.contact_phone = serializer.validated_data['contact_phone']
             draft.reason = serializer.validated_data.get('reason', '')
             draft.leave_date = serializer.validated_data.get('leave_date')

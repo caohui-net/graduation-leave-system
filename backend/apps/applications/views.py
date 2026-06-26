@@ -174,6 +174,7 @@ def create_application(request):
         # Check for existing pending/approved applications
         existing = Application.objects.select_for_update().filter(
             student=user,
+            application_type=app_type,
             status__in=[ApplicationStatus.PENDING_DORM_MANAGER, ApplicationStatus.PENDING_COUNSELOR, ApplicationStatus.APPROVED]
         ).first()
         if existing:
@@ -202,7 +203,6 @@ def create_application(request):
             ).order_by('user_id'))
 
         if not dorm_managers:
-            from django.conf import settings
             fallback_id = getattr(settings, 'FALLBACK_DORM_MANAGER_USER_ID', '92008149')
             try:
                 fallback_manager = User.objects.get(role=UserRole.DORM_MANAGER, user_id=fallback_id, active=True)

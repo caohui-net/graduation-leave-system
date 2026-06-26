@@ -106,13 +106,17 @@
         const loadMoreBtn = document.getElementById('load-more-approvals');
 
         const BATCH_SIZE = 20;
-        const isManager = currentUser && ['admin', 'dean', 'counselor', 'dorm_manager'].includes(currentUser.role);
-        const isAdminOrDean = currentUser && (currentUser.role === 'admin' || currentUser.role === 'dean');
+        const isStudent = currentUser && currentUser.role === 'student';
+        const isManager = currentUser && ['counselor', 'dorm_manager'].includes(currentUser.role);
+        const isAdminOrDean = currentUser && ['admin', 'dean'].includes(currentUser.role);
 
         // Build API URL with filters
-        let url = isAdminOrDean
-            ? API_BASE_URL + '/applications/?limit=' + BATCH_SIZE + '&offset=' + approvalOffset
-            : API_BASE_URL + '/approvals/?limit=' + BATCH_SIZE + '&offset=' + approvalOffset;
+        let url;
+        if (isStudent || isAdminOrDean) {
+            url = API_BASE_URL + '/applications/?limit=' + BATCH_SIZE + '&offset=' + approvalOffset;
+        } else if (isManager) {
+            url = API_BASE_URL + '/approvals/?limit=' + BATCH_SIZE + '&offset=' + approvalOffset;
+        }
 
         // Add application_type filter
         const type = currentApplicationType || localStorage.getItem('selected_application_type') || 'leave_school';
@@ -1575,7 +1579,7 @@
 <body>
   <!-- 顶部导航 -->
   <div class="nav-tabs" id="navTabs" style="display: none;">
-    <button class="nav-tab active" onclick="showTypeScreen()">学生申请</button>
+    <button class="nav-tab active" onclick="showScreen(1); loadApprovals();">学生申请</button>
     <button class="nav-tab" onclick="showScreen(1); loadApprovals();"><span id="nav-approval-text">审批列表</span></button>
     <button class="nav-tab" onclick="showScreen(2)" style="display: none;">申请详情</button>
   </div>

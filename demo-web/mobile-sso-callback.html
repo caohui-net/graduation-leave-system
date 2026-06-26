@@ -60,6 +60,7 @@
       }
 
       // POST到后端获取用户信息
+      const appType = params.get('application_type') || 'leave_school';
       fetch('http://218.75.196.218:7787/api/sso/qingganlian/mobile/saas-login', {
         method: 'POST',
         headers: {
@@ -74,7 +75,7 @@
       .then(data => {
         if (data.token && data.user) {
           const userInfoStr = encodeURIComponent(JSON.stringify(data.user));
-          window.location.replace(`http://218.75.196.218:7788/sso-receiver.html?token=${data.token}&user_info=${userInfoStr}`);
+          window.location.replace(`http://218.75.196.218:7788/sso-receiver.html?token=${data.token}&user_info=${userInfoStr}&application_type=${encodeURIComponent(appType)}`);
         } else {
           document.getElementById('message').textContent = '登录失败，请重试';
         }

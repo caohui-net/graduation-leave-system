@@ -212,12 +212,12 @@ def create_application(request):
                                             'details': {'building': building or '未分配', 'fallback_id': fallback_id}}},
                                 status=status.HTTP_404_NOT_FOUND)
 
-        # Find counselor
+        # Find counselor by student.class_id → counselor.user_id
         counselor = None
         if user.class_id:
             counselor = User.objects.filter(
                 role=UserRole.COUNSELOR,
-                class_id=user.class_id,
+                user_id=user.class_id,
                 active=True
             ).first()
 

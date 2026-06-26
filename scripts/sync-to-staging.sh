@@ -25,4 +25,7 @@ echo '=== 重启staging容器 ==='
 ssh "${REMOTE_USER}@${REMOTE_HOST}" \
   "cd ${STAGING_PATH} && docker compose -f docker-compose.staging.yml restart"
 
+echo '=== 数据初始化（辅导员+学生分配）==='
+bash "$(dirname "$0")/init-data.sh" staging
+
 echo '✅ 同步完成'

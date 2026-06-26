@@ -2167,6 +2167,12 @@
         document.getElementById('userBar').style.display = 'flex';
         if (typeof updateUIForRole === 'function') updateUIForRole(currentUser.role);
         if (currentUser.role === 'student') {
+          const isStay = type === 'stay_school';
+          document.getElementById('form-type-badge').innerHTML = isStay ? '🏠 留校申请' : '🎓 离校申请';
+          document.getElementById('form-type-badge').style.background = isStay ? '#f6ffed' : '#e6f7ff';
+          document.getElementById('form-type-badge').style.color = isStay ? '#389e0d' : '#1677ff';
+          document.getElementById('leave-fields').style.display = isStay ? 'none' : '';
+          document.getElementById('stay-fields').style.display = isStay ? '' : 'none';
           showScreen(0);
         } else {
           showScreen(1);

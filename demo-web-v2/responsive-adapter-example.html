@@ -1,0 +1,110 @@
+<!-- 响应式适配器 - 当前项目集成示例 -->
+
+<!--
+  方案1：全局引入（推荐）
+  在index.html的<head>中添加：
+-->
+<script src="js/responsive-adapter.js"></script>
+<script>
+  // 初始化适配器
+  const deviceAdapter = ResponsiveAdapter.create({
+    enableAutoClass: true,
+    enableResize: true
+  });
+
+  // 输出设备信息（调试用）
+  console.log('设备信息:', deviceAdapter.getDeviceInfo());
+</script>
+
+<!--
+  方案2：按需使用
+  在需要判断设备的地方：
+-->
+<script>
+  // 快速判断（无需初始化）
+  if (ResponsiveAdapter.isMobile()) {
+    // 移动端逻辑
+    document.querySelector('.filter-tabs').classList.add('mobile-mode');
+  }
+</script>
+
+<!--
+  方案3：监听变化动态调整
+-->
+<script>
+  const adapter = ResponsiveAdapter.create();
+
+  // 监听屏幕尺寸变化
+  adapter.on('screenChange', (data) => {
+    console.log(`屏幕从 ${data.from} 变为 ${data.to}`);
+
+    // 根据屏幕调整筛选按钮
+    const tabs = document.querySelectorAll('.filter-tab');
+    if (data.to === 'xs') {
+      tabs.forEach(tab => {
+        // 超小屏只显示图标
+        const icon = tab.textContent.match(/[📋⏳✓✗]/)[0];
+        tab.setAttribute('data-full-text', tab.textContent);
+        tab.textContent = icon;
+      });
+    } else {
+      tabs.forEach(tab => {
+        // 恢复完整文字
+        const fullText = tab.getAttribute('data-full-text');
+        if (fullText) tab.textContent = fullText;
+      });
+    }
+  });
+
+  // 监听设备类型变化
+  adapter.on('deviceChange', (data) => {
+    console.log(`设备从 ${data.from} 变为 ${data.to}`);
+
+    if (data.to === 'mobile') {
+      // 切换到移动端模式
+      enableMobileOptimizations();
+    } else {
+      // 切换到桌面模式
+      enableDesktopFeatures();
+    }
+  });
+</script>
+
+<!--
+  方案4：配合CSS使用
+  适配器会自动添加以下class到<html>:
+  - screen-xs / screen-sm / screen-md / screen-lg / screen-xl
+  - device-mobile / device-tablet / device-desktop
+-->
+<style>
+  /* 基于自动添加的class */
+  .screen-xs .filter-tab {
+    font-size: 9px;
+    height: 28px;
+  }
+
+  .screen-sm .filter-tab {
+    font-size: 10px;
+    height: 32px;
+  }
+
+  .screen-md .filter-tab {
+    font-size: 11px;
+    height: 36px;
+  }
+
+  .device-mobile .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .device-desktop .stats-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+</style>
+
+<!--
+  实际使用建议：
+  1. 优先使用CSS媒体查询处理样式
+  2. JavaScript只处理必须动态变化的逻辑
+  3. 初始化时检测一次设备类型，避免频繁判断
+-->

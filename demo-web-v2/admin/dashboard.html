@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+  <title>管理后台</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: #f5f5f5;
+      padding: 20px;
+    }
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      padding: 30px;
+    }
+    .header {
+      border-bottom: 2px solid #3498db;
+      padding-bottom: 20px;
+      margin-bottom: 30px;
+    }
+    .header h1 {
+      color: #2c3e50;
+      font-size: 28px;
+      margin-bottom: 10px;
+    }
+    .user-info {
+      background: #ecf0f1;
+      padding: 15px;
+      border-radius: 6px;
+      margin-bottom: 20px;
+    }
+    .user-info p {
+      margin: 8px 0;
+      color: #34495e;
+    }
+    .user-info strong {
+      color: #2c3e50;
+      display: inline-block;
+      width: 100px;
+    }
+    .token-display {
+      background: #f8f9fa;
+      padding: 15px;
+      border-radius: 6px;
+      border-left: 4px solid #27ae60;
+      margin-bottom: 20px;
+    }
+    .token-display h3 {
+      color: #27ae60;
+      margin-bottom: 10px;
+      font-size: 16px;
+    }
+    .token-display code {
+      display: block;
+      background: white;
+      padding: 10px;
+      border-radius: 4px;
+      font-size: 12px;
+      word-break: break-all;
+      color: #555;
+    }
+    .actions {
+      margin-top: 30px;
+    }
+    .btn {
+      display: inline-block;
+      padding: 10px 20px;
+      margin-right: 10px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 14px;
+      text-decoration: none;
+      transition: all 0.3s;
+    }
+    .btn-primary {
+      background: #3498db;
+      color: white;
+    }
+    .btn-primary:hover {
+      background: #2980b9;
+    }
+    .btn-danger {
+      background: #e74c3c;
+      color: white;
+    }
+    .btn-danger:hover {
+      background: #c0392b;
+    }
+    .success-badge {
+      display: inline-block;
+      background: #27ae60;
+      color: white;
+      padding: 5px 15px;
+      border-radius: 20px;
+      font-size: 14px;
+      margin-left: 10px;
+    }
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 15px;
+      margin: 30px 0;
+    }
+    @media (min-width: 768px) {
+      .stats-grid {
+        grid-template-columns: repeat(4, 1fr);
+        gap: 20px;
+      }
+    }
+    .stat-card {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 20px;
+      border-radius: 8px;
+      text-align: center;
+    }
+    .stat-card:nth-child(2) {
+      background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    }
+    .stat-card:nth-child(3) {
+      background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+    }
+    .stat-card:nth-child(4) {
+      background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+    }
+    .stat-value {
+      font-size: 36px;
+      font-weight: bold;
+      margin: 10px 0;
+    }
+    .stat-label {
+      font-size: 14px;
+      opacity: 0.9;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>🎓 毕业生离校系统 - 管理后台 <span class="success-badge">✓ SSO登录成功</span></h1>
+    </div>
+
+    <div class="user-info" id="userInfo">
+      <h3>用户信息</h3>
+      <p><strong>用户ID:</strong> <span id="userId">-</span></p>
+      <p><strong>用户名:</strong> <span id="username">-</span></p>
+      <p><strong>真实姓名:</strong> <span id="realName">-</span></p>
+      <p><strong>角色:</strong> <span id="role">-</span></p>
+      <p><strong>手机号:</strong> <span id="phone">-</span></p>
+    </div>
+
+    <div class="token-display">
+      <h3>🔑 JWT Token (用于API调用)</h3>
+      <code id="tokenDisplay">-</code>
+    </div>
+
+    <div class="stats-grid" id="statsGrid">
+      <div class="stat-card">
+        <div class="stat-label">总审批数</div>
+        <div class="stat-value" id="statTotal">-</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">待审批</div>
+        <div class="stat-value" id="statPending">-</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">已通过</div>
+        <div class="stat-value" id="statApproved">-</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">已驳回</div>
+        <div class="stat-value" id="statRejected">-</div>
+      </div>
+    </div>
+
+    <div class="actions">
+      <button class="btn btn-primary" onclick="testAPI()">测试API调用</button>
+      <button class="btn btn-danger" onclick="logout()">退出登录</button>
+    </div>
+
+    <!-- 申请列表管理 -->
+    <div style="margin-top: 40px; border-top: 2px solid #3498db; padding-top: 30px;">
+      <h2 style="color: #2c3e50; margin-bottom: 20px;">申请列表管理</h2>
+
+      <!-- 查询筛选器 -->
+      <div style="background: #f8f9fa; padding: 20px; border-radius: 6px; margin-bottom: 20px;">
+        <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+          <label style="font-weight: bold; color: #34495e;">筛选字段:</label>
+          <select id="filter-field" style="padding: 10px; border: 1px solid #ddd; border-radius: 4px; font-size: 14px;">
+            <option value="student_id">学号</option>
+            <option value="student_name">姓名</option>
+            <option value="class_id">班级</option>
+            <option value="building">宿舍楼</option>
+          </select>
+          <input type="text" id="filter-value" placeholder="输入查询值" style="flex: 1; min-width: 200px; padding: 10px; border: 1px solid #ddd; border-radius: 4px; font-size: 14px;">
+          <button onclick="applyFilter()" style="padding: 10px 20px; background: #3498db; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 14px;">筛选</button>
+          <button onclick="clearFilter()" style="padding: 10px 20px; background: #95a5a6; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 14px;">清除</button>
+        </div>
+      </div>
+
+      <!-- 申请列表表格 -->
+      <div style="overflow-x: auto;">
+        <table id="applications-table" style="width: 100%; border-collapse: collapse; background: white;">
+          <thead>
+            <tr style="background: #ecf0f1;">
+              <th style="padding: 12px; text-align: left; border-bottom: 2px solid #bdc3c7;">申请ID</th>
+              <th style="padding: 12px; text-align: left; border-bottom: 2px solid #bdc3c7;">学号</th>
+              <th style="padding: 12px; text-align: left; border-bottom: 2px solid #bdc3c7;">姓名</th>
+              <th style="padding: 12px; text-align: left; border-bottom: 2px solid #bdc3c7;">班级</th>
+              <th style="padding: 12px; text-align: left; border-bottom: 2px solid #bdc3c7;">宿舍楼</th>
+              <th style="padding: 12px; text-align: left; border-bottom: 2px solid #bdc3c7;">联系电话</th>
+              <th style="padding: 12px; text-align: left; border-bottom: 2px solid #bdc3c7;">状态</th>
+              <th style="padding: 12px; text-align: left; border-bottom: 2px solid #bdc3c7;">申请时间</th>
+            </tr>
+          </thead>
+          <tbody id="applications-tbody">
+            <tr>
+              <td colspan="8" style="padding: 40px; text-align: center; color: #999;">加载中...</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // API基址配置
+    const API_BASE_URL = `http://${window.location.hostname}:7787/api`;
+
+    // 加载用户信息
+    function loadUserInfo() {
+      const token = localStorage.getItem('auth_token');
+      const userInfo = JSON.parse(localStorage.getItem('user_info') || '{}');
+
+      if (!token) {
+        alert('未找到登录信息，请重新登录');
+        window.location.href = '/';
+        return;
+      }
+
+      // 显示用户信息
+      document.getElementById('userId').textContent = userInfo.id || '-';
+      document.getElementById('username').textContent = userInfo.username || '-';
+      document.getElementById('realName').textContent = userInfo.real_name || '-';
+      document.getElementById('role').textContent = userInfo.role || '-';
+      document.getElementById('phone').textContent = userInfo.phone || '-';
+
+      // 显示token（截断显示）
+      const displayToken = token.length > 100 ? token.substring(0, 100) + '...' : token;
+      document.getElementById('tokenDisplay').textContent = displayToken;
+
+      // 加载统计数据
+      loadStatistics();
+      // 加载申请列表
+      loadApplications();
+    }
+
+    // 加载统计数据
+    async function loadStatistics() {
+      const token = localStorage.getItem('auth_token');
+      if (!token) {
+        console.error('未找到token');
+        return;
+      }
+      try {
+        console.log('正在加载统计数据...');
+        const response = await fetch(API_BASE_URL + '/approvals/statistics/', {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        console.log('统计API响应状态:', response.status);
+
+        if (!response.ok) {
+          const errorText = await response.text();
+          console.error('统计API错误:', response.status, errorText);
+          document.getElementById('statTotal').textContent = '错误';
+          document.getElementById('statPending').textContent = '错误';
+          document.getElementById('statApproved').textContent = '错误';
+          document.getElementById('statRejected').textContent = '错误';
+          return;
+        }
+
+        const data = await response.json();
+        console.log('统计数据:', data);
+
+        document.getElementById('statTotal').textContent = data.total || 0;
+        document.getElementById('statPending').textContent = data.pending || 0;
+        document.getElementById('statApproved').textContent = data.approved || 0;
+        document.getElementById('statRejected').textContent = data.rejected || 0;
+      } catch (error) {
+        console.error('加载统计数据失败:', error);
+        // 显示错误提示
+        document.getElementById('statTotal').textContent = '错误';
+        document.getElementById('statPending').textContent = '错误';
+        document.getElementById('statApproved').textContent = '错误';
+        document.getElementById('statRejected').textContent = '错误';
+      }
+    }
+
+    // 测试API调用
+    function testAPI() {
+      const token = localStorage.getItem('auth_token');
+      alert('Token已保存，可用于后续API调用\n\n使用方式：\nAuthorization: Bearer ' + token);
+    }
+
+    // 退出登录
+    function logout() {
+      localStorage.removeItem('auth_token');
+      localStorage.removeItem('user_info');
+      alert('已退出登录');
+      window.location.href = '/';
+    }
+
+    // 申请列表管理
+    let currentFilters = {};
+
+    async function loadApplications() {
+      const token = localStorage.getItem('auth_token');
+      if (!token) return;
+
+      try {
+        let url = API_BASE_URL + '/applications/?limit=50';
+        Object.keys(currentFilters).forEach(key => {
+          url += `&${key}=${encodeURIComponent(currentFilters[key])}`;
+        });
+
+        const response = await fetch(url, {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+
+        if (!response.ok) {
+          document.getElementById('applications-tbody').innerHTML =
+            '<tr><td colspan="8" style="padding: 20px; text-align: center; color: #e74c3c;">加载失败</td></tr>';
+          return;
+        }
+
+        const data = await response.json();
+        renderApplications(data.results || []);
+      } catch (error) {
+        console.error('加载申请列表失败:', error);
+        document.getElementById('applications-tbody').innerHTML =
+          '<tr><td colspan="8" style="padding: 20px; text-align: center; color: #e74c3c;">网络错误</td></tr>';
+      }
+    }
+
+    function renderApplications(applications) {
+      const tbody = document.getElementById('applications-tbody');
+
+      if (applications.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="8" style="padding: 40px; text-align: center; color: #999;">暂无申请记录</td></tr>';
+        return;
+      }
+
+      const statusMap = {
+        'draft': '草稿',
+        'pending_dorm_manager': '待宿管审批',
+        'pending_counselor': '待辅导员审批',
+        'approved': '已通过',
+        'rejected': '已驳回'
+      };
+
+      tbody.innerHTML = applications.map(app => `
+        <tr style="border-bottom: 1px solid #ecf0f1;">
+          <td style="padding: 12px;">${app.application_id || '-'}</td>
+          <td style="padding: 12px;">${app.student?.user_id || '-'}</td>
+          <td style="padding: 12px;">${app.student_name || '-'}</td>
+          <td style="padding: 12px;">${app.class_id || '-'}</td>
+          <td style="padding: 12px;">${app.student?.building || '-'}</td>
+          <td style="padding: 12px;">${app.contact_phone || '-'}</td>
+          <td style="padding: 12px;">${statusMap[app.status] || app.status}</td>
+          <td style="padding: 12px;">${new Date(app.created_at).toLocaleString('zh-CN')}</td>
+        </tr>
+      `).join('');
+    }
+
+    function applyFilter() {
+      const field = document.getElementById('filter-field').value;
+      const value = document.getElementById('filter-value').value.trim();
+
+      currentFilters = {};
+      if (value) currentFilters[field] = value;
+
+      loadApplications();
+    }
+
+    function clearFilter() {
+      currentFilters = {};
+      document.getElementById('filter-value').value = '';
+      loadApplications();
+    }
+
+    // 页面加载时执行
+    window.onload = loadUserInfo;
+  </script>
+</body>
+</html>

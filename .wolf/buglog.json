@@ -34,5 +34,17 @@
     "related_bugs": [],
     "occurrences": 1,
     "last_seen": "2026-06-16T14:38:54+08:00"
+  },
+  {
+    "id": "bug-004",
+    "timestamp": "2026-06-27T08:59:30Z",
+    "error_message": "学生申请被驳回后，进入系统不能再次提交",
+    "file": "demo-web/index.html",
+    "root_cause": "驳回横幅(showRejectedApplicationBanner)仅显示提示文字，缺少"重新提交"按钮，导致学生无法触发resubmitApplication函数",
+    "fix": "为驳回横幅添加"重新提交"按钮，调用resubmitApplication()函数，样式参照失败横幅(showFailedApplicationBanner)",
+    "tags": ["frontend", "ui", "rejected", "resubmit", "banner"],
+    "related_bugs": [],
+    "occurrences": 1,
+    "last_seen": "2026-06-27T08:59:30Z"
   }
 ]

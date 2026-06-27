@@ -1,41 +1,36 @@
 {
-  "last_updated": "2026-06-25T11:06:29.705925+08:00",
+  "last_updated": "2026-06-26T17:49:00Z",
   "completed": [
-    "【2026-06-25】Ponytail审计三方讨论(3轮)达成共识，生成docs/ponytail-audit-final-consensus.md",
-    "【2026-06-25】按审计共识执行修复：删除10个空__init__.py、demo-web临时文件、BaseSSOProvider补注释、MockDormCheckoutProvider移除类壳(-60行)、sanitize_excel_formula补测试10/10通过",
-    "【2026-06-25】留校审批前端集成：demo-web/index.html添加流程选择页、留校表单字段、api.js支持application_type参数",
-    "【2026-06-25】修复serializers.py application_type比较bug(LEAVE→leave_school, STAY→stay_school)",
-    "【2026-06-25】staging部署：修复端口配置(7787→17787, 5432→15432)，启用ENABLE_STAY_SCHOOL=true",
-    "【2026-06-25】production部署：promote-to-prod.sh执行成功，新代码上线，Feature Flag=false",
-    "【2026-06-25】更新docs/留校请假审批部署计划.md检查清单(阶段0-3完成)",
-    "【2026-06-25】修复nav-tab绕过流程选择直接进入screen-0的bug(onclick→showTypeScreen)",
-    "【2026-06-25】staging nginx添加no-cache头解决浏览器缓存问题"
+    "留校审批首次发布（v2.0.0-stay-school tag）",
+    "生产部署：21940名学生、26名辅导员（Excel导入）、100%分配",
+    "SSO自动登录全流程（mobile-sso-callback→sso-receiver→index.html）",
+    "辅导员查找bug修复（user_id vs class_id）",
+    "学生选留校后表单字段切换修复",
+    "附件预览MIME类型推断修复",
+    "全部列表tab数据显示修复",
+    "SSO API超时3s→8s（修复白屏）",
+    "demo-web-v2 UI改进（暂不上线）",
+    "init-data.sh三环境数据初始化脚本",
+    "sync-to-staging.sh自动执行init-data",
+    "本地/v2/路由",
+    "留校系统代码审核报告（三方协作）",
+    "生产测试数据清理"
   ],
   "pending": [
-    "验证staging流程选择页面(17788)在用户侧显示正常",
-    "产品验收：在staging测试留校完整流程(提交→辅导员审批)",
-    "生产开启ENABLE_STAY_SCHOOL=true（产品验收通过后执行）",
-    "阶段4监控：24小时无重大问题",
-    "辅导员兜底机制缺失(🔴P0)：26个无department学生宿管员通过后报错",
-    "SSO端点IP白名单(🔴P0)：nginx限制青橄榄IP访问",
-    "补充测试覆盖(🟡P1)：当前<20%，目标60%"
+    "demo-web-v2测试验证后应用生产",
+    "测试覆盖率补充（<20%→60%）"
   ],
   "evidence": [
-    "10/10 sanitize_excel_formula tests passed",
-    "4/4 stay_school unit tests passed",
-    "staging /readyz: {status: ready, database: connected}",
-    "production /readyz: {status: ready, database: connected}",
-    "curl http://172.17.12.196:17788/ → 200, showTypeScreen出现3次",
-    "staging nginx Cache-Control: no-cache, no-store, must-revalidate",
-    "git log: 4fcf664(nav-tab fix), a4ff872(部署计划), 21e559f(前端集成), 1c834af(审计修复)"
+    "生产 /readyz: {status:ready, database:connected}",
+    "21940学生/26辅导员全覆盖",
+    "commit 7879100: SSO超时修复已部署",
+    "用户侧SSO登录验证通过"
   ],
-  "next_focus": "用户验证staging流程选择页正常后，完成产品验收，再开启生产Feature Flag",
+  "next_focus": "按需处理新问题或继续demo-web-v2验收",
   "artifacts": {
-    "final_consensus": "docs/ponytail-audit-final-consensus.md",
-    "deploy_plan": "docs/留校请假审批部署计划.md",
-    "stay_school_test": "backend/apps/applications/tests/test_stay_school.py",
-    "excel_sanitize_test": "backend/apps/approvals/tests/test_sanitize_excel_formula.py",
-    "frontend_api": "demo-web/js/api.js",
-    "frontend_html": "demo-web/index.html"
+    "review_report": "docs/留校审批系统代码审核报告.md",
+    "init_script": "scripts/init-data.sh",
+    "v2_ui": "demo-web-v2/",
+    "backup": "demo-web-backup-20260626/"
   }
 }

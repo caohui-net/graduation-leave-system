@@ -15,8 +15,9 @@ class ApplicationListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Application
         fields = ['application_id', 'student_id', 'student_name', 'class_id',
-                  'contact_phone', 'reason', 'leave_date', 'status', 'building',
-                  'room_number', 'department', 'has_attachments', 'attachment_count',
+                  'contact_phone', 'reason', 'leave_date', 'status', 'application_type',
+                  'stay_start_date', 'stay_end_date', 'stay_reason',
+                  'building', 'room_number', 'department', 'has_attachments', 'attachment_count',
                   'created_at', 'updated_at', 'approvals']
         read_only_fields = ['application_id', 'student_id', 'student_name',
                             'class_id', 'status', 'building', 'room_number', 'department',

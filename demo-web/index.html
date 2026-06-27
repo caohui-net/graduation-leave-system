@@ -145,11 +145,15 @@
 
                         // Get processed rejected application IDs from localStorage
                         const processedRejectedIds = JSON.parse(localStorage.getItem('processed_rejected_apps') || '[]');
+                        console.log('[DEBUG] Banner check - processedRejectedIds:', processedRejectedIds);
 
                         // Find rejected applications that haven't been processed
                         const rejectedApp = allData.results.find(a =>
                             a.status === 'rejected' && !processedRejectedIds.includes(a.application_id)
                         );
+                        const allRejected = allData.results.filter(a => a.status === 'rejected');
+                        console.log('[DEBUG] Banner check - all rejected apps:', allRejected.map(a => ({id: a.application_id, status: a.status})));
+                        console.log('[DEBUG] Banner check - unprocessed rejectedApp:', rejectedApp);
                         const failedApp = allData.results.find(a => a.status === 'failed');
 
                         if (failedApp) {
@@ -1240,13 +1244,6 @@
                 return;
             }
 
-            // Mark this rejected application as processed
-            const processedIds = JSON.parse(localStorage.getItem('processed_rejected_apps') || '[]');
-            if (!processedIds.includes(rejectedApp.application_id)) {
-                processedIds.push(rejectedApp.application_id);
-                localStorage.setItem('processed_rejected_apps', JSON.stringify(processedIds));
-            }
-
             // 切换到正确的申请类型
             if (rejectedApp.application_type !== currentApplicationType) {
                 currentApplicationType = rejectedApp.application_type;
@@ -1419,6 +1416,27 @@
                 if (!isStay) document.getElementById('leaveDate').value = '';
                 uploadedFiles = [];
                 renderFileList();
+
+                // Mark any rejected applications as processed (banner should disappear)
+                try {
+                    const allTypesUrl = API_BASE_URL + '/applications/?limit=100';
+                    const allRes = await fetchWithTimeout(allTypesUrl, { headers: getAuthHeaders() }, 8000);
+                    if (allRes.ok) {
+                        const allData = await allRes.json();
+                        const rejectedApps = allData.results.filter(a => a.status === 'rejected');
+                        if (rejectedApps.length > 0) {
+                            const processedIds = JSON.parse(localStorage.getItem('processed_rejected_apps') || '[]');
+                            rejectedApps.forEach(app => {
+                                if (!processedIds.includes(app.application_id)) {
+                                    processedIds.push(app.application_id);
+                                }
+                            });
+                            localStorage.setItem('processed_rejected_apps', JSON.stringify(processedIds));
+                        }
+                    }
+                } catch (err) {
+                    console.warn('[WARN] Failed to mark rejected apps as processed:', err);
+                }
 
                 // Switch to progress view
                 showScreen(1);

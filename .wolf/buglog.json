@@ -1,50 +1,85 @@
-[
-  {
-    "id": "bug-001",
-    "timestamp": "2026-06-14T01:00:00Z",
-    "error_message": "用户19970545登录后导出excel失败",
-    "file": "demo-web/index.html",
-    "root_cause": "getAuthHeaders() 函数被调用7次但未定义，导致导出功能调用时抛出 ReferenceError",
-    "fix": "在 script 标签开头添加 getAuthHeaders() 函数定义，返回包含 JWT Bearer token 的 Authorization 头",
-    "tags": ["frontend", "authentication", "export", "javascript", "undefined-function"],
-    "related_bugs": [],
-    "occurrences": 1,
-    "last_seen": "2026-06-14T01:00:00Z"
-  },
-  {
-    "id": "bug-002",
-    "timestamp": "2026-06-16T03:19:22Z",
-    "error_message": "用户20230039批量审批时出现400错误：missing_ids: ['undefined', 'undefined']",
-    "file": "demo-web/index.html",
-    "root_cause": "前端数据转换时丢失id字段：API返回approval.id，转换后只保留approval_id，但checkbox使用myApproval.id导致undefined",
-    "fix": "1) index.html:131行：数据转换时同时保留id和approval_id字段 2) 239行：checkbox使用myApproval.approval_id（兼容两种字段名） 3) 后端views.py:603行：增强错误详情返回missing_ids 4) 添加前端防御性过滤和诊断日志",
-    "tags": ["frontend", "batch-approval", "data-transformation", "undefined", "caching"],
-    "related_bugs": [],
-    "occurrences": 1,
-    "last_seen": "2026-06-16T03:19:22Z"
-  },
-  {
-    "id": "bug-003",
-    "timestamp": "2026-06-16T14:38:54+08:00",
-    "error_message": "外部访问 http://218.75.196.218:7788 正常，内部访问 http://172.17.12.199:7788 无响应",
-    "file": "scripts/serve-frontend.py",
-    "root_cause": "前端静态服务使用单线程 HTTPServer，慢连接占用唯一请求处理线程，导致后续本机/内网请求排队超时；ss 显示多个 CLOSE-WAIT 和一个 ESTAB 连接占用处理线程",
-    "fix": "将 HTTPServer 替换为 ThreadingHTTPServer as HTTPServer，并添加 tests/test_serve_frontend.py 回归测试覆盖慢连接不阻塞正常请求；重启 graduation-frontend-nocache.service 后验证 127.0.0.1、172.17.12.199、218.75.196.218 均返回 200",
-    "tags": ["frontend", "http-server", "threading", "slow-client", "internal-access", "systemd"],
-    "related_bugs": [],
-    "occurrences": 1,
-    "last_seen": "2026-06-16T14:38:54+08:00"
-  },
-  {
-    "id": "bug-004",
-    "timestamp": "2026-06-27T08:59:30Z",
-    "error_message": "学生申请被驳回后，进入系统不能再次提交",
-    "file": "demo-web/index.html",
-    "root_cause": "驳回横幅(showRejectedApplicationBanner)仅显示提示文字，缺少"重新提交"按钮，导致学生无法触发resubmitApplication函数",
-    "fix": "为驳回横幅添加"重新提交"按钮，调用resubmitApplication()函数，样式参照失败横幅(showFailedApplicationBanner)",
-    "tags": ["frontend", "ui", "rejected", "resubmit", "banner"],
-    "related_bugs": [],
-    "occurrences": 1,
-    "last_seen": "2026-06-27T08:59:30Z"
-  }
-]
+{
+  "version": 1,
+  "bugs": [
+    {
+      "id": "bug-001",
+      "timestamp": "2026-06-27T09:16:33.805Z",
+      "error_message": "Significant refactor of ",
+      "file": "demo-web/index.html",
+      "root_cause": "4 lines replaced/restructured",
+      "fix": "Rewrote 23→32 lines (4 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "html"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-06-27T09:16:33.805Z"
+    },
+    {
+      "id": "bug-002",
+      "timestamp": "2026-06-27T09:35:45.290Z",
+      "error_message": "Missing error handling in unknown",
+      "file": "demo-web/index.html",
+      "root_cause": "Code path had no error handling — exceptions would propagate uncaught",
+      "fix": "Added try/catch block",
+      "tags": [
+        "auto-detected",
+        "error-handling",
+        "html"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-06-27T09:35:45.290Z"
+    },
+    {
+      "id": "bug-003",
+      "timestamp": "2026-06-27T09:53:35.697Z",
+      "error_message": "Missing error handling in function",
+      "file": "demo-web/index.html",
+      "root_cause": "Code path had no error handling — exceptions would propagate uncaught",
+      "fix": "Added try/catch block",
+      "tags": [
+        "auto-detected",
+        "error-handling",
+        "html"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-06-27T09:53:35.697Z"
+    },
+    {
+      "id": "bug-004",
+      "timestamp": "2026-06-27T10:18:43.139Z",
+      "error_message": "Significant refactor of ",
+      "file": "demo-web/index.html",
+      "root_cause": "5 lines replaced/restructured",
+      "fix": "Rewrote 13→6 lines (5 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "html"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-06-27T10:18:43.139Z"
+    },
+    {
+      "id": "bug-005",
+      "timestamp": "2026-06-27T10:20:21.283Z",
+      "error_message": "Missing error handling in unknown",
+      "file": "demo-web/index.html",
+      "root_cause": "Code path had no error handling — exceptions would propagate uncaught",
+      "fix": "Added try/catch block",
+      "tags": [
+        "auto-detected",
+        "error-handling",
+        "html"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-06-27T10:20:21.283Z"
+    }
+  ]
+}

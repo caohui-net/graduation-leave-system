@@ -1,7 +1,7 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-06-27T05:12:25.968Z
-> Files: 843 tracked | Anatomy hits: 0 | Misses: 0
+> Auto-maintained by OpenWolf. Last scanned: 2026-06-27T10:21:48.518Z
+> Files: 865 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../../../tmp/
 
@@ -27,6 +27,7 @@
 - `index_prod.html` — 毕业离校申请系统 - UI Demo (~27859 tok)
 - `mobile-sso-404-analysis.md` — 移动端SSO登录404问题分析 (~283 tok)
 - `promote-to-prod.sh` (~879 tok)
+- `query_rejected.py` — Setup Django (~287 tok)
 - `restore_test_data.sh` — Restore test data after rejection testing (~315 tok)
 - `setup-196.sh` — 196机器部署环境安装脚本 (~137 tok)
 - `sso-fix-review.md` — SSO登录修复代码审查 (~475 tok)
@@ -213,11 +214,13 @@
 - `graduation-frontend-nocache.service` (~108 tok)
 - `PRODUCTION-READY.md` — claude-codex-gemini-collab - PRODUCTION READY (~1835 tok)
 - `PROJECT-QUICK-REF.md` — 毕业离校系统 - 项目速查手册 (~3079 tok)
+- `PROJECT-QUICKREF.md` — 项目速查手册 (~1521 tok)
 - `pyproject.toml` — Claude-Codex-Gemini Collaboration Framework (~185 tok)
 - `README.md` — Project documentation (~451 tok)
 - `response.json` (~469 tok)
 - `SKILL.md` — Claude-Codex-Gemini Collaboration Skill (~3072 tok)
 - `STABLE-STATE-2026-06-15.md` — 稳定状态快照 - 2026-06-15 (~887 tok)
+- `STABLE-STATE-2026-06-27.md` — 系统稳定状态快照 - 2026-06-27 (~519 tok)
 
 ## .claude/
 
@@ -227,6 +230,7 @@
 ## .claude/rules/
 
 - `openwolf.md` (~313 tok)
+- `quickref-rules.md` — 速查文档使用规则 (~186 tok)
 
 ## .claude/scripts/
 
@@ -244,9 +248,14 @@
 - `IMPLEMENTATION-环境拆分实施检查清单-20260618.md` — 环境拆分实施检查清单 (~2595 tok)
 - `REVIEW-环境拆分方案-团队评审摘要-20260618.md` — 环境拆分方案 - 团队评审摘要 (~1076 tok)
 
+## .collab/artifacts/fast/
+
+- `三环境部署框架优化共识-FINAL.md` — 三环境部署框架优化共识 (~475 tok)
+
 ## .github/workflows/
 
 - `deploy.yml` — CI: CI/CD Pipeline (~1207 tok)
+- `deployment-check.yml` — CI: Deployment Check (~398 tok)
 
 ## .omc/
 
@@ -864,7 +873,7 @@
 - `models.py` — Model: Application, 11 fields (~574 tok)
 - `permissions.py` — can_view_application (~296 tok)
 - `providers.py` — from: check_status (~1187 tok)
-- `serializers.py` — ApplicationListSerializer: get_has_attachments, get_attachment_count, get_approvals, get_has_attachm (~1122 tok)
+- `serializers.py` — ApplicationListSerializer: get_has_attachments, get_attachment_count, get_approvals, get_has_attachm (~1474 tok)
 - `urls.py` (~98 tok)
 - `views.py` — applications_view, list_applications, create_application (~4894 tok)
 
@@ -974,8 +983,10 @@
 
 ## backend/apps/users/migrations/
 
+- `0009_fix_empty_passwords.py` — Migration: fix_empty_passwords (~211 tok)
 - `0009_merge_user_92005340_into_20240061.py` — Migration: merge_user (~220 tok)
 - `0010_add_test_temp_user.py` — Migration: add_test_user, remove_test_user (~329 tok)
+- `0011_fix_empty_passwords.py` — Migration: fix_empty_passwords (~213 tok)
 - `0011_sync_test_record.py` — Migration: add_sync_test, remove_sync_test (~325 tok)
 - `0012_remove_sync_test_record.py` — Declares Migration (~111 tok)
 - `0013_sync_test_no_restart.py` — Migration: add, remove (~272 tok)
@@ -1005,7 +1016,11 @@
 
 ## backend/scripts/
 
+- `check-migrations.sh` — 发布前migration检查脚本 (~218 tok)
+- `check-schema-drift.sh` — Schema漂移检测 - 对比数据库实际状态与Django models定义 (~663 tok)
 - `create_application_skip_dorm.py` — create_application_skip_dorm (~998 tok)
+- `setup-prod-db-accounts.sql` — 生产环境数据库账号隔离设置 (~742 tok)
+- `validate-config.py` — load_env_file, validate_required_fields, validate_conditional_fields, validate_security (~1322 tok)
 - `verify_qgl_admin.py` — generate_signature, test_admin_endpoint (~475 tok)
 - `verify_qgl_endpoint.py` — generate_signature, test_endpoint (~516 tok)
 
@@ -1030,7 +1045,7 @@
 
 - `admin-sso-callback.html` — SSO登录中... (~735 tok)
 - `batch-fix-console.js` — 临时修复脚本 - 在浏览器控制台粘贴执行 (~1042 tok)
-- `index.html` — 毕业离校申请系统 - UI Demo (~28739 tok)
+- `index.html` — 毕业离校申请系统 - UI Demo (~30131 tok)
 - `mobile-sso-callback.html` — SSO登录中... (~691 tok)
 - `responsive-adapter-example.html` — Declares deviceAdapter (~579 tok)
 - `sso-receiver.html` — 登录中... (~489 tok)
@@ -1047,11 +1062,14 @@
 
 ## docs/
 
+- `部署检查清单.md` — 部署前检查清单 (~934 tok)
 - `测试文档-完整流程测试.html` — 毕业离校申请系统 - 完整流程测试文档 (~716 tok)
 - `后端运行保障方案.md` — 后端服务运行保障方案 (~1023 tok)
 - `环境部署说明-三环境架构.md` — 毕业离校系统 - 三环境部署说明 (~1686 tok)
+- `环境执行规范速查.md` — 环境执行规范速查 (~842 tok)
 - `浏览器缓存更新方案.md` — 浏览器缓存强制更新方案 (~651 tok)
 - `留校审批系统代码审核报告.md` — 留校审批系统代码审核报告 (~714 tok)
+- `配置中心管理指南.md` — 配置中心管理指南 (~1394 tok)
 - `青橄榄配置检查清单.md` — 青橄榄配置检查清单 (~218 tok)
 - `青橄榄平台对接材料-提交版.md` — 青橄榄平台SSO对接材料 (~1055 tok)
 - `青橄榄租号号对接材料-2026-06-10.md` — 青橄榄平台SSO对接材料（租号号管理端） (~952 tok)
@@ -1060,6 +1078,9 @@
 - `青橄榄SSO对接测试清单-2026-06-10.md` — 青橄榄租号号SSO对接测试清单 (~848 tok)
 - `青橄榄SSO对接技术方案.md` — 青橄榄平台SSO对接技术方案 (~1909 tok)
 - `青橄榄SSO对接完成报告-2026-06-10.md` — 青橄榄平台SSO对接完成报告 (~1354 tok)
+- `三环境数据同步策略.md` — 三环境数据同步策略 (~164 tok)
+- `数据库备份配置.md` — 数据库备份配置 (~410 tok)
+- `数据库账号管理指南.md` — 数据库账号管理指南 (~803 tok)
 - `响应式适配器使用文档.md` — 响应式适配器使用文档 (~1203 tok)
 - `移动端界面适配问题总结.md` — 移动端界面适配问题总结 (~1186 tok)
 - `移动端SSO故障排除.md` — 移动端SSO故障排除 (~481 tok)
@@ -1071,13 +1092,15 @@
 - `code-review-request-2026-06-16.md` — 代码审查请求 - P0/P1安全性能修复 (~688 tok)
 - `DEPLOYMENT_AUTO.md` — 异地自动化部署指南 (~932 tok)
 - `DEPLOYMENT_PROD.md` — 生产环境部署指南 (~803 tok)
+- `INDEX.md` — 文档索引 (~1563 tok)
 - `PERFORMANCE.md` — 数据库性能优化指南 (~455 tok)
 - `project-audit-consolidated-report-2026-06-15.md` — 毕业生离校系统综合审计报告（Codex + Gemini 共识版） (~2032 tok)
-- `PROJECT-SUMMARY.md` — 毕业生离校申请审批系统 - 项目总结 (~30066 tok)
+- `PROJECT-SUMMARY.md` — 毕业生离校申请审批系统 - 项目总结 (~30196 tok)
 - `qingganlian-api-structure-fix-20260609.md` — 青橄榄SSO API结构修复记录 (~478 tok)
 - `qingganlian-bug-fixes-20260609.md` — 青橄榄SSO代码审计 - Bug修复记录 (~300 tok)
 - `qingganlian-endpoint-verification-results.md` — 青橄榄API Endpoint验证结果 (~209 tok)
 - `qingganlian-verification-status-20260609.md` — 青橄榄SSO对接验证状态 (~143 tok)
+- `Schema漂移检测指南.md` — Schema漂移检测指南 (~731 tok)
 - `SSO部署和验收文档.md` — 青橄榄SSO集成 - 部署文档 (~1065 tok)
 - `SSO对接框架通讯架构说明.md` — SSO对接框架与本系统通讯架构说明 (~3586 tok)
 - `SSO集成进度快照-20260610.md` — SSO集成进度快照 - 2026-06-10 15:18 (~551 tok)
@@ -1149,9 +1172,11 @@
 - `rollback.sh` — 回滚脚本 - 恢复配置+数据库+容器 (~472 tok)
 - `serve-frontend.py` — NoCacheHTTPRequestHandler: end_headers, main (~415 tok)
 - `setup_server.sh` — 首次服务器初始化脚本 (~410 tok)
+- `setup-monitoring.sh` — 监控告警配置脚本 - Schema漂移和Migration检测告警 (~1638 tok)
 - `setup-systemd.sh` — 配置systemd服务（需要sudo权限） (~119 tok)
 - `start-services.sh` — 启动毕业离校系统所有服务 (~131 tok)
 - `sync-to-staging.sh` — 从开发环境同步代码到196 staging环境 (~285 tok)
+- `validate-deployment.sh` — 生产部署验证脚本 - 验证P1/P2治理框架 (~1017 tok)
 - `verify-env.sh` — 部署环境验证脚本 (~430 tok)
 
 ## tests/

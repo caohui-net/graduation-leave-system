@@ -6,9 +6,11 @@
 
 ## User Preferences
 
-- **Session Start Protocol**: ALWAYS read `PROJECT-QUICK-REF.md` first before any other action
-- **Reason**: Avoids wasting time/tokens on repeated lookups of env config, directory structure, deployment info
-- **File location**: `/home/caohui/projects/graduation-leave-system/PROJECT-QUICK-REF.md`
+- **[2026-06-27] 速查方法论（懒加载）**: 遇到错误时触发加载速查文档
+  - 触发条件: 命令失败、数据库错误、服务启动失败、Django/Python执行错误、用户询问环境配置
+  - 核心文档: `PROJECT-QUICKREF.md` (综合), `docs/环境执行规范速查.md` (执行规范), `docs/数据速查.md` (数据导入)
+  - 懒加载配置: `.claude/rules/quickref-rules.md`
+  - 使用: 出错时查 `PROJECT-QUICKREF.md` 故障排查章节 → 找对应解决方案
 
 ## Key Learnings
 

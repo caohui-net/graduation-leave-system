@@ -1,0 +1,33 @@
+{
+  "name": "Schema Drift Detection Alert",
+  "description": "Alert when schema drift is detected between database and Django models",
+  "trigger": {
+    "type": "cron",
+    "schedule": "0 2 * * *",
+    "command": "backend/scripts/check-schema-drift.sh"
+  },
+  "conditions": {
+    "exit_code": 1,
+    "contains": "Schema drift detected"
+  },
+  "actions": [
+    {
+      "type": "log",
+      "level": "error",
+      "message": "Schema drift detected in production database"
+    },
+    {
+      "type": "webhook",
+      "url": "${ALERT_WEBHOOK_URL}",
+      "payload": {
+        "text": "⚠️ Schema drift detected in {{environment}}",
+        "severity": "high",
+        "timestamp": "{{timestamp}}"
+      }
+    }
+  ],
+  "rate_limit": {
+    "interval": "1h",
+    "max_alerts": 3
+  }
+}

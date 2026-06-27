@@ -1,0 +1,23 @@
+{
+  "name": "Unapplied Migration Alert",
+  "description": "Alert when unapplied migrations are detected before deployment",
+  "trigger": {
+    "type": "pre_deploy",
+    "command": "backend/scripts/check-migrations.sh"
+  },
+  "conditions": {
+    "exit_code": 1,
+    "contains": "unapplied migration"
+  },
+  "actions": [
+    {
+      "type": "block_deployment",
+      "message": "Deployment blocked: unapplied migrations detected"
+    },
+    {
+      "type": "log",
+      "level": "error",
+      "message": "Unapplied migrations detected, deployment blocked"
+    }
+  ]
+}

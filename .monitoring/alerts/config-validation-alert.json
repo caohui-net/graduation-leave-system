@@ -1,0 +1,30 @@
+{
+  "name": "Configuration Validation Alert",
+  "description": "Alert when environment configuration validation fails",
+  "trigger": {
+    "type": "pre_deploy",
+    "command": "backend/scripts/validate-config.py {{env_file}}"
+  },
+  "conditions": {
+    "exit_code": 1
+  },
+  "actions": [
+    {
+      "type": "block_deployment",
+      "message": "Deployment blocked: configuration validation failed"
+    },
+    {
+      "type": "log",
+      "level": "error",
+      "message": "Configuration validation failed for {{environment}}"
+    },
+    {
+      "type": "webhook",
+      "url": "${ALERT_WEBHOOK_URL}",
+      "payload": {
+        "text": "❌ Configuration validation failed for {{environment}}",
+        "severity": "critical"
+      }
+    }
+  ]
+}

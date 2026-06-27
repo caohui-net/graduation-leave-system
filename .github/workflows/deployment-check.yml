@@ -5,6 +5,8 @@ on:
     branches: [main, staging]
   push:
     branches: [main, staging]
+  schedule:
+    - cron: '0 2 * * *'  # 每天凌晨2点执行Schema漂移检测
 
 jobs:
   migration-check:
@@ -17,6 +19,32 @@ jobs:
           chmod +x backend/scripts/check-migrations.sh
           cd backend
           ./scripts/check-migrations.sh
+        env:
+          DB_HOST: ${{ secrets.DB_HOST }}
+          DB_NAME: ${{ secrets.DB_NAME }}
+          DB_USER: ${{ secrets.DB_USER }}
+          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+
+  schema-drift-check:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          pip install migra psycopg2-binary django
+
+      - name: Check for schema drift
+        run: |
+          chmod +x backend/scripts/check-schema-drift.sh
+          cd backend
+          ./scripts/check-schema-drift.sh
         env:
           DB_HOST: ${{ secrets.DB_HOST }}
           DB_NAME: ${{ secrets.DB_NAME }}

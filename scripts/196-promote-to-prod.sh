@@ -5,6 +5,8 @@ PROD=/opt/graduation-leave-system/production
 STAGING=/opt/graduation-leave-system/staging
 SECRETS=/opt/graduation-leave-system/.secrets/production.env
 ENVFILE=/opt/graduation-leave-system/.envs/production.env
+DEV_HOST="172.17.12.199"
+DEV_REPO="/home/caohui/projects/graduation-leave-system"
 
 EXCLUDES=(
   --exclude='.git' --exclude='backend/venv' --exclude='backend/__pycache__'
@@ -69,8 +71,9 @@ MIGRATED=1
 echo '=== 等待服务就绪（最多90秒）==='
 for i in $(seq 1 18); do
   if curl -sf http://localhost:7787/readyz >/dev/null 2>&1; then
-    GIT_HASH=$(git -C "$STAGING" rev-parse --short HEAD 2>/dev/null || echo unknown)
-    GIT_HASH_FULL=$(git -C "$STAGING" rev-parse HEAD 2>/dev/null || echo unknown)
+    # 从dev机器读取实际commit hash
+    GIT_HASH_FULL=$(ssh -o ConnectTimeout=5 "caohui@${DEV_HOST}" "cd ${DEV_REPO} && git rev-parse HEAD 2>/dev/null" || echo unknown)
+    GIT_HASH=$(ssh -o ConnectTimeout=5 "caohui@${DEV_HOST}" "cd ${DEV_REPO} && git rev-parse --short HEAD 2>/dev/null" || echo unknown)
     echo "${GIT_HASH}-$(date +%Y%m%d%H%M%S)" > "$PROD/VERSION"
     echo "${GIT_HASH_FULL}|$(date -Iseconds)" > /opt/graduation-leave-system/.production-version
     echo "$(date '+%Y-%m-%d %H:%M:%S') promote SUCCESS staging->production [${GIT_HASH}]" >> /opt/graduation-leave-system/deploy.log

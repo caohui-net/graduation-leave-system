@@ -6,6 +6,10 @@
 
 ## User Preferences
 
+- **[2026-06-28] 业务流程测试使用 browser-harness**: 代码完成后，如需要进行业务流程测试（如登录、表单提交、页面跳转等），使用 browser-harness 技能进行自动化测试，而非手动操作或仅依赖单元测试。
+  - 优势: 真实浏览器环境、发现生产环境问题（如本次发现HTTP/HTTPS cookies配置问题）
+  - 调用: `BU_CDP_URL=http://127.0.0.1:9222 browser-harness <<'PY' ... PY` 或 `/browser-harness`
+  
 - **[2026-06-27] 速查方法论（懒加载）**: 遇到错误时触发加载速查文档
   - 触发条件: 命令失败、数据库错误、服务启动失败、Django/Python执行错误、用户询问环境配置
   - 核心文档: `PROJECT-QUICKREF.md` (综合), `docs/环境执行规范速查.md` (执行规范), `docs/数据速查.md` (数据导入)

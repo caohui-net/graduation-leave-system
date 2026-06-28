@@ -298,6 +298,21 @@ pkill -f serve-frontend.py    # 重启服务
 python scripts/serve-frontend.py
 ```
 
+### 问题6: 登录后会话丢失（HTTP环境）
+```bash
+# 现象
+登录成功但刷新后回到登录页，浏览器控制台显示cookies未设置
+
+# 原因
+prod.py配置了SESSION_COOKIE_SECURE=True，要求HTTPS，但内网使用HTTP
+
+# 解决
+在.env中添加: FORCE_HTTPS=False
+重启服务: pkill -f gunicorn && gunicorn config.wsgi:application --bind 0.0.0.0:7788
+
+# 详见: docs/HTTP-DEPLOYMENT-FIX.md
+```
+
 ---
 
 ## 📋 执行检查清单

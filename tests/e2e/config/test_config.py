@@ -2,8 +2,8 @@
 import os
 
 # 环境配置
-BASE_URL = os.getenv('E2E_BASE_URL', 'http://localhost:7788')
-API_URL = os.getenv('E2E_API_URL', 'http://localhost:8000')
+BASE_URL = os.getenv('E2E_BASE_URL', 'http://172.17.12.196:17788')  # Staging环境
+API_URL = os.getenv('E2E_API_URL', 'http://172.17.12.196:8000')
 CDP_URL = os.getenv('BU_CDP_URL', 'http://127.0.0.1:9222')
 
 # 测试账号

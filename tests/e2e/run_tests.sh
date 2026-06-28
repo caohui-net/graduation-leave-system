@@ -53,6 +53,7 @@ case "$TEST_NAME" in
     all)
         run_test flows/test_login.py
         run_test flows/test_stay_approval.py
+        run_test flows/test_departure_application.py
         ;;
     login)
         run_test flows/test_login.py
@@ -60,9 +61,12 @@ case "$TEST_NAME" in
     stay)
         run_test flows/test_stay_approval.py
         ;;
+    departure)
+        run_test flows/test_departure_application.py
+        ;;
     *)
         echo "❌ 未知测试: $TEST_NAME"
-        echo "可用测试: all, login, stay"
+        echo "可用测试: all, login, stay, departure"
         exit 1
         ;;
 esac

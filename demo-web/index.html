@@ -81,7 +81,8 @@
         }
 
         // Add admin filters (student_id, student_name, class_id, building)
-        if (isManager && Object.keys(adminFilters).length > 0) {
+        // Apply to both /applications/ and /approvals/ endpoints
+        if ((isManager || isAdminOrDean) && Object.keys(adminFilters).length > 0) {
             for (const [key, value] of Object.entries(adminFilters)) {
                 url += '&' + encodeURIComponent(key) + '=' + encodeURIComponent(value);
             }

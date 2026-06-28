@@ -1,0 +1,21 @@
+#!/bin/bash
+# Git Hook: post-commit
+# 仅在修改应用代码时提醒验证staging（排除文档、配置、脚本）
+
+# 应用代码文件类型：.py .html .css .js .jsx .ts .tsx .vue
+if git diff-tree --no-commit-id --name-only -r HEAD | \
+   grep -E '\.(py|html|css|js|jsx|ts|tsx|vue)$' | \
+   grep -qE '^(backend/|frontend/src/)'; then
+  cat << 'EOF'
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+🔔 应用代码已提交
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+下一步：
+1. 推送: git push
+2. 验证staging: http://172.17.12.196:17788
+3. 通过后: ./scripts/remind-mark-ready.sh
+
+EOF
+fi

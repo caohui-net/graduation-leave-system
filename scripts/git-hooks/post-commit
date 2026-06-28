@@ -5,7 +5,7 @@
 # 应用代码文件类型：.py .html .css .js .jsx .ts .tsx .vue
 if git diff-tree --no-commit-id --name-only -r HEAD | \
    grep -E '\.(py|html|css|js|jsx|ts|tsx|vue)$' | \
-   grep -qE '^(backend/|frontend/src/)'; then
+   grep -qE '^(backend/|frontend/)'; then
   cat << 'EOF'
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━

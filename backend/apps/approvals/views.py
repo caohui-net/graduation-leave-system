@@ -429,9 +429,15 @@ def export_approvals(request):
         wb = Workbook(write_only=True)
         ws = wb.create_sheet('学生数据')
 
-        headers = ['提交人', '学号', '手机号', '离校日期', '楼栋号', '房间号', '提交时间', '审批状态',
-                   '宿管员', '宿管审批时间', '宿管审批结果',
-                   '辅导员', '辅导员审批时间', '辅导员审批结果']
+        # 根据申请类型设置不同的表头
+        if app_type == 'stay_school':
+            headers = ['提交人', '学号', '手机号', '留校开始日期', '留校结束日期', '楼栋号', '房间号', '提交时间', '审批状态',
+                       '宿管员', '宿管审批时间', '宿管审批结果',
+                       '辅导员', '辅导员审批时间', '辅导员审批结果']
+        else:
+            headers = ['提交人', '学号', '手机号', '离校日期', '楼栋号', '房间号', '提交时间', '审批状态',
+                       '宿管员', '宿管审批时间', '宿管审批结果',
+                       '辅导员', '辅导员审批时间', '辅导员审批结果']
         ws.append(headers)
 
         for app in applications:
@@ -439,26 +445,45 @@ def export_approvals(request):
             counselor_approval = app.counselor_approvals_list[0] if app.counselor_approvals_list else None
 
             status_display = app.get_status_display()
-            leave_date = app.leave_date.strftime('%Y-%m-%d') if app.leave_date else ''
             contact_phone = app.contact_phone or app.student.phone or ''
             submit_time = app.created_at.strftime('%Y-%m-%d %H:%M:%S')
 
-            row = [
-                sanitize_excel_formula(app.student.name),
-                sanitize_excel_formula(app.student.user_id),
-                sanitize_excel_formula(contact_phone),
-                leave_date,
-                sanitize_excel_formula(app.student.building or ''),
-                sanitize_excel_formula(app.student.room_number or ''),
-                submit_time,
-                status_display,
-                sanitize_excel_formula(dorm_approval.approver_name if dorm_approval else ''),
-                dorm_approval.decided_at.strftime('%Y-%m-%d %H:%M:%S') if dorm_approval and dorm_approval.decided_at else '',
-                dorm_approval.get_decision_display() if dorm_approval else '',
-                sanitize_excel_formula(counselor_approval.approver_name if counselor_approval else ''),
-                counselor_approval.decided_at.strftime('%Y-%m-%d %H:%M:%S') if counselor_approval and counselor_approval.decided_at else '',
-                counselor_approval.get_decision_display() if counselor_approval else '',
-            ]
+            # 根据申请类型填充不同的日期字段
+            if app_type == 'stay_school':
+                row = [
+                    sanitize_excel_formula(app.student.name),
+                    sanitize_excel_formula(app.student.user_id),
+                    sanitize_excel_formula(contact_phone),
+                    app.stay_start_date.strftime('%Y-%m-%d') if app.stay_start_date else '',
+                    app.stay_end_date.strftime('%Y-%m-%d') if app.stay_end_date else '',
+                    sanitize_excel_formula(app.student.building or ''),
+                    sanitize_excel_formula(app.student.room_number or ''),
+                    submit_time,
+                    status_display,
+                    sanitize_excel_formula(dorm_approval.approver_name if dorm_approval else ''),
+                    dorm_approval.decided_at.strftime('%Y-%m-%d %H:%M:%S') if dorm_approval and dorm_approval.decided_at else '',
+                    dorm_approval.get_decision_display() if dorm_approval else '',
+                    sanitize_excel_formula(counselor_approval.approver_name if counselor_approval else ''),
+                    counselor_approval.decided_at.strftime('%Y-%m-%d %H:%M:%S') if counselor_approval and counselor_approval.decided_at else '',
+                    counselor_approval.get_decision_display() if counselor_approval else '',
+                ]
+            else:
+                row = [
+                    sanitize_excel_formula(app.student.name),
+                    sanitize_excel_formula(app.student.user_id),
+                    sanitize_excel_formula(contact_phone),
+                    app.leave_date.strftime('%Y-%m-%d') if app.leave_date else '',
+                    sanitize_excel_formula(app.student.building or ''),
+                    sanitize_excel_formula(app.student.room_number or ''),
+                    submit_time,
+                    status_display,
+                    sanitize_excel_formula(dorm_approval.approver_name if dorm_approval else ''),
+                    dorm_approval.decided_at.strftime('%Y-%m-%d %H:%M:%S') if dorm_approval and dorm_approval.decided_at else '',
+                    dorm_approval.get_decision_display() if dorm_approval else '',
+                    sanitize_excel_formula(counselor_approval.approver_name if counselor_approval else ''),
+                    counselor_approval.decided_at.strftime('%Y-%m-%d %H:%M:%S') if counselor_approval and counselor_approval.decided_at else '',
+                    counselor_approval.get_decision_display() if counselor_approval else '',
+                ]
             ws.append(row)
 
         response = HttpResponse(

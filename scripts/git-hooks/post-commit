@@ -6,6 +6,7 @@
 DEPLOY_DIRS=(
   "backend/"
   "frontend/"
+  "demo-web/"
   "scripts/196-promote-to-prod.sh"
   "scripts/mark-staging-ready.sh"
   "scripts/staging-change-detector.sh"

@@ -362,6 +362,21 @@ curl http://localhost:8000/api/auth/login \
   -d '{"user_id":"2020001","password":"2020001"}'
 ```
 
+### E2E业务流程测试
+```bash
+# 进入测试目录
+cd tests/e2e
+
+# 运行所有测试
+./run_tests.sh
+
+# 运行指定测试
+./run_tests.sh login        # 登录流程
+./run_tests.sh stay         # 留校审批
+
+# 详细文档见: tests/e2e/README.md
+```
+
 ---
 
 **详细文档参考**:

@@ -1,0 +1,16 @@
+#!/bin/bash
+# Git Hook: post-commit
+# 每次提交后自动提醒验证staging
+
+cat << 'EOF'
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+🔔 代码已提交
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+下一步：
+1. 推送: git push
+2. 验证staging: http://172.17.12.196:17788
+3. 通过后执行: ./scripts/remind-mark-ready.sh
+
+EOF

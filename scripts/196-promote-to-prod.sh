@@ -70,7 +70,9 @@ echo '=== 等待服务就绪（最多90秒）==='
 for i in $(seq 1 18); do
   if curl -sf http://localhost:7787/readyz >/dev/null 2>&1; then
     GIT_HASH=$(git -C "$STAGING" rev-parse --short HEAD 2>/dev/null || echo unknown)
+    GIT_HASH_FULL=$(git -C "$STAGING" rev-parse HEAD 2>/dev/null || echo unknown)
     echo "${GIT_HASH}-$(date +%Y%m%d%H%M%S)" > "$PROD/VERSION"
+    echo "${GIT_HASH_FULL}|$(date -Iseconds)" > /opt/graduation-leave-system/.production-version
     echo "$(date '+%Y-%m-%d %H:%M:%S') promote SUCCESS staging->production [${GIT_HASH}]" >> /opt/graduation-leave-system/deploy.log
     echo '✅ 生产环境发布成功'
     exit 0

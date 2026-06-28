@@ -2,21 +2,18 @@
 # Git Hook: post-commit
 # 目录归总策略：仅在部署相关目录变更时提醒验证staging
 
-# 部署相关目录列表（适配当前结构）
+# 部署相关目录列表
 DEPLOY_DIRS=(
   "backend/"
   "frontend/"
-  "scripts/196-promote-to-prod.sh"
-  "scripts/mark-staging-ready.sh"
-  "scripts/staging-change-detector.sh"
-  "scripts/staging-auto-verify.sh"
+  "scripts/deploy/"
 )
 
-# 检查是否修改了部署相关文件/目录
+# 检查是否修改了部署相关目录
 changed_files=$(git diff-tree --no-commit-id --name-only -r HEAD)
 
-for pattern in "${DEPLOY_DIRS[@]}"; do
-  if echo "$changed_files" | grep -q "^$pattern"; then
+for dir in "${DEPLOY_DIRS[@]}"; do
+  if echo "$changed_files" | grep -q "^$dir"; then
     cat << 'EOF'
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -26,7 +23,7 @@ for pattern in "${DEPLOY_DIRS[@]}"; do
 下一步：
 1. 推送: git push
 2. 验证staging: http://172.17.12.196:17788
-3. 通过后: ./scripts/remind-mark-ready.sh
+3. 通过后: ./scripts/dev/remind-mark-ready.sh
 
 EOF
     exit 0

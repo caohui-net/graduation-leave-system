@@ -431,11 +431,11 @@ def export_approvals(request):
 
         # 根据申请类型设置不同的表头
         if app_type == 'stay_school':
-            headers = ['提交人', '学号', '手机号', '留校开始日期', '留校结束日期', '楼栋号', '房间号', '提交时间', '审批状态',
+            headers = ['提交人', '学号', '学院/部门', '专业', '班级', '手机号', '留校开始日期', '留校结束日期', '留校原因', '楼栋号', '房间号', '提交时间', '审批状态',
                        '宿管员', '宿管审批时间', '宿管审批结果',
                        '辅导员', '辅导员审批时间', '辅导员审批结果']
         else:
-            headers = ['提交人', '学号', '手机号', '离校日期', '楼栋号', '房间号', '提交时间', '审批状态',
+            headers = ['提交人', '学号', '学院/部门', '专业', '班级', '手机号', '离校日期', '楼栋号', '房间号', '提交时间', '审批状态',
                        '宿管员', '宿管审批时间', '宿管审批结果',
                        '辅导员', '辅导员审批时间', '辅导员审批结果']
         ws.append(headers)
@@ -453,9 +453,13 @@ def export_approvals(request):
                 row = [
                     sanitize_excel_formula(app.student.name),
                     sanitize_excel_formula(app.student.user_id),
+                    sanitize_excel_formula(app.student.department or ''),
+                    sanitize_excel_formula(app.student.major or ''),
+                    sanitize_excel_formula(app.student.class_id or ''),
                     sanitize_excel_formula(contact_phone),
                     app.stay_start_date.strftime('%Y-%m-%d') if app.stay_start_date else '',
                     app.stay_end_date.strftime('%Y-%m-%d') if app.stay_end_date else '',
+                    app.get_stay_reason_display() if app.stay_reason else '',
                     sanitize_excel_formula(app.student.building or ''),
                     sanitize_excel_formula(app.student.room_number or ''),
                     submit_time,
@@ -471,6 +475,9 @@ def export_approvals(request):
                 row = [
                     sanitize_excel_formula(app.student.name),
                     sanitize_excel_formula(app.student.user_id),
+                    sanitize_excel_formula(app.student.department or ''),
+                    sanitize_excel_formula(app.student.major or ''),
+                    sanitize_excel_formula(app.student.class_id or ''),
                     sanitize_excel_formula(contact_phone),
                     app.leave_date.strftime('%Y-%m-%d') if app.leave_date else '',
                     sanitize_excel_formula(app.student.building or ''),

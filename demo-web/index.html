@@ -58,18 +58,27 @@
         const isManager = currentUser && ['counselor', 'dorm_manager'].includes(currentUser.role);
         const isAdminOrDean = currentUser && ['admin', 'dean'].includes(currentUser.role);
 
+        console.log('[DEBUG] loadApprovals - currentUser:', currentUser);
+        console.log('[DEBUG] loadApprovals - isStudent:', isStudent, 'isManager:', isManager, 'isAdminOrDean:', isAdminOrDean);
+
         // Build API URL with filters
         let url;
         if (isStudent || isAdminOrDean) {
             url = API_BASE_URL + '/applications/?limit=' + BATCH_SIZE + '&offset=' + approvalOffset;
+            console.log('[DEBUG] Using /applications/ API for student/admin');
         } else if (isManager) {
             url = API_BASE_URL + '/approvals/?limit=' + BATCH_SIZE + '&offset=' + approvalOffset;
+            console.log('[DEBUG] Using /approvals/ API for manager');
         }
 
-        // Add application_type filter
-        const type = currentApplicationType || localStorage.getItem('selected_application_type') || 'leave_school';
-        url += '&application_type=' + type;
-        console.log('[DEBUG] loadApprovals application_type filter:', type, 'URL:', url);
+        // Add application_type filter (skip for students - they should see all their applications)
+        if (!isStudent) {
+            const type = currentApplicationType || localStorage.getItem('selected_application_type') || 'leave_school';
+            url += '&application_type=' + type;
+            console.log('[DEBUG] loadApprovals application_type filter:', type, 'URL:', url);
+        } else {
+            console.log('[DEBUG] loadApprovals: student - no application_type filter');
+        }
 
         if (isAdminOrDean) {
             if (currentFilter && currentFilter !== 'all' && currentFilter !== 'pending') {
@@ -2088,12 +2097,17 @@
             document.getElementById('stay-fields').style.display = isStay ? '' : 'none';
 
             // Check existing submissions: none → form (screen0), has records → list (screen1)
+            console.log('[DEBUG] Student login - currentUser.role:', currentUser.role);
             const appData = await apiGetApplications();
+            console.log('[DEBUG] Student applications:', appData);
             const hasApplications = appData && appData.results && appData.results.length > 0;
+            console.log('[DEBUG] hasApplications:', hasApplications, 'results count:', appData?.results?.length);
             if (hasApplications) {
+              console.log('[DEBUG] Student has applications, showing screen-1 and calling loadApprovals()');
               showScreen(1);
               loadApprovals();
             } else {
+              console.log('[DEBUG] Student has no applications, showing screen-0');
               showScreen(0);
             }
           } else {

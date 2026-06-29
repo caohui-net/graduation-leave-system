@@ -1,36 +1,20 @@
 {
-  "last_updated": "2026-06-26T17:49:00Z",
+  "last_updated": "2026-06-29T10:26:00Z",
   "completed": [
-    "留校审批首次发布（v2.0.0-stay-school tag）",
-    "生产部署：21940名学生、26名辅导员（Excel导入）、100%分配",
-    "SSO自动登录全流程（mobile-sso-callback→sso-receiver→index.html）",
-    "辅导员查找bug修复（user_id vs class_id）",
-    "学生选留校后表单字段切换修复",
-    "附件预览MIME类型推断修复",
-    "全部列表tab数据显示修复",
-    "SSO API超时3s→8s（修复白屏）",
-    "demo-web-v2 UI改进（暂不上线）",
-    "init-data.sh三环境数据初始化脚本",
-    "sync-to-staging.sh自动执行init-data",
-    "本地/v2/路由",
-    "留校系统代码审核报告（三方协作）",
-    "生产测试数据清理"
+    "调查数据库备份时间戳问题",
+    "确认09:02备份实际创建于北京时间17:02（UTC 09:02）",
+    "确认18:13备份时间准确（服务器本地时区UTC+8）",
+    "分析时区差异原因：docker exec使用UTC vs 服务器ssh使用UTC+8"
   ],
-  "pending": [
-    "demo-web-v2测试验证后应用生产",
-    "测试覆盖率补充（<20%→60%）"
-  ],
+  "pending": [],
   "evidence": [
-    "生产 /readyz: {status:ready, database:connected}",
-    "21940学生/26辅导员全覆盖",
-    "commit 7879100: SSO超时修复已部署",
-    "用户侧SSO登录验证通过"
+    "graduation_leave_20260629_090200.dump: 文件名09:02(UTC) = ls显示17:02 = 北京时间17:02",
+    "graduation_leave_20260629_181305.dump: 文件名18:13 = ls显示18:13(UTC+8)",
+    "备份脚本使用date命令，时区取决于执行环境"
   ],
-  "next_focus": "按需处理新问题或继续demo-web-v2验收",
+  "next_focus": "无待办事项",
   "artifacts": {
-    "review_report": "docs/留校审批系统代码审核报告.md",
-    "init_script": "scripts/init-data.sh",
-    "v2_ui": "demo-web-v2/",
-    "backup": "demo-web-backup-20260626/"
+    "backup_files": "/opt/graduation-leave-system/backups/db/",
+    "session_transcript": "~/.claude/projects/-home-caohui-projects-graduation-leave-system/7cf12a94-2603-4771-a76b-8fbb8fb002ea.jsonl"
   }
 }

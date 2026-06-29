@@ -3292,3 +3292,203 @@
 
 | Time | Action | File(s) | Outcome | ~Tokens |
 |------|--------|---------|---------|--------|
+| 12:50 | Created scripts/git-hooks/post-commit | — | ~130 |
+| 12:51 | Session end: 1 writes across 1 files (post-commit) | 0 reads | ~139 tok |
+| 13:03 | Edited scripts/git-hooks/post-commit | 21→21 lines | ~128 |
+| 13:03 | Session end: 2 writes across 1 files (post-commit) | 0 reads | ~276 tok |
+| 13:07 | Created scripts/git-hooks/post-commit-v2 | — | ~147 |
+| 13:07 | Session end: 3 writes across 2 files (post-commit, post-commit-v2) | 0 reads | ~433 tok |
+| 13:10 | Edited scripts/git-hooks/post-commit | expanded (+13 lines) | ~183 |
+| 13:11 | Session end: 4 writes across 2 files (post-commit, post-commit-v2) | 0 reads | ~629 tok |
+
+## Session: 2026-06-28 15:13
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 15:14 | Edited backend/apps/approvals/views.py | expanded (+25 lines) | ~1022 |
+| 15:15 | Session end: 1 writes across 1 files (views.py) | 2 reads | ~9575 tok |
+| 15:20 | Session end: 1 writes across 1 files (views.py) | 2 reads | ~9575 tok |
+| 15:46 | Session end: 1 writes across 1 files (views.py) | 4 reads | ~43254 tok |
+| 15:55 | Edited demo-web/index.html | 6→7 lines | ~109 |
+| 15:56 | Session end: 2 writes across 2 files (views.py, index.html) | 4 reads | ~43371 tok |
+| 15:58 | Edited scripts/git-hooks/post-commit | 9→10 lines | ~59 |
+| 15:58 | Session end: 3 writes across 3 files (views.py, index.html, post-commit) | 5 reads | ~43617 tok |
+| 16:03 | Session end: 3 writes across 3 files (views.py, index.html, post-commit) | 5 reads | ~43617 tok |
+| 16:05 | Session end: 3 writes across 3 files (views.py, index.html, post-commit) | 5 reads | ~43617 tok |
+| 16:10 | Session end: 3 writes across 3 files (views.py, index.html, post-commit) | 5 reads | ~43617 tok |
+| 16:13 | Session end: 3 writes across 3 files (views.py, index.html, post-commit) | 5 reads | ~43617 tok |
+| 16:14 | Edited scripts/196-promote-to-prod.sh | 11→13 lines | ~169 |
+| 16:15 | Edited scripts/staging-change-detector.sh | expanded (+27 lines) | ~589 |
+| 16:16 | Session end: 5 writes across 5 files (views.py, index.html, post-commit, 196-promote-to-prod.sh, staging-change-detector.sh) | 7 reads | ~44429 tok |
+| 16:17 | Session end: 5 writes across 5 files (views.py, index.html, post-commit, 196-promote-to-prod.sh, staging-change-detector.sh) | 7 reads | ~44429 tok |
+| 16:20 | Edited scripts/196-promote-to-prod.sh | 7→9 lines | ~86 |
+| 16:20 | Edited scripts/196-promote-to-prod.sh | 13→14 lines | ~204 |
+| 16:23 | Session end: 7 writes across 5 files (views.py, index.html, post-commit, 196-promote-to-prod.sh, staging-change-detector.sh) | 7 reads | ~45666 tok |
+| 16:56 | Created docs/WEB-UI-TEST-CHECKLIST.md | — | ~189 |
+| 16:56 | Session end: 8 writes across 6 files (views.py, index.html, post-commit, 196-promote-to-prod.sh, staging-change-detector.sh) | 7 reads | ~45869 tok |
+| 17:02 | Session end: 8 writes across 6 files (views.py, index.html, post-commit, 196-promote-to-prod.sh, staging-change-detector.sh) | 7 reads | ~45869 tok |
+
+## Session: 2026-06-28 17:04
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 17:11 | Edited backend/config/prod.py | 3→7 lines | ~69 |
+| 17:11 | Created docs/HTTP-DEPLOYMENT-FIX.md | — | ~267 |
+| 17:11 | Session end: 2 writes across 2 files (prod.py, HTTP-DEPLOYMENT-FIX.md) | 3 reads | ~729 tok |
+| 17:14 | Session end: 2 writes across 2 files (prod.py, HTTP-DEPLOYMENT-FIX.md) | 3 reads | ~729 tok |
+| 17:15 | Edited PROJECT-QUICKREF.md | expanded (+15 lines) | ~134 |
+| 17:16 | Session end: 3 writes across 3 files (prod.py, HTTP-DEPLOYMENT-FIX.md, PROJECT-QUICKREF.md) | 4 reads | ~2394 tok |
+| 17:18 | Session end: 3 writes across 3 files (prod.py, HTTP-DEPLOYMENT-FIX.md, PROJECT-QUICKREF.md) | 4 reads | ~2394 tok |
+| 17:18 | Session end: 3 writes across 3 files (prod.py, HTTP-DEPLOYMENT-FIX.md, PROJECT-QUICKREF.md) | 4 reads | ~2394 tok |
+| 20:37 | Created tests/e2e/config/test_config.py | — | ~208 |
+| 20:37 | Created tests/e2e/helpers/common.py | — | ~1029 |
+| 20:38 | Created tests/e2e/flows/test_stay_approval.py | — | ~431 |
+| 20:38 | Created tests/e2e/flows/test_login.py | — | ~453 |
+| 20:38 | Created tests/e2e/run_tests.sh | — | ~389 |
+| 20:39 | Created tests/e2e/README.md | — | ~1220 |
+| 20:40 | Edited PROJECT-QUICKREF.md | expanded (+15 lines) | ~99 |
+| 20:41 | Session end: 10 writes across 9 files (prod.py, HTTP-DEPLOYMENT-FIX.md, PROJECT-QUICKREF.md, test_config.py, common.py) | 4 reads | ~6416 tok |
+| 20:53 | Session end: 10 writes across 9 files (prod.py, HTTP-DEPLOYMENT-FIX.md, PROJECT-QUICKREF.md, test_config.py, common.py) | 4 reads | ~6416 tok |
+| 20:59 | Session end: 10 writes across 9 files (prod.py, HTTP-DEPLOYMENT-FIX.md, PROJECT-QUICKREF.md, test_config.py, common.py) | 5 reads | ~6416 tok |
+| 21:02 | Created tests/e2e/flows/test_departure_application.py | — | ~446 |
+| 21:02 | Edited tests/e2e/config/test_config.py | 4→4 lines | ~60 |
+| 21:02 | Edited tests/e2e/run_tests.sh | 17→21 lines | ~134 |
+| 21:03 | Session end: 13 writes across 10 files (prod.py, HTTP-DEPLOYMENT-FIX.md, PROJECT-QUICKREF.md, test_config.py, common.py) | 5 reads | ~7065 tok |
+| 08:18 | Session end: 13 writes across 10 files (prod.py, HTTP-DEPLOYMENT-FIX.md, PROJECT-QUICKREF.md, test_config.py, common.py) | 5 reads | ~7065 tok |
+| 08:22 | Session end: 13 writes across 10 files (prod.py, HTTP-DEPLOYMENT-FIX.md, PROJECT-QUICKREF.md, test_config.py, common.py) | 5 reads | ~7065 tok |
+| 09:40 | Session end: 13 writes across 10 files (prod.py, HTTP-DEPLOYMENT-FIX.md, PROJECT-QUICKREF.md, test_config.py, common.py) | 5 reads | ~7065 tok |
+| 09:43 | Edited backend/apps/approvals/views.py | 9→9 lines | ~144 |
+| 09:43 | Edited backend/apps/approvals/views.py | 19→23 lines | ~471 |
+| 09:43 | Edited backend/apps/approvals/views.py | 17→20 lines | ~405 |
+| 09:44 | Session end: 16 writes across 11 files (prod.py, HTTP-DEPLOYMENT-FIX.md, PROJECT-QUICKREF.md, test_config.py, common.py) | 7 reads | ~17261 tok |
+| 09:50 | Edited backend/apps/approvals/views.py | 9→7 lines | ~113 |
+| 09:50 | Edited backend/apps/approvals/views.py | 23→20 lines | ~381 |
+| 09:51 | Edited backend/apps/approvals/views.py | 20→20 lines | ~403 |
+| 09:52 | Session end: 19 writes across 11 files (prod.py, HTTP-DEPLOYMENT-FIX.md, PROJECT-QUICKREF.md, test_config.py, common.py) | 7 reads | ~18158 tok |
+| 09:53 | Session end: 19 writes across 11 files (prod.py, HTTP-DEPLOYMENT-FIX.md, PROJECT-QUICKREF.md, test_config.py, common.py) | 7 reads | ~18158 tok |
+
+## Session: 2026-06-29 09:55
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 09:59 | Edited backend/apps/approvals/serializers.py | modified ApplicationBriefSerializer() | ~308 |
+| 10:00 | Session end: 1 writes across 1 files (serializers.py) | 2 reads | ~10170 tok |
+| 10:02 | Session end: 1 writes across 1 files (serializers.py) | 2 reads | ~10170 tok |
+| 10:02 | Session end: 1 writes across 1 files (serializers.py) | 2 reads | ~10170 tok |
+| 10:04 | Session end: 1 writes across 1 files (serializers.py) | 2 reads | ~10170 tok |
+| 10:10 | Created ../../../../tmp/check_student_passwords.py | — | ~248 |
+| 10:45 | Session end: 2 writes across 2 files (serializers.py, check_student_passwords.py) | 3 reads | ~10418 tok |
+| 10:58 | Session end: 2 writes across 2 files (serializers.py, check_student_passwords.py) | 3 reads | ~10418 tok |
+| 11:05 | Session end: 2 writes across 2 files (serializers.py, check_student_passwords.py) | 3 reads | ~10418 tok |
+| 11:06 | Created backend/apps/approvals/constants.py | — | ~198 |
+| 11:06 | Edited backend/apps/approvals/views.py | added 1 import(s) | ~132 |
+| 11:07 | Edited backend/apps/approvals/views.py | removed 8 lines | ~26 |
+| 11:08 | Session end: 5 writes across 4 files (serializers.py, check_student_passwords.py, constants.py, views.py) | 3 reads | ~10774 tok |
+| 11:08 | Session end: 5 writes across 4 files (serializers.py, check_student_passwords.py, constants.py, views.py) | 3 reads | ~10774 tok |
+| 11:12 | Session end: 5 writes across 4 files (serializers.py, check_student_passwords.py, constants.py, views.py) | 4 reads | ~15668 tok |
+| 11:13 | Session end: 5 writes across 4 files (serializers.py, check_student_passwords.py, constants.py, views.py) | 4 reads | ~15668 tok |
+| 11:18 | Session end: 5 writes across 4 files (serializers.py, check_student_passwords.py, constants.py, views.py) | 4 reads | ~15668 tok |
+| 11:20 | Session end: 5 writes across 4 files (serializers.py, check_student_passwords.py, constants.py, views.py) | 4 reads | ~15668 tok |
+| 11:21 | Session end: 5 writes across 4 files (serializers.py, check_student_passwords.py, constants.py, views.py) | 4 reads | ~15668 tok |
+| 11:23 | Session end: 5 writes across 4 files (serializers.py, check_student_passwords.py, constants.py, views.py) | 4 reads | ~15668 tok |
+| 11:25 | Session end: 5 writes across 4 files (serializers.py, check_student_passwords.py, constants.py, views.py) | 4 reads | ~15668 tok |
+| 11:26 | Created .trellis/tasks/06-29-multi-counselor-approval/task.md | — | ~650 |
+| 11:26 | Session end: 6 writes across 5 files (serializers.py, check_student_passwords.py, constants.py, views.py, task.md) | 4 reads | ~16364 tok |
+| 11:26 | Edited backend/apps/applications/views.py | expanded (+11 lines) | ~191 |
+| 11:26 | Edited backend/apps/applications/views.py | 14→15 lines | ~240 |
+| 11:27 | Edited backend/apps/approvals/models.py | modified ApprovalDecision() | ~50 |
+| 11:28 | Edited backend/apps/approvals/views.py | modified exists() | ~254 |
+| 11:28 | Edited backend/apps/approvals/views.py | modified exists() | ~330 |
+| 11:29 | Edited backend/apps/approvals/views.py | 15→19 lines | ~213 |
+| 11:30 | Edited .trellis/tasks/06-29-multi-counselor-approval/task.md | 4→5 lines | ~23 |
+| 11:30 | Session end: 13 writes across 6 files (serializers.py, check_student_passwords.py, constants.py, views.py, task.md) | 6 reads | ~18982 tok |
+
+## Session: 2026-06-29 11:36
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 11:41 | Edited backend/apps/applications/views.py | 19→17 lines | ~180 |
+| 11:43 | Session end: 1 writes across 1 files (views.py) | 7 reads | ~5664 tok |
+| 11:44 | Session end: 1 writes across 1 files (views.py) | 7 reads | ~5664 tok |
+| 11:46 | Session end: 1 writes across 1 files (views.py) | 8 reads | ~5664 tok |
+| 11:48 | Session end: 1 writes across 1 files (views.py) | 8 reads | ~5664 tok |
+| 11:50 | Session end: 1 writes across 1 files (views.py) | 9 reads | ~5664 tok |
+| 11:51 | Edited backend/apps/applications/views.py | 17→20 lines | ~208 |
+| 11:53 | Session end: 2 writes across 1 files (views.py) | 9 reads | ~5872 tok |
+
+## Session: 2026-06-29 11:55
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 16:26 | Created ../../../../tmp/check_prod_class_id.py | — | ~512 |
+| 16:32 | Created ../../../../tmp/check_class_id_direct.py | — | ~950 |
+| 16:32 | Session end: 2 writes across 2 files (check_prod_class_id.py, check_class_id_direct.py) | 7 reads | ~3101 tok |
+| 16:36 | Session end: 2 writes across 2 files (check_prod_class_id.py, check_class_id_direct.py) | 9 reads | ~5590 tok |
+| 16:38 | Session end: 2 writes across 2 files (check_prod_class_id.py, check_class_id_direct.py) | 9 reads | ~5590 tok |
+| 16:39 | Created plans/sparkling-sparking-pike.md | — | ~123 |
+| 16:41 | Edited plans/sparkling-sparking-pike.md | modified fix_class_id() | ~1178 |
+| 16:41 | Edited plans/sparkling-sparking-pike.md | modified isdigit() | ~462 |
+| 16:45 | Session end: 5 writes across 3 files (check_prod_class_id.py, check_class_id_direct.py, sparkling-sparking-pike.md) | 20 reads | ~8613 tok |
+| 16:48 | Session end: 5 writes across 3 files (check_prod_class_id.py, check_class_id_direct.py, sparkling-sparking-pike.md) | 20 reads | ~8613 tok |
+
+## Session: 2026-06-29 16:50
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 17:00 | Edited plans/sparkling-sparking-pike.md | 3→4 lines | ~40 |
+| 17:05 | Created backend/scripts/repair_class_id.py | — | ~969 |
+| 17:07 | Edited backend/scripts/repair_class_id.py | reduced (-6 lines) | ~88 |
+| 17:08 | Edited backend/scripts/repair_class_id.py | modified load_graduating_students() | ~32 |
+| 17:09 | Created backend/apps/users/management/commands/repair_class_id.py | — | ~932 |
+| 17:19 | Session end: 5 writes across 2 files (sparkling-sparking-pike.md, repair_class_id.py) | 4 reads | ~3666 tok |
+| 17:23 | Session end: 5 writes across 2 files (sparkling-sparking-pike.md, repair_class_id.py) | 4 reads | ~3666 tok |
+| 17:25 | Session end: 5 writes across 2 files (sparkling-sparking-pike.md, repair_class_id.py) | 4 reads | ~3666 tok |
+| 17:26 | Created docs/class_id字段修复记录.md | — | ~375 |
+| 17:27 | Session end: 6 writes across 3 files (sparkling-sparking-pike.md, repair_class_id.py, class_id字段修复记录.md) | 4 reads | ~4068 tok |
+| 17:28 | Session end: 6 writes across 3 files (sparkling-sparking-pike.md, repair_class_id.py, class_id字段修复记录.md) | 4 reads | ~4068 tok |
+| 17:29 | Edited docs/数据导入记录.md | expanded (+8 lines) | ~84 |
+| 17:29 | Session end: 7 writes across 4 files (sparkling-sparking-pike.md, repair_class_id.py, class_id字段修复记录.md, 数据导入记录.md) | 4 reads | ~4158 tok |
+| 17:30 | Edited docs/数据库字段映射.md | 1→2 lines | ~26 |
+| 17:30 | Edited docs/数据库字段映射.md | inline fix | ~12 |
+| 17:31 | Edited docs/CSV字段映射.md | expanded (+18 lines) | ~226 |
+| 17:31 | Session end: 10 writes across 6 files (sparkling-sparking-pike.md, repair_class_id.py, class_id字段修复记录.md, 数据导入记录.md, 数据库字段映射.md) | 6 reads | ~4441 tok |
+| 17:33 | Edited docs/数据速查.md | expanded (+15 lines) | ~144 |
+| 17:33 | Edited docs/数据速查.md | 7→11 lines | ~71 |
+| 17:33 | Edited docs/数据速查.md | 9→9 lines | ~89 |
+
+## Session: 2026-06-29 17:34
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 17:36 | Edited .omc/session-context.json | 4→5 lines | ~33 |
+| 17:36 | Edited docs/数据处理流程.md | 5→7 lines | ~30 |
+| 17:37 | Edited docs/数据处理流程.md | expanded (+17 lines) | ~115 |
+| 17:37 | Edited docs/数据处理流程.md | expanded (+18 lines) | ~89 |
+| 17:37 | Edited docs/数据处理流程.md | expanded (+10 lines) | ~111 |
+| 17:37 | Edited docs/数据处理流程.md | 2→2 lines | ~6 |
+| 17:38 | Session end: 6 writes across 2 files (session-context.json, 数据处理流程.md) | 3 reads | ~2995 tok |
+| 17:51 | Session end: 6 writes across 2 files (session-context.json, 数据处理流程.md) | 3 reads | ~2995 tok |
+| 17:57 | Session end: 6 writes across 2 files (session-context.json, 数据处理流程.md) | 3 reads | ~2995 tok |
+| 17:58 | Edited docs/数据速查.md | expanded (+8 lines) | ~98 |
+| 17:58 | Edited docs/数据速查.md | 11→13 lines | ~82 |
+| 17:59 | Session end: 8 writes across 3 files (session-context.json, 数据处理流程.md, 数据速查.md) | 4 reads | ~3635 tok |
+| 18:01 | Created scripts/backup-production-db.sh | — | ~414 |
+| 18:02 | Created docs/生产数据库备份指南.md | — | ~597 |
+| 18:02 | Session end: 10 writes across 5 files (session-context.json, 数据处理流程.md, 数据速查.md, backup-production-db.sh, 生产数据库备份指南.md) | 5 reads | ~5700 tok |
+| 18:07 | Session end: 10 writes across 5 files (session-context.json, 数据处理流程.md, 数据速查.md, backup-production-db.sh, 生产数据库备份指南.md) | 5 reads | ~5700 tok |
+| 18:14 | Session end: 10 writes across 5 files (session-context.json, 数据处理流程.md, 数据速查.md, backup-production-db.sh, 生产数据库备份指南.md) | 5 reads | ~5700 tok |
+| 18:17 | Session end: 10 writes across 5 files (session-context.json, 数据处理流程.md, 数据速查.md, backup-production-db.sh, 生产数据库备份指南.md) | 5 reads | ~5700 tok |
+
+## Session: 2026-06-29 18:22
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 18:26 | Created .omc/session-context.json | — | ~196 |
+
+## Session: 2026-06-29 18:26
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 18:22 | 调查数据库备份时间戳问题 | 会话记录搜索 | 发现时区差异原因 | ~1800 |
+| 18:24 | 分析三个备份文件创建过程 | session_search | 确认09:02(UTC)=17:02(CST) | ~2000 |
+| 18:26 | 更新会话状态 | .omc/session-context.json | 记录完成项与证据 | ~300 |

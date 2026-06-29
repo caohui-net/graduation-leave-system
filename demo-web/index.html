@@ -1317,6 +1317,17 @@
         window.scrollTo(0, 0);
     }
 
+    async function loadCounselors() {
+        const select = document.getElementById('counselorSelect');
+        if (!select) return;
+
+        const counselors = await apiGetCounselors();
+        select.innerHTML = '<option value="">选择辅导员（可选）</option>';
+        counselors.forEach(c => {
+            select.innerHTML += `<option value="${c.user_id}">${escapeHtml(c.name)} (${escapeHtml(c.college_name)})</option>`;
+        });
+    }
+
     async function doSubmitApplication() {
         const phone = document.getElementById('contactPhone').value;
         const isStay = currentApplicationType === 'stay_school';
@@ -1414,8 +1425,9 @@
 
             // 步骤3: 提交申请
             btn.textContent = '提交申请中...';
+            const selectedCounselorId = document.getElementById('counselorSelect')?.value || null;
             const result = await apiSubmitApplication(phone, reason, leaveDate, draftId,
-                currentApplicationType, stayStartDate, stayEndDate, stayReason);
+                currentApplicationType, stayStartDate, stayEndDate, stayReason, selectedCounselorId);
             if (result.success) {
                 showToast('申请提交成功', 'success');
                 document.getElementById('contactPhone').value = '';
@@ -1765,6 +1777,14 @@
           <input id="contactPhone" type="tel" name="contact_phone" maxlength="20" inputmode="numeric" style="width: 100%; padding: 12px; border: 1px solid #d9d9d9; border-radius: 4px; font-size: 14px;" placeholder="请输入联系电话" required>
         </div>
 
+        <!-- 辅导员选择 -->
+        <div style="margin-bottom: 20px;">
+          <label style="display: block; font-size: 14px; margin-bottom: 8px; font-weight: 500;">选择辅导员（可选）</label>
+          <select id="counselorSelect" style="width: 100%; padding: 12px; border: 1px solid #d9d9d9; border-radius: 4px; font-size: 14px;">
+            <option value="">选择辅导员（可选）</option>
+          </select>
+        </div>
+
         <!-- 离校字段 -->
         <div id="leave-fields">
           <div style="margin-bottom: 20px;">
@@ -2087,15 +2107,11 @@
             document.getElementById('leave-fields').style.display = isStay ? 'none' : '';
             document.getElementById('stay-fields').style.display = isStay ? '' : 'none';
 
-            // Check existing submissions: none → form (screen0), has records → list (screen1)
-            const appData = await apiGetApplications();
-            const hasApplications = appData && appData.results && appData.results.length > 0;
-            if (hasApplications) {
-              showScreen(1);
-              loadApprovals();
-            } else {
-              showScreen(0);
-            }
+            // Load counselor list
+            loadCounselors();
+
+            // Student: always show form (screen0)
+            showScreen(0);
           } else {
             // Role-based application type restriction
             const type = currentApplicationType || localStorage.getItem('selected_application_type') || 'leave_school';

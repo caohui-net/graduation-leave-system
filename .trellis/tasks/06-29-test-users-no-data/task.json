@@ -1,0 +1,34 @@
+{
+  "id": "test-users-no-data",
+  "name": "test-users-no-data",
+  "title": "测试环境-用户登录后无数据",
+  "description": "172.17.12.196:17788环境，用户2023045104054和2020220040131选择留校业务类型登录后无任何数据显示",
+  "status": "todo",
+  "dev_type": "bug",
+  "scope": null,
+  "package": null,
+  "priority": "P0",
+  "creator": "graduation-leave-system",
+  "assignee": "graduation-leave-system",
+  "createdAt": "2026-06-29",
+  "completedAt": null,
+  "branch": null,
+  "base_branch": "main",
+  "worktree_path": null,
+  "commit": null,
+  "pr_url": null,
+  "subtasks": [],
+  "children": [],
+  "parent": null,
+  "relatedFiles": [
+    "backend/apps/applications/views.py",
+    "backend/apps/users/views.py"
+  ],
+  "notes": "",
+  "meta": {
+    "environment": "172.17.12.196:17788",
+    "affected_users": ["2023045104054", "2020220040131"],
+    "business_type": "留校",
+    "related_tasks": ["06-29-prod-bug-missing-approvals"]
+  }
+}

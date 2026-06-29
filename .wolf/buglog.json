@@ -80,6 +80,374 @@
       "related_bugs": [],
       "occurrences": 1,
       "last_seen": "2026-06-27T10:20:21.283Z"
+    },
+    {
+      "id": "bug-006",
+      "timestamp": "2026-06-28T05:10:49.180Z",
+      "error_message": "Significant refactor of ",
+      "file": "scripts/git-hooks/post-commit",
+      "root_cause": "6 lines replaced/restructured",
+      "fix": "Rewrote 21→34 lines (6 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "unknown"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-06-28T05:10:49.180Z"
+    },
+    {
+      "id": "bug-007",
+      "timestamp": "2026-06-28T07:14:45.510Z",
+      "error_message": "Significant refactor of ",
+      "file": "backend/apps/approvals/views.py",
+      "root_cause": "2 lines replaced/restructured",
+      "fix": "Rewrote 34→59 lines (2 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "py"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-06-28T07:14:45.510Z"
+    },
+    {
+      "id": "bug-008",
+      "timestamp": "2026-06-28T08:15:00.917Z",
+      "error_message": "Significant refactor of ",
+      "file": "scripts/staging-change-detector.sh",
+      "root_cause": "9 lines replaced/restructured",
+      "fix": "Rewrote 37→64 lines (9 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "sh"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-06-28T08:15:00.918Z"
+    },
+    {
+      "id": "bug-009",
+      "timestamp": "2026-06-28T09:11:02.041Z",
+      "error_message": "Significant refactor of ",
+      "file": "backend/config/prod.py",
+      "root_cause": "3 lines replaced/restructured",
+      "fix": "Rewrote 3→7 lines (3 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "py"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-06-28T09:11:02.041Z"
+    },
+    {
+      "id": "bug-010",
+      "timestamp": "2026-06-29T03:07:06.819Z",
+      "error_message": "Significant refactor of ",
+      "file": "backend/apps/approvals/views.py",
+      "root_cause": "7 lines replaced/restructured",
+      "fix": "Rewrote 8→3 lines (7 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "py"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-06-29T03:07:06.819Z"
+    },
+    {
+      "id": "bug-011",
+      "timestamp": "2026-06-29T03:26:47.923Z",
+      "error_message": "Significant refactor of ",
+      "file": "backend/apps/applications/views.py",
+      "root_cause": "2 lines replaced/restructured",
+      "fix": "Rewrote 8→19 lines (2 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "py"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-06-29T03:26:47.923Z"
+    },
+    {
+      "id": "bug-012",
+      "timestamp": "2026-06-29T08:41:16.792Z",
+      "error_message": "Significant refactor of ",
+      "file": "plans/sparkling-sparking-pike.md",
+      "root_cause": "7 lines replaced/restructured",
+      "fix": "Rewrote 11→238 lines (7 removed) | Also: - [ ] CSV文件是否包含所有22,077个用户的正确class_id？; - [ ] 是否需要同时更新ClassMapping表？",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "md"
+      ],
+      "related_bugs": [],
+      "occurrences": 2,
+      "last_seen": "2026-06-29T08:41:42.477Z"
+    },
+    {
+      "id": "bug-013",
+      "timestamp": "2026-06-29T09:00:47.017Z",
+      "error_message": "Significant refactor of ",
+      "file": "plans/sparkling-sparking-pike.md",
+      "root_cause": "2 lines replaced/restructured",
+      "fix": "Rewrote 3→4 lines (2 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "md"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-06-29T09:00:47.017Z"
+    },
+    {
+      "id": "bug-014",
+      "timestamp": "2026-06-29T09:07:55.906Z",
+      "error_message": "Significant refactor of ",
+      "file": "backend/scripts/repair_class_id.py",
+      "root_cause": "8 lines replaced/restructured",
+      "fix": "Rewrote 22→16 lines (8 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "py"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-06-29T09:07:55.906Z"
+    },
+    {
+      "id": "bug-015",
+      "timestamp": "2026-06-29T09:33:09.917Z",
+      "error_message": "Significant refactor of ",
+      "file": "docs/数据速查.md",
+      "root_cause": "2 lines replaced/restructured",
+      "fix": "Rewrote 11→26 lines (2 removed) | Also: ## 数据库总数; - User总数: 6,041",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "md"
+      ],
+      "related_bugs": [],
+      "occurrences": 2,
+      "last_seen": "2026-06-29T09:33:30.756Z"
+    },
+    {
+      "id": "bug-016",
+      "timestamp": "2026-06-29T09:37:32.312Z",
+      "error_message": "Significant refactor of ",
+      "file": "docs/数据处理流程.md",
+      "root_cause": "3 lines replaced/restructured",
+      "fix": "Rewrote 9→19 lines (3 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "md"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-06-29T09:37:32.312Z"
+    },
+    {
+      "id": "bug-017",
+      "timestamp": "2026-06-29T11:17:27.803Z",
+      "error_message": "Incorrect value in code",
+      "file": "../../../../tmp/test_multi_counselor.py",
+      "root_cause": "Had \"{BASE_URL}/applications/submit/\"",
+      "fix": "Changed to \"{BASE_URL}/applications/\"",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "py"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-06-29T11:17:27.803Z"
+    },
+    {
+      "id": "bug-018",
+      "timestamp": "2026-06-29T11:18:03.559Z",
+      "error_message": "Incorrect value in code",
+      "file": "../../../../tmp/test_cascade.py",
+      "root_cause": "Had ']}/approve\"",
+      "fix": "Changed to ']}/approve/\"",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "py"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-06-29T11:18:03.559Z"
+    },
+    {
+      "id": "bug-019",
+      "timestamp": "2026-06-29T11:23:24.283Z",
+      "error_message": "Incorrect value in code",
+      "file": "../../../../tmp/test_local.py",
+      "root_cause": "Had \"stay\"",
+      "fix": "Changed to \"stay_school\"",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "py"
+      ],
+      "related_bugs": [],
+      "occurrences": 2,
+      "last_seen": "2026-06-29T11:27:54.146Z"
+    },
+    {
+      "id": "bug-020",
+      "timestamp": "2026-06-29T11:26:12.920Z",
+      "error_message": "Significant refactor of ",
+      "file": "backend/apps/applications/services.py",
+      "root_cause": "3 lines replaced/restructured",
+      "fix": "Rewrote 9→12 lines (3 removed) | Also: if application_type == ApplicationType.STAY_SCHOOL; elif application_type == ApplicationType.LEAVE_SCH",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "py"
+      ],
+      "related_bugs": [],
+      "occurrences": 2,
+      "last_seen": "2026-06-29T11:26:15.247Z"
+    },
+    {
+      "id": "bug-021",
+      "timestamp": "2026-06-29T11:32:16.467Z",
+      "error_message": "Incorrect value in code",
+      "file": "../../../../tmp/test_staging.py",
+      "root_cause": "Had \"docker exec staging-graduation-db psql -U postgre",
+      "fix": "Changed to \"docker exec staging-db-1 psql -U postgres -d grad",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "py"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-06-29T11:32:16.467Z"
+    },
+    {
+      "id": "bug-022",
+      "timestamp": "2026-06-29T12:06:29.611Z",
+      "error_message": "Significant refactor of ",
+      "file": "demo-web/index.html",
+      "root_cause": "2 lines replaced/restructured",
+      "fix": "Rewrote 9→14 lines (2 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "html"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-06-29T12:06:29.611Z"
+    },
+    {
+      "id": "bug-023",
+      "timestamp": "2026-06-29T12:09:43.332Z",
+      "error_message": "Wrong condition in logic",
+      "file": "demo-web/index.html",
+      "root_cause": "Condition was: if (localStorage.getItem('auth_token')",
+      "fix": "Changed to: if (currentToken && currentUser)",
+      "tags": [
+        "auto-detected",
+        "logic-fix",
+        "html"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-06-29T12:09:43.332Z"
+    },
+    {
+      "id": "bug-024",
+      "timestamp": "2026-06-29T12:13:32.381Z",
+      "error_message": "Significant refactor of ",
+      "file": "demo-web/index.html",
+      "root_cause": "2 lines replaced/restructured",
+      "fix": "Rewrote 4→7 lines (2 removed) | Also: // Student-specific: check for failed/rejected ban; try {",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "html"
+      ],
+      "related_bugs": [],
+      "occurrences": 2,
+      "last_seen": "2026-06-29T12:14:48.645Z"
+    },
+    {
+      "id": "bug-025",
+      "timestamp": "2026-06-29T12:24:37.574Z",
+      "error_message": "Significant refactor of ",
+      "file": "demo-web/index.html",
+      "root_cause": "3 lines replaced/restructured",
+      "fix": "Rewrote 15→34 lines (3 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "html"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-06-29T12:24:37.574Z"
+    },
+    {
+      "id": "bug-026",
+      "timestamp": "2026-06-29T13:44:53.583Z",
+      "error_message": "Significant refactor of ",
+      "file": "backend/apps/applications/views.py",
+      "root_cause": "10 lines replaced/restructured",
+      "fix": "Rewrote 19→8 lines (10 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "py"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-06-29T13:44:53.583Z"
+    },
+    {
+      "id": "bug-027",
+      "timestamp": "2026-06-29T14:14:28.919Z",
+      "error_message": "Significant refactor of ",
+      "file": "backend/apps/applications/views.py",
+      "root_cause": "2 lines replaced/restructured",
+      "fix": "Rewrote 7→14 lines (2 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "py"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-06-29T14:14:28.919Z"
+    },
+    {
+      "id": "bug-028",
+      "timestamp": "2026-06-29T14:57:20.451Z",
+      "error_message": "Significant refactor of ",
+      "file": "demo-web-v2/index.html",
+      "root_cause": "2 lines replaced/restructured",
+      "fix": "Rewrote 15→21 lines (2 removed) | Also: // Deduplicate by student_id: prioritize final sta; let uniqueApps = Array.from(studentMap.values());",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "html"
+      ],
+      "related_bugs": [],
+      "occurrences": 2,
+      "last_seen": "2026-06-29T14:58:23.399Z"
     }
   ]
 }

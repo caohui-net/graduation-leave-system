@@ -1,7 +1,7 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-06-27T10:21:48.518Z
-> Files: 865 tracked | Anatomy hits: 0 | Misses: 0
+> Auto-maintained by OpenWolf. Last scanned: 2026-06-29T14:58:23.388Z
+> Files: 909 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../../../tmp/
 
@@ -9,11 +9,16 @@
 - `assign_counselors.py` (~551 tok)
 - `backup_script.sh` — PostgreSQL自动备份脚本 (~190 tok)
 - `base_backup.sh` — PostgreSQL基础备份脚本（配合WAL归档使用） (~229 tok)
+- `bulk-fix-missing-approvals.sql` — 批量修复257个缺失审批记录的申请 (~638 tok)
+- `check_class_id_direct.py` — check_class_id (~950 tok)
 - `check_graduate_users.py` (~349 tok)
+- `check_prod_class_id.py` — check_class_id_format (~512 tok)
+- `check_student_passwords.py` — 设置Django环境 (~248 tok)
 - `check_students.py` (~276 tok)
 - `clean_user_2021140140429.sh` — 清理用户 2021140140429 的所有申请数据 (~214 tok)
 - `clean_user_applications.py` (~379 tok)
 - `clean_via_api.py` — 通过API清理用户申请数据 (~410 tok)
+- `cleanup_test_data.sh` — 安全清理测试数据 - 只删除今天创建的申请 (~419 tok)
 - `CONFIG-MANAGEMENT.md` — 配置管理说明 (~270 tok)
 - `create_failed_app.py` (~181 tok)
 - `create_skip_dorm.py` (~628 tok)
@@ -21,6 +26,8 @@
 - `create_test_app.py` — 测试为张官芯创建申请 (~472 tok)
 - `delete_test_app.py` (~116 tok)
 - `find_graduate.py` (~252 tok)
+- `fix-missing-approvals-0628.sql` — Fix missing approvals for 5 applications on 2026-06-28 (~765 tok)
+- `fix-missing-approvals.sql` — 修复学号2023210140605(刘茗)的缺失审批记录 (~249 tok)
 - `generate_password_sql.py` — 批量生成密码更新SQL (~380 tok)
 - `golive-integration-revised-plan.md` — 青橄榄平台对接方案（修订版） (~2529 tok)
 - `graduation-frontend.service` (~79 tok)
@@ -31,10 +38,16 @@
 - `restore_test_data.sh` — Restore test data after rejection testing (~315 tok)
 - `setup-196.sh` — 196机器部署环境安装脚本 (~137 tok)
 - `sso-fix-review.md` — SSO登录修复代码审查 (~475 tok)
+- `test_approval_cancel.py` — 验证一对多审批取消逻辑 (~1166 tok)
 - `test_attachment_upload.py` (~926 tok)
+- `test_cascade.py` — 测试级联取消功能 (~566 tok)
 - `test_graduate_submit.py` (~317 tok)
+- `test_local.py` — 本地环境完整测试 (~1246 tok)
+- `test_multi_counselor.py` — 多辅导员审批功能API测试 (~1681 tok)
 - `test_qgl_api.py` — generate_rand_str, generate_signature, generate_headers (~852 tok)
+- `test_staging.py` — Staging环境测试 - 留校审批路由验证 (~784 tok)
 - `test_submit.py` (~421 tok)
+- `test_task2_complete.py` — 完整测试：多辅导员匹配+级联取消 (~1128 tok)
 - `test-localstorage.html` — LocalStorage测试 (~164 tok)
 - `ui-audit-report.md` — demo-web前端代码审核报告 (~3079 tok)
 - `verify_assignment.py` (~350 tok)
@@ -214,7 +227,7 @@
 - `graduation-frontend-nocache.service` (~108 tok)
 - `PRODUCTION-READY.md` — claude-codex-gemini-collab - PRODUCTION READY (~1835 tok)
 - `PROJECT-QUICK-REF.md` — 毕业离校系统 - 项目速查手册 (~3079 tok)
-- `PROJECT-QUICKREF.md` — 项目速查手册 (~1521 tok)
+- `PROJECT-QUICKREF.md` — 项目速查手册 (~1639 tok)
 - `pyproject.toml` — Claude-Codex-Gemini Collaboration Framework (~185 tok)
 - `README.md` — Project documentation (~451 tok)
 - `response.json` (~469 tok)
@@ -261,7 +274,7 @@
 
 - `daemon-audit.log` (~125609 tok)
 - `project-memory.json` (~2513 tok)
-- `session-context.json` (~947 tok)
+- `session-context.json` (~196 tok)
 
 ## .omc/artifacts/ask/
 
@@ -838,6 +851,19 @@
 
 - `prd.md` — 196测试环境检测与部署 (~265 tok)
 
+## .trellis/tasks/06-29-fix-counselor-approval-data/
+
+- `task.md` — 修复生产环境辅导员审批数据匹配错误 (~267 tok)
+
+## .trellis/tasks/06-29-multi-counselor-approval/
+
+- `task.md` — 留校审批支持多辅导员匹配和级联取消 (~615 tok)
+- `test-plan.md` — 多辅导员审批功能测试计划 (~702 tok)
+
+## .trellis/tasks/06-29-prod-bug-missing-approvals/
+
+- `root-cause-analysis.md` — 生产Bug根因分析：257个申请缺失审批记录 (~534 tok)
+
 ## .understand-anything/
 
 - `.understandignore` — .understandignore — patterns for files/dirs to exclude from analysis (~451 tok)
@@ -874,8 +900,9 @@
 - `permissions.py` — can_view_application (~296 tok)
 - `providers.py` — from: check_status (~1187 tok)
 - `serializers.py` — ApplicationListSerializer: get_has_attachments, get_attachment_count, get_approvals, get_has_attachm (~1474 tok)
+- `services.py` — 审批流程路由服务 (~298 tok)
 - `urls.py` (~98 tok)
-- `views.py` — applications_view, list_applications, create_application (~4894 tok)
+- `views.py` — applications_view, list_applications, create_application (~5091 tok)
 
 ## backend/apps/applications/management/
 
@@ -901,11 +928,12 @@
 
 ## backend/apps/approvals/
 
-- `models.py` — Model: Approval, 11 fields (~386 tok)
+- `constants.py` — 审批模块常量配置 (~198 tok)
+- `models.py` — Model: Approval, 11 fields (~396 tok)
 - `pagination.py` — ApprovalLimitOffsetPagination: get_paginated_response (~116 tok)
-- `serializers.py` — ApplicationBriefSerializer: get_attachments (~1365 tok)
+- `serializers.py` — ApplicationBriefSerializer: get_attachments (~1450 tok)
 - `urls.py` (~173 tok)
-- `views.py` — sanitize_excel_formula, list_approvals, get_approval, approve_approval (~7979 tok)
+- `views.py` — sanitize_excel_formula, list_approvals, get_approval, approve_approval (~9009 tok)
 
 ## backend/apps/approvals/migrations/
 
@@ -980,6 +1008,7 @@
 - `check_failed_user_apps.py` — Command: handle (~227 tok)
 - `check_graduate_buildings.py` — Command: handle (~441 tok)
 - `check_zi6_managers.py` — Command: handle (~339 tok)
+- `repair_class_id.py` — Command: add_arguments, handle (~932 tok)
 
 ## backend/apps/users/migrations/
 
@@ -1003,6 +1032,7 @@
 ## backend/config/
 
 - `base.py` (~79 tok)
+- `prod.py` (~222 tok)
 - `urls.py` — URL Configuration (~426 tok)
 
 ## backend/config/settings/
@@ -1019,6 +1049,7 @@
 - `check-migrations.sh` — 发布前migration检查脚本 (~218 tok)
 - `check-schema-drift.sh` — Schema漂移检测 - 对比数据库实际状态与Django models定义 (~663 tok)
 - `create_application_skip_dorm.py` — create_application_skip_dorm (~998 tok)
+- `repair_class_id.py` — load_graduating_students, load_current_students, repair_class_ids (~929 tok)
 - `setup-prod-db-accounts.sql` — 生产环境数据库账号隔离设置 (~742 tok)
 - `validate-config.py` — load_env_file, validate_required_fields, validate_conditional_fields, validate_security (~1322 tok)
 - `verify_qgl_admin.py` — generate_signature, test_admin_endpoint (~475 tok)
@@ -1039,13 +1070,13 @@
 
 ## demo-web-v2/
 
-- `index.html` — 毕业离校申请系统 - UI Demo (~29016 tok)
+- `index.html` — 毕业离校申请系统 - UI Demo (~29079 tok)
 
 ## demo-web/
 
 - `admin-sso-callback.html` — SSO登录中... (~735 tok)
 - `batch-fix-console.js` — 临时修复脚本 - 在浏览器控制台粘贴执行 (~1042 tok)
-- `index.html` — 毕业离校申请系统 - UI Demo (~30131 tok)
+- `index.html` — 毕业离校申请系统 - UI Demo (~30127 tok)
 - `mobile-sso-callback.html` — SSO登录中... (~691 tok)
 - `responsive-adapter-example.html` — Declares deviceAdapter (~579 tok)
 - `sso-receiver.html` — 登录中... (~489 tok)
@@ -1066,7 +1097,7 @@
 - `测试文档-完整流程测试.html` — 毕业离校申请系统 - 完整流程测试文档 (~716 tok)
 - `后端运行保障方案.md` — 后端服务运行保障方案 (~1023 tok)
 - `环境部署说明-三环境架构.md` — 毕业离校系统 - 三环境部署说明 (~1686 tok)
-- `环境执行规范速查.md` — 环境执行规范速查 (~842 tok)
+- `环境执行规范速查.md` — 环境执行规范速查 (~1612 tok)
 - `浏览器缓存更新方案.md` — 浏览器缓存强制更新方案 (~651 tok)
 - `留校审批系统代码审核报告.md` — 留校审批系统代码审核报告 (~714 tok)
 - `配置中心管理指南.md` — 配置中心管理指南 (~1394 tok)
@@ -1079,8 +1110,13 @@
 - `青橄榄SSO对接技术方案.md` — 青橄榄平台SSO对接技术方案 (~1909 tok)
 - `青橄榄SSO对接完成报告-2026-06-10.md` — 青橄榄平台SSO对接完成报告 (~1354 tok)
 - `三环境数据同步策略.md` — 三环境数据同步策略 (~164 tok)
+- `生产数据库备份指南.md` — 生产数据库备份指南 (~559 tok)
+- `数据处理流程.md` — 数据处理流程 (~412 tok)
+- `数据导入记录.md` — 数据导入记录 (~233 tok)
 - `数据库备份配置.md` — 数据库备份配置 (~410 tok)
 - `数据库账号管理指南.md` — 数据库账号管理指南 (~803 tok)
+- `数据库字段映射.md` — 数据库字段映射关系 (~512 tok)
+- `数据速查.md` — 数据速查 (~501 tok)
 - `响应式适配器使用文档.md` — 响应式适配器使用文档 (~1203 tok)
 - `移动端界面适配问题总结.md` — 移动端界面适配问题总结 (~1186 tok)
 - `移动端SSO故障排除.md` — 移动端SSO故障排除 (~481 tok)
@@ -1089,9 +1125,12 @@
 - `agentmemory-integration-progress.md` — agentmemory Integration Progress (~1168 tok)
 - `architecture-integration-consensus.md` — 多智能体协作架构整合共识 (~1514 tok)
 - `cache-control-guide.md` — 前端缓存控制配置指南 (~955 tok)
+- `class_id字段修复记录.md` — class_id 字段修复记录 (~351 tok)
 - `code-review-request-2026-06-16.md` — 代码审查请求 - P0/P1安全性能修复 (~688 tok)
+- `CSV字段映射.md` — CSV字段映射 (~271 tok)
 - `DEPLOYMENT_AUTO.md` — 异地自动化部署指南 (~932 tok)
 - `DEPLOYMENT_PROD.md` — 生产环境部署指南 (~803 tok)
+- `HTTP-DEPLOYMENT-FIX.md` — HTTP环境部署修复说明 (~250 tok)
 - `INDEX.md` — 文档索引 (~1563 tok)
 - `PERFORMANCE.md` — 数据库性能优化指南 (~455 tok)
 - `project-audit-consolidated-report-2026-06-15.md` — 毕业生离校系统综合审计报告（Codex + Gemini 共识版） (~2032 tok)
@@ -1106,6 +1145,7 @@
 - `SSO集成进度快照-20260610.md` — SSO集成进度快照 - 2026-06-10 15:18 (~551 tok)
 - `SSO模块通用化可行性分析报告.md` — SSO模块通用化改造可行性分析报告 (~2291 tok)
 - `UAT-CHECKLIST.md` — 用户验收测试（UAT）检查清单 (~787 tok)
+- `WEB-UI-TEST-CHECKLIST.md` — WEB界面业务测试清单 (~177 tok)
 
 ## docs/deployment/
 
@@ -1162,9 +1202,15 @@
 
 - `attachment.ts` — 构建附件预览URL (~171 tok)
 
+## plans/
+
+- `sparkling-sparking-pike.md` — 生产环境 class_id 数据修复计划 (~1619 tok)
+
 ## scripts/
 
+- `196-promote-to-prod.sh` (~983 tok)
 - `auto-deploy.sh` — 一键自动化部署 - 完整流程 (~341 tok)
+- `backup-production-db.sh` (~414 tok)
 - `deploy.sh` — 异地自动化部署脚本 (~884 tok)
 - `init-data.sh` — 数据初始化脚本 - 开发/staging/生产通用 (~1210 tok)
 - `install_skill.py` — Install claude-codex-gemini-collab skill with all dependencies. (~514 tok)
@@ -1174,10 +1220,16 @@
 - `setup_server.sh` — 首次服务器初始化脚本 (~410 tok)
 - `setup-monitoring.sh` — 监控告警配置脚本 - Schema漂移和Migration检测告警 (~1638 tok)
 - `setup-systemd.sh` — 配置systemd服务（需要sudo权限） (~119 tok)
+- `staging-change-detector.sh` — Phase 1: 只读监测 - 三方对比（开发机/staging验证/生产版本） (~590 tok)
 - `start-services.sh` — 启动毕业离校系统所有服务 (~131 tok)
 - `sync-to-staging.sh` — 从开发环境同步代码到196 staging环境 (~285 tok)
 - `validate-deployment.sh` — 生产部署验证脚本 - 验证P1/P2治理框架 (~1017 tok)
 - `verify-env.sh` — 部署环境验证脚本 (~430 tok)
+
+## scripts/git-hooks/
+
+- `post-commit` — Git Hook: post-commit (~187 tok)
+- `post-commit-v2` — Git Hook: post-commit (~147 tok)
 
 ## tests/
 
@@ -1188,3 +1240,22 @@
 - `test_routing_cli_integration.py` — Integration tests for routing CLI persistence. (~1550 tok)
 - `test_serve_frontend.py` — load_server_module, static_site, test_slow_client_does_not_block_other_requests (~439 tok)
 - `test_task_classifier.py` — Tests for task classifier. (~950 tok)
+
+## tests/e2e/
+
+- `README.md` — Project documentation (~1143 tok)
+- `run_tests.sh` (~427 tok)
+
+## tests/e2e/config/
+
+- `test_config.py` — E2E测试配置 (~215 tok)
+
+## tests/e2e/flows/
+
+- `test_departure_application.py` — 离校申请流程测试 (~446 tok)
+- `test_login.py` — 登录流程测试 (~453 tok)
+- `test_stay_approval.py` — 留校审批业务流程测试 (~431 tok)
+
+## tests/e2e/helpers/
+
+- `common.py` — 业务流程测试辅助函数 (~1029 tok)

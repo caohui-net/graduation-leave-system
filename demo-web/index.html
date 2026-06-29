@@ -154,9 +154,11 @@
             if (isStudent && !append) {
                 const processedRejectedIds = JSON.parse(localStorage.getItem('processed_rejected_apps') || '[]');
 
-                // Find rejected applications
+                // Find rejected applications (current business type only)
                 const rejectedApps = applications.filter(a =>
-                    a.status === 'rejected' && !processedRejectedIds.includes(a.application_id)
+                    a.status === 'rejected' &&
+                    a.application_type === currentBusinessType &&
+                    !processedRejectedIds.includes(a.application_id)
                 );
 
                 // Check if rejected is the latest application (by created_at)

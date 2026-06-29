@@ -106,10 +106,15 @@
 
             const data = await res.json();
             console.log('[DEBUG] API returned:', data, 'offset:', approvalOffset);
-            // Debug: check application_type in first 3 results
+            // Debug: check detailed info
             if (data.results && data.results.length > 0) {
-                console.log('[DEBUG] First 3 results application_type:',
-                    data.results.slice(0, 3).map(r => ({id: r.application_id, type: r.application_type})));
+                console.log('[DEBUG] First result details:',
+                    data.results.slice(0, 1).map(r => ({
+                        id: r.application_id,
+                        type: r.application_type,
+                        status: r.status,
+                        created_at: r.created_at
+                    })));
             }
 
             if (!data || !data.results) {

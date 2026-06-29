@@ -213,20 +213,9 @@ def create_application(request):
                                 status=status.HTTP_404_NOT_FOUND)
 
         # Find counselors: priority class_id match, fallback to department match
+        # 通过学院匹配辅导员
         counselors = []
-        if user.class_id:
-            # 优先通过class_id匹配（辅导员.user_id == 学生.class_id）
-            # class_id实际存储的是辅导员工号
-            counselor = User.objects.filter(
-                role=UserRole.COUNSELOR,
-                user_id=user.class_id,
-                active=True
-            ).first()
-            if counselor:
-                counselors = [counselor]
-
-        # 如果class_id匹配失败，通过学院匹配多个辅导员
-        if not counselors and user.department:
+        if user.department:
             counselors = list(User.objects.filter(
                 role=UserRole.COUNSELOR,
                 department=user.department,
@@ -299,7 +288,7 @@ def create_application(request):
         if 'counselor' in approval_flow:
             if not counselors:
                 return Response({'error': {'code': 'NOT_FOUND', 'message': '未找到辅导员',
-                                            'details': {'class_id': user.class_id, 'department': user.department}}},
+                                            'details': {'department': user.department}}},
                                 status=status.HTTP_404_NOT_FOUND)
             for counselor in counselors:
                 counselor_approval = Approval.objects.create(

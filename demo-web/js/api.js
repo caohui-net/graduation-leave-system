@@ -151,7 +151,7 @@ async function apiGetOrCreateDraft() {
     }
 }
 
-async function apiSubmitApplication(phone, reason, leaveDate, applicationId, applicationType = 'leave_school', stayStartDate = null, stayEndDate = null, stayReason = null) {
+async function apiSubmitApplication(phone, reason, leaveDate, applicationId, applicationType = 'leave_school', stayStartDate = null, stayEndDate = null, stayReason = null, counselorId = null) {
     const formData = new FormData();
     formData.append('contact_phone', phone);
     formData.append('reason', reason);
@@ -160,6 +160,7 @@ async function apiSubmitApplication(phone, reason, leaveDate, applicationId, app
     if (stayStartDate) formData.append('stay_start_date', stayStartDate);
     if (stayEndDate) formData.append('stay_end_date', stayEndDate);
     if (stayReason) formData.append('stay_reason', stayReason);
+    if (counselorId) formData.append('counselor_id', counselorId);
     if (applicationId) {
         formData.append('application_id', applicationId);
     }

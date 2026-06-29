@@ -71,14 +71,10 @@
             console.log('[DEBUG] Using /approvals/ API for manager');
         }
 
-        // Add application_type filter (skip for students - they should see all their applications)
-        if (!isStudent) {
-            const type = currentApplicationType || localStorage.getItem('selected_application_type') || 'leave_school';
-            url += '&application_type=' + type;
-            console.log('[DEBUG] loadApprovals application_type filter:', type, 'URL:', url);
-        } else {
-            console.log('[DEBUG] loadApprovals: student - no application_type filter');
-        }
+        // Add application_type filter for all roles (students must see only current business type)
+        const type = currentApplicationType || localStorage.getItem('selected_application_type') || 'leave_school';
+        url += '&application_type=' + type;
+        console.log('[DEBUG] loadApprovals application_type filter:', type, 'isStudent:', isStudent);
 
         if (isAdminOrDean) {
             if (currentFilter && currentFilter !== 'all' && currentFilter !== 'pending') {
@@ -1362,6 +1358,11 @@
                 showToast('请选择留校原因', 'error');
                 return;
             }
+            const counselorId = document.getElementById('counselorSelect').value;
+            if (!counselorId) {
+                showToast('请选择辅导员', 'error');
+                return;
+            }
             if (new Date(stayEndDate) < new Date(stayStartDate)) {
                 showToast('结束日期不能早于开始日期', 'error');
                 return;
@@ -1430,8 +1431,9 @@
 
             // 步骤3: 提交申请
             btn.textContent = '提交申请中...';
+            const counselorId = isStay ? document.getElementById('counselorSelect').value : null;
             const result = await apiSubmitApplication(phone, reason, leaveDate, draftId,
-                currentApplicationType, stayStartDate, stayEndDate, stayReason);
+                currentApplicationType, stayStartDate, stayEndDate, stayReason, counselorId);
             if (result.success) {
                 showToast('申请提交成功', 'success');
                 document.getElementById('contactPhone').value = '';
@@ -1805,6 +1807,12 @@
             </div>
           </div>
           <div style="margin-bottom: 20px;">
+            <label style="display: block; font-size: 14px; margin-bottom: 8px; font-weight: 500;">辅导员 *</label>
+            <select id="counselorSelect" style="width: 100%; padding: 12px; border: 1px solid #d9d9d9; border-radius: 4px; font-size: 14px; background: white;">
+              <option value="">加载中...</option>
+            </select>
+          </div>
+          <div style="margin-bottom: 20px;">
             <label style="display: block; font-size: 14px; margin-bottom: 8px; font-weight: 500;">留校原因 *</label>
             <select id="stayReason" style="width: 100%; padding: 12px; border: 1px solid #d9d9d9; border-radius: 4px; font-size: 14px; background: white;">
               <option value="">请选择</option>
@@ -2025,13 +2033,53 @@
       return statusMap[status] || { text: status, class: 'tag' };
     }
 
-    function showScreen(index) {
+    async function showScreen(index) {
       document.querySelectorAll('.screen').forEach((s, i) => {
         s.classList.toggle('active', i === index);
       });
       document.querySelectorAll('.nav-tabs .nav-tab').forEach((t, i) => {
         t.classList.toggle('active', i === index);
       });
+
+      // Load counselors when showing application form for stay_school
+      if (index === 0 && currentApplicationType === 'stay_school') {
+        await loadCounselors();
+      }
+    }
+
+    async function loadCounselors() {
+      const select = document.getElementById('counselorSelect');
+      if (!select || !currentUser) return;
+
+      try {
+        const res = await fetchWithTimeout(API_BASE_URL + '/users/?role=counselor&department=' + encodeURIComponent(currentUser.department), {
+          headers: getAuthHeaders()
+        }, 5000);
+
+        if (!res.ok) {
+          select.innerHTML = '<option value="">加载失败</option>';
+          return;
+        }
+
+        const data = await res.json();
+        const counselors = data.results || [];
+
+        if (counselors.length === 0) {
+          select.innerHTML = '<option value="">未找到辅导员</option>';
+        } else if (counselors.length === 1) {
+          // Single counselor: auto-select and disable
+          select.innerHTML = `<option value="${counselors[0].user_id}">${counselors[0].name}</option>`;
+          select.disabled = true;
+        } else {
+          // Multiple counselors: show dropdown
+          select.innerHTML = '<option value="">请选择辅导员</option>' +
+            counselors.map(c => `<option value="${c.user_id}">${c.name}</option>`).join('');
+          select.disabled = false;
+        }
+      } catch (err) {
+        console.error('[ERROR] Load counselors failed:', err);
+        select.innerHTML = '<option value="">加载失败</option>';
+      }
     }
 
     async function doLogin() {

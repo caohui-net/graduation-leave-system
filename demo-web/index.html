@@ -136,35 +136,39 @@
                     }]
                 }));
 
-            // Student-specific: check for failed/rejected banners
+            // Student-specific: check for failed/rejected banners (current type only)
             if (isStudent && !append) {
-                try {
-                    const allTypesUrl = API_BASE_URL + '/applications/?limit=100';
-                    const allRes = await fetchWithTimeout(allTypesUrl, { headers: getAuthHeaders() }, 8000);
-                    if (allRes.ok) {
-                        const allData = await allRes.json();
+                const processedRejectedIds = JSON.parse(localStorage.getItem('processed_rejected_apps') || '[]');
 
-                        // Get processed rejected application IDs from localStorage
-                        const processedRejectedIds = JSON.parse(localStorage.getItem('processed_rejected_apps') || '[]');
-                        console.log('[DEBUG] Banner check - processedRejectedIds:', processedRejectedIds);
+                // Find rejected applications
+                const rejectedApps = applications.filter(a =>
+                    a.status === 'rejected' && !processedRejectedIds.includes(a.application_id)
+                );
 
-                        // Find rejected applications that haven't been processed
-                        const rejectedApp = allData.results.find(a =>
-                            a.status === 'rejected' && !processedRejectedIds.includes(a.application_id)
-                        );
-                        const allRejected = allData.results.filter(a => a.status === 'rejected');
-                        console.log('[DEBUG] Banner check - all rejected apps:', allRejected.map(a => ({id: a.application_id, status: a.status})));
-                        console.log('[DEBUG] Banner check - unprocessed rejectedApp:', rejectedApp);
-                        const failedApp = allData.results.find(a => a.status === 'failed');
+                // Check if rejected is the latest application (by created_at)
+                let shouldShowBanner = false;
+                let targetRejectedApp = null;
 
-                        if (failedApp) {
-                            showFailedApplicationBanner();
-                        } else if (rejectedApp) {
-                            showRejectedApplicationBanner(rejectedApp);
-                        }
+                if (rejectedApps.length > 0 && applications.length > 0) {
+                    // Sort all applications by created_at desc
+                    const sortedApps = [...applications].sort((a, b) =>
+                        new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+                    );
+
+                    // Check if the latest application is rejected
+                    const latestApp = sortedApps[0];
+                    if (latestApp.status === 'rejected' && !processedRejectedIds.includes(latestApp.application_id)) {
+                        shouldShowBanner = true;
+                        targetRejectedApp = latestApp;
                     }
-                } catch (err) {
-                    console.error('[ERROR] Failed to check cross-type banners:', err);
+                }
+
+                const failedApp = applications.find(a => a.status === 'failed');
+
+                if (failedApp) {
+                    showFailedApplicationBanner();
+                } else if (shouldShowBanner && targetRejectedApp) {
+                    showRejectedApplicationBanner(targetRejectedApp);
                 }
             }
 
@@ -234,21 +238,27 @@
             return !!myApproval;
         });
 
-        // Deduplicate by student_id: prioritize final states (rejected > approved > pending)
-        const statusPriority = { 'rejected': 3, 'approved': 2, 'pending_counselor': 1, 'pending_dorm_manager': 1 };
-        const studentMap = new Map();
+        // Deduplicate only for 'pending' filter to show latest pending per student
+        // For 'all' filter, show all records (user needs to see submission history)
+        let uniqueApps;
+        if (currentFilter === 'pending' && !skipApproverFilter) {
+            const statusPriority = { 'rejected': 3, 'approved': 2, 'pending_counselor': 1, 'pending_dorm_manager': 1 };
+            const studentMap = new Map();
 
-        myApps.forEach(app => {
-            const existing = studentMap.get(app.student_id);
-            const currentPriority = statusPriority[app.status] || 0;
-            const existingPriority = existing ? (statusPriority[existing.status] || 0) : -1;
+            myApps.forEach(app => {
+                const existing = studentMap.get(app.student_id);
+                const currentPriority = statusPriority[app.status] || 0;
+                const existingPriority = existing ? (statusPriority[existing.status] || 0) : -1;
 
-            if (!existing || currentPriority > existingPriority ||
-                (currentPriority === existingPriority && new Date(app.created_at) > new Date(existing.created_at))) {
-                studentMap.set(app.student_id, app);
-            }
-        });
-        let uniqueApps = Array.from(studentMap.values());
+                if (!existing || currentPriority > existingPriority ||
+                    (currentPriority === existingPriority && new Date(app.created_at) > new Date(existing.created_at))) {
+                    studentMap.set(app.student_id, app);
+                }
+            });
+            uniqueApps = Array.from(studentMap.values());
+        } else {
+            uniqueApps = myApps;
+        }
 
         // Apply status filter for student/admin/dean (frontend filtering)
         if (skipApproverFilter) {
@@ -1174,8 +1184,6 @@
         if (existingBanner) return;
 
         const appTypeText = rejectedApp && rejectedApp.application_type === 'stay_school' ? '留校' : '离校';
-        const currentType = currentApplicationType || localStorage.getItem('selected_application_type') || 'leave_school';
-        const needSwitch = rejectedApp && rejectedApp.application_type !== currentType;
 
         const banner = document.createElement('div');
         banner.id = 'rejected-banner';
@@ -1186,12 +1194,10 @@
             <span style="font-size: 16px;">⚠️</span>
             <div style="flex: 1;">
               <div style="font-size: 13px; font-weight: 600; color: #333;">您的${appTypeText}申请已被驳回</div>
-              <div style="font-size: 11px; color: #666; margin-top: 2px;">
-                ${needSwitch ? `请点击下方按钮切换到${appTypeText}申请查看详情并重新提交` : '请查看驳回原因后重新提交申请'}
-              </div>
-              <button onclick="${needSwitch ? `selectApplicationType('${rejectedApp.application_type}')` : 'resubmitApplication()'}"
+              <div style="font-size: 11px; color: #666; margin-top: 2px;">请查看驳回原因后重新提交申请</div>
+              <button onclick="resubmitApplication()"
                       style="margin-top: 8px; padding: 6px 16px; background: #faad14; color: white; border: none; border-radius: 4px; font-size: 12px; cursor: pointer;">
-                ${needSwitch ? `查看${appTypeText}申请` : '重新提交'}
+                重新提交
               </button>
             </div>
           </div>
@@ -2242,7 +2248,7 @@
       document.getElementById('screen-type').classList.remove('active');
 
       // 已通过SSO登录（token存在），直接进入业务界面
-      if (localStorage.getItem('auth_token') && currentUser) {
+      if (currentToken && currentUser) {
         document.getElementById('navTabs').style.display = 'flex';
         document.getElementById('userBar').style.display = 'flex';
         if (typeof updateUIForRole === 'function') updateUIForRole(currentUser.role);
@@ -2253,8 +2259,13 @@
           document.getElementById('form-type-badge').style.color = isStay ? '#389e0d' : '#1677ff';
           document.getElementById('leave-fields').style.display = isStay ? 'none' : '';
           document.getElementById('stay-fields').style.display = isStay ? '' : 'none';
-          showScreen(1);
-          loadApprovals();
+
+          // Check existing applications before deciding screen
+          apiGetApplications().then(appData => {
+            const hasApplications = appData && appData.results && appData.results.length > 0;
+            showScreen(hasApplications ? 1 : 0);
+            if (hasApplications) loadApprovals();
+          });
         } else {
           showScreen(1);
           loadApprovals();

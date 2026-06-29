@@ -132,7 +132,7 @@
         }
 
         // Add admin filters (student_id, student_name, class_id, building)
-        if (isManager && Object.keys(adminFilters).length > 0) {
+        if ((isManager || isAdminOrDean) && Object.keys(adminFilters).length > 0) {
             for (const [key, value] of Object.entries(adminFilters)) {
                 url += '&' + encodeURIComponent(key) + '=' + encodeURIComponent(value);
             }
@@ -218,21 +218,27 @@
             return !!myApproval;
         });
 
-        // Deduplicate by student_id: prioritize final states (rejected > approved > pending)
-        const statusPriority = { 'rejected': 3, 'approved': 2, 'pending_counselor': 1, 'pending_dorm_manager': 1 };
-        const studentMap = new Map();
+        // Deduplicate only for 'pending' filter to show latest pending per student
+        // For 'all' filter, show all records (user needs to see submission history)
+        let uniqueApps;
+        if (currentFilter === 'pending' && !skipApproverFilter) {
+            const statusPriority = { 'rejected': 3, 'approved': 2, 'pending_counselor': 1, 'pending_dorm_manager': 1 };
+            const studentMap = new Map();
 
-        myApps.forEach(app => {
-            const existing = studentMap.get(app.student_id);
-            const currentPriority = statusPriority[app.status] || 0;
-            const existingPriority = existing ? (statusPriority[existing.status] || 0) : -1;
+            myApps.forEach(app => {
+                const existing = studentMap.get(app.student_id);
+                const currentPriority = statusPriority[app.status] || 0;
+                const existingPriority = existing ? (statusPriority[existing.status] || 0) : -1;
 
-            if (!existing || currentPriority > existingPriority ||
-                (currentPriority === existingPriority && new Date(app.created_at) > new Date(existing.created_at))) {
-                studentMap.set(app.student_id, app);
-            }
-        });
-        let uniqueApps = Array.from(studentMap.values());
+                if (!existing || currentPriority > existingPriority ||
+                    (currentPriority === existingPriority && new Date(app.created_at) > new Date(existing.created_at))) {
+                    studentMap.set(app.student_id, app);
+                }
+            });
+            uniqueApps = Array.from(studentMap.values());
+        } else {
+            uniqueApps = myApps;
+        }
 
         // Apply status filter for student/admin/dean (frontend filtering)
         if (skipApproverFilter) {
@@ -2050,14 +2056,12 @@
             document.getElementById('leave-fields').style.display = isStay ? 'none' : '';
             document.getElementById('stay-fields').style.display = isStay ? '' : 'none';
 
-            // Check existing submissions: none → form (screen0), has records → list (screen1)
+            // Check existing submissions and show list screen
             const appData = await apiGetApplications();
             const hasApplications = appData && appData.results && appData.results.length > 0;
+            showScreen(1);  // Always show student screen
             if (hasApplications) {
-              showScreen(1);
               loadApprovals();
-            } else {
-              showScreen(0);
             }
           } else {
             // Role-based application type restriction

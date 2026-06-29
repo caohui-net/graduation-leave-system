@@ -215,7 +215,8 @@ def create_application(request):
         # Find counselors: priority class_id match, fallback to department match
         counselors = []
         if user.class_id:
-            # 优先通过class_id唯一匹配
+            # 优先通过class_id匹配（辅导员.user_id == 学生.class_id）
+            # class_id实际存储的是辅导员工号
             counselor = User.objects.filter(
                 role=UserRole.COUNSELOR,
                 user_id=user.class_id,

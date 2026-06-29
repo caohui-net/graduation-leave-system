@@ -75,18 +75,32 @@ def list_applications(request):
 
     # Dorm Manager: applications with own dorm manager approvals
     elif user.role == UserRole.DORM_MANAGER:
-        my_approvals = Approval.objects.filter(
+        my_approvals_qs = Approval.objects.filter(
             approver=user,
             step=ApprovalStep.DORM_MANAGER
-        ).values_list('application', flat=True)
+        )
+
+        # Decision filtering for dorm manager
+        decision_param = request.query_params.get('decision')
+        if decision_param and decision_param != 'all':
+            my_approvals_qs = my_approvals_qs.filter(decision=decision_param)
+
+        my_approvals = my_approvals_qs.values_list('application', flat=True)
         queryset = Application.objects.filter(pk__in=my_approvals)
 
     # Counselor: applications with own counselor approvals
     elif user.role == UserRole.COUNSELOR:
-        my_approvals = Approval.objects.filter(
+        my_approvals_qs = Approval.objects.filter(
             approver=user,
             step=ApprovalStep.COUNSELOR
-        ).values_list('application', flat=True)
+        )
+
+        # Decision filtering for counselor
+        decision_param = request.query_params.get('decision')
+        if decision_param and decision_param != 'all':
+            my_approvals_qs = my_approvals_qs.filter(decision=decision_param)
+
+        my_approvals = my_approvals_qs.values_list('application', flat=True)
         queryset = Application.objects.filter(pk__in=my_approvals)
 
     # Dean/Admin: view all applications

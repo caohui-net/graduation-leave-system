@@ -138,6 +138,13 @@ def list_approvals(request):
     # 序列化
     serializer = ApprovalListSerializer(page, many=True)
 
+    # Debug: log search results
+    student_name = request.query_params.get('student_name')
+    if student_name:
+        logger.info(f"[DEBUG] Approval search: user={user.user_id}, student_name={student_name}, decision={request.query_params.get('decision')}, results={len(serializer.data)}")
+        for item in serializer.data:
+            logger.info(f"[DEBUG] Result: approval_id={item['id']}, student={item['application']['student_name']}, decision={item['decision']}, app_status={item['application']['status']}")
+
     return paginator.get_paginated_response(serializer.data)
 
 

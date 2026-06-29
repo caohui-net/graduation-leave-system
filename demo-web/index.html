@@ -2052,7 +2052,7 @@
       if (!select || !currentUser) return;
 
       try {
-        const res = await fetchWithTimeout(API_BASE_URL + '/counselors/', {
+        const res = await fetchWithTimeout(API_BASE_URL + '/auth/counselors/', {
           headers: getAuthHeaders()
         }, 5000);
 

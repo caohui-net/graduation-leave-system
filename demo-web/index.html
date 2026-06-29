@@ -2052,7 +2052,7 @@
       if (!select || !currentUser) return;
 
       try {
-        const res = await fetchWithTimeout(API_BASE_URL + '/users/?role=counselor&department=' + encodeURIComponent(currentUser.department), {
+        const res = await fetchWithTimeout(API_BASE_URL + '/counselors/', {
           headers: getAuthHeaders()
         }, 5000);
 
@@ -2061,8 +2061,7 @@
           return;
         }
 
-        const data = await res.json();
-        const counselors = data.results || [];
+        const counselors = await res.json();
 
         if (counselors.length === 0) {
           select.innerHTML = '<option value="">未找到辅导员</option>';

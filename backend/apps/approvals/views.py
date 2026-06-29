@@ -8,6 +8,7 @@ from django.http import HttpResponse
 from django.db.models import Prefetch
 import logging
 from drf_spectacular.utils import extend_schema, OpenApiParameter
+from .constants import EXPORT_HEADERS
 from openpyxl import Workbook
 from openpyxl.styles import Font, Alignment
 
@@ -429,13 +430,8 @@ def export_approvals(request):
         wb = Workbook(write_only=True)
         ws = wb.create_sheet('学生数据')
 
-        # 根据申请类型设置不同的表头
-        if app_type == 'stay_school':
-            headers = ['姓名', '学号', '学院', '专业', '班级', '手机号', '留校开始', '留校结束', '留校原因', '楼栋', '房间', '提交时间', '状态', '辅导员', '审批时间', '审批结果']
-        else:
-            headers = ['姓名', '学号', '学院', '专业', '班级', '手机号', '离校日期', '楼栋', '房间', '提交时间', '状态',
-                       '宿管员', '审批时间', '审批结果',
-                       '辅导员', '审批时间', '审批结果']
+        # 使用统一的表头配置
+        headers = EXPORT_HEADERS[app_type]
         ws.append(headers)
 
         for app in applications:

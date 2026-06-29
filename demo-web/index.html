@@ -71,13 +71,13 @@
             console.log('[DEBUG] Using /approvals/ API for manager');
         }
 
-        // Add application_type filter (skip for students - they should see all their applications)
+        // Add application_type filter (students see all their applications)
+        const type = currentApplicationType || localStorage.getItem('selected_application_type') || 'leave_school';
         if (!isStudent) {
-            const type = currentApplicationType || localStorage.getItem('selected_application_type') || 'leave_school';
             url += '&application_type=' + type;
             console.log('[DEBUG] loadApprovals application_type filter:', type, 'URL:', url);
         } else {
-            console.log('[DEBUG] loadApprovals: student - no application_type filter');
+            console.log('[DEBUG] loadApprovals: student sees all application types');
         }
 
         if (isAdminOrDean) {

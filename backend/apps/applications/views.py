@@ -212,14 +212,25 @@ def create_application(request):
                                             'details': {'building': building or '未分配', 'fallback_id': fallback_id}}},
                                 status=status.HTTP_404_NOT_FOUND)
 
-        # Find counselor by student.class_id → counselor.user_id
-        counselor = None
+        # Find counselors: priority class_id match, fallback to department match
+        counselors = []
         if user.class_id:
+            # 优先通过class_id唯一匹配
             counselor = User.objects.filter(
                 role=UserRole.COUNSELOR,
                 user_id=user.class_id,
                 active=True
             ).first()
+            if counselor:
+                counselors = [counselor]
+
+        # 如果class_id匹配失败，通过学院匹配多个辅导员
+        if not counselors and user.department:
+            counselors = list(User.objects.filter(
+                role=UserRole.COUNSELOR,
+                department=user.department,
+                active=True
+            ))
 
         # Check for existing draft, convert if exists
         if application_id:
@@ -285,19 +296,20 @@ def create_application(request):
                 notify_application_submitted(application, dorm_manager_approval)
 
         if 'counselor' in approval_flow:
-            if not counselor:
+            if not counselors:
                 return Response({'error': {'code': 'NOT_FOUND', 'message': '未找到辅导员',
-                                            'details': {'class_id': user.class_id}}},
+                                            'details': {'class_id': user.class_id, 'department': user.department}}},
                                 status=status.HTTP_404_NOT_FOUND)
-            counselor_approval = Approval.objects.create(
-                approval_id=f'apv_{uuid.uuid4().hex[:8]}',
-                application=application,
-                step=ApprovalStep.COUNSELOR,
-                approver=counselor,
-                approver_name=counselor.name,
-                decision=ApprovalDecision.PENDING
-            )
-            notify_application_submitted(application, counselor_approval)
+            for counselor in counselors:
+                counselor_approval = Approval.objects.create(
+                    approval_id=f'apv_{uuid.uuid4().hex[:8]}',
+                    application=application,
+                    step=ApprovalStep.COUNSELOR,
+                    approver=counselor,
+                    approver_name=counselor.name,
+                    decision=ApprovalDecision.PENDING
+                )
+                notify_application_submitted(application, counselor_approval)
 
         # Sync phone to User table
         if not user.phone:

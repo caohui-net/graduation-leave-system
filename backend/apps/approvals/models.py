@@ -13,6 +13,7 @@ class ApprovalDecision(models.TextChoices):
     PENDING = 'pending', '待审批'
     APPROVED = 'approved', '已通过'
     REJECTED = 'rejected', '已驳回'
+    CANCELLED = 'cancelled', '已取消'
 
 
 class Approval(models.Model):

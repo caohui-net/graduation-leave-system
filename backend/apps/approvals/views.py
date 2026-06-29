@@ -65,19 +65,23 @@ def list_approvals(request):
             status=status.HTTP_403_FORBIDDEN
         )
 
-    # 宿管员: 只看自己的dorm_manager审批
+    # 宿管员: 只看自己的dorm_manager审批（排除已取消）
     if user.role == UserRole.DORM_MANAGER:
         queryset = Approval.objects.filter(
             approver=user,
             step=ApprovalStep.DORM_MANAGER
+        ).exclude(
+            decision=ApprovalDecision.CANCELLED
         ).select_related('application', 'application__student', 'approver')
         default_decision = 'pending'
 
-    # 辅导员: 只看自己的counselor审批
+    # 辅导员: 只看自己的counselor审批（排除已取消）
     elif user.role == UserRole.COUNSELOR:
         queryset = Approval.objects.filter(
             approver=user,
             step=ApprovalStep.COUNSELOR
+        ).exclude(
+            decision=ApprovalDecision.CANCELLED
         ).select_related('application', 'application__student', 'approver')
         default_decision = 'pending'
 
@@ -287,6 +291,24 @@ def approve_approval(request, approval_id):
         application.status = ApplicationStatus.PENDING_COUNSELOR
         application.save()
     elif approval.step == ApprovalStep.COUNSELOR:
+        # 取消同一申请的其他辅导员待审批记录
+        other_counselor_approvals = Approval.objects.filter(
+            application=application,
+            step=ApprovalStep.COUNSELOR,
+            decision=ApprovalDecision.PENDING
+        ).exclude(approval_id=approval.approval_id)
+
+        if other_counselor_approvals.exists():
+            count = other_counselor_approvals.update(
+                decision=ApprovalDecision.CANCELLED,
+                comment='已由其他辅导员完成审批',
+                decided_at=timezone.now()
+            )
+            logging.info(
+                f"Cancelled {count} other counselor approvals "
+                f"for application {application.application_id}"
+            )
+
         # Counselor approval completes the process (2-level approval)
         application.status = ApplicationStatus.APPROVED
         application.save()
@@ -357,6 +379,26 @@ def reject_approval(request, approval_id):
     notify_approval_decided(approval)
 
     application = approval.application
+
+    # 取消同一申请的其他待审批记录（辅导员或宿管员）
+    if approval.step in [ApprovalStep.COUNSELOR, ApprovalStep.DORM_MANAGER]:
+        other_approvals = Approval.objects.filter(
+            application=application,
+            step=approval.step,
+            decision=ApprovalDecision.PENDING
+        ).exclude(approval_id=approval.approval_id)
+
+        if other_approvals.exists():
+            count = other_approvals.update(
+                decision=ApprovalDecision.CANCELLED,
+                comment='申请已被驳回',
+                decided_at=timezone.now()
+            )
+            logging.info(
+                f"Cancelled {count} other {approval.step} approvals "
+                f"for rejected application {application.application_id}"
+            )
+
     application.status = ApplicationStatus.REJECTED
     application.save()
 

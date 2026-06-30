@@ -19,6 +19,16 @@ Critical operations include:
 
 ## User Preferences
 
+- **[2026-06-30] 代码修改与部署流程（MANDATORY）**: 严格遵守测试→提交→验证→部署流程，禁止跳过任何步骤。
+  1. 修改代码 → 本地或测试环境验证 → commit+push
+  2. 提交到测试环境（不是生产）
+  3. 测试环境验证通过
+  4. 等待git hooks自动触发 OR 用户明确确认
+  5. 才能部署到生产环境
+  - **禁止**: 修改后直接commit+push+部署生产
+  - **禁止**: 未测试就提交
+  - **禁止**: 未经用户确认直接部署生产
+
 - **[2026-06-30] 执行任何操作前先查速查文档**: 部署、数据库操作、命令执行前，**必须**先查阅速查文档。不要凭记忆或假设。
   - 生产部署流程: `docs/环境执行规范速查.md` 第199-269行
   - 部署命令: `ssh caohui@172.17.12.196 "cd /opt/graduation-leave-system && bash scripts/196-promote-to-prod.sh"`
@@ -56,6 +66,8 @@ Critical operations include:
 - **Description:** Tri-model collaboration protocol for autonomous multi-agent project construction.
 
 ## Do-Not-Repeat
+
+- **[2026-06-30] 违反部署流程：未测试直接提交并部署生产**: 修复`currentBusinessType`变量名错误后，未测试就commit+push，并直接执行生产部署脚本。**违反3条规则**: 1) 修改后要先测试验证再提交；2) 提交到测试环境，不能直接部署生产；3) 需git hooks触发或用户确认才能部署生产。**正确流程**: 修改代码 → 测试验证 → commit+push到测试 → 测试环境验证 → git hooks/用户确认 → 生产部署。**教训**: 部署流程是强制规则，不能因为"小改动"就跳过。
 
 - **[2026-06-30] 登录逻辑未按业务类型过滤导致跨业务数据混乱**: 学生登录后显示错误业务类型表单。**根因**: 代码从所有申请中取最新，未先按`currentApplicationType`过滤。**错误分析**: 看到现象就猜测是"填充逻辑错误"，未读完整代码。**正确做法**: 1) 读取完整的数据获取和过滤流程；2) 发现未按业务类型过滤；3) 在获取`latestApp`前先`filter(app => app.application_type === type)`；4) 遵循"数据不跨业务类型"规则。**教训**: 代码分析要读完整流程，不要凭现象猜测。
 

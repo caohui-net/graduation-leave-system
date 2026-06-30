@@ -112,7 +112,7 @@ async function apiLogin(userId, password) {
             const data = await response.json();
             currentToken = data.access_token;
             currentUser = data.user;
-            return { success: true, user: data.user };
+            return { success: true, access_token: data.access_token, user: data.user };
         } else {
             currentToken = null;
             currentUser = null;
@@ -147,11 +147,12 @@ async function apiGetOrCreateDraft() {
         }
     } catch (e) {
         console.error("Create draft failed:", e);
-        return { success: false, error: {message: '网络错误'} };
+        const errorMsg = e.message || '网络错误';
+        return { success: false, error: {message: `创建草稿失败: ${errorMsg}`} };
     }
 }
 
-async function apiSubmitApplication(phone, reason, leaveDate, applicationId, applicationType = 'leave_school', stayStartDate = null, stayEndDate = null, stayReason = null) {
+async function apiSubmitApplication(phone, reason, leaveDate, applicationId, applicationType = 'leave_school', stayStartDate = null, stayEndDate = null, stayReason = null, counselorId = null) {
     const formData = new FormData();
     formData.append('contact_phone', phone);
     formData.append('reason', reason);
@@ -160,6 +161,7 @@ async function apiSubmitApplication(phone, reason, leaveDate, applicationId, app
     if (stayStartDate) formData.append('stay_start_date', stayStartDate);
     if (stayEndDate) formData.append('stay_end_date', stayEndDate);
     if (stayReason) formData.append('stay_reason', stayReason);
+    if (counselorId) formData.append('counselor_id', counselorId);
     if (applicationId) {
         formData.append('application_id', applicationId);
     }
@@ -185,7 +187,8 @@ async function apiSubmitApplication(phone, reason, leaveDate, applicationId, app
         }
     } catch (e) {
         console.error("Submit application failed:", e);
-        return { success: false, error: { message: '网络错误，请检查连接' } };
+        const errorMsg = e.message || '网络连接失败';
+        return { success: false, error: { message: `提交失败: ${errorMsg}` } };
     }
 }
 
@@ -294,7 +297,8 @@ async function apiUploadAttachment(applicationId, file, attachmentType = 'other'
         }
     } catch (e) {
         console.error('[ERROR] Upload exception:', e);
-        alert('附件上传失败：网络错误');
+        const errorMsg = e.message || '网络连接失败';
+        alert(`附件上传失败: ${errorMsg}\n\n请检查:\n1. 文件大小是否超过10MB\n2. 网络连接是否正常\n3. 文件格式是否支持`);
     }
     return null;
 }

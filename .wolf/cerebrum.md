@@ -17,7 +17,49 @@ Critical operations include:
 
 **Protocol violation = CRITICAL ERROR → must be logged to buglog.json**
 
+---
+
+## Code Modification Checklist (MANDATORY)
+
+**BEFORE committing ANY code change, complete this checklist:**
+
+```
+[ ] 1. 测试验证：本地或测试环境验证修改正确
+[ ] 2. 读取Hook提示：commit后阅读git hook输出
+[ ] 3. 查阅速查文档：确认正确的部署流程
+[ ] 4. 确认目标环境：明确是测试还是生产
+[ ] 5. 等待触发或确认：git hooks自动触发 OR 用户明确确认
+```
+
+**跳过任何步骤 = 流程违规 → 记录到Do-Not-Repeat**
+
+**正确流程：**
+```
+修改代码 → 测试验证 ✓ → commit+push → 测试环境验证 ✓ → hooks/用户确认 ✓ → 生产部署
+```
+
+**禁止流程：**
+```
+修改代码 → 直接commit+push → 直接部署生产  ❌
+修改代码 → commit+push（未测试）❌
+```
+
 ## User Preferences
+
+- **[2026-06-30] 代码修改强制检查清单（MANDATORY - 每次都要检查）**: 
+  ```
+  修改代码后 BEFORE commit:
+  1. ✓ 测试验证通过（本地或测试环境）
+  2. ✓ commit后读取git hook输出并遵守
+  3. ✓ 查阅速查文档确认流程
+  4. ✓ 确认目标环境（测试/生产）
+  5. ✓ 等待git hooks触发 OR 用户明确确认
+  
+  跳过任何步骤 = 违规
+  ```
+  - **原因分析**: Git hook已安装并工作，部署规范文档已存在，但执行时完全忽略
+  - **深层问题**: 只记录规则但不执行，"小改动"心态导致跳过流程
+  - **解决方案**: 不是更多规则，而是执行纪律 - 每次都检查清单
 
 - **[2026-06-30] 代码修改与部署流程（MANDATORY）**: 严格遵守测试→提交→验证→部署流程，禁止跳过任何步骤。
   1. 修改代码 → 本地或测试环境验证 → commit+push

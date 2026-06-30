@@ -153,7 +153,7 @@
                 // Find rejected applications (current business type only)
                 const rejectedApps = applications.filter(a =>
                     a.status === 'rejected' &&
-                    a.application_type === currentBusinessType &&
+                    a.application_type === currentApplicationType &&
                     !processedRejectedIds.includes(a.application_id)
                 );
 

@@ -8,7 +8,7 @@
   <meta http-equiv="Expires" content="0">
   <title>毕业离校申请系统 - UI Demo</title>
   <link rel="stylesheet" href="css/global.css?v=20260626">
-  <script src="js/api.js?v=20260626"></script>
+  <script src="js/api.js?v=20260630"></script>
 <script>
     // 版本检测机制 - 防止缓存导致的bug
     const APP_VERSION = '20260626-sso-fix';
@@ -2106,6 +2106,9 @@
           document.getElementById('loginUserId').value = '';
           document.getElementById('loginPassword').value = '';
 
+          // Save token to localStorage
+          localStorage.setItem('token', result.access_token);
+
           // Show nav tabs and user bar
           document.getElementById('navTabs').style.display = 'flex';
           document.getElementById('userBar').style.display = 'flex';
@@ -2150,18 +2153,65 @@
             document.getElementById('leave-fields').style.display = isStay ? 'none' : '';
             document.getElementById('stay-fields').style.display = isStay ? '' : 'none';
 
-            // Check existing submissions: none → form (screen0), has records → list (screen1)
+            // Check existing submissions and route accordingly
             console.log('[DEBUG] Student login - currentUser.role:', currentUser.role);
             const appData = await apiGetApplications();
             console.log('[DEBUG] Student applications:', appData);
-            const hasApplications = appData && appData.results && appData.results.length > 0;
-            console.log('[DEBUG] hasApplications:', hasApplications, 'results count:', appData?.results?.length);
-            if (hasApplications) {
-              console.log('[DEBUG] Student has applications, showing screen-1 and calling loadApprovals()');
+
+            const allApps = appData?.results || [];
+
+            // Check for rejected applications (highest priority)
+            const rejectedApp = allApps.find(app => app.status === 'rejected');
+            if (rejectedApp) {
+              console.log('[DEBUG] Found rejected application, showing form with rejection notice');
+              // Show rejection notice
+              showToast('您的申请已被驳回，请查看驳回原因并重新提交', 'warning');
+
+              // Fill form with rejected application data
+              document.getElementById('contactPhone').value = rejectedApp.contact_phone || '';
+              if (rejectedApp.application_type === 'stay_school') {
+                document.getElementById('stayStartDate').value = rejectedApp.stay_start_date || '';
+                document.getElementById('stayEndDate').value = rejectedApp.stay_end_date || '';
+                document.getElementById('stayReason').value = rejectedApp.stay_reason || '';
+              } else {
+                document.getElementById('applicationReason').value = rejectedApp.reason || '';
+                document.getElementById('leaveDate').value = rejectedApp.leave_date || '';
+              }
+
+              showScreen(0);
+              return;
+            }
+
+            // Check for draft applications (second priority)
+            const draftApp = allApps.find(app => app.status === 'draft');
+            if (draftApp) {
+              console.log('[DEBUG] Found draft application, filling form with draft data');
+              // Fill form with draft data
+              document.getElementById('contactPhone').value = draftApp.contact_phone || '';
+              if (draftApp.application_type === 'stay_school') {
+                document.getElementById('stayStartDate').value = draftApp.stay_start_date || '';
+                document.getElementById('stayEndDate').value = draftApp.stay_end_date || '';
+                document.getElementById('stayReason').value = draftApp.stay_reason || '';
+              } else {
+                document.getElementById('applicationReason').value = draftApp.reason || '';
+                document.getElementById('leaveDate').value = draftApp.leave_date || '';
+              }
+
+              showScreen(0);
+              return;
+            }
+
+            // Check for submitted applications (pending/approved/etc.)
+            const submittedApps = allApps.filter(app =>
+              app.status !== 'draft' && app.status !== 'failed' && app.status !== 'rejected'
+            );
+
+            if (submittedApps.length > 0) {
+              console.log('[DEBUG] Student has submitted applications, showing screen-1 (list)');
               showScreen(1);
               loadApprovals();
             } else {
-              console.log('[DEBUG] Student has no applications, showing screen-0');
+              console.log('[DEBUG] Student has no applications, showing screen-0 (form)');
               showScreen(0);
             }
           } else {

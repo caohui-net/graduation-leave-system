@@ -2153,22 +2153,65 @@
             document.getElementById('leave-fields').style.display = isStay ? 'none' : '';
             document.getElementById('stay-fields').style.display = isStay ? '' : 'none';
 
-            // Check existing submissions: none/draft → form (screen0), has submitted → list (screen1)
+            // Check existing submissions and route accordingly
             console.log('[DEBUG] Student login - currentUser.role:', currentUser.role);
             const appData = await apiGetApplications();
             console.log('[DEBUG] Student applications:', appData);
-            // 只统计已进入审批流程的申请（排除draft和failed状态）
-            const submittedApps = appData?.results?.filter(app =>
-              app.status !== 'draft' && app.status !== 'failed'
-            ) || [];
-            const hasApplications = submittedApps.length > 0;
-            console.log('[DEBUG] hasApplications:', hasApplications, 'submitted count:', submittedApps.length, 'total count:', appData?.results?.length);
-            if (hasApplications) {
+
+            const allApps = appData?.results || [];
+
+            // Check for rejected applications (highest priority)
+            const rejectedApp = allApps.find(app => app.status === 'rejected');
+            if (rejectedApp) {
+              console.log('[DEBUG] Found rejected application, showing form with rejection notice');
+              // Show rejection notice
+              showToast('您的申请已被驳回，请查看驳回原因并重新提交', 'warning');
+
+              // Fill form with rejected application data
+              document.getElementById('contactPhone').value = rejectedApp.contact_phone || '';
+              if (rejectedApp.application_type === 'stay_school') {
+                document.getElementById('stayStartDate').value = rejectedApp.stay_start_date || '';
+                document.getElementById('stayEndDate').value = rejectedApp.stay_end_date || '';
+                document.getElementById('stayReason').value = rejectedApp.stay_reason || '';
+              } else {
+                document.getElementById('applicationReason').value = rejectedApp.reason || '';
+                document.getElementById('leaveDate').value = rejectedApp.leave_date || '';
+              }
+
+              showScreen(0);
+              return;
+            }
+
+            // Check for draft applications (second priority)
+            const draftApp = allApps.find(app => app.status === 'draft');
+            if (draftApp) {
+              console.log('[DEBUG] Found draft application, filling form with draft data');
+              // Fill form with draft data
+              document.getElementById('contactPhone').value = draftApp.contact_phone || '';
+              if (draftApp.application_type === 'stay_school') {
+                document.getElementById('stayStartDate').value = draftApp.stay_start_date || '';
+                document.getElementById('stayEndDate').value = draftApp.stay_end_date || '';
+                document.getElementById('stayReason').value = draftApp.stay_reason || '';
+              } else {
+                document.getElementById('applicationReason').value = draftApp.reason || '';
+                document.getElementById('leaveDate').value = draftApp.leave_date || '';
+              }
+
+              showScreen(0);
+              return;
+            }
+
+            // Check for submitted applications (pending/approved/etc.)
+            const submittedApps = allApps.filter(app =>
+              app.status !== 'draft' && app.status !== 'failed' && app.status !== 'rejected'
+            );
+
+            if (submittedApps.length > 0) {
               console.log('[DEBUG] Student has submitted applications, showing screen-1 (list)');
               showScreen(1);
               loadApprovals();
             } else {
-              console.log('[DEBUG] Student has no submitted applications, showing screen-0 (form)');
+              console.log('[DEBUG] Student has no applications, showing screen-0 (form)');
               showScreen(0);
             }
           } else {

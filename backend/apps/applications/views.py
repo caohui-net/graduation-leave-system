@@ -226,10 +226,33 @@ def create_application(request):
                                             'details': {'building': building or '未分配', 'fallback_id': fallback_id}}},
                                 status=status.HTTP_404_NOT_FOUND)
 
-        # Find counselors: priority class_id match, fallback to department match
-        # 通过学院匹配辅导员
+        # Find counselors: support manual selection or auto-match by department
+        counselor_id = request.data.get('counselor_id')
         counselors = []
-        if user.department:
+
+        if counselor_id:
+            # Student selected a specific counselor
+            try:
+                counselor = User.objects.get(
+                    user_id=counselor_id,
+                    role=UserRole.COUNSELOR,
+                    department=user.department,
+                    active=True
+                )
+                counselors = [counselor]
+            except User.DoesNotExist:
+                return Response({'error': {'code': 'NOT_FOUND', 'message': '选择的辅导员不存在或不属于该学院',
+                                            'details': {'counselor_id': counselor_id}}},
+                                status=status.HTTP_404_NOT_FOUND)
+        elif user.level == '研究生':
+            # 研究生特殊处理：直接指定金玲老师（研工部）
+            counselors = list(User.objects.filter(
+                user_id='20210066',
+                role=UserRole.COUNSELOR,
+                active=True
+            ))
+        elif user.department:
+            # Auto-match all counselors in student's department
             counselors = list(User.objects.filter(
                 role=UserRole.COUNSELOR,
                 department=user.department,
@@ -384,6 +407,10 @@ def get_or_create_draft(request):
         return Response(ApplicationSerializer(draft).data, status=status.HTTP_200_OK)
 
     # Create new draft
+    # Refresh user from DB if class_id is None (JWT token may not include all fields)
+    if user.class_id is None:
+        user.refresh_from_db()
+
     draft = Application.objects.create(
         application_id=f'app_{uuid.uuid4().hex[:8]}',
         student=user,

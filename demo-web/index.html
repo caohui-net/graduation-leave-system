@@ -2170,8 +2170,19 @@
             const sortedApps = [...allApps].sort((a, b) =>
               new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
             );
-            const latestApp = sortedApps[0];
-            console.log('[DEBUG] Latest application:', latestApp.application_id, 'status:', latestApp.status, 'created_at:', latestApp.created_at);
+
+            // Filter by current business type FIRST
+            const typeApps = sortedApps.filter(app => app.application_type === type);
+            console.log('[DEBUG] Applications for type', type, ':', typeApps.length);
+
+            if (typeApps.length === 0) {
+              console.log('[DEBUG] No applications for current business type, showing screen-0 (form)');
+              showScreen(0);
+              return;
+            }
+
+            const latestApp = typeApps[0];
+            console.log('[DEBUG] Latest application for type', type, ':', latestApp.application_id, 'status:', latestApp.status, 'created_at:', latestApp.created_at);
 
             // Route based on latest application status
             if (latestApp.status === 'rejected') {

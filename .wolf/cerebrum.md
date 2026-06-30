@@ -2,9 +2,32 @@
 
 > OpenWolf's learning memory. Updated automatically as the AI learns from interactions.
 > Do not edit manually unless correcting an error.
-> Last updated: 2026-06-11
+> Last updated: 2026-06-30
+
+## Execution Protocol (MANDATORY)
+
+**BEFORE executing ANY CRITICAL operation, read `.wolf/execution-checklist.md` and complete ALL steps.**
+
+Critical operations include:
+- Database import/export/delete
+- Production/staging deployment
+- User account operations
+- Data migration
+- Configuration changes affecting live services
+
+**Protocol violation = CRITICAL ERROR → must be logged to buglog.json**
 
 ## User Preferences
+
+- **[2026-06-30] 执行任何操作前先查速查文档**: 部署、数据库操作、命令执行前，**必须**先查阅速查文档。不要凭记忆或假设。
+  - 生产部署流程: `docs/环境执行规范速查.md` 第199-269行
+  - 部署命令: `ssh caohui@172.17.12.196 "cd /opt/graduation-leave-system && bash scripts/196-promote-to-prod.sh"`
+  - 规则: 不要让用户手动执行，不要凭记忆猜测
+
+- **[2026-06-30] demo-web-v2已废弃**: 生产环境使用`demo-web/index.html`，不使用demo-web-v2。
+  - 修改代码只改demo-web
+  - 部署只部署demo-web
+  - 不要提及v2
 
 - **[2026-06-28] 业务流程测试使用 browser-harness**: 代码完成后，如需要进行业务流程测试（如登录、表单提交、页面跳转等），使用 browser-harness 技能进行自动化测试，而非手动操作或仅依赖单元测试。
   - 优势: 真实浏览器环境、发现生产环境问题（如本次发现HTTP/HTTPS cookies配置问题）
@@ -18,11 +41,29 @@
 
 ## Key Learnings
 
+- **[2026-06-30] 业务类型隔离规则（CRITICAL）**: 数据不跨业务类型。所有数据查询、表单填充、状态判断前**必须先按业务类型过滤**。
+  - 规则: 用户选择留校 → 只处理留校数据；选择离校 → 只处理离校数据
+  - 实现: `const typeApps = apps.filter(app => app.application_type === currentApplicationType)`
+  - 禁止: 从所有业务类型中取最新数据，然后再判断类型
+  - 正确顺序: 1) 确定业务类型 2) 按类型过滤 3) 处理数据/判断状态
+
+- **[2026-06-30] 代码分析方法**: 读完整逻辑再下结论，不要看到现象就猜测。
+  - 错误做法: 看到"显示错误表单" → 假设"填充逻辑错误"
+  - 正确做法: 读取获取数据的完整流程 → 定位过滤缺失 → 验证假设 → 修复
+
 - **Frontend static service:** `scripts/serve-frontend.py` backs live `graduation-frontend-nocache.service` on port 7788. Use `ThreadingHTTPServer`, not single-thread `HTTPServer`; slow external clients can otherwise block internal/local requests.
 - **Project:** ccg-collab
 - **Description:** Tri-model collaboration protocol for autonomous multi-agent project construction.
 
 ## Do-Not-Repeat
+
+- **[2026-06-30] 登录逻辑未按业务类型过滤导致跨业务数据混乱**: 学生登录后显示错误业务类型表单。**根因**: 代码从所有申请中取最新，未先按`currentApplicationType`过滤。**错误分析**: 看到现象就猜测是"填充逻辑错误"，未读完整代码。**正确做法**: 1) 读取完整的数据获取和过滤流程；2) 发现未按业务类型过滤；3) 在获取`latestApp`前先`filter(app => app.application_type === type)`；4) 遵循"数据不跨业务类型"规则。**教训**: 代码分析要读完整流程，不要凭现象猜测。
+
+- **[2026-06-30] 部署时未查速查文档，让用户手动执行**: 部署生产时SSH失败，我让用户手动执行命令。**根因**: 未查阅`docs/环境执行规范速查.md`，不知道正确部署命令是`ssh caohui@172.17.12.196 "cd /opt/graduation-leave-system && bash scripts/196-promote-to-prod.sh"`。**错误**: 1) 尝试SSH到192.168.50.196（错误IP）；2) 未查速查文档就凭记忆行动；3) ping不通就放弃。**正确做法**: 遇到操作任务，先查`PROJECT-QUICKREF.md`和`docs/环境执行规范速查.md`找正确流程。**教训**: 执行前必查速查文档，不凭记忆。
+
+- **[2026-06-30] 反复提及demo-web-v2**: 用户多次强调"v2不起作用，是demo-web/index.html"，但我仍在分析v2代码。**根因**: 未记录项目约定。**正确做法**: 1) 用户强调的约定立即记录到cerebrum；2) 生产只用demo-web，不提及v2。**教训**: 项目明确约定写入User Preferences。
+
+- **[2026-06-30] CRITICAL: 数据库操作前必须确认目标环境**: 用户明确要求"将生产数据镜像到测试环境"并要求查阅速查文档，但我未查阅文档就假设localhost是测试环境，错误导入到开发环境。**正确做法**: 1) 读取`docs/环境部署说明-三环境架构.md`确认环境配置（开发/staging/生产的服务器、端口、容器名）；2) 在执行任何数据库操作前向用户确认目标环境；3) 测试环境=172.17.12.196的staging-db-1容器，不是localhost。**强制规则**: 任何涉及数据导入/导出/删除的操作，必须先查阅速查文档+向用户确认目标。
 
 - **[2026-06-24] git push 403错误**: 环境变量 `GH_TOKEN`/`GITHUB_TOKEN` 权限不足。**不要**直接 `git push`，**必须**先 `unset GH_TOKEN GITHUB_TOKEN && git push`。
 

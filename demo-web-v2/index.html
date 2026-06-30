@@ -2153,20 +2153,22 @@
             document.getElementById('leave-fields').style.display = isStay ? 'none' : '';
             document.getElementById('stay-fields').style.display = isStay ? '' : 'none';
 
-            // Check existing submissions: none → form (screen0), has records → list (screen1)
+            // Check existing submissions: none/draft → form (screen0), has submitted → list (screen1)
             console.log('[DEBUG] Student login - currentUser.role:', currentUser.role);
             const appData = await apiGetApplications();
             console.log('[DEBUG] Student applications:', appData);
-            // 只统计非草稿状态的申请（已提交的申请）
-            const submittedApps = appData?.results?.filter(app => app.status !== 'draft') || [];
+            // 只统计已进入审批流程的申请（排除draft和failed状态）
+            const submittedApps = appData?.results?.filter(app =>
+              app.status !== 'draft' && app.status !== 'failed'
+            ) || [];
             const hasApplications = submittedApps.length > 0;
             console.log('[DEBUG] hasApplications:', hasApplications, 'submitted count:', submittedApps.length, 'total count:', appData?.results?.length);
             if (hasApplications) {
-              console.log('[DEBUG] Student has submitted applications, showing screen-1 and calling loadApprovals()');
+              console.log('[DEBUG] Student has submitted applications, showing screen-1 (list)');
               showScreen(1);
               loadApprovals();
             } else {
-              console.log('[DEBUG] Student has no submitted applications, showing screen-0');
+              console.log('[DEBUG] Student has no submitted applications, showing screen-0 (form)');
               showScreen(0);
             }
           } else {

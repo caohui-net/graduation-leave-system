@@ -8,7 +8,7 @@
   <meta http-equiv="Expires" content="0">
   <title>毕业离校申请系统 - UI Demo</title>
   <link rel="stylesheet" href="css/global.css?v=20260626">
-  <script src="js/api.js?v=20260626"></script>
+  <script src="js/api.js?v=20260630"></script>
 <script>
     // 版本检测机制 - 防止缓存导致的bug
     const APP_VERSION = '20260626-sso-fix';
@@ -40,65 +40,14 @@
         return div.innerHTML;
     }
 
-    async function loadMyApplications() {
-        if (!currentToken) return;
-        const data = await apiGetApplications();
-        const listContainer = document.getElementById('approval-list-container');
-
-        if (data.results && data.results.length > 0) {
-            // Filter by current application type first
-            const type = currentApplicationType || localStorage.getItem('selected_application_type') || 'leave_school';
-            let filtered = data.results.filter(a => a.application_type === type);
-
-            // 检查是否有failed或rejected状态，显示横幅
-            const hasFailed = filtered.some(a => a.status === 'failed');
-            const hasRejected = filtered.some(a => a.status === 'rejected');
-
-            if (hasFailed) {
-                showFailedApplicationBanner();
-            } else if (hasRejected) {
-                showRejectedApplicationBanner();
-            }
-
-            // Apply status filter
-            if (currentFilter === 'pending') {
-                filtered = filtered.filter(a => a.status && a.status.startsWith('pending_'));
-            } else if (currentFilter === 'approved') {
-                filtered = filtered.filter(a => a.status === 'approved');
-            } else if (currentFilter === 'rejected') {
-                filtered = filtered.filter(a => a.status === 'rejected');
-            }
-
-            let htmlStr = '';
-            filtered.forEach(app => {
-                const statusDisplay = getStatusDisplay(app.status);
-                const appIdDisplay = app.application_id ? app.application_id.substring(0,8) : '未知';
-                htmlStr += '<div class="card" style="cursor: pointer;" onclick="openApplication(\'' + app.application_id + '\')">' +
-                  '<div class="flex-row justify-between align-center" style="margin-bottom: 8px;">' +
-                    '<span style="font-size: 16px; font-weight: bold;">申请 ' + appIdDisplay + '</span>' +
-                    '<span class="tag ' + statusDisplay.class + '">' + statusDisplay.text + '</span>' +
-                  '</div>' +
-                  '<div style="margin-bottom: 4px;">' +
-                    '<span style="font-size: 14px; color: #999; margin-right: 8px;">离校日期:</span>' +
-                    '<span style="font-size: 14px; color: #333;">' + (app.leave_date || '-') + '</span>' +
-                  '</div>' +
-                  '<div style="margin-top: 8px; padding-top: 8px; border-top: 1px solid #f0f0f0;">' +
-                    '<span style="font-size: 12px; color: #999;">' + new Date(app.created_at).toLocaleString() + '</span>' +
-                  '</div>' +
-                '</div>';
-            });
-            listContainer.innerHTML = htmlStr;
-        } else {
-            listContainer.innerHTML = '<div style="text-align:center; padding: 20px; color:#999;">暂无申请记录</div>';
-        }
-    }
 
     async function loadApprovals(append = false) {
+        console.log('[DEBUG] loadApprovals called, append=', append, 'currentToken=', currentToken);
         if (!currentToken) return;
+
         if (!append) {
             approvalOffset = 0;
             approvalHasMore = true;
-            showLoading();
         }
 
         const listContainer = document.getElementById('approval-list-container');
@@ -109,18 +58,23 @@
         const isManager = currentUser && ['counselor', 'dorm_manager'].includes(currentUser.role);
         const isAdminOrDean = currentUser && ['admin', 'dean'].includes(currentUser.role);
 
+        console.log('[DEBUG] loadApprovals - currentUser:', currentUser);
+        console.log('[DEBUG] loadApprovals - isStudent:', isStudent, 'isManager:', isManager, 'isAdminOrDean:', isAdminOrDean);
+
         // Build API URL with filters
         let url;
         if (isStudent || isAdminOrDean) {
             url = API_BASE_URL + '/applications/?limit=' + BATCH_SIZE + '&offset=' + approvalOffset;
+            console.log('[DEBUG] Using /applications/ API for student/admin');
         } else if (isManager) {
             url = API_BASE_URL + '/approvals/?limit=' + BATCH_SIZE + '&offset=' + approvalOffset;
+            console.log('[DEBUG] Using /approvals/ API for manager');
         }
 
-        // Add application_type filter
+        // Add application_type filter for all roles (students must see only current business type)
         const type = currentApplicationType || localStorage.getItem('selected_application_type') || 'leave_school';
         url += '&application_type=' + type;
-        console.log('[DEBUG] loadApprovals application_type filter:', type, 'URL:', url);
+        console.log('[DEBUG] loadApprovals application_type filter:', type, 'isStudent:', isStudent);
 
         if (isAdminOrDean) {
             if (currentFilter && currentFilter !== 'all' && currentFilter !== 'pending') {
@@ -132,6 +86,7 @@
         }
 
         // Add admin filters (student_id, student_name, class_id, building)
+        // Apply to both /applications/ and /approvals/ endpoints
         if ((isManager || isAdminOrDean) && Object.keys(adminFilters).length > 0) {
             for (const [key, value] of Object.entries(adminFilters)) {
                 url += '&' + encodeURIComponent(key) + '=' + encodeURIComponent(value);
@@ -147,10 +102,15 @@
 
             const data = await res.json();
             console.log('[DEBUG] API returned:', data, 'offset:', approvalOffset);
-            // Debug: check application_type in first 3 results
+            // Debug: check detailed info
             if (data.results && data.results.length > 0) {
-                console.log('[DEBUG] First 3 results application_type:',
-                    data.results.slice(0, 3).map(r => ({id: r.application_id, type: r.application_type})));
+                console.log('[DEBUG] First result details:',
+                    data.results.slice(0, 1).map(r => ({
+                        id: r.application_id,
+                        type: r.application_type,
+                        status: r.status,
+                        created_at: r.created_at
+                    })));
             }
 
             if (!data || !data.results) {
@@ -186,7 +146,49 @@
                     }]
                 }));
 
-            renderApplications(applications, isStudent || isAdminOrDean);
+            // Student-specific: check for failed/rejected banners (current type only)
+            if (isStudent && !append) {
+                const processedRejectedIds = JSON.parse(localStorage.getItem('processed_rejected_apps') || '[]');
+
+                // Find rejected applications (current business type only)
+                const rejectedApps = applications.filter(a =>
+                    a.status === 'rejected' &&
+                    a.application_type === currentBusinessType &&
+                    !processedRejectedIds.includes(a.application_id)
+                );
+
+                // Check if rejected is the latest application (by created_at)
+                let shouldShowBanner = false;
+                let targetRejectedApp = null;
+
+                if (rejectedApps.length > 0 && applications.length > 0) {
+                    // Sort all applications by created_at desc
+                    const sortedApps = [...applications].sort((a, b) =>
+                        new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+                    );
+
+                    // Check if the latest application is rejected
+                    const latestApp = sortedApps[0];
+                    if (latestApp.status === 'rejected' && !processedRejectedIds.includes(latestApp.application_id)) {
+                        shouldShowBanner = true;
+                        targetRejectedApp = latestApp;
+                    }
+                }
+
+                const failedApp = applications.find(a => a.status === 'failed');
+
+                if (failedApp) {
+                    showFailedApplicationBanner();
+                } else if (shouldShowBanner && targetRejectedApp) {
+                    showRejectedApplicationBanner(targetRejectedApp);
+                }
+            }
+
+            if (isStudent) {
+                renderStudentApplications(applications);
+            } else {
+                renderApplications(applications, isAdminOrDean);
+            }
 
             if (approvalHasMore) {
                 loadMoreBtn.style.display = 'block';
@@ -199,9 +201,39 @@
             }
         } catch (err) {
             console.error('[ERROR] loadApprovals exception:', err);
-        } finally {
-            hideLoading();
         }
+    }
+
+    function renderStudentApplications(applications) {
+        const listContainer = document.getElementById('approval-list-container');
+
+        if (!applications || applications.length === 0) {
+            listContainer.innerHTML = '<div style="text-align:center; padding: 20px; color:#999;">暂无申请记录</div>';
+            return;
+        }
+
+        const type = currentApplicationType || localStorage.getItem('selected_application_type') || 'leave_school';
+        const dateLabel = type === 'stay_school' ? '留校日期' : '离校日期';
+
+        let htmlStr = '';
+        applications.forEach(app => {
+            const statusDisplay = getStatusDisplay(app.status);
+            const typeText = type === 'stay_school' ? '留校申请' : '离校申请';
+            htmlStr += '<div class="card" style="cursor: pointer;" onclick="openApplication(\'' + app.application_id + '\')">' +
+              '<div class="flex-row justify-between align-center" style="margin-bottom: 8px;">' +
+                '<span style="font-size: 16px; font-weight: bold;">' + typeText + '</span>' +
+                '<span class="tag ' + statusDisplay.class + '">' + statusDisplay.text + '</span>' +
+              '</div>' +
+              '<div style="margin-bottom: 4px;">' +
+                '<span style="font-size: 14px; color: #999; margin-right: 8px;">' + dateLabel + ':</span>' +
+                '<span style="font-size: 14px; color: #333;">' + (app.leave_date || '-') + '</span>' +
+              '</div>' +
+              '<div style="margin-top: 8px; padding-top: 8px; border-top: 1px solid #f0f0f0;">' +
+                '<span style="font-size: 12px; color: #999;">' + new Date(app.created_at).toLocaleString() + '</span>' +
+              '</div>' +
+            '</div>';
+        });
+        listContainer.innerHTML = htmlStr;
     }
 
     function renderApplications(applications, skipApproverFilter = false) {
@@ -259,10 +291,10 @@
 
         // Status display map
         const statusMap = {
-            'pending_dorm_manager': { text: '⏳ 待宿管审批', cls: 'tag-pending' },
-            'pending_counselor': { text: '⏳ 待辅导员审批', cls: 'tag-pending' },
-            'approved': { text: '✅ 已通过', cls: 'tag-approved' },
-            'rejected': { text: '❌ 已驳回', cls: 'tag-rejected' }
+            'pending_dorm_manager': { text: '待宿管审批', cls: 'tag-pending' },
+            'pending_counselor': { text: '待辅导员审批', cls: 'tag-pending' },
+            'approved': { text: '已通过', cls: 'tag-approved' },
+            'rejected': { text: '已驳回', cls: 'tag-rejected' }
         };
 
         uniqueApps.forEach(app => {
@@ -318,20 +350,20 @@
                 : '';
 
             card.innerHTML = `
-                ${showCheckbox ? `<label class="checkbox-touch" onclick="event.stopPropagation()"><input type="checkbox" class="approval-checkbox" data-approval-id="${myApproval.approval_id}" data-approver-id="${myApproval.approver_id}" data-decision="${myApproval.decision}" onclick="toggleBatchBar();"></label>` : ''}
+                ${showCheckbox ? `<input type="checkbox" class="approval-checkbox" data-approval-id="${myApproval.approval_id}" data-approver-id="${myApproval.approver_id}" data-decision="${myApproval.decision}" onclick="event.stopPropagation(); toggleBatchBar();" style="width: 20px; height: 20px; cursor: pointer;">` : ''}
                 <div style="flex: 1;" onclick="openApplication('${appId}')">
-                    <div class="flex-row justify-between align-center" style="margin-bottom: 6px;">
-                        <span style="font-size: 15px; font-weight: 600; color: #222;">${safeStudentName}${attachmentInfo}</span>
+                    <div class="flex-row justify-between align-center" style="margin-bottom: 8px;">
+                        <span style="font-size: 16px; font-weight: bold;">${safeStudentName}${attachmentInfo}</span>
                         <span class="tag ${statusInfo.cls}">${statusInfo.text}</span>
                     </div>
-                    <div style="margin-bottom: 3px; font-size: 13px; color: #555;">
+                    <div style="margin-bottom: 4px; font-size: 14px; color: #666;">
                         <span style="margin-right: 12px;">学号: ${safeStudentId}</span>
                         <span>学院: ${safeDepartment}</span>
                     </div>
-                    <div style="margin-bottom: 3px; font-size: 12px; color: #888;">
+                    <div style="margin-bottom: 4px; font-size: 14px; color: #666;">
                         宿舍: ${safeBuilding} ${safeRoomNumber}
                     </div>
-                    <div style="font-size: 11px; color: #bbb;">
+                    <div style="font-size: 12px; color: #999;">
                         ${app.created_at ? new Date(app.created_at).toLocaleString('zh-CN') : '-'}
                     </div>
                 </div>
@@ -363,11 +395,11 @@
                 // But need to adapt to show application data instead of approval data
                 showApplicationDetail(appData);
             } else {
-                showToast(res.status === 404 ? '申请不存在' : '加载详情失败：服务器错误', 'error');
+                alert('加载详情失败：' + (res.status === 404 ? '申请不存在' : '服务器错误'));
             }
         } catch (e) {
             console.error('Failed to open application:', e);
-            showToast('加载详情失败：网络错误', 'error');
+            alert('加载详情失败：网络错误');
         }
     }
 
@@ -381,11 +413,11 @@
                 const url = URL.createObjectURL(blob);
                 window.open(url, '_blank');
             } else {
-                showToast('预览失败：' + response.status, 'error');
+                alert('预览失败：' + response.status);
             }
         } catch (e) {
             console.error('Preview failed:', e);
-            showToast('预览失败：网络错误', 'error');
+            alert('预览失败：网络错误');
         }
     }
 
@@ -403,11 +435,11 @@
                 a.click();
                 URL.revokeObjectURL(url);
             } else {
-                showToast('下载失败：' + response.status, 'error');
+                alert('下载失败：' + response.status);
             }
         } catch (e) {
             console.error('Download failed:', e);
-            showToast('下载失败：网络错误', 'error');
+            alert('下载失败：网络错误');
         }
     }
 
@@ -561,7 +593,7 @@
             if (container) {
                 container.innerHTML = '<div class="card"><p style="color: #ff4d4f;">加载失败: ' + e.message + '</p></div>';
             }
-            showToast('显示详情失败：' + e.message, 'error');
+            alert('显示详情失败：' + e.message);
         }
     }
 
@@ -1159,9 +1191,11 @@
         }
     }
 
-    function showRejectedApplicationBanner() {
+    function showRejectedApplicationBanner(rejectedApp) {
         const existingBanner = document.getElementById('rejected-banner');
         if (existingBanner) return;
+
+        const appTypeText = rejectedApp && rejectedApp.application_type === 'stay_school' ? '留校' : '离校';
 
         const banner = document.createElement('div');
         banner.id = 'rejected-banner';
@@ -1171,15 +1205,18 @@
           <div style="display: flex; align-items: flex-start; gap: 8px;">
             <span style="font-size: 16px;">⚠️</span>
             <div style="flex: 1;">
-              <div style="font-size: 13px; font-weight: 600; color: #333;">申请已被驳回</div>
+              <div style="font-size: 13px; font-weight: 600; color: #333;">您的${appTypeText}申请已被驳回</div>
               <div style="font-size: 11px; color: #666; margin-top: 2px;">请查看驳回原因后重新提交申请</div>
+              <button onclick="resubmitApplication()"
+                      style="margin-top: 8px; padding: 6px 16px; background: #faad14; color: white; border: none; border-radius: 4px; font-size: 12px; cursor: pointer;">
+                重新提交
+              </button>
             </div>
           </div>
         `;
-        const screen0 = document.getElementById('screen-0');
-        const firstChild = screen0.querySelector('div[style*="padding: 20px"]');
-        if (firstChild) {
-            firstChild.insertBefore(banner, firstChild.firstChild);
+        const listContainer = document.getElementById('approval-list-container');
+        if (listContainer && listContainer.parentElement) {
+            listContainer.parentElement.insertBefore(banner, listContainer);
         }
     }
 
@@ -1208,29 +1245,62 @@
     }
 
     async function resubmitApplication() {
-        // 获取最新的驳回申请
-        const data = await apiGetApplications();
-        const rejectedApp = data.results.find(a => a.status === 'rejected');
+        try {
+            // 获取所有申请（跨类型）
+            const url = API_BASE_URL + '/applications/?limit=100';
+            const res = await fetchWithTimeout(url, { headers: getAuthHeaders() }, 8000);
+            if (!res.ok) {
+                showToast('获取申请数据失败', 'error');
+                return;
+            }
+            const data = await res.json();
+            console.log('[DEBUG] resubmitApplication API data:', data);
+            const rejectedApp = data.results.find(a => a.status === 'rejected');
+            console.log('[DEBUG] rejectedApp:', rejectedApp);
 
-        if (!rejectedApp) {
-            showToast('未找到驳回的申请', 'error');
-            return;
+            if (!rejectedApp) {
+                showToast('未找到驳回的申请', 'error');
+                return;
+            }
+
+            // 切换到正确的申请类型
+            if (rejectedApp.application_type !== currentApplicationType) {
+                currentApplicationType = rejectedApp.application_type;
+                localStorage.setItem('selected_application_type', rejectedApp.application_type);
+                const typeText = rejectedApp.application_type === 'stay_school' ? '留校' : '离校';
+                document.getElementById('system-title').textContent = typeText + '申请系统';
+                document.getElementById('form-type-badge').innerHTML = rejectedApp.application_type === 'stay_school' ? '🏠 留校申请' : '🎓 离校申请';
+                document.getElementById('form-type-badge').style.background = rejectedApp.application_type === 'stay_school' ? '#f6ffed' : '#e6f7ff';
+                document.getElementById('form-type-badge').style.color = rejectedApp.application_type === 'stay_school' ? '#389e0d' : '#1677ff';
+                document.getElementById('leave-fields').style.display = rejectedApp.application_type === 'stay_school' ? 'none' : '';
+                document.getElementById('stay-fields').style.display = rejectedApp.application_type === 'stay_school' ? '' : 'none';
+            }
+
+            // 填充表单
+            document.getElementById('contactPhone').value = rejectedApp.contact_phone || '';
+
+            if (rejectedApp.application_type === 'stay_school') {
+                document.getElementById('stayStartDate').value = rejectedApp.stay_start_date || '';
+                document.getElementById('stayEndDate').value = rejectedApp.stay_end_date || '';
+                document.getElementById('stayReason').value = rejectedApp.stay_reason || '';
+            } else {
+                document.getElementById('applicationReason').value = rejectedApp.reason || '';
+                document.getElementById('leaveDate').value = rejectedApp.leave_date || '';
+            }
+
+            // 清空附件（需要重新上传）
+            uploadedFiles = [];
+            renderFileList();
+
+            // 显示提交界面
+            showScreen(0);
+
+            // 滚动到顶部
+            window.scrollTo(0, 0);
+        } catch (err) {
+            console.error('[ERROR] resubmitApplication:', err);
+            showToast('加载申请数据失败', 'error');
         }
-
-        // 填充表单
-        document.getElementById('contactPhone').value = rejectedApp.contact_phone || '';
-        document.getElementById('applicationReason').value = rejectedApp.reason || '';
-        document.getElementById('leaveDate').value = rejectedApp.leave_date || '';
-
-        // 清空附件（需要重新上传）
-        uploadedFiles = [];
-        renderFileList();
-
-        // 显示提交界面
-        showScreen(0);
-
-        // 滚动到顶部
-        window.scrollTo(0, 0);
     }
 
     async function retryFailedApplication() {
@@ -1286,6 +1356,11 @@
             }
             if (!stayReason) {
                 showToast('请选择留校原因', 'error');
+                return;
+            }
+            const counselorId = document.getElementById('counselorSelect').value;
+            if (!counselorId) {
+                showToast('请选择辅导员', 'error');
                 return;
             }
             if (new Date(stayEndDate) < new Date(stayStartDate)) {
@@ -1356,8 +1431,9 @@
 
             // 步骤3: 提交申请
             btn.textContent = '提交申请中...';
+            const counselorId = isStay ? document.getElementById('counselorSelect').value : null;
             const result = await apiSubmitApplication(phone, reason, leaveDate, draftId,
-                currentApplicationType, stayStartDate, stayEndDate, stayReason);
+                currentApplicationType, stayStartDate, stayEndDate, stayReason, counselorId);
             if (result.success) {
                 showToast('申请提交成功', 'success');
                 document.getElementById('contactPhone').value = '';
@@ -1366,9 +1442,30 @@
                 uploadedFiles = [];
                 renderFileList();
 
+                // Mark any rejected applications as processed (banner should disappear)
+                try {
+                    const allTypesUrl = API_BASE_URL + '/applications/?limit=100';
+                    const allRes = await fetchWithTimeout(allTypesUrl, { headers: getAuthHeaders() }, 8000);
+                    if (allRes.ok) {
+                        const allData = await allRes.json();
+                        const rejectedApps = allData.results.filter(a => a.status === 'rejected');
+                        if (rejectedApps.length > 0) {
+                            const processedIds = JSON.parse(localStorage.getItem('processed_rejected_apps') || '[]');
+                            rejectedApps.forEach(app => {
+                                if (!processedIds.includes(app.application_id)) {
+                                    processedIds.push(app.application_id);
+                                }
+                            });
+                            localStorage.setItem('processed_rejected_apps', JSON.stringify(processedIds));
+                        }
+                    }
+                } catch (err) {
+                    console.warn('[WARN] Failed to mark rejected apps as processed:', err);
+                }
+
                 // Switch to progress view
                 showScreen(1);
-                loadMyApplications();
+                loadApprovals();
             } else {
                 showToast(result.error.message || '申请提交失败', 'error');
             }
@@ -1570,51 +1667,6 @@
       padding: 0 8px;
     }
 
-    /* 移动端复选框44px触控热区 */
-    .checkbox-touch {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      min-width: 44px;
-      min-height: 44px;
-      cursor: pointer;
-    }
-    .checkbox-touch input[type="checkbox"] {
-      width: 20px;
-      height: 20px;
-      cursor: pointer;
-    }
-
-    /* 批量操作栏 slide-up 动画 */
-    @keyframes slideUp {
-      from { transform: translateY(100%); opacity: 0; }
-      to   { transform: translateY(0);   opacity: 1; }
-    }
-    #batch-action-bar.visible {
-      animation: slideUp 0.2s ease-out;
-    }
-
-    /* 全局 Loading 覆盖层 */
-    #global-loading {
-      display: none;
-      position: fixed;
-      inset: 0;
-      background: rgba(255,255,255,0.7);
-      z-index: 9999;
-      align-items: center;
-      justify-content: center;
-    }
-    #global-loading.active { display: flex; }
-    .loading-spinner {
-      width: 36px;
-      height: 36px;
-      border: 3px solid #f0f0f0;
-      border-top-color: var(--primary-color);
-      border-radius: 50%;
-      animation: spin 0.8s linear infinite;
-    }
-    @keyframes spin { to { transform: rotate(360deg); } }
-
     .screen {
       display: none;
       min-height: calc(100vh - 45px);
@@ -1632,9 +1684,6 @@
   </style>
 </head>
 <body>
-  <!-- 全局Loading覆盖层 -->
-  <div id="global-loading"><div class="loading-spinner"></div></div>
-
   <!-- 顶部导航 -->
   <div class="nav-tabs" id="navTabs" style="display: none;">
     <button class="nav-tab active" onclick="showScreen(0);">学生申请</button>
@@ -1756,6 +1805,12 @@
               <span style="color: #666;">至</span>
               <input id="stayEndDate" type="date" style="flex: 1; padding: 12px; border: 1px solid #d9d9d9; border-radius: 4px; font-size: 14px;">
             </div>
+          </div>
+          <div style="margin-bottom: 20px;">
+            <label style="display: block; font-size: 14px; margin-bottom: 8px; font-weight: 500;">辅导员 *</label>
+            <select id="counselorSelect" style="width: 100%; padding: 12px; border: 1px solid #d9d9d9; border-radius: 4px; font-size: 14px; background: white;">
+              <option value="">加载中...</option>
+            </select>
           </div>
           <div style="margin-bottom: 20px;">
             <label style="display: block; font-size: 14px; margin-bottom: 8px; font-weight: 500;">留校原因 *</label>
@@ -1966,25 +2021,64 @@
       return currentToken ? { 'Authorization': `Bearer ${currentToken}` } : {};
     }
 
-    // Status mapping with icons
+    // Status mapping
     const statusMap = {
-      'pending_dorm_manager': { text: '⏳ 待宿管审批', class: 'tag-pending' },
-      'pending_counselor': { text: '⏳ 待辅导员审批', class: 'tag-pending' },
-      'approved': { text: '✅ 已通过', class: 'tag-approved' },
-      'rejected': { text: '❌ 已拒绝', class: 'tag-rejected' }
+      'pending_dorm_manager': { text: '待宿管审批', class: 'tag-pending' },
+      'pending_counselor': { text: '待辅导员审批', class: 'tag-pending' },
+      'approved': { text: '已通过', class: 'tag-approved' },
+      'rejected': { text: '已拒绝', class: 'tag-rejected' }
     };
 
     function getStatusDisplay(status) {
       return statusMap[status] || { text: status, class: 'tag' };
     }
 
-    function showScreen(index) {
+    async function showScreen(index) {
       document.querySelectorAll('.screen').forEach((s, i) => {
         s.classList.toggle('active', i === index);
       });
       document.querySelectorAll('.nav-tabs .nav-tab').forEach((t, i) => {
         t.classList.toggle('active', i === index);
       });
+
+      // Load counselors when showing application form for stay_school
+      if (index === 0 && currentApplicationType === 'stay_school') {
+        await loadCounselors();
+      }
+    }
+
+    async function loadCounselors() {
+      const select = document.getElementById('counselorSelect');
+      if (!select || !currentUser) return;
+
+      try {
+        const res = await fetchWithTimeout(API_BASE_URL + '/auth/counselors/', {
+          headers: getAuthHeaders()
+        }, 5000);
+
+        if (!res.ok) {
+          select.innerHTML = '<option value="">加载失败</option>';
+          return;
+        }
+
+        const counselors = await res.json();
+
+        if (counselors.length === 0) {
+          select.innerHTML = '<option value="">未找到辅导员</option>';
+        } else if (counselors.length === 1) {
+          // Single counselor: auto-select and disable
+          select.innerHTML = `<option value="${counselors[0].user_id}">${counselors[0].name}</option>`;
+          select.disabled = true;
+        } else {
+          // Multiple counselors: show dropdown
+          select.innerHTML = '<option value="">请选择辅导员</option>' +
+            counselors.map(c => `<option value="${c.user_id}">${c.name}</option>`).join('');
+          select.disabled = false;
+        }
+      } catch (err) {
+        console.error('[ERROR] Load counselors failed:', err);
+        select.innerHTML = '<option value="">加载失败</option>';
+      }
     }
 
     async function doLogin() {
@@ -2011,6 +2105,9 @@
           errorEl.style.display = 'none';
           document.getElementById('loginUserId').value = '';
           document.getElementById('loginPassword').value = '';
+
+          // Save token to localStorage
+          localStorage.setItem('token', result.access_token);
 
           // Show nav tabs and user bar
           document.getElementById('navTabs').style.display = 'flex';
@@ -2056,12 +2153,21 @@
             document.getElementById('leave-fields').style.display = isStay ? 'none' : '';
             document.getElementById('stay-fields').style.display = isStay ? '' : 'none';
 
-            // Check existing submissions and show list screen
+            // Check existing submissions: none → form (screen0), has records → list (screen1)
+            console.log('[DEBUG] Student login - currentUser.role:', currentUser.role);
             const appData = await apiGetApplications();
-            const hasApplications = appData && appData.results && appData.results.length > 0;
-            showScreen(1);  // Always show student screen
+            console.log('[DEBUG] Student applications:', appData);
+            // 只统计非草稿状态的申请（已提交的申请）
+            const submittedApps = appData?.results?.filter(app => app.status !== 'draft') || [];
+            const hasApplications = submittedApps.length > 0;
+            console.log('[DEBUG] hasApplications:', hasApplications, 'submitted count:', submittedApps.length, 'total count:', appData?.results?.length);
             if (hasApplications) {
+              console.log('[DEBUG] Student has submitted applications, showing screen-1 and calling loadApprovals()');
+              showScreen(1);
               loadApprovals();
+            } else {
+              console.log('[DEBUG] Student has no submitted applications, showing screen-0');
+              showScreen(0);
             }
           } else {
             // Role-based application type restriction
@@ -2071,7 +2177,7 @@
             if (result.user.role === 'dorm_manager' && type === 'stay_school') {
               currentApplicationType = 'leave_school';
               localStorage.setItem('selected_application_type', 'leave_school');
-              showToast('宿管员只能访问离校审批模块，已自动切换', 'warning');
+              alert('宿管员只能访问离校审批模块，已自动切换');
             } else {
               // Ensure currentApplicationType is set for all roles
               currentApplicationType = type;
@@ -2215,12 +2321,24 @@
       document.getElementById('screen-type').classList.remove('active');
 
       // 已通过SSO登录（token存在），直接进入业务界面
-      if (localStorage.getItem('auth_token') && currentUser) {
+      if (currentToken && currentUser) {
         document.getElementById('navTabs').style.display = 'flex';
         document.getElementById('userBar').style.display = 'flex';
         if (typeof updateUIForRole === 'function') updateUIForRole(currentUser.role);
         if (currentUser.role === 'student') {
-          showScreen(0);
+          const isStay = type === 'stay_school';
+          document.getElementById('form-type-badge').innerHTML = isStay ? '🏠 留校申请' : '🎓 离校申请';
+          document.getElementById('form-type-badge').style.background = isStay ? '#f6ffed' : '#e6f7ff';
+          document.getElementById('form-type-badge').style.color = isStay ? '#389e0d' : '#1677ff';
+          document.getElementById('leave-fields').style.display = isStay ? 'none' : '';
+          document.getElementById('stay-fields').style.display = isStay ? '' : 'none';
+
+          // Check existing applications before deciding screen
+          apiGetApplications().then(appData => {
+            const hasApplications = appData && appData.results && appData.results.length > 0;
+            showScreen(hasApplications ? 1 : 0);
+            if (hasApplications) loadApprovals();
+          });
         } else {
           showScreen(1);
           loadApprovals();
@@ -2358,10 +2476,6 @@ function showToast(message, type = 'info') {
   }, 3000);
 }
 
-// 全局Loading显示/隐藏
-function showLoading() { document.getElementById('global-loading').classList.add('active'); }
-function hideLoading() { document.getElementById('global-loading').classList.remove('active'); }
-
 // 批量操作相关
 let batchAction = '';
 
@@ -2381,7 +2495,6 @@ function toggleBatchBar() {
 
   if (checkboxes.length > 0) {
     bar.style.display = 'block';
-    bar.classList.add('visible');
     count.textContent = `已选 ${checkboxes.length} 项`;
     if (selectCount) selectCount.textContent = `已选 ${checkboxes.length} 项`;
   } else {

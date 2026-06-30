@@ -233,12 +233,21 @@ def create_application(request):
         if counselor_id:
             # Student selected a specific counselor
             try:
-                counselor = User.objects.get(
-                    user_id=counselor_id,
-                    role=UserRole.COUNSELOR,
-                    department=user.department,
-                    active=True
-                )
+                # 研究生允许选择研工部辅导员
+                if user.level == '研究生':
+                    counselor = User.objects.get(
+                        user_id=counselor_id,
+                        role=UserRole.COUNSELOR,
+                        department='研工部',
+                        active=True
+                    )
+                else:
+                    counselor = User.objects.get(
+                        user_id=counselor_id,
+                        role=UserRole.COUNSELOR,
+                        department=user.department,
+                        active=True
+                    )
                 counselors = [counselor]
             except User.DoesNotExist:
                 return Response({'error': {'code': 'NOT_FOUND', 'message': '选择的辅导员不存在或不属于该学院',

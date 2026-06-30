@@ -1,11 +1,13 @@
 import os
 from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes, throttle_classes
-from rest_framework.permissions import AllowAny
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.throttling import AnonRateThrottle
 from rest_framework.response import Response
 from drf_spectacular.utils import extend_schema, OpenApiResponse
 from .serializers import LoginSerializer, LoginResponseSerializer, DemoLoginSerializer
+from .models import User, UserRole
+from schema import ErrorResponseSerializer
 
 
 class LoginRateThrottle(AnonRateThrottle):
@@ -75,3 +77,52 @@ def demo_login(request):
     if serializer.is_valid():
         return Response(serializer.validated_data, status=status.HTTP_200_OK)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+@extend_schema(
+    operation_id='users_counselors_list',
+    summary='获取辅导员候选列表',
+    description='返回当前学生学院的辅导员列表，用于学生选择辅导员',
+    responses={
+        200: {
+            'type': 'array',
+            'items': {
+                'type': 'object',
+                'properties': {
+                    'user_id': {'type': 'string'},
+                    'name': {'type': 'string'},
+                    'department': {'type': 'string'}
+                }
+            }
+        },
+        403: ErrorResponseSerializer,
+    },
+    tags=['用户']
+)
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def list_counselors(request):
+    user = request.user
+
+    if user.role != UserRole.STUDENT:
+        return Response(
+            {'error': {'code': 'FORBIDDEN', 'message': '只有学生可以获取辅导员列表'}},
+            status=status.HTTP_403_FORBIDDEN
+        )
+
+    # 研究生特殊处理：直接返回金玲老师
+    if user.level == '研究生':
+        counselors = User.objects.filter(
+            user_id='20210066',
+            role=UserRole.COUNSELOR,
+            active=True
+        ).values('user_id', 'name', 'department').order_by('name')
+    else:
+        # 其他学生：按学院匹配辅导员
+        counselors = User.objects.filter(
+            role=UserRole.COUNSELOR,
+            department=user.department,
+            active=True
+        ).values('user_id', 'name', 'department').order_by('name')
+
+    return Response(list(counselors))

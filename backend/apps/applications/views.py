@@ -262,11 +262,17 @@ def create_application(request):
             ))
         elif user.department:
             # Auto-match all counselors in student's department
-            counselors = list(User.objects.filter(
+            counselors_query = User.objects.filter(
                 role=UserRole.COUNSELOR,
                 department=user.department,
                 active=True
-            ))
+            )
+
+            # 留校业务：排除胡乐老师（工号20220052，仅参与离校业务）
+            if app_type == ApplicationType.STAY_SCHOOL:
+                counselors_query = counselors_query.exclude(user_id='20220052')
+
+            counselors = list(counselors_query)
 
         # Check for existing draft, convert if exists
         if application_id:

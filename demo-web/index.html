@@ -2383,6 +2383,12 @@
         document.getElementById('userBar').style.display = 'flex';
         if (typeof updateUIForRole === 'function') updateUIForRole(currentUser.role);
         if (currentUser.role === 'student') {
+          // 填充申请人信息
+          document.getElementById('studentName').textContent = currentUser.name;
+          document.getElementById('studentId').textContent = currentUser.user_id;
+          document.getElementById('studentBuilding').textContent = currentUser.building || '-';
+          document.getElementById('studentRoom').textContent = currentUser.room_number || '-';
+
           const isStay = type === 'stay_school';
           document.getElementById('form-type-badge').innerHTML = isStay ? '🏠 留校申请' : '🎓 离校申请';
           document.getElementById('form-type-badge').style.background = isStay ? '#f6ffed' : '#e6f7ff';

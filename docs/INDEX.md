@@ -85,6 +85,7 @@
 
 ## 🎨 系统设计
 
+- [DESIGN](../DESIGN.md) - 前端设计规范（颜色系统、组件库、响应式设计）
 - [2026-05-27-system-design](./design/2026-05-27-system-design.md) - 系统设计方案
 - [2026-06-08-sso-qingganlian-integration](./design/2026-06-08-sso-qingganlian-integration.md) - SSO集成设计
 

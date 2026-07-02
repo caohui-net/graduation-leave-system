@@ -4,6 +4,41 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [1.2.2] - 2026-07-01
+
+### Added
+- **📐 前端设计规范文档**
+  - 新增：DESIGN.md 完整设计系统文档
+  - 内容：颜色系统、字体系统、组件库、布局规范、响应式设计
+  - 目的：统一前端设计标准，提升开发效率
+
+### Fixed
+- **🐛 留校业务辅导员分配逻辑**
+  - 问题：辅导员胡乐(20220052)被错误分配到留校业务审批
+  - 修复：views.py添加过滤逻辑，排除胡乐老师参与留校业务
+  - 数据清理：删除97条历史审批记录
+- **🐛 学生信息显示问题**
+  - 问题：切换申请类型后，学生姓名/学号显示为"-"
+  - 修复：selectApplicationType()函数添加学生信息填充逻辑
+
+## [1.2.1] - 2026-06-30
+
+### Fixed
+- **🔴 关键修复：草稿创建功能修复**
+  - 问题：学生提交申请时返回500错误，草稿无法创建
+  - 根因：
+    - 前端：登录后未保存JWT token到localStorage
+    - 前端：apiLogin函数返回对象中缺少access_token字段
+    - 数据库：applications.class_id字段NOT NULL约束，但部分用户class_id为null
+  - 方案：
+    - 数据库：applications.class_id改为nullable（向后兼容）
+    - 后端：models.py更新字段定义为nullable
+    - 前端：doLogin函数中保存token到localStorage
+    - 前端：apiLogin函数返回对象中添加access_token字段
+    - 前端：更新api.js版本号v=20260630
+  - 回滚方案：backups/rollback_20260630.sql
+  - 数据备份：backups/prod_applications_20260630_025243.json (2.7M)
+
 ## [1.2.0] - 2026-06-14
 
 ### Changed

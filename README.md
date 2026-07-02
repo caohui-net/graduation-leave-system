@@ -114,6 +114,7 @@ bash tests/smoke_test.sh
 
 ### 核心文档快速访问
 
+- **[前端设计规范](DESIGN.md)** - 颜色系统、组件库、响应式设计标准
 - **[三环境同步机制详解](docs/三环境同步机制详解.md)** - 部署架构与运维指南
 - **[异地Docker自动化部署方案](docs/异地Docker自动化部署方案.md)** - Docker异地部署
 - **[系统设计文档](docs/design/2026-05-27-system-design.md)** - 系统架构设计

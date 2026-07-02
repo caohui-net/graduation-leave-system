@@ -4027,3 +4027,11 @@
 | 12:34 | Edited DESIGN.md | expanded (+130 lines) | ~365 |
 | 12:34 | Created DESIGN.md | DESIGN.md | 前端设计规范文档(495行) | ~1574 |
 | 12:35 | Created .omc/session-context.json | — | ~193 |
+| 12:36 | Session end: 4 writes across 2 files (DESIGN.md, session-context.json) | 1 reads | ~1868 tok |
+| 12:37 | Session end: 4 writes across 2 files (DESIGN.md, session-context.json) | 1 reads | ~1868 tok |
+| 12:39 | Edited CHANGELOG.md | expanded (+17 lines) | ~121 |
+| 12:40 | Edited README.md | 7→8 lines | ~86 |
+| 12:41 | Edited PROJECT-QUICKREF.md | 3→5 lines | ~40 |
+| 12:41 | Updated CHANGELOG.md | CHANGELOG.md | 添加v1.2.2版本记录 | ~180 |
+| 12:41 | Updated README.md | README.md | 添加DESIGN.md到核心文档列表 | ~95 |
+| 12:41 | Updated PROJECT-QUICKREF.md | PROJECT-QUICKREF.md | 添加相关文档引用 | ~75 |

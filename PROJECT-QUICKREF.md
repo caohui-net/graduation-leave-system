@@ -6,6 +6,8 @@
 
 > **速查原则**: 遇到问题先查此文档，避免试错。所有命令已验证可执行。
 
+**相关文档**: [DESIGN.md](DESIGN.md) 前端设计规范 | [README.md](README.md) 项目总览 | [CHANGELOG.md](CHANGELOG.md) 变更记录
+
 ---
 
 ## 📌 关键信息速查
@@ -275,7 +277,26 @@ NodeNotFoundError: Migration dependencies reference nonexistent parent node
 3. 检查是否有重复编号的migration文件
 ```
 
-### 问题4: 数据库连接失败
+### 问题4: 学生提交申请时返回500错误（草稿创建失败）
+```bash
+# 现象
+POST /api/applications/draft/ 返回500 Internal Server Error
+浏览器控制台: IntegrityError: null value in column "class_id"
+
+# 原因
+1. 前端：登录后未保存JWT token到localStorage
+2. 数据库：部分用户class_id为null，但表约束NOT NULL
+
+# 解决（已修复 - 2026-06-30）
+1. 数据库已更新：class_id改为nullable（向后兼容）
+2. 前端已修复：登录时保存token到localStorage
+3. 如需回滚：执行 backups/rollback_20260630.sql
+
+# 验证
+localStorage.getItem('token')  # 应返回JWT token，不是'undefined'
+```
+
+### 问题5: 数据库连接失败
 ```bash
 # 现象
 psql: could not connect to server
